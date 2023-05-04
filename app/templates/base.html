@@ -10,8 +10,8 @@
     <body>
         <div>
             Annotations Interface:
-            <a href="/index">Home</a>
-            <a href="/login">Login</a>
+            <a href="{{ url_for('index') }}">Home</a>
+            <a href="{{ url_for('login') }}">Login</a>
         </div>
         <hr>
         <!-- `get_flashed_messages()` comes from Flask and returns a list of all the -->
