@@ -8,7 +8,7 @@ class LoginForm(FlaskForm):
     """Login form - inherits from FlaskForm"""
     email = StringField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[DataRequired()])
-    submit = SubmitField('Login')
+    submit = SubmitField('Sign In')
     remember_me = BooleanField('Remember Me')
 
 
