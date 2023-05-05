@@ -1,7 +1,11 @@
 from flask import Flask
 from config import BaseConfig
+from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 
 app = Flask(__name__)
 app.config.from_object(BaseConfig)
+db = SQLAlchemy(app)  # database instance
+migrate = Migrate(app, db)  # migration engine instance
 
-from app import routes
+from app import routes, models
