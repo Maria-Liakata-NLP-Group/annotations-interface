@@ -5,8 +5,8 @@ from enum import Enum
 
 class PostType(Enum):
     """Enum for post types"""
-    option1 = "Escalation"
-    option2 = "Switch"
+    escalation = "Escalation"
+    switch = "Switch"
 
 
 class User(db.Model):
@@ -25,7 +25,7 @@ class User(db.Model):
 class Post(db.Model):
     """Post class for database"""
     id = db.Column(db.Integer, primary_key=True)
-    type = db.Column(db.Enum, nullable=True, default=PostType.option1)  # type of post
+    type = db.Column(db.Enum(PostType), nullable=True)  # type of post
     body = db.Column(db.String(140))  # post body
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)  # when post was created
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))  # id of user who created this post
