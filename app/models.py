@@ -1,6 +1,7 @@
 from app import db
 from datetime import datetime
 from enum import Enum
+from werkzeug.security import generate_password_hash, check_password_hash
 
 
 class PostType(Enum):
@@ -26,6 +27,14 @@ class User(db.Model):
     def __repr__(self):
         """How to print objects of this class"""
         return "<User {}>".format(self.username)
+
+    def set_password(self, password):
+        """Set password for user"""
+        self.password_hash = generate_password_hash(password)
+
+    def check_password(self, password):
+        """Check if password is correct"""
+        return check_password_hash(self.password_hash, password)
 
 
 class Post(db.Model):
