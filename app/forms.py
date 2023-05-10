@@ -6,14 +6,16 @@ from wtforms.validators import DataRequired, Email, Length
 
 class LoginForm(FlaskForm):
     """Login form - inherits from FlaskForm"""
-    email = StringField('Email', validators=[DataRequired(), Email()])
-    password = PasswordField('Password', validators=[DataRequired(), Length(min=8)])
-    submit = SubmitField('Sign In')
-    remember_me = BooleanField('Remember Me')
+
+    email = StringField("Email", validators=[DataRequired(), Email()])
+    password = PasswordField("Password", validators=[DataRequired(), Length(min=8)])
+    submit = SubmitField("Sign In")
+    remember_me = BooleanField("Remember Me")
 
 
 class RegisterForm(FlaskForm):
     """Register form - inherits from FlaskForm"""
-    email = StringField('Email', validators=[DataRequired(), Email()])
-    password = PasswordField('Password', validators=[DataRequired()])
-    submit = SubmitField('Register')
+
+    email = StringField("Email", validators=[DataRequired(), Email()])
+    password = PasswordField("Password", validators=[DataRequired()])
+    submit = SubmitField("Register")

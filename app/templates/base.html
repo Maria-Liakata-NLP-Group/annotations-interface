@@ -1,30 +1,27 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-    <head>
-        {% if title %}
-        <title>{{ title }}</title>
-        {% else %}
-        <title>Annotations Interface</title>
-        {% endif %}
-    </head>
-    <body>
-        <div>
-            Annotations Interface:
-            <a href="{{ url_for('index') }}">Home</a>
-            <a href="{{ url_for('login') }}">Login</a>
-        </div>
-        <hr>
-        <!-- `get_flashed_messages()` comes from Flask and returns a list of all the -->
-        <!-- messages that have been registered with `flash()` previously -->
-        {% with messages = get_flashed_messages() %} 
-        {% if messages %}
-        <ul>
-            {% for message in messages %}
-            <li>{{ message }}</li>
-            {% endfor %}
-        </ul>
-        {% endif %}
-        {% endwith %}
-        {% block content %}{% endblock %}
-    </body>
+  <head>
+    {% if title %}
+    <title>{{ title }}</title>
+    {% else %}
+    <title>Annotations Interface</title>
+    {% endif %}
+  </head>
+  <body>
+    <div>
+      Annotations Interface:
+      <a href="{{ url_for('index') }}">Home</a>
+      <a href="{{ url_for('login') }}">Login</a>
+    </div>
+    <hr />
+    <!-- `get_flashed_messages()` comes from Flask and returns a list of all the -->
+    <!-- messages that have been registered with `flash()` previously -->
+    {% with messages = get_flashed_messages() %} {% if messages %}
+    <ul>
+      {% for message in messages %}
+      <li>{{ message }}</li>
+      {% endfor %}
+    </ul>
+    {% endif %} {% endwith %} {% block content %}{% endblock %}
+  </body>
 </html>
