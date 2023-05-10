@@ -11,7 +11,12 @@
     <div>
       Annotations Interface:
       <a href="{{ url_for('index') }}">Home</a>
+      <!-- the user is only anonymous when the user is not logged in -->
+      {% if current_user.is_anonymous %}
       <a href="{{ url_for('login') }}">Login</a>
+      {% else %}
+      <a href="{{ url_for('logout') }}">Logout</a>
+      {% endif %}
     </div>
     <hr />
     <!-- `get_flashed_messages()` comes from Flask and returns a list of all the -->

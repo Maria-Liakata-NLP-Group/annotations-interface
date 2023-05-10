@@ -1,7 +1,8 @@
-from app import db
+from app import db, login
 from datetime import datetime
 from enum import Enum
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask_login import UserMixin
 
 
 class PostType(Enum):
@@ -11,7 +12,13 @@ class PostType(Enum):
     switch = "Switch"
 
 
-class User(db.Model):
+@login.user_loader
+def load_user(id):
+    """Load user from database. Used by flask_login."""
+    return User.query.get(int(id))
+
+
+class User(UserMixin, db.Model):
     """User class for database"""
 
     id = db.Column(db.Integer, primary_key=True)  # each user will have unique id
