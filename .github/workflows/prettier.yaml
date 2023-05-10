@@ -21,4 +21,4 @@ jobs:
           # files will not be changed, only checked
           dry: True
           # check only HTML, Yaml, JSON and Markdown files
-          prettier_options: --check "**/*.{html,yaml,yml,json,md}"
+          prettier_options: --check **/*.{html,yaml,yml,json,md}
