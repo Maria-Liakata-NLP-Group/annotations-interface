@@ -11,8 +11,7 @@ from werkzeug.urls import url_parse
 @login_required  # This decorator ensures that the user is logged in before accessing the page
 def index():
     """This is the index page"""
-    user = {"email": "random.user@random.com"}
-    return render_template("index.html", user=user)
+    return render_template("index.html", title="Home page")
 
 
 @app.route("/login", methods=["GET", "POST"])
