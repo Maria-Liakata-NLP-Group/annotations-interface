@@ -24,7 +24,7 @@ def login():
     if form.validate_on_submit():
         # This only runs if the form is submitted (`POST`) and validated
         user = User.query.filter_by(
-            email=form.email.data
+            username=form.username.data
         ).first()  # Get the user from the database
         # Check if the user exists and if the password is correct
         if user is None or not user.check_password(form.password.data):

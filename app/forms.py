@@ -8,8 +8,8 @@ from app.models import User
 class LoginForm(FlaskForm):
     """Login form - inherits from FlaskForm"""
 
-    email = StringField("Email", validators=[DataRequired(), Email()])
-    password = PasswordField("Password", validators=[DataRequired(), Length(min=8)])
+    username = StringField("Username", validators=[DataRequired()])
+    password = PasswordField("Password", validators=[DataRequired()])
     submit = SubmitField("Sign In")
     remember_me = BooleanField("Remember Me")
 
