@@ -5,8 +5,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 
 
-class PostType(Enum):
-    """Enum for post types"""
+class AnnotationType(Enum):
+    """Enum for annotation types"""
 
     escalation = "Escalation"
     switch = "Switch"
@@ -27,9 +27,9 @@ class User(UserMixin, db.Model):
     )  # index=True - for faster search
     email = db.Column(db.String(120), index=True, unique=False)
     password_hash = db.Column(db.String(128))  # hash of password
-    posts = db.relationship(
-        "Post", backref="author", lazy="dynamic"
-    )  # one-to-many relationship with Post class
+    annotations = db.relationship(
+        "Annotation", backref="author", lazy="dynamic"
+    )  # one-to-many relationship with Annotation class
 
     def __repr__(self):
         """How to print objects of this class"""
@@ -44,19 +44,19 @@ class User(UserMixin, db.Model):
         return check_password_hash(self.password_hash, password)
 
 
-class Post(db.Model):
-    """Post class for database"""
+class Annotation(db.Model):
+    """Annotation class for database"""
 
     id = db.Column(db.Integer, primary_key=True)
-    type = db.Column(db.Enum(PostType), nullable=True)  # type of post
-    body = db.Column(db.String(140))  # post body
+    type = db.Column(db.Enum(AnnotationType), nullable=True)  # type of annotation
+    body = db.Column(db.String(140))  # annotation body
     timestamp = db.Column(
         db.DateTime, index=True, default=datetime.utcnow
-    )  # when post was created
+    )  # when annotation was created
     user_id = db.Column(
         db.Integer, db.ForeignKey("user.id")
-    )  # id of user who created this post
+    )  # id of user who created this annotation
 
     def __repr__(self):
         """How to print objects of this class"""
-        return "<Post {}>".format(self.body)
+        return "<Annotation {}>".format(self.body)

@@ -1,4 +1,4 @@
-from app.models import User, Post
+from app.models import User, Annotation
 
 
 def test_new_user():
@@ -15,16 +15,16 @@ def test_new_user():
     assert user.check_password("testpassword")
 
 
-def test_new_post():
+def test_new_annotation():
     """
-    GIVEN a Post model
-    WHEN a new Post is created
+    GIVEN a Annotation model
+    WHEN a new Annotation is created
     THEN check the body, timestamp, author, and user_id fields are defined correctly
     """
     user = User(username="test", email="test@example.com")
     user.set_password("testpassword")
-    post = Post(body="test post", author=user)
-    assert post.body == "test post"
-    assert post.author is user
-    assert post.timestamp is None  # timestamp is set by database
-    assert post.user_id is None  # user_id is set by database
+    annotation = Annotation(body="test annotation", author=user)
+    assert annotation.body == "test annotation"
+    assert annotation.author is user
+    assert annotation.timestamp is None  # timestamp is set by database
+    assert annotation.user_id is None  # user_id is set by database
