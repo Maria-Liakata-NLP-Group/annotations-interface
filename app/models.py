@@ -27,9 +27,9 @@ class User(UserMixin, db.Model):
     )  # index=True - for faster search
     email = db.Column(db.String(120), index=True, unique=False)
     password_hash = db.Column(db.String(128))  # hash of password
-    annotations = db.relationship(
-        "Annotation", backref="author", lazy="dynamic"
-    )  # one-to-many relationship with Annotation class
+    annotations_sm = db.relationship(
+        "SMAnnotation", backref="author", lazy="dynamic"
+    )  # one-to-many relationship with SMAnnotation class
 
     def __repr__(self):
         """How to print objects of this class"""
@@ -44,8 +44,8 @@ class User(UserMixin, db.Model):
         return check_password_hash(self.password_hash, password)
 
 
-class Annotation(db.Model):
-    """Annotation class for database"""
+class SMAnnotation(db.Model):
+    """Social Media Annotation class for database"""
 
     id = db.Column(db.Integer, primary_key=True)
     type = db.Column(db.Enum(AnnotationType), nullable=True)  # type of annotation
@@ -59,4 +59,4 @@ class Annotation(db.Model):
 
     def __repr__(self):
         """How to print objects of this class"""
-        return "<Annotation {}>".format(self.body)
+        return "<Social Media Annotation {}>".format(self.body)
