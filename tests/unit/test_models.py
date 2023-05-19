@@ -1,4 +1,4 @@
-from app.models import User, SMAnnotation
+from app.models import User, SMAnnotation, SMPost
 
 
 def test_new_user():
@@ -28,3 +28,16 @@ def test_new_sm_annotation():
     assert annotation.author is user
     assert annotation.timestamp is None  # timestamp is set by database
     assert annotation.id_user is None  # id_user is set by database
+
+
+def test_new_sm_post():
+    """
+    GIVEN a SMPost model
+    WHEN a new SMPost is created
+    THEN check the question, annotation, and id_sm_annotation fields are defined correctly
+    """
+    annotation = SMAnnotation(body="test annotation")
+    post = SMPost(question="test post", annotation=annotation)
+    assert post.question == "test post"
+    assert post.annotation is annotation
+    assert post.id_sm_annotation is None  # id_sm_annotation is set by database
