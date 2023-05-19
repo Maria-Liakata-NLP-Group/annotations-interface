@@ -69,9 +69,9 @@ class SMPost(db.Model):
     """Social Media Post class for database"""
 
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.String(64), index=True, unique=True)
-    timeline_id = db.Column(db.String(64), index=True, unique=True)
-    post_id = db.Column(db.Integer, index=True, unique=False)
+    user_id = db.Column(db.String(64), index=True, unique=False)
+    timeline_id = db.Column(db.String(64), index=True, unique=False)
+    post_id = db.Column(db.Integer, index=True, unique=True)
     mood = db.Column(db.String(64))
     date = db.Column(db.DateTime, default=datetime.utcnow)
     ldate = db.Column(db.DateTime, default=datetime.utcnow)

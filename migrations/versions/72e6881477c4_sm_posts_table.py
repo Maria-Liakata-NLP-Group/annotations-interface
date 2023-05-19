@@ -1,8 +1,8 @@
 """sm posts table
 
-Revision ID: ba29fda317e7
+Revision ID: 72e6881477c4
 Revises: 7d535da49440
-Create Date: 2023-05-19 15:15:56.591506
+Create Date: 2023-05-19 16:52:27.645582
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'ba29fda317e7'
+revision = '72e6881477c4'
 down_revision = '7d535da49440'
 branch_labels = None
 depends_on = None
@@ -32,9 +32,9 @@ def upgrade():
     sa.PrimaryKeyConstraint('id')
     )
     with op.batch_alter_table('sm_post', schema=None) as batch_op:
-        batch_op.create_index(batch_op.f('ix_sm_post_post_id'), ['post_id'], unique=False)
-        batch_op.create_index(batch_op.f('ix_sm_post_timeline_id'), ['timeline_id'], unique=True)
-        batch_op.create_index(batch_op.f('ix_sm_post_user_id'), ['user_id'], unique=True)
+        batch_op.create_index(batch_op.f('ix_sm_post_post_id'), ['post_id'], unique=True)
+        batch_op.create_index(batch_op.f('ix_sm_post_timeline_id'), ['timeline_id'], unique=False)
+        batch_op.create_index(batch_op.f('ix_sm_post_user_id'), ['user_id'], unique=False)
 
     # ### end Alembic commands ###
 
