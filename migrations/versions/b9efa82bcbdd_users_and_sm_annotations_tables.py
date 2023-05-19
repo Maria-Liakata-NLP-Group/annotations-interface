@@ -1,8 +1,8 @@
 """users and sm annotations tables
 
-Revision ID: 6cc27c9fe86f
+Revision ID: b9efa82bcbdd
 Revises: 
-Create Date: 2023-05-18 17:08:49.973331
+Create Date: 2023-05-19 11:45:24.088445
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '6cc27c9fe86f'
+revision = 'b9efa82bcbdd'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -34,8 +34,8 @@ def upgrade():
     sa.Column('type', sa.Enum('escalation', 'switch', name='annotationtype'), nullable=True),
     sa.Column('body', sa.String(length=140), nullable=True),
     sa.Column('timestamp', sa.DateTime(), nullable=True),
-    sa.Column('user_id', sa.Integer(), nullable=True),
-    sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
+    sa.Column('id_user', sa.Integer(), nullable=True),
+    sa.ForeignKeyConstraint(['id_user'], ['user.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     with op.batch_alter_table('sm_annotation', schema=None) as batch_op:

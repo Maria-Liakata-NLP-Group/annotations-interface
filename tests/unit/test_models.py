@@ -27,4 +27,4 @@ def test_new_sm_annotation():
     assert annotation.body == "test annotation"
     assert annotation.author is user
     assert annotation.timestamp is None  # timestamp is set by database
-    assert annotation.user_id is None  # user_id is set by database
+    assert annotation.id_user is None  # id_user is set by database

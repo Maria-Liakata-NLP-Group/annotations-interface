@@ -53,7 +53,7 @@ class SMAnnotation(db.Model):
     timestamp = db.Column(
         db.DateTime, index=True, default=datetime.utcnow
     )  # when annotation was created
-    user_id = db.Column(
+    id_user = db.Column(
         db.Integer, db.ForeignKey("user.id")
     )  # id of user who created this annotation
 
