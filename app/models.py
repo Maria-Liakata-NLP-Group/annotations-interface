@@ -56,7 +56,28 @@ class SMAnnotation(db.Model):
     id_user = db.Column(
         db.Integer, db.ForeignKey("user.id")
     )  # id of user who created this annotation
+    posts = db.relationship(
+        "SMPost", backref="annotation", lazy="dynamic"
+    )  # one-to-many relationship with SMPost class
 
     def __repr__(self):
         """How to print objects of this class"""
         return "<Social Media Annotation {}>".format(self.body)
+
+
+class SMPost(db.Model):
+    """Social Media Post class for database"""
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.String(64), index=True, unique=True)
+    timeline_id = db.Column(db.String(64), index=True, unique=True)
+    post_id = db.Column(db.Integer, index=True, unique=False)
+    mood = db.Column(db.String(64))
+    date = db.Column(db.DateTime, default=datetime.utcnow)
+    ldate = db.Column(db.DateTime, default=datetime.utcnow)
+    question = db.Column(db.String)
+    id_sm_annotation = db.Column(db.Integer, db.ForeignKey("sm_annotation.id"))
+
+    def __repr__(self):
+        """How to print objects of this class"""
+        return "<Social Media Post {}>".format(self.question)
