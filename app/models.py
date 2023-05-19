@@ -49,7 +49,7 @@ class SMAnnotation(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     type = db.Column(db.Enum(AnnotationType), nullable=True)  # type of annotation
-    body = db.Column(db.String(140))  # annotation body
+    body = db.Column(db.Text)  # annotation body
     timestamp = db.Column(
         db.DateTime, index=True, default=datetime.utcnow
     )  # when annotation was created
