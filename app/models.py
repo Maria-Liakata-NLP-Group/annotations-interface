@@ -75,7 +75,7 @@ class SMPost(db.Model):
     mood = db.Column(db.String(64))
     date = db.Column(db.DateTime, default=datetime.utcnow)
     ldate = db.Column(db.DateTime, default=datetime.utcnow)
-    question = db.Column(db.String)
+    question = db.Column(db.Text)
     id_sm_annotation = db.Column(db.Integer, db.ForeignKey("sm_annotation.id"))
 
     def __repr__(self):
