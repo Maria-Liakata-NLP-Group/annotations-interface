@@ -77,7 +77,26 @@ class SMPost(db.Model):
     ldate = db.Column(db.DateTime, default=datetime.utcnow)
     question = db.Column(db.Text)
     id_sm_annotation = db.Column(db.Integer, db.ForeignKey("sm_annotation.id"))
+    replies = db.relationship(
+        "SMReply", backref="post", lazy="dynamic"
+    )  # one-to-many relationship with SMReply class
 
     def __repr__(self):
         """How to print objects of this class"""
         return "<Social Media Post {}>".format(self.question)
+
+
+class SMReply(db.Model):
+    """Social Media Reply class for database"""
+
+    id = db.Column(db.Integer, primary_key=True)
+    reply_id = db.Column(db.Integer, index=True, unique=True)
+    user_id = db.Column(db.String(64), index=True, unique=False)
+    date = db.Column(db.DateTime, default=datetime.utcnow)
+    ldate = db.Column(db.DateTime, default=datetime.utcnow)
+    comment = db.Column(db.Text)
+    id_sm_post = db.Column(db.Integer, db.ForeignKey("sm_post.id"))
+
+    def __repr__(self):
+        """How to print objects of this class"""
+        return "<Social Media Reply {}>".format(self.comment)
