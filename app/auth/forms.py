@@ -1,4 +1,4 @@
-# Description: Forms for the app
+# Desc: Authentication forms for the app
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, BooleanField
 from wtforms.validators import DataRequired, Email, Length, EqualTo, ValidationError
