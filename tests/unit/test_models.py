@@ -1,4 +1,4 @@
-from app.models import User, SMAnnotation, SMPost
+from app.models import User, SMAnnotation, SMPost, SMReply
 
 
 def test_new_user():
@@ -41,3 +41,16 @@ def test_new_sm_post():
     assert post.question == "test post"
     assert post.annotation is annotation
     assert post.id_sm_annotation is None  # id_sm_annotation is set by database
+
+
+def test_new_sm_reply():
+    """
+    GIVEN a SMReply model
+    WHEN a new SMReply is created
+    THEN check the comment, post, and id_sm_post fields are defined correctly
+    """
+    post = SMPost(question="test post")
+    reply = SMReply(comment="test reply", post=post)
+    assert reply.comment == "test reply"
+    assert reply.post is post
+    assert reply.id_sm_post is None  # id_sm_post is set by database
