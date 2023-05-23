@@ -12,7 +12,7 @@ def login():
     """This is the login page"""
     if current_user.is_authenticated:
         # If the user is already logged in, redirect to the index page
-        return redirect(url_for("index"))
+        return redirect(url_for("main.index"))
     form = LoginForm()
     if form.validate_on_submit():
         # This only runs if the form is submitted (`POST`) and validated
@@ -30,7 +30,7 @@ def login():
         next_page = request.args.get("next")  # Get the next page from the URL
         if not next_page or url_parse(next_page).netloc != "":
             # If there is no next page or the next page is not relative, redirect to the index page
-            next_page = url_for("index")
+            next_page = url_for("main.index")
         return redirect(next_page)  # otherwise, redirect to the next page
     return render_template("auth/login.html", title="Sign In", form=form)
 
@@ -39,7 +39,7 @@ def login():
 def logout():
     """This is the logout page"""
     logout_user()
-    return redirect(url_for("index"))
+    return redirect(url_for("main.index"))
 
 
 @bp.route("/register", methods=["GET", "POST"])
@@ -47,7 +47,7 @@ def register():
     """This is the register page"""
     if current_user.is_authenticated:
         # If the user is already logged in, redirect to the index page
-        return redirect(url_for("index"))
+        return redirect(url_for("main.index"))
     form = RegisterForm()
     if form.validate_on_submit():
         # This only runs if the form is submitted (`POST`) and validated
