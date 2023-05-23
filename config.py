@@ -11,3 +11,10 @@ class BaseConfig(object):
         "DATABASE_URL"
     ) or "sqlite:///" + os.path.join(basedir, "app.db")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+
+class TestConfig(BaseConfig):
+    """Test configuration. Configuration settings are defined here."""
+
+    TESTING = True
+    SQLALCHEMY_DATABASE_URI = "sqlite:///:memory:"  # in-memory database
