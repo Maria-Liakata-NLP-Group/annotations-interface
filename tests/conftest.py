@@ -1,6 +1,6 @@
 import pytest
 
-from app import create_app
+from app import create_app, db
 from app.models import User, SMAnnotation, SMPost, SMReply
 from config import TestConfig
 
@@ -44,3 +44,26 @@ def test_client():
         # Establish an application context before running the tests
         with flask_app.app_context():
             yield testing_client  # this is where the testing happens!
+
+
+@pytest.fixture(scope="module")
+def init_database(test_client):
+    """Fixture to initialize the database"""
+    # Create the database and the database tables
+    db.create_all()
+
+    # Insert user data
+    user1 = User(username="test1", email="test1@example.com")
+    user1.set_password("testpassword1")
+    user2 = User(username="test2", email="test2@example.com")
+    user2.set_password("testpassword2")
+    db.session.add(user1)
+    db.session.add(user2)
+
+    # Commit the changes for the users
+    db.session.commit()
+
+    yield  # this is where the testing happens!
+
+    # Drop all the tables from the database
+    db.drop_all()
