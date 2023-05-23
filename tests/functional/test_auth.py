@@ -1,3 +1,8 @@
+"""
+Functional tests for the authentication (`auth`) blueprint.
+"""
+
+
 def test_login_page(test_client):
     """
     GIVEN a Flask application configured for testing
