@@ -1,5 +1,7 @@
-from app import app, db
+from app import create_app, db
 from app.models import User, SMAnnotation, SMPost, SMReply
+
+app = create_app()
 
 
 # Create shell context for flask shell
