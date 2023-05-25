@@ -29,6 +29,18 @@ def create_app(config_class=BaseConfig):
     login.init_app(app)
 
     # register blueprints
+    register_blueprints(app)
+
+    return app
+
+
+def register_blueprints(app):
+    """
+    Register blueprints with the application instance.
+
+    :param app: Flask application instance
+    :return: None
+    """
     from app.auth import bp as auth_bp
 
     app.register_blueprint(auth_bp, url_prefix="/auth")
@@ -36,8 +48,6 @@ def create_app(config_class=BaseConfig):
     from app.main import bp as main_bp
 
     app.register_blueprint(main_bp)
-
-    return app
 
 
 from app import models
