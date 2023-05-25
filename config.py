@@ -11,6 +11,8 @@ class BaseConfig(object):
         "DATABASE_URL"
     ) or "sqlite:///" + os.path.join(basedir, "app.db")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    UPLOAD_FOLDER = os.path.join(basedir, "data", "social_media")
+    ALLOWED_EXTENSIONS = {"pickle", "pkl"}
 
 
 class TestConfig(BaseConfig):
