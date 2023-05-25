@@ -1,23 +1,20 @@
 import os
 import pickle
 from datetime import datetime, timedelta
-
-# fix the import error
-import sys
-
-sys.path.append(os.path.join(os.path.dirname(__file__), "../.."))
+from app import db
 from app.models import SMPost, SMReply
-from app import create_app, db
+from werkzeug.utils import secure_filename
 
 
 basedir = os.path.join(os.path.abspath(os.path.dirname(__file__)), "../..")
 
-file_path = os.path.join(
+upload_folder = os.path.join(
     basedir,
     "data",
     "social_media",
-    "timelines_example_lorem.pickle",
 )
+
+allowed_extensions = ["pkl"]
 
 with open(file_path, "rb") as handle:
     sm_data = pickle.load(handle)
@@ -25,6 +22,12 @@ with open(file_path, "rb") as handle:
 app = create_app()
 
 
+def allowed_file(filename):
+    """Check if the file extension is allowed"""
+    return "." in filename and filename.rsplit(".", 1)[1].lower() in allowed_extensions
+
+
+@bp.route("/upload", methods=["GET", "POST"])
 def format_datetime(datetime_obj: datetime):
     """Format datetime object to remove microseconds"""
     datetime_obj = datetime_obj - timedelta(microseconds=datetime_obj.microsecond)
