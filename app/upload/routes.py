@@ -1,12 +1,15 @@
 import os
 import pickle
 from datetime import datetime, timedelta
-from app import db, app
+from app import db
 from app.upload import bp
 from app.models import SMPost, SMReply
 from werkzeug.utils import secure_filename
 from flask import request, redirect, url_for, flash
 from flask_login import login_required
+
+allowed_extensions = {"pickle", "pkl"}
+upload_folder = os.path.join(os.path.dirname(__file__), "../..", "data", "social_media")
 
 
 def read_pickle(file_path):
@@ -17,10 +20,7 @@ def read_pickle(file_path):
 
 def allowed_file(filename):
     """Check if the file extension is allowed"""
-    return (
-        "." in filename
-        and filename.rsplit(".", 1)[1].lower() in app.config["ALLOWED_EXTENSIONS"]
-    )
+    return "." in filename and filename.rsplit(".", 1)[1].lower() in allowed_extensions
 
 
 def format_datetime(datetime_obj: datetime):
@@ -81,9 +81,7 @@ def upload():
         if file and allowed_file(file.filename):  # If the file is valid
             # Secure the filename before saving it
             filename = secure_filename(file.filename)  # Get the filename
-            file_path = os.path.join(
-                app.config["UPLOAD_FOLDER"], filename
-            )  # Get the file path
+            file_path = os.path.join(upload_folder, filename)  # Get the file path
             file.save(file_path)  # Save the file
             flash("File uploaded successfully")
             sm_data = read_pickle(file_path)  # Read the pickle file

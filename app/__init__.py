@@ -49,5 +49,9 @@ def register_blueprints(app):
 
     app.register_blueprint(main_bp)
 
+    from app.upload import bp as upload_bp
+
+    app.register_blueprint(upload_bp, url_prefix="/upload")
+
 
 from app import models
