@@ -1,8 +1,8 @@
 """users plus all sm tables
 
-Revision ID: d7e6d9d848c0
+Revision ID: 8ffc6ee799a7
 Revises: 
-Create Date: 2023-05-26 12:51:07.798446
+Create Date: 2023-05-26 17:14:41.081000
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'd7e6d9d848c0'
+revision = '8ffc6ee799a7'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -27,7 +27,7 @@ def upgrade():
     sa.Column('date', sa.DateTime(), nullable=True),
     sa.Column('ldate', sa.DateTime(), nullable=True),
     sa.Column('question', sa.Text(), nullable=True),
-    sa.PrimaryKeyConstraint('id')
+    sa.PrimaryKeyConstraint('id', name=op.f('pk_sm_post'))
     )
     with op.batch_alter_table('sm_post', schema=None) as batch_op:
         batch_op.create_index(batch_op.f('ix_sm_post_post_id'), ['post_id'], unique=True)
@@ -39,7 +39,7 @@ def upgrade():
     sa.Column('username', sa.String(length=64), nullable=True),
     sa.Column('email', sa.String(length=120), nullable=True),
     sa.Column('password_hash', sa.String(length=128), nullable=True),
-    sa.PrimaryKeyConstraint('id')
+    sa.PrimaryKeyConstraint('id', name=op.f('pk_user'))
     )
     with op.batch_alter_table('user', schema=None) as batch_op:
         batch_op.create_index(batch_op.f('ix_user_email'), ['email'], unique=False)
@@ -52,9 +52,9 @@ def upgrade():
     sa.Column('timestamp', sa.DateTime(), nullable=True),
     sa.Column('id_user', sa.Integer(), nullable=True),
     sa.Column('id_sm_post', sa.Integer(), nullable=True),
-    sa.ForeignKeyConstraint(['id_sm_post'], ['sm_post.id'], ),
-    sa.ForeignKeyConstraint(['id_user'], ['user.id'], ),
-    sa.PrimaryKeyConstraint('id')
+    sa.ForeignKeyConstraint(['id_sm_post'], ['sm_post.id'], name=op.f('fk_sm_annotation_id_sm_post_sm_post')),
+    sa.ForeignKeyConstraint(['id_user'], ['user.id'], name=op.f('fk_sm_annotation_id_user_user')),
+    sa.PrimaryKeyConstraint('id', name=op.f('pk_sm_annotation'))
     )
     with op.batch_alter_table('sm_annotation', schema=None) as batch_op:
         batch_op.create_index(batch_op.f('ix_sm_annotation_timestamp'), ['timestamp'], unique=False)
@@ -67,8 +67,8 @@ def upgrade():
     sa.Column('ldate', sa.DateTime(), nullable=True),
     sa.Column('comment', sa.Text(), nullable=True),
     sa.Column('id_sm_post', sa.Integer(), nullable=True),
-    sa.ForeignKeyConstraint(['id_sm_post'], ['sm_post.id'], ),
-    sa.PrimaryKeyConstraint('id')
+    sa.ForeignKeyConstraint(['id_sm_post'], ['sm_post.id'], name=op.f('fk_sm_reply_id_sm_post_sm_post')),
+    sa.PrimaryKeyConstraint('id', name=op.f('pk_sm_reply'))
     )
     with op.batch_alter_table('sm_reply', schema=None) as batch_op:
         batch_op.create_index(batch_op.f('ix_sm_reply_reply_id'), ['reply_id'], unique=True)
