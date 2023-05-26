@@ -1,5 +1,5 @@
 from app import create_app, db
-from app.models import User, SMAnnotation, SMPost, SMReply
+from app.models import User, SMAnnotation, SMPost, SMReply, Dataset
 
 app = create_app()
 
@@ -13,4 +13,5 @@ def make_shell_context():
         "SMAnnotation": SMAnnotation,
         "SMPost": SMPost,
         "SMReply": SMReply,
+        "Dataset": Dataset,
     }
