@@ -56,9 +56,9 @@ class SMAnnotation(db.Model):
     id_user = db.Column(
         db.Integer, db.ForeignKey("user.id")
     )  # id of user who created this annotation
-    posts = db.relationship(
-        "SMPost", backref="annotation", lazy="dynamic"
-    )  # one-to-many relationship with SMPost class
+    id_sm_post = db.Column(
+        db.Integer, db.ForeignKey("sm_post.id")
+    )  # id of post which is annotated
 
     def __repr__(self):
         """How to print objects of this class"""
@@ -76,7 +76,9 @@ class SMPost(db.Model):
     date = db.Column(db.DateTime, default=datetime.utcnow)
     ldate = db.Column(db.DateTime, default=datetime.utcnow)
     question = db.Column(db.Text)
-    id_sm_annotation = db.Column(db.Integer, db.ForeignKey("sm_annotation.id"))
+    annotations = db.relationship(
+        "SMAnnotation", backref="post", lazy="dynamic"
+    )  # one-to-many relationship with SMAnnotation class
     replies = db.relationship(
         "SMReply", backref="post", lazy="dynamic"
     )  # one-to-many relationship with SMReply class
