@@ -76,6 +76,7 @@ class SMPost(db.Model):
     date = db.Column(db.DateTime, default=datetime.utcnow)
     ldate = db.Column(db.DateTime, default=datetime.utcnow)
     question = db.Column(db.Text)
+    id_dataset = db.Column(db.Integer, db.ForeignKey("dataset.id"))
     annotations = db.relationship(
         "SMAnnotation", backref="post", lazy="dynamic"
     )  # one-to-many relationship with SMAnnotation class
@@ -102,3 +103,20 @@ class SMReply(db.Model):
     def __repr__(self):
         """How to print objects of this class"""
         return "<Social Media Reply {}>".format(self.comment)
+
+
+class Dataset(db.Model):
+    """Dataset class for database"""
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(64), index=True, unique=True)
+    username = db.Column(db.String(64), index=True, unique=False)
+    description = db.Column(db.Text)
+    timesaved = db.Column(db.DateTime, default=datetime.utcnow)
+    posts = db.relationship(
+        "SMPost", backref="dataset", lazy="dynamic"
+    )  # one-to-many relationship with SMPost class
+
+    def __repr__(self):
+        """How to print objects of this class"""
+        return "<Dataset {}>".format(self.name)
