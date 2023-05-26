@@ -10,27 +10,30 @@ def test_new_user(new_user):
     assert new_user.check_password("testpassword")
 
 
-def test_new_sm_annotation(new_sm_annotation, new_user):
+def test_new_sm_annotation(new_sm_annotation, new_user, new_sm_post):
     """
     GIVEN a SMAnnotation model
     WHEN a new SMAnnotation is created
-    THEN check the body, timestamp, author, and user_id fields are defined correctly
+    THEN check the body, author, post, timestamp, id_user, and id_sm_post fields are defined correctly
     """
     assert new_sm_annotation.body == "test annotation"
     assert new_sm_annotation.author is new_user
+    assert new_sm_annotation.post is new_sm_post
     assert new_sm_annotation.timestamp is None  # timestamp is set by database
     assert new_sm_annotation.id_user is None  # id_user is set by database
+    assert new_sm_annotation.id_sm_post is None  # id_sm_post is set by database
 
 
-def test_new_sm_post(new_sm_post, new_sm_annotation):
+def test_new_sm_post(new_sm_post):
     """
     GIVEN a SMPost model
     WHEN a new SMPost is created
-    THEN check the question, annotation, and id_sm_annotation fields are defined correctly
+    THEN check the question, user_id, timeline_id, and post_id fields are defined correctly
     """
     assert new_sm_post.question == "test post"
-    assert new_sm_post.annotation is new_sm_annotation
-    assert new_sm_post.id_sm_annotation is None  # id_sm_annotation is set by database
+    assert new_sm_post.user_id == "1"
+    assert new_sm_post.timeline_id == "1"
+    assert new_sm_post.post_id == 1
 
 
 def test_new_sm_reply(new_sm_reply, new_sm_post):

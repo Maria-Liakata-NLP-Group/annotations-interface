@@ -14,17 +14,22 @@ def new_user():
 
 
 @pytest.fixture(scope="module")
-def new_sm_annotation(new_user):
-    """Fixture to create a new social media annotation"""
-    annotation = SMAnnotation(body="test annotation", author=new_user)
-    return annotation
+def new_sm_post():
+    """Fixture to create a new social media post"""
+    post = SMPost(
+        question="test post",
+        user_id="1",
+        timeline_id="1",
+        post_id=1,
+    )
+    return post
 
 
 @pytest.fixture(scope="module")
-def new_sm_post(new_sm_annotation):
-    """Fixture to create a new social media post"""
-    post = SMPost(question="test post", annotation=new_sm_annotation)
-    return post
+def new_sm_annotation(new_user, new_sm_post):
+    """Fixture to create a new social media annotation"""
+    annotation = SMAnnotation(body="test annotation", author=new_user, post=new_sm_post)
+    return annotation
 
 
 @pytest.fixture(scope="module")
