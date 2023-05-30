@@ -30,6 +30,9 @@ class User(UserMixin, db.Model):
     annotations_sm = db.relationship(
         "SMAnnotation", backref="author", lazy="dynamic"
     )  # one-to-many relationship with SMAnnotation class
+    datasets = db.relationship(
+        "Dataset", backref="author", lazy="dynamic"
+    )  # one-to-many relationship with Dataset class
 
     def __repr__(self):
         """How to print objects of this class"""
@@ -110,9 +113,11 @@ class Dataset(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), index=True, unique=True)
-    username = db.Column(db.String(64), index=True, unique=False)
     description = db.Column(db.Text)
-    timesaved = db.Column(db.DateTime, default=datetime.utcnow)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+    id_user = db.Column(
+        db.Integer, db.ForeignKey("user.id")
+    )  # id of user who created this dataset
     posts = db.relationship(
         "SMPost", backref="dataset", lazy="dynamic"
     )  # one-to-many relationship with SMPost class
