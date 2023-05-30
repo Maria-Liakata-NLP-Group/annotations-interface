@@ -1,4 +1,10 @@
 .env
 .flaskenv
 __pycache__/
+
+# database
 app.db
+
+# data files uploaded by users
+data/*
+!data/README.md
