@@ -1,7 +1,7 @@
 import pytest
 
 from app import create_app, db
-from app.models import User, SMAnnotation, SMPost, SMReply
+from app.models import User, SMAnnotation, SMPost, SMReply, Dataset
 from config import TestConfig
 
 
@@ -37,6 +37,15 @@ def new_sm_reply(new_sm_post):
     """Fixture to create a new social media reply"""
     reply = SMReply(comment="test reply", post=new_sm_post)
     return reply
+
+
+@pytest.fixture(scope="module")
+def new_dataset(new_user):
+    """Fixture to create a new dataset"""
+    dataset = Dataset(
+        name="test dataset", description="test description", author=new_user
+    )
+    return dataset
 
 
 @pytest.fixture(scope="module")
