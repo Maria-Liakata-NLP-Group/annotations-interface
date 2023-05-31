@@ -69,9 +69,9 @@ def sm_dict_to_sql(sm_data: dict, dataset: Dataset):
             db.session.commit()  # commit after each timeline
 
 
-@bp.route("/upload", methods=["GET", "POST"])
+@bp.route("/upload_sm", methods=["GET", "POST"])
 @login_required
-def upload():
+def upload_sm():
     """This is the upload route for social media datasets"""
     form = UploadForm()  # Create an instance of the UploadForm
     # This condition below is true when the request method is POST and the
@@ -80,13 +80,17 @@ def upload():
         # Check if a file is present in the request
         if "file" not in request.files:
             flash("No file part")
-            return redirect(url_for("upload.upload"))  # Redirect to the upload page
+            return redirect(
+                url_for("upload.upload_sm")
+            )  # Redirect to the upload_sm page
         file = request.files["file"]  # Get the file from the request
         # If the user does not select a file,
         # the browser submits an empty file without a filename
         if file.filename == "":
             flash("No selected file")
-            return redirect(url_for("upload.upload"))  # Redirect to the upload page
+            return redirect(
+                url_for("upload.upload_sm")
+            )  # Redirect to the upload_sm page
         if file and allowed_file(file.filename):  # If the file is valid
             # Secure the filename before saving it
             filename = secure_filename(file.filename)  # Get the filename
@@ -108,5 +112,7 @@ def upload():
                 sm_data, dataset
             )  # Convert the dictionary to SQL and add it to the database
             flash("File uploaded successfully")
-            return redirect(url_for("upload.upload"))  # Redirect to the upload page
+            return redirect(
+                url_for("upload.upload_sm")
+            )  # Redirect to the upload_sm page
     return render_template("upload/upload.html", title="Upload dataset", form=form)
