@@ -3,6 +3,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, TextAreaField, FileField
 from wtforms.validators import DataRequired, Length, ValidationError
 from app.models import Dataset
+from flask_login import current_user
 
 
 class UploadForm(FlaskForm):
@@ -21,11 +22,16 @@ class UploadForm(FlaskForm):
     def validate_name(self, name):
         """
         Validate the dataset name.
+        Check that the current user does not already have a dataset with the
+        same name.
         This is a custom validator, and for it to work, the function name must be
         in the format validate_<field_name>.
         """
-        file_name = Dataset.query.filter_by(name=name.data).first()
-        if file_name is not None:
+        dataset_name = Dataset.query.filter_by(
+            name=name.data,
+            id_user=current_user.id,
+        ).first()
+        if dataset_name is not None:
             raise ValidationError(
                 "Dataset name already exists. Please choose another name."
             )
