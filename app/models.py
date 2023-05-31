@@ -122,6 +122,9 @@ class Dataset(db.Model):
     posts = db.relationship(
         "SMPost", backref="dataset", lazy="dynamic"
     )  # one-to-many relationship with SMPost class
+    replies = db.relationship(
+        "SMReply", backref="dataset", lazy="dynamic"
+    )  # one-to-many relationship with SMReply class
 
     def __repr__(self):
         """How to print objects of this class"""

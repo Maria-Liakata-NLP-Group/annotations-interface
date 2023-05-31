@@ -1,8 +1,8 @@
 """foreign key between dataset and sm_replies
 
-Revision ID: cb8931f847d6
+Revision ID: e44d4e503657
 Revises: 8ddf55e2ad28
-Create Date: 2023-05-31 17:54:07.048553
+Create Date: 2023-05-31 18:04:57.856496
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'cb8931f847d6'
+revision = 'e44d4e503657'
 down_revision = '8ddf55e2ad28'
 branch_labels = None
 depends_on = None
