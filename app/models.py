@@ -102,6 +102,7 @@ class SMReply(db.Model):
     ldate = db.Column(db.DateTime, default=datetime.utcnow)
     comment = db.Column(db.Text)
     id_sm_post = db.Column(db.Integer, db.ForeignKey("sm_post.id"))
+    id_dataset = db.Column(db.Integer, db.ForeignKey("dataset.id"))
 
     def __repr__(self):
         """How to print objects of this class"""
