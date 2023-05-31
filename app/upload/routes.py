@@ -5,12 +5,9 @@ from app import db
 from app.upload import bp
 from app.models import SMPost, SMReply, Dataset
 from werkzeug.utils import secure_filename
-from flask import request, redirect, url_for, flash, render_template
+from flask import request, redirect, url_for, flash, render_template, current_app
 from flask_login import login_required, current_user
 from app.upload.forms import UploadForm
-
-allowed_extensions = {"pickle", "pkl"}
-upload_folder = os.path.join(os.path.dirname(__file__), "../..", "data")
 
 
 def read_pickle(file_path):
@@ -21,6 +18,7 @@ def read_pickle(file_path):
 
 def allowed_file(filename):
     """Check if the file extension is allowed"""
+    allowed_extensions = {"pickle", "pkl"}
     return "." in filename and filename.rsplit(".", 1)[1].lower() in allowed_extensions
 
 
@@ -30,9 +28,15 @@ def format_datetime(datetime_obj: datetime):
     return datetime_obj
 
 
-def dict_to_sql(sm_data: dict, dataset: Dataset = None):
+def sm_dict_to_sql(sm_data: dict, dataset: Dataset):
     """
-    Convert the dictionary to SQL and add it to the database
+    Convert the social media dictionary to SQL and add it to the database.
+
+    Args:
+        sm_data (dict): The social media dictionary, read from the pickle file
+            uploaded by the user.
+        dataset (Dataset): The dataset object, created when the user uploaded
+            the pickle file.
     """
     users = list(sm_data.keys())
     for user in users:
@@ -68,10 +72,12 @@ def dict_to_sql(sm_data: dict, dataset: Dataset = None):
 @bp.route("/upload", methods=["GET", "POST"])
 @login_required
 def upload():
-    """This is the file upload page"""
+    """This is the upload route for social media datasets"""
     form = UploadForm()  # Create an instance of the UploadForm
+    # This condition below is true when the request method is POST and the
+    # form data passes all the defined validation checks.
     if form.validate_on_submit():
-        # Check if the post request has the file part
+        # Check if a file is present in the request
         if "file" not in request.files:
             flash("No file part")
             return redirect(url_for("upload.upload"))  # Redirect to the upload page
@@ -84,8 +90,12 @@ def upload():
         if file and allowed_file(file.filename):  # If the file is valid
             # Secure the filename before saving it
             filename = secure_filename(file.filename)  # Get the filename
-            file_path = os.path.join(upload_folder, filename)  # Get the file path
+            app_config = current_app.config  # Get the app config
+            file_path = os.path.join(
+                app_config["UPLOAD_FOLDER"], filename
+            )  # Get the file path
             file.save(file_path)  # Save the file to disk
+            # Create a new dataset object
             dataset = Dataset(
                 name=form.name.data,
                 description=form.description.data,
@@ -94,9 +104,9 @@ def upload():
             db.session.add(dataset)  # Add the dataset to the database
             db.session.commit()  # Commit the changes
             sm_data = read_pickle(file_path)  # Read the pickle file
-            dict_to_sql(
+            sm_dict_to_sql(
                 sm_data, dataset
             )  # Convert the dictionary to SQL and add it to the database
             flash("File uploaded successfully")
-            return redirect(url_for("main.index"))  # Redirect to the index page
-    return render_template("upload/upload.html", title="Upload new dataset", form=form)
+            return redirect(url_for("upload.upload"))  # Redirect to the upload page
+    return render_template("upload/upload.html", title="Upload dataset", form=form)

@@ -11,6 +11,7 @@ class BaseConfig(object):
         "DATABASE_URL"
     ) or "sqlite:///" + os.path.join(basedir, "app.db")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    UPLOAD_FOLDER = os.path.join(basedir, "data")  # folder for uploaded files
 
 
 class TestConfig(BaseConfig):
