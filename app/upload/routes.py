@@ -64,6 +64,7 @@ def sm_dict_to_sql(sm_data: dict, dataset: Dataset):
                         ldate=datetime(*reply["ldate"]),
                         comment=reply["comment"],
                         post=sm_post,
+                        dataset=dataset,
                     )
                     db.session.add(sm_reply)
             db.session.commit()  # commit after each timeline
