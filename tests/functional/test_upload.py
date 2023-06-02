@@ -42,7 +42,7 @@ def test_upload_sm_valid_dataset(test_client, init_database):
     """
     GIVEN a Flask application configured for testing
     WHEN the '/upload_sm' page is requested (POST) with a valid dataset
-    THEN check the response is valid and the dataset is added to the database
+    THEN check the response is valid and the dataset is added to the database correctly
     """
     # log in to the app
     response = test_client.post(
@@ -83,6 +83,18 @@ def test_upload_sm_valid_dataset(test_client, init_database):
 
     posts = SMPost.query.filter_by(id_dataset=dataset.id).all()
     assert len(posts) == 43
-
     replies = SMReply.query.filter_by(id_dataset=dataset.id).all()
     assert len(replies) == 92
+
+    # more granular checks
+    posts = SMPost.query.filter_by(
+        user_id="746731", timeline_id="746731_1", id_dataset=dataset.id
+    ).all()
+    assert len(posts) == 10
+
+    post = SMPost.query.filter_by(
+        user_id="746731", timeline_id="746731_1", post_id=9602529, id_dataset=dataset.id
+    ).first()
+    assert (post.mood).lower() == "happy"
+    replies = SMReply.query.filter_by(id_sm_post=post.id).all()
+    assert len(replies) == 2
