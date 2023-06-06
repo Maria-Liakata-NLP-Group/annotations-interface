@@ -63,11 +63,22 @@ def test_roles(init_database):
     """
     GIVEN a Role model
     WHEN a new Role is created
-    THEN check the name field is defined correctly
+    THEN check the name field is defined correctly and the role has the correct permissions
     """
     # Role names are defined in app/models.py,
     # and are added to the database configured for testing in conftest.py
-    from app.models import Role
+    from app.models import Role, Permission
 
-    assert Role.query.filter_by(name="Administrator").first() is not None
-    assert Role.query.filter_by(name="Annotator").first() is not None
+    annotator = Role.query.filter_by(name="Annotator").first()
+    admin = Role.query.filter_by(name="Administrator").first()
+
+    assert annotator is not None
+    assert admin is not None
+    assert annotator.has_permission(Permission.READ) and annotator.has_permission(
+        Permission.WRITE
+    )
+    assert (
+        admin.has_permission(Permission.READ)
+        and admin.has_permission(Permission.WRITE)
+        and admin.has_permission(Permission.ADMIN)
+    )

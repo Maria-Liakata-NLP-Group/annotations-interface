@@ -120,6 +120,10 @@ class Role(db.Model):
             db.session.add(role)
         db.session.commit()
 
+    def __repr__(self):
+        """How to print objects of this class"""
+        return "<Role {}>".format(self.name)
+
 
 class Permission:
     """Permissions for roles"""
