@@ -3,6 +3,7 @@ from datetime import datetime
 from enum import Enum
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
+from flask import current_app
 
 
 class AnnotationType(Enum):
@@ -47,6 +48,17 @@ class User(UserMixin, db.Model):
         """Check if password is correct"""
         return check_password_hash(self.password_hash, password)
 
+    def __init__(self, **kwargs):
+        """Initialize user. If role is not provided, set it to default role."""
+        super(User, self).__init__(**kwargs)
+        if self.role is None:
+            if self.email == current_app.config["APP_ADMIN"]:
+                # if user is admin, set role to Administrator
+                self.role = Role.query.filter_by(name="Administrator").first()
+            if self.role is None:
+                # if user is not admin, set role to default role
+                self.role = Role.query.filter_by(default=True).first()
+
 
 class Role(db.Model):
     """Role class for database"""
@@ -83,6 +95,30 @@ class Role(db.Model):
 
     def has_permission(self, perm):
         return self.permissions & perm == perm
+
+    # static method to insert roles into database,
+    # instead of creating them manually
+    @staticmethod
+    def insert_roles():
+        """
+        Insert roles into database.
+        To create new role, add it to roles dictionary.
+        """
+        roles = {
+            "Annotator": [Permission.READ, Permission.WRITE],
+            "Administrator": [Permission.READ, Permission.WRITE, Permission.ADMIN],
+        }
+        default_role = "Annotator"
+        for r in roles:
+            role = Role.query.filter_by(name=r).first()
+            if role is None:
+                role = Role(name=r)
+            role.reset_permissions()
+            for perm in roles[r]:
+                role.add_permission(perm)
+            role.default = role.name == default_role
+            db.session.add(role)
+        db.session.commit()
 
 
 class Permission:

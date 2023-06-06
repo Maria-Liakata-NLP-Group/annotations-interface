@@ -1,4 +1,4 @@
-def test_new_user(new_user):
+def test_new_user(test_client, init_database, new_user):
     """
     GIVEN a User model
     WHEN a new User is created
