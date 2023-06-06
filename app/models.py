@@ -27,6 +27,7 @@ class User(UserMixin, db.Model):
     )  # index=True - for faster search
     email = db.Column(db.String(120), index=True, unique=False)
     password_hash = db.Column(db.String(128))  # hash of password
+    id_role = db.Column(db.Integer, db.ForeignKey("role.id"))  # id of user's role
     annotations_sm = db.relationship(
         "SMAnnotation", backref="author", lazy="dynamic"
     )  # one-to-many relationship with SMAnnotation class
@@ -45,6 +46,51 @@ class User(UserMixin, db.Model):
     def check_password(self, password):
         """Check if password is correct"""
         return check_password_hash(self.password_hash, password)
+
+
+class Role(db.Model):
+    """Role class for database"""
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(64), unique=True)  # name of role
+    default = db.Column(
+        db.Boolean, default=False, index=True
+    )  # default role assigned to new users
+    permissions = db.Column(db.Integer)  # permissions for this role
+    users = db.relationship(
+        "User", backref="role", lazy="dynamic"
+    )  # one-to-many relationship with User class
+
+    def __init__(self, **kwargs):
+        """
+        Initialize role.
+        If permissions are not provided, set them to 0.
+        """
+        super(Role, self).__init__(**kwargs)
+        if self.permissions is None:
+            self.permissions = 0
+
+    def add_permission(self, perm):
+        if not self.has_permission(perm):
+            self.permissions += perm
+
+    def remove_permission(self, perm):
+        if self.has_permission(perm):
+            self.permissions -= perm
+
+    def reset_permissions(self):
+        self.permissions = 0
+
+    def has_permission(self, perm):
+        return self.permissions & perm == perm
+
+
+class Permission:
+    """Permissions for roles"""
+
+    READ = 1  # read datasets
+    WRITE = 2  # annotate datasets
+    ADMIN = 4  # admin
 
 
 class SMAnnotation(db.Model):
