@@ -1,4 +1,4 @@
-def test_new_user(test_client, init_database, new_user):
+def test_new_user(init_database, new_user):
     """
     GIVEN a User model
     WHEN a new User is created
@@ -57,3 +57,17 @@ def test_new_dataset(new_dataset, new_user):
     assert new_dataset.description == "test description"
     assert new_dataset.author is new_user
     assert new_dataset.id is None  # id is set by database
+
+
+def test_roles(init_database):
+    """
+    GIVEN a Role model
+    WHEN a new Role is created
+    THEN check the name field is defined correctly
+    """
+    # Role names are defined in app/models.py,
+    # and are added to the database configured for testing in conftest.py
+    from app.models import Role
+
+    assert Role.query.filter_by(name="Administrator").first() is not None
+    assert Role.query.filter_by(name="Annotator").first() is not None

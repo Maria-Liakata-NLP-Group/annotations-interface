@@ -1,7 +1,7 @@
 import pytest
 
 from app import create_app, db
-from app.models import User, SMAnnotation, SMPost, SMReply, Dataset
+from app.models import User, SMAnnotation, SMPost, SMReply, Dataset, Role
 from config import TestConfig
 
 
@@ -65,6 +65,9 @@ def init_database(test_client):
     """Fixture to initialize the database"""
     # Create the database and the database tables
     db.create_all()
+
+    # Insert role data
+    Role.insert_roles()
 
     # Insert user data
     user1 = User(username="test1", email="test1@example.com")

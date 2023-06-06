@@ -21,3 +21,4 @@ class TestConfig(BaseConfig):
     TESTING = True
     SQLALCHEMY_DATABASE_URI = "sqlite:///:memory:"  # in-memory database
     WTF_CSRF_ENABLED = False  # disable CSRF tokens in the Forms
+    APP_ADMIN = "admin@example.com"

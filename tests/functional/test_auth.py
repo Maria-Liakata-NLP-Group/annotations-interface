@@ -107,3 +107,49 @@ def test_valid_registration(test_client, init_database):
     assert response.status_code == 200
     assert b"You have successfully registered!" in response.data
     assert b"Sign In" in response.data
+
+
+def test_correct_role_assignment(test_client, init_database):
+    """
+    GIVEN a Flask application configured for testing
+    WHEN the '/register' page is posted to (POST) with a new username
+    THEN check the user is assigned the correct role
+    """
+    # Create a new user with the role "Annotator"
+    response = test_client.post(
+        "/auth/register",
+        data={
+            "username": "test3",
+            "email": "test3@example.com",
+            "email2": "test3@example.com",
+            "password": "testpassword3",
+            "password2": "testpassword3",
+        },
+        follow_redirects=True,
+    )
+    assert response.status_code == 200
+
+    # Create a new user with the role "Administrator",
+    # identified by the email address specified in the config file
+    response = test_client.post(
+        "/auth/register",
+        data={
+            "username": "test4",
+            "email": "admin@example.com",
+            "email2": "admin@example.com",
+            "password": "testpassword3",
+            "password2": "testpassword3",
+        },
+        follow_redirects=True,
+    )
+    assert response.status_code == 200
+
+    from app.models import User, Role
+
+    role = Role.query.filter_by(name="Annotator").first()
+    user = User.query.filter_by(username="test3").first()
+    assert user.id_role == role.id
+
+    role = Role.query.filter_by(name="Administrator").first()
+    user = User.query.filter_by(username="test4").first()
+    assert user.id_role == role.id
