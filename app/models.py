@@ -59,6 +59,14 @@ class User(UserMixin, db.Model):
                 # if user is not admin, set role to default role
                 self.role = Role.query.filter_by(default=True).first()
 
+    def can(self, perm):
+        """Check if user has permission"""
+        return self.role is not None and self.role.has_permission(perm)
+
+    def is_administrator(self):
+        """Check if user is administrator"""
+        return self.can(Permission.ADMIN)
+
 
 class Role(db.Model):
     """Role class for database"""
