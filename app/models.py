@@ -32,8 +32,17 @@ class User(UserMixin, db.Model):
     annotations_sm = db.relationship(
         "SMAnnotation", backref="author", lazy="dynamic"
     )  # one-to-many relationship with SMAnnotation class
-    datasets = db.relationship(
-        "Dataset", backref="author", lazy="dynamic"
+    authored_datasets = db.relationship(
+        "Dataset",
+        backref="author",
+        lazy="dynamic",
+        foreign_keys="Dataset.id_author",
+    )  # one-to-many relationship with Dataset class
+    annotated_datasets = db.relationship(
+        "Dataset",
+        backref="annotator",
+        lazy="dynamic",
+        foreign_keys="Dataset.id_annotator",
     )  # one-to-many relationship with Dataset class
 
     def __repr__(self):
@@ -228,6 +237,9 @@ class Dataset(db.Model):
     id_author = db.Column(
         db.Integer, db.ForeignKey("user.id")
     )  # id of user who created this dataset
+    id_annotator = db.Column(
+        db.Integer, db.ForeignKey("user.id")
+    )  # id of user who will annotate this dataset
     posts = db.relationship(
         "SMPost", backref="dataset", lazy="dynamic"
     )  # one-to-many relationship with SMPost class
