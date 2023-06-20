@@ -2,7 +2,7 @@ from app import db, login
 from datetime import datetime
 from enum import Enum
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask_login import UserMixin
+from flask_login import UserMixin, AnonymousUserMixin
 from flask import current_app
 
 
@@ -66,6 +66,21 @@ class User(UserMixin, db.Model):
     def is_administrator(self):
         """Check if user is administrator"""
         return self.can(Permission.ADMIN)
+
+
+class AnonymousUser(AnonymousUserMixin):
+    """
+    Anonymous user class for flask_login. Used when user is not logged in.
+    """
+
+    def can(self, permissions):
+        return False
+
+    def is_administrator(self):
+        return False
+
+
+login.anonymous_user = AnonymousUser  # set anonymous user class
 
 
 class Role(db.Model):
