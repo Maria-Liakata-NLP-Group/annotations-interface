@@ -18,6 +18,8 @@ class UploadForm(FlaskForm):
     )
     file = FileField("File", validators=[DataRequired()])
     submit = SubmitField("Upload dataset")
+    # The annotator field is a SelectField, which is a drop-down menu.
+    # The coerce=int argument ensures that the value of the field is an integer.
     annotator = SelectField("Annotator", coerce=int)  # who is annotating the dataset
 
     def validate_name(self, name):

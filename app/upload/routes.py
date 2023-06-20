@@ -77,7 +77,9 @@ def upload_sm():
     form = UploadForm()  # Create an instance of the UploadForm
     if current_user.is_administrator():
         # the administrator can choose who annotates the dataset
-        users = User.query.all()
+        users = User.query.order_by(User.username.asc()).all()
+        # create a list of tuples with the user id and username
+        # the user id is the value of the option, and the username is the text
         form.annotator.choices = [(user.id, user.username) for user in users]
     else:
         # regular users can only annotate their own datasets
