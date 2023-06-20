@@ -32,7 +32,7 @@ class UploadForm(FlaskForm):
         """
         dataset_name = Dataset.query.filter_by(
             name=name.data,
-            id_user=current_user.id,
+            id_author=current_user.id,
         ).first()
         if dataset_name is not None:
             raise ValidationError(

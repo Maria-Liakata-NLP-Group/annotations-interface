@@ -225,7 +225,7 @@ class Dataset(db.Model):
     name = db.Column(db.String(64), index=True, unique=False)
     description = db.Column(db.Text)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
-    id_user = db.Column(
+    id_author = db.Column(
         db.Integer, db.ForeignKey("user.id")
     )  # id of user who created this dataset
     posts = db.relationship(
