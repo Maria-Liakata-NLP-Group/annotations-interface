@@ -3,7 +3,7 @@ import pickle
 from datetime import datetime, timedelta
 from app import db
 from app.upload import bp
-from app.models import SMPost, SMReply, Dataset
+from app.models import SMPost, SMReply, Dataset, User
 from werkzeug.utils import secure_filename
 from flask import request, redirect, url_for, flash, render_template, current_app
 from flask_login import login_required, current_user
@@ -75,6 +75,13 @@ def sm_dict_to_sql(sm_data: dict, dataset: Dataset):
 def upload_sm():
     """This is the upload route for social media datasets"""
     form = UploadForm()  # Create an instance of the UploadForm
+    if current_user.is_administrator():
+        # the administrator can choose who annotates the dataset
+        users = User.query.all()
+        form.annotator.choices = [(user.id, user.username) for user in users]
+    else:
+        # regular users can only annotate their own datasets
+        form.annotator.choices = [(current_user.id, current_user.username)]
     # This condition below is true when the request method is POST and the
     # form data passes all the defined validation checks.
     if form.validate_on_submit():

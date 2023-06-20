@@ -17,6 +17,14 @@
     <span style="color: red">[{{ error }}]</span>
     {% endfor %}
   </p>
+
+  <p>
+    {{ form.annotator.label }} {{ form.annotator }}<br />
+    {% for error in form.annotator.errors %}
+    <span style="color: red">[{{ error}}]</span>
+    {% endfor %}
+  </p>
+
   <p>{{ form.file() }}</p>
   <p>{{ form.submit() }}</p>
 </form>

@@ -1,6 +1,6 @@
 # Desc: Upload forms for the app
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, TextAreaField, FileField
+from wtforms import StringField, SubmitField, TextAreaField, FileField, SelectField
 from wtforms.validators import DataRequired, Length, ValidationError
 from app.models import Dataset
 from flask_login import current_user
@@ -18,6 +18,7 @@ class UploadForm(FlaskForm):
     )
     file = FileField("File", validators=[DataRequired()])
     submit = SubmitField("Upload dataset")
+    annotator = SelectField("Annotator", coerce=int)  # who is annotating the dataset
 
     def validate_name(self, name):
         """

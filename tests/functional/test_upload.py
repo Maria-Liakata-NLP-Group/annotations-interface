@@ -63,6 +63,7 @@ def test_upload_sm_valid_dataset(test_client, init_database):
             data={
                 "name": "test_dataset",
                 "description": "test description",
+                "annotator": 1,
                 "file": (handle, "timelines_example_lorem.pickle"),
             },
             follow_redirects=True,
