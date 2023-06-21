@@ -61,7 +61,7 @@ class User(UserMixin, db.Model):
         """Initialize user. If role is not provided, set it to default role."""
         super(User, self).__init__(**kwargs)
         if self.role is None:
-            if self.email == current_app.config["APP_ADMIN"]:
+            if self.email in current_app.config["APP_ADMIN"]:
                 # if user is admin, set role to Administrator
                 self.role = Role.query.filter_by(name="Administrator").first()
             if self.role is None:
