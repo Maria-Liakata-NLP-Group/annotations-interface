@@ -18,9 +18,10 @@ class BaseConfig(object):
     ) or "sqlite:///" + os.path.join(basedir, "app.db")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     UPLOAD_FOLDER = os.path.join(basedir, "data")  # folder for uploaded files
-    APP_ADMIN = get_app_admin(
-        os.environ.get("APP_ADMIN")
-    )  # admin email(s), specified in .flaskenv
+    APP_ADMIN = os.environ.get("APP_ADMIN")  # admin email(s), specified in .flaskenv
+    if APP_ADMIN:
+        # convert string to list if APP_ADMIN environment variable is set
+        APP_ADMIN = get_app_admin(APP_ADMIN)
 
 
 class TestConfig(BaseConfig):
