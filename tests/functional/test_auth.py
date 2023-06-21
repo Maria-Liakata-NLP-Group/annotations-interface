@@ -27,12 +27,12 @@ def test_valid_login_logout(test_client, init_database):
     """
     response = test_client.post(
         "/auth/login",
-        data={"username": "test1", "password": "testpassword1"},
+        data={"username": "admin1", "password": "adminpassword1"},
         follow_redirects=True,
     )  # redirects to home page
     assert response.status_code == 200
     assert b"Logout" in response.data
-    assert b"test1" in response.data
+    assert b"admin1" in response.data
     assert b"New User?" not in response.data
     assert b"Click to Register" not in response.data
     assert b"Sign In" not in response.data
@@ -45,7 +45,7 @@ def test_valid_login_logout(test_client, init_database):
     response = test_client.get("/auth/logout", follow_redirects=True)
     assert response.status_code == 200
     assert b"Sign In" in response.data
-    assert b"test1" not in response.data
+    assert b"admin1" not in response.data
 
 
 def test_invalid_login(test_client, init_database):
@@ -56,13 +56,13 @@ def test_invalid_login(test_client, init_database):
     """
     response = test_client.post(
         "auth/login",
-        data={"username": "test1", "password": "wrongpassword"},
+        data={"username": "admin1", "password": "wrongpassword"},
         follow_redirects=True,
     )
     assert response.status_code == 200
     assert b"Invalid username or password" in response.data
     assert b"Sign In" in response.data
-    assert b"test1" not in response.data
+    assert b"admin1" not in response.data
     assert b"New User?" in response.data
     assert b"Click to Register" in response.data
 
@@ -76,11 +76,11 @@ def test_valid_registration(test_client, init_database):
     response = test_client.post(
         "/auth/register",
         data={
-            "username": "test1",
-            "email": "test1@example.com",
-            "email2": "test1@example.com",
-            "password": "testpassword1",
-            "password2": "testpassword1",
+            "username": "admin1",
+            "email": "admin1@example.com",
+            "email2": "admin1@example.com",
+            "password": "adminpassword1",
+            "password2": "adminpassword1",
         },
         follow_redirects=True,
     )
@@ -96,11 +96,11 @@ def test_valid_registration(test_client, init_database):
     response = test_client.post(
         "/auth/register",
         data={
-            "username": "test3",
-            "email": "test3@example.com",
-            "email2": "test3@example.com",
-            "password": "testpassword3",
-            "password2": "testpassword3",
+            "username": "annotator2",
+            "email": "annotator2@example.com",
+            "email2": "annotator2@example.com",
+            "password": "annotatorpassword2",
+            "password2": "annotatorpassword2",
         },
         follow_redirects=True,
     )
@@ -119,37 +119,39 @@ def test_correct_role_assignment(test_client, init_database):
     response = test_client.post(
         "/auth/register",
         data={
-            "username": "test3",
-            "email": "test3@example.com",
-            "email2": "test3@example.com",
-            "password": "testpassword3",
-            "password2": "testpassword3",
+            "username": "annotator3",
+            "email": "annotator3@example.com",
+            "email2": "annotator3@example.com",
+            "password": "annotatorpassword3",
+            "password2": "annotatorpassword3",
         },
         follow_redirects=True,
     )
     assert response.status_code == 200
+    assert b"You have successfully registered!" in response.data
 
     # Create a new user with the role "Administrator",
     # identified by the email address specified in the config file
     response = test_client.post(
         "/auth/register",
         data={
-            "username": "test4",
-            "email": "admin@example.com",
-            "email2": "admin@example.com",
-            "password": "testpassword3",
-            "password2": "testpassword3",
+            "username": "admin2",
+            "email": "admin2@example.com",
+            "email2": "admin2@example.com",
+            "password": "adminpassword2",
+            "password2": "adminpassword2",
         },
         follow_redirects=True,
     )
     assert response.status_code == 200
+    assert b"You have successfully registered!" in response.data
 
     from app.models import User, Role
 
     role = Role.query.filter_by(name="Annotator").first()
-    user = User.query.filter_by(username="test3").first()
+    user = User.query.filter_by(username="annotator3").first()
     assert user.id_role == role.id
 
     role = Role.query.filter_by(name="Administrator").first()
-    user = User.query.filter_by(username="test4").first()
+    user = User.query.filter_by(username="admin2").first()
     assert user.id_role == role.id

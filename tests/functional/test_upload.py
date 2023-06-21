@@ -24,7 +24,7 @@ def test_upload_sm_valid_login(test_client, init_database):
     # log in to the app
     response = test_client.post(
         "/auth/login",
-        data={"username": "test1", "password": "testpassword1"},
+        data={"username": "admin1", "password": "adminpassword1"},
         follow_redirects=True,
     )
     assert response.status_code == 200
@@ -48,7 +48,7 @@ def test_upload_sm_valid_dataset(test_client, init_database):
     # log in to the app
     response = test_client.post(
         "/auth/login",
-        data={"username": "test1", "password": "testpassword1"},
+        data={"username": "admin1", "password": "adminpassword1"},
         follow_redirects=True,
     )
     assert response.status_code == 200
@@ -64,7 +64,7 @@ def test_upload_sm_valid_dataset(test_client, init_database):
             data={
                 "name": "test_dataset",
                 "description": "test description",
-                "annotator": User.query.filter_by(username="test1").first().id,
+                "annotator": User.query.filter_by(username="admin1").first().id,
                 "file": (handle, "timelines_example_lorem.pickle"),
             },
             follow_redirects=True,
@@ -75,7 +75,7 @@ def test_upload_sm_valid_dataset(test_client, init_database):
     # check dataset is in database, and has correct number of posts and replies
 
     dataset = Dataset.query.filter_by(name="test_dataset").first()
-    user = User.query.filter_by(username="test1").first()
+    user = User.query.filter_by(username="admin1").first()
 
     assert dataset is not None
     assert dataset.name == "test_dataset"

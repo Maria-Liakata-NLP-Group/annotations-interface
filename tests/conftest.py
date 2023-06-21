@@ -70,12 +70,12 @@ def init_database(test_client):
     Role.insert_roles()
 
     # Insert user data
-    user1 = User(username="test1", email="test1@example.com")
-    user1.set_password("testpassword1")
-    user2 = User(username="test2", email="test2@example.com")
-    user2.set_password("testpassword2")
-    db.session.add(user1)
-    db.session.add(user2)
+    admin1 = User(username="admin1", email="admin1@example.com")
+    admin1.set_password("adminpassword1")
+    annotator1 = User(username="annotator1", email="annotator1@example.com")
+    annotator1.set_password("annotatorpassword1")
+    db.session.add(admin1)
+    db.session.add(annotator1)
 
     # Commit the changes for the users
     db.session.commit()
