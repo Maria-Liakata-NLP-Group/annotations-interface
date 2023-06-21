@@ -25,14 +25,14 @@ class UploadForm(FlaskForm):
     def validate_name(self, name):
         """
         Validate the dataset name.
-        Check that the current user does not already have a dataset with the
-        same name.
+        Check that the specified annotator does not already have a dataset with
+        the same name.
         This is a custom validator, and for it to work, the function name must be
         in the format validate_<field_name>.
         """
         dataset_name = Dataset.query.filter_by(
             name=name.data,
-            id_author=current_user.id,
+            id_annotator=self.annotator.data,
         ).first()
         if dataset_name is not None:
             raise ValidationError(

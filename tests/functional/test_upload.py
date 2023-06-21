@@ -1,6 +1,7 @@
 """
 Functional tests for the upload (`upload`) blueprint.
 """
+from app.models import User, Dataset, SMPost, SMReply
 
 
 def test_upload_sm_login_required(test_client):
@@ -63,7 +64,7 @@ def test_upload_sm_valid_dataset(test_client, init_database):
             data={
                 "name": "test_dataset",
                 "description": "test description",
-                "annotator": 1,
+                "annotator": User.query.filter_by(username="test1").first().id,
                 "file": (handle, "timelines_example_lorem.pickle"),
             },
             follow_redirects=True,
@@ -72,7 +73,6 @@ def test_upload_sm_valid_dataset(test_client, init_database):
     assert b"File uploaded successfully" in response.data
 
     # check dataset is in database, and has correct number of posts and replies
-    from app.models import User, Dataset, SMPost, SMReply
 
     dataset = Dataset.query.filter_by(name="test_dataset").first()
     user = User.query.filter_by(username="test1").first()

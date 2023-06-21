@@ -114,6 +114,7 @@ def upload_sm():
                 name=form.name.data,
                 description=form.description.data,
                 author=current_user,
+                annotator=User.query.get(form.annotator.data),
             )
             db.session.add(dataset)  # Add the dataset to the database
             db.session.commit()  # Commit the changes
