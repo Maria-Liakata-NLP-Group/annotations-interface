@@ -17,3 +17,11 @@ def make_shell_context():
         "Role": Role,
         "Permission": Permission,
     }
+
+
+@app.cli.command()
+def clear_db():
+    """Clear database and insert roles"""
+    db.drop_all()
+    db.create_all()
+    Role.insert_roles()
