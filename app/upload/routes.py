@@ -1,9 +1,10 @@
 import os
 import pickle
 from datetime import datetime, timedelta
+import pandas as pd
 from app import db
 from app.upload import bp
-from app.models import SMPost, SMReply, Dataset, User
+from app.models import SMPost, SMReply, Dataset, User, Psychotherapy
 from werkzeug.utils import secure_filename
 from flask import request, redirect, url_for, flash, render_template, current_app
 from flask_login import login_required, current_user
@@ -70,20 +71,50 @@ def sm_dict_to_sql(sm_data: dict, dataset: Dataset):
             db.session.commit()  # commit after each timeline
 
 
-@bp.route("/upload_sm", methods=["GET", "POST"])
-@login_required
-def upload_sm():
-    """This is the upload route for social media datasets"""
-    form = UploadForm()  # Create an instance of the UploadForm
+def psychotherapy_df_to_sql(psychotherapy_df: pd.DataFrame, dataset: Dataset):
+    """
+    Convert the psychotherapy dataframe to SQL and add it to the database.
+
+    Args:
+        psychotherapy_df (pd.DataFrame): The psychotherapy dataframe, read from
+            the pickle file uploaded by the user.
+        dataset (Dataset): The dataset object, created when the user uploaded
+            the pickle file.
+    """
+    for index, row in psychotherapy_df.iterrows():
+        # each row is a turn of speech (event_text) by the therapist,
+        # patient or annotator (event_speaker)
+        psychotherapy = Psychotherapy(
+            event_id=index,
+            event_text=row.event_text,
+            event_speaker=row.event_speaker,
+            date=row.date,
+            dataset=dataset,
+        )
+        db.session.add(psychotherapy)
+    db.session.commit()
+
+
+def form_choices():
+    """Depending on the user role, return a list of annotators to choose from"""
     if current_user.is_administrator():
         # the administrator can choose who annotates the dataset
         users = User.query.order_by(User.username.asc()).all()
         # create a list of tuples with the user id and username
         # the user id is the value of the option, and the username is the text
-        form.annotator.choices = [(user.id, user.username) for user in users]
+        choices = [(user.id, user.username) for user in users]
     else:
         # regular users can only annotate their own datasets
-        form.annotator.choices = [(current_user.id, current_user.username)]
+        choices = [(current_user.id, current_user.username)]
+    return choices
+
+
+@bp.route("/upload_sm", methods=["GET", "POST"])
+@login_required
+def upload_sm():
+    """This is the upload route for social media datasets"""
+    form = UploadForm()  # Create an instance of the UploadForm
+    form.annotator.choices = form_choices()  # Set the choices for the annotator
     # This condition below is true when the request method is POST and the
     # form data passes all the defined validation checks.
     if form.validate_on_submit():
