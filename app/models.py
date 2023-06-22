@@ -1,5 +1,5 @@
 from app import db, login
-from datetime import datetime
+from datetime import datetime, date
 from enum import Enum
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin, AnonymousUserMixin
@@ -246,7 +246,30 @@ class Dataset(db.Model):
     replies = db.relationship(
         "SMReply", backref="dataset", lazy="dynamic"
     )  # one-to-many relationship with SMReply class
+    psychotherapy = db.relationship(
+        "Psychotherapy", backref="dataset", lazy="dynamic"
+    )  # one-to-many relationship with Psychotherapy class
 
     def __repr__(self):
         """How to print objects of this class"""
         return "<Dataset {}>".format(self.name)
+
+
+class Psychotherapy(db.Model):
+    """
+    Psychotherapy class for database.
+    Each row represents a different 'event' in the psychotherapy session,
+    i.e. a different speech turn by the therapist, client or annotator.
+    Each psychotherapy session should be a different dataset.
+    """
+
+    id = db.Column(db.Integer, primary_key=True)
+    event_id = db.Column(
+        db.Integer, index=True, unique=False
+    )  # the event id (index) in the session (should be a dataset)
+    event_text = db.Column(db.Text)
+    event_speaker = db.Column(
+        db.String(64)
+    )  # one of 'Therapist', 'Client', 'Annotator'
+    date = db.Column(db.Date, default=date.today)
+    id_dataset = db.Column(db.Integer, db.ForeignKey("dataset.id"))

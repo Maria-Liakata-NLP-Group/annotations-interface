@@ -1,5 +1,14 @@
 from app import create_app, db
-from app.models import User, SMAnnotation, SMPost, SMReply, Dataset, Role, Permission
+from app.models import (
+    User,
+    SMAnnotation,
+    SMPost,
+    SMReply,
+    Dataset,
+    Role,
+    Permission,
+    Psychotherapy,
+)
 
 app = create_app()
 
@@ -16,6 +25,7 @@ def make_shell_context():
         "Dataset": Dataset,
         "Role": Role,
         "Permission": Permission,
+        "Psychotherapy": Psychotherapy,
     }
 
 
