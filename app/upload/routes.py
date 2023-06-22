@@ -11,13 +11,13 @@ from flask_login import login_required, current_user
 from app.upload.forms import UploadForm
 
 
-def read_pickle(file_path):
+def read_pickle(file_path: str):
     """Read a pickle file"""
     with open(file_path, "rb") as handle:
         return pickle.load(handle)
 
 
-def allowed_file(filename):
+def allowed_file(filename: str):
     """Check if the file extension is allowed"""
     allowed_extensions = {"pickle", "pkl"}
     return "." in filename and filename.rsplit(".", 1)[1].lower() in allowed_extensions
@@ -109,6 +109,29 @@ def form_choices():
     return choices
 
 
+def get_file_path(filename: str):
+    """
+    Get the path of the file that will be saved to disk.
+    The path is the UPLOAD_FOLDER from the app config, joined with the filename.
+    """
+    app_config = current_app.config  # Get the app config
+    file_path = os.path.join(app_config["UPLOAD_FOLDER"], filename)
+    return file_path
+
+
+def new_dataset_to_db(form: UploadForm):
+    """Create a new dataset object and add it to the database"""
+    dataset = Dataset(
+        name=form.name.data,
+        description=form.description.data,
+        author=current_user,
+        annotator=User.query.get(form.annotator.data),
+    )
+    db.session.add(dataset)  # Add the dataset to the database
+    db.session.commit()  # Commit the changes
+    return dataset
+
+
 @bp.route("/upload_sm", methods=["GET", "POST"])
 @login_required
 def upload_sm():
@@ -135,20 +158,10 @@ def upload_sm():
         if file and allowed_file(file.filename):  # If the file is valid
             # Secure the filename before saving it
             filename = secure_filename(file.filename)  # Get the filename
-            app_config = current_app.config  # Get the app config
-            file_path = os.path.join(
-                app_config["UPLOAD_FOLDER"], filename
-            )  # Get the file path
+            file_path = get_file_path(filename)  # Get the file path
             file.save(file_path)  # Save the file to disk
-            # Create a new dataset object
-            dataset = Dataset(
-                name=form.name.data,
-                description=form.description.data,
-                author=current_user,
-                annotator=User.query.get(form.annotator.data),
-            )
-            db.session.add(dataset)  # Add the dataset to the database
-            db.session.commit()  # Commit the changes
+            # Create a new dataset object and add it to the database
+            dataset = new_dataset_to_db(form)
             sm_data = read_pickle(file_path)  # Read the pickle file
             sm_dict_to_sql(
                 sm_data, dataset

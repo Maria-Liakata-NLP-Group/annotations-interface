@@ -89,6 +89,7 @@ def test_upload_sm_valid_dataset(test_client, init_database):
     assert dataset.name == "test_dataset"
     assert dataset.description == "test description"
     assert dataset.id_author == user.id
+    assert dataset.id_annotator == user.id
 
     posts = SMPost.query.filter_by(id_dataset=dataset.id).all()
     assert len(posts) == 43
