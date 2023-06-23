@@ -1,7 +1,8 @@
 import pytest
+from datetime import date
 
 from app import create_app, db
-from app.models import User, SMAnnotation, SMPost, SMReply, Dataset, Role
+from app.models import User, SMAnnotation, SMPost, SMReply, Dataset, Role, Psychotherapy
 from config import TestConfig
 
 
@@ -84,3 +85,17 @@ def init_database(test_client):
 
     # Drop all the tables from the database
     db.drop_all()
+
+
+@pytest.fixture(scope="module")
+def new_psychotherapy_event():
+    """Fixture to create a new psychotherapy session turn of speech"""
+    psychotherapy = Psychotherapy(
+        event_id=0,
+        event_text="test event",
+        event_speaker="test speaker",
+        date=date.today(),
+        t_init="ab",
+        c_code="bc1234",
+    )
+    return psychotherapy

@@ -1,3 +1,6 @@
+from datetime import date
+
+
 def test_new_user(init_database, new_user):
     """
     GIVEN a User model
@@ -34,6 +37,7 @@ def test_new_sm_post(new_sm_post):
     assert new_sm_post.user_id == "1"
     assert new_sm_post.timeline_id == "1"
     assert new_sm_post.post_id == 1
+    assert new_sm_post.id_dataset is None  # id_dataset is set by database
 
 
 def test_new_sm_reply(new_sm_reply, new_sm_post):
@@ -56,7 +60,8 @@ def test_new_dataset(new_dataset, new_user):
     assert new_dataset.name == "test dataset"
     assert new_dataset.description == "test description"
     assert new_dataset.author is new_user
-    assert new_dataset.id is None  # id is set by database
+    assert new_dataset.id_author is None  # id_author is set by database
+    assert new_dataset.id_annotator is None  # id_annotator is set by database
 
 
 def test_roles(init_database):
@@ -82,3 +87,18 @@ def test_roles(init_database):
         and admin.has_permission(Permission.WRITE)
         and admin.has_permission(Permission.ADMIN)
     )
+
+
+def test_new_psychotherapy_event(new_psychotherapy_event):
+    """
+    GIVEN a Psychotherapy model
+    WHEN a new Psychotherapy is created
+    THEN check the event_id, event_text, event_speaker, date, t_init, and c_code fields are defined correctly
+    """
+    assert new_psychotherapy_event.event_id == 0
+    assert new_psychotherapy_event.event_text == "test event"
+    assert new_psychotherapy_event.event_speaker == "test speaker"
+    assert new_psychotherapy_event.date == date.today()
+    assert new_psychotherapy_event.t_init == "ab"
+    assert new_psychotherapy_event.c_code == "bc1234"
+    assert new_psychotherapy_event.id_dataset is None  # id_dataset is set by database
