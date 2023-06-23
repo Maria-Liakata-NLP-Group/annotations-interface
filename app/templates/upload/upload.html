@@ -1,5 +1,8 @@
-{% extends "base.html" %} {% block content %}
+{% extends "base.html" %} {% block content %} {% if heading %}
+<h1>{{ heading }}</h1>
+{% else %}
 <h1>Upload new dataset</h1>
+{% endif %}
 <!-- novalidate is a flag that tells the browser not to perform its own validation -->
 <form action="" method="post" enctype="multipart/form-data" novalidate>
   {{ form.hidden_tag() }}

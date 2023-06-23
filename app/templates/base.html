@@ -12,6 +12,9 @@
       Annotations Interface:
       <a href="{{ url_for('main.index') }}">Home</a>
       <a href="{{ url_for('upload.upload_sm') }}">Upload SM Dataset</a>
+      <a href="{{ url_for('upload.upload_psychotherapy') }}"
+        >Upload Psychotherapy Dataset</a
+      >
       <!-- the user is only anonymous when the user is not logged in -->
       {% if current_user.is_anonymous %}
       <a href="{{ url_for('auth.login') }}">Login</a>

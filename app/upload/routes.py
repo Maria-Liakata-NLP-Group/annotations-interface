@@ -86,7 +86,7 @@ def psychotherapy_df_to_sql(psychotherapy_df: pd.DataFrame, dataset: Dataset):
         # patient or annotator (event_speaker)
         psychotherapy = Psychotherapy(
             event_id=index,
-            event_text=row.event_text,
+            event_text=row.event_plaintext,
             event_speaker=row.event_speaker,
             date=row.date,
             dataset=dataset,
@@ -170,4 +170,55 @@ def upload_sm():
             return redirect(
                 url_for("upload.upload_sm")
             )  # Redirect to the upload_sm page
-    return render_template("upload/upload.html", title="Upload dataset", form=form)
+    return render_template(
+        "upload/upload.html",
+        title="Upload dataset",
+        heading="Upload new social media dataset",
+        form=form,
+    )
+
+
+@bp.route("/upload_psychotherapy", methods=["GET", "POST"])
+@login_required
+def upload_psychotherapy():
+    """This is the upload route for psychotherapy session datasets"""
+    form = UploadForm()  # Create an instance of the UploadForm
+    form.annotator.choices = form_choices()  # Set the choices for the annotator
+    # This condition below is true when the request method is POST and the
+    # form data passes all the defined validation checks.
+    if form.validate_on_submit():
+        # Check if a file is present in the request
+        if "file" not in request.files:
+            flash("No file part")
+            return redirect(
+                url_for("upload.upload_psychotherapy")
+            )  # Redirect to the upload_psychotherapy page
+        file = request.files["file"]  # Get the file from the request
+        # If the user does not select a file,
+        # the browser submits an empty file without a filename
+        if file.filename == "":
+            flash("No selected file")
+            return redirect(
+                url_for("upload.upload_psychotherapy")
+            )  # Redirect to the upload_psychotherapy page
+        if file and allowed_file(file.filename):  # If the file is valid
+            # Secure the filename before saving it
+            filename = secure_filename(file.filename)  # Get the filename
+            file_path = get_file_path(filename)  # Get the file path
+            file.save(file_path)  # Save the file to disk
+            # Create a new dataset object and add it to the database
+            dataset = new_dataset_to_db(form)
+            psychotherapy_data = read_pickle(file_path)  # Read the pickle file
+            psychotherapy_df_to_sql(
+                psychotherapy_data, dataset
+            )  # Convert the dataframe to SQL and add it to the database
+            flash("File uploaded successfully")
+            return redirect(
+                url_for("upload.upload_psychotherapy")
+            )  # Redirect to the upload_sm page
+    return render_template(
+        "upload/upload.html",
+        title="Upload dataset",
+        heading="Upload new psychotherapy session dataset",
+        form=form,
+    )

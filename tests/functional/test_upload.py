@@ -33,7 +33,7 @@ def test_upload_sm_valid_login(test_client, init_database):
     # check upload page
     response = test_client.get("/upload/upload_sm")
     assert response.status_code == 200
-    assert b"Upload new dataset" in response.data
+    assert b"Upload new social media dataset" in response.data
     assert b"Dataset name" in response.data
     assert b"description" in response.data
     assert b'type="submit"' in response.data  # check submit button
