@@ -272,4 +272,6 @@ class Psychotherapy(db.Model):
         db.String(64)
     )  # one of 'Therapist', 'Client', 'Annotator'
     date = db.Column(db.Date, default=date.today)
+    t_init = db.Column(db.String(64), index=True, unique=False)  # therapist ID
+    c_code = db.Column(db.String(64), index=True, unique=False)  # patient ID
     id_dataset = db.Column(db.Integer, db.ForeignKey("dataset.id"))
