@@ -13,6 +13,13 @@ class AnnotationType(Enum):
     switch = "Switch"
 
 
+class DatasetType(Enum):
+    """Enum for dataset types"""
+
+    sm_thread = "Social Media Thread"
+    psychotherapy = "Psychotherapy Session"
+
+
 @login.user_loader
 def load_user(id):
     """Load user from database. Used by flask_login."""
@@ -234,6 +241,7 @@ class Dataset(db.Model):
     name = db.Column(db.String(64), index=True, unique=False)
     description = db.Column(db.Text)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+    type = db.Column(db.Enum(DatasetType), nullable=True)  # type of dataset
     id_author = db.Column(
         db.Integer, db.ForeignKey("user.id")
     )  # id of user who created this dataset
