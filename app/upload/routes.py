@@ -1,6 +1,6 @@
 import os
 import pickle
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 import pandas as pd
 from app import db
 from app.upload import bp
@@ -27,6 +27,15 @@ def format_datetime(datetime_obj: datetime):
     """Format datetime object to remove microseconds"""
     datetime_obj = datetime_obj - timedelta(microseconds=datetime_obj.microsecond)
     return datetime_obj
+
+
+def format_date(date_str: str):
+    """Parse the date string and return a date object"""
+    try:
+        date_obj = datetime.strptime(date_str, "%m/%d/%Y").date()
+    except ValueError:
+        date_obj = datetime.strptime(date_str, "%m-%d-%Y").date()
+    return date_obj
 
 
 def sm_dict_to_sql(sm_data: dict, dataset: Dataset):
@@ -88,7 +97,9 @@ def psychotherapy_df_to_sql(psychotherapy_df: pd.DataFrame, dataset: Dataset):
             event_id=index,
             event_text=row.event_plaintext,
             event_speaker=row.event_speaker,
-            date=row.date,
+            date=format_date(row.date),
+            t_init=row.t_init,
+            c_code=row.c_code,
             dataset=dataset,
         )
         db.session.add(psychotherapy)
