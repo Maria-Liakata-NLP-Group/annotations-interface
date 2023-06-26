@@ -26,6 +26,13 @@ def load_user(id):
     return User.query.get(int(id))
 
 
+dataset_annotator = db.Table(
+    "dataset_annotator",
+    db.Column("id_dataset", db.Integer, db.ForeignKey("dataset.id")),
+    db.Column("id_annotator", db.Integer, db.ForeignKey("user.id")),
+)
+
+
 class User(UserMixin, db.Model):
     """User class for database"""
 
@@ -44,12 +51,6 @@ class User(UserMixin, db.Model):
         backref="author",
         lazy="dynamic",
         foreign_keys="Dataset.id_author",
-    )  # one-to-many relationship with Dataset class
-    annotated_datasets = db.relationship(
-        "Dataset",
-        backref="annotator",
-        lazy="dynamic",
-        foreign_keys="Dataset.id_annotator",
     )  # one-to-many relationship with Dataset class
 
     def __repr__(self):
@@ -245,9 +246,12 @@ class Dataset(db.Model):
     id_author = db.Column(
         db.Integer, db.ForeignKey("user.id")
     )  # id of user who created this dataset
-    id_annotator = db.Column(
-        db.Integer, db.ForeignKey("user.id")
-    )  # id of user who will annotate this dataset
+    annotators = db.relationship(
+        "User",
+        secondary=dataset_annotator,
+        backref=db.backref("datasets", lazy="dynamic"),
+        lazy="dynamic",
+    )  # many-to-many relationship with User class
     posts = db.relationship(
         "SMPost", backref="dataset", lazy="dynamic"
     )  # one-to-many relationship with SMPost class
