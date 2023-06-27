@@ -49,7 +49,7 @@ def test_upload_psychotherapy_valid_login(test_client, init_database):
 def test_upload_psychotherapy_valid_dataset(test_client, init_database):
     """
     GIVEN a Flask application configured for testing
-    WHEN the '/upload_psychotherapy' page is requested (POST) with a valid dataset
+    WHEN the '/upload_psychotherapy' page is requested (POST) with a valid dataset (with two annotators)
     THEN check the response is valid and the dataset is added to the database correctly
     """
     # log in to the app
@@ -71,7 +71,10 @@ def test_upload_psychotherapy_valid_dataset(test_client, init_database):
             data={
                 "name": "test_dataset",
                 "description": "test description",
-                "annotators": User.query.filter_by(username="admin1").first().id,
+                "annotators": [
+                    User.query.filter_by(username="admin1").first().id,
+                    User.query.filter_by(username="annotator1").first().id,
+                ],
                 "file": (handle, "psychotherapy_example_lorem.pickle"),
             },
             follow_redirects=True,
@@ -85,13 +88,14 @@ def test_upload_psychotherapy_valid_dataset(test_client, init_database):
 
     # check dataset is in database, and has correct number of posts and replies
     dataset = Dataset.query.filter_by(name="test_dataset").first()
-    user = User.query.filter_by(username="admin1").first()
+    admin1 = User.query.filter_by(username="admin1").first()
+    annotator1 = User.query.filter_by(username="annotator1").first()
 
     assert dataset is not None
     assert dataset.name == "test_dataset"
     assert dataset.description == "test description"
-    assert dataset.id_author == user.id
-    assert dataset.annotators.all()[0].id == user.id
+    assert dataset.id_author == admin1.id
+    assert dataset.annotators.all() == [admin1, annotator1]
     assert dataset.type.value == "Psychotherapy Session"
 
     psychotherapy = Psychotherapy.query.filter_by(id_dataset=dataset.id).all()
