@@ -91,7 +91,7 @@ def test_upload_psychotherapy_valid_dataset(test_client, init_database):
     admin1 = User.query.filter_by(username="admin1").first()
     annotator1 = User.query.filter_by(username="annotator1").first()
 
-    assert dataset is not None
+    assert dataset
     assert dataset.name == "test_dataset"
     assert dataset.description == "test description"
     assert dataset.id_author == admin1.id
@@ -107,6 +107,49 @@ def test_upload_psychotherapy_valid_dataset(test_client, init_database):
     psychotherapy[100].event_text == "Amet consectetur quiquia dolor sit."
     psychotherapy[100].event_speaker == "Client"
     psychotherapy[100].date == datetime.strptime("6/18/2015", "%m/%d/%Y").date()
+
+
+def test_upload_psychotherapy_invalid_dataset(test_client, init_database):
+    """
+    GIVEN a Flask application configured for testing
+    WHEN the '/upload_psychotherapy' page is requested (POST) with an invalid dataset
+    THEN check a HTTP 400 error is raised with a helpful error message, and
+    the dataset is not added to the database
+    """
+    # log in to the app
+    response = test_client.post(
+        "/auth/login",
+        data={"username": "admin1", "password": "adminpassword1"},
+        follow_redirects=True,
+    )
+    assert response.status_code == 200
+
+    # check upload page
+    response = test_client.get("/upload/upload_psychotherapy")
+    assert response.status_code == 200
+
+    # upload an invalid dataset
+    with open("tests/data/timelines_example_lorem.pickle", "rb") as handle:
+        response = test_client.post(
+            "/upload/upload_psychotherapy",
+            data={
+                "name": "invalid_dataset",
+                "description": "test description",
+                "annotators": User.query.filter_by(username="admin1").first().id,
+                "file": (handle, "timelines_example_lorem.pickle"),
+            },
+            follow_redirects=True,
+        )
+    assert response.status_code == 400
+    assert b"dataset provided could not be added to the database" in response.data
+
+    # check the dataset is not in the database
+    dataset = Dataset.query.filter_by(name="invalid_dataset").first()
+    assert dataset is None
+
+    # log out
+    response = test_client.get("/auth/logout", follow_redirects=True)
+    assert response.status_code == 200
 
 
 def test_upload_based_on_role(test_client, init_database):
