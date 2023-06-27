@@ -136,9 +136,11 @@ def new_dataset_to_db(form: UploadForm, dataset_type: DatasetType):
         name=form.name.data,
         description=form.description.data,
         author=current_user,
-        annotator=User.query.get(form.annotator.data),
         type=dataset_type,
     )
+    for annotator_id in form.annotators.data:
+        annotator = User.query.get(annotator_id)
+        dataset.annotators.append(annotator)
     db.session.add(dataset)  # Add the dataset to the database
     db.session.commit()  # Commit the changes
     return dataset
@@ -149,7 +151,7 @@ def new_dataset_to_db(form: UploadForm, dataset_type: DatasetType):
 def upload_sm():
     """This is the upload route for social media datasets"""
     form = UploadForm()  # Create an instance of the UploadForm
-    form.annotator.choices = form_choices()  # Set the choices for the annotator
+    form.annotators.choices = form_choices()  # Set the choices for the annotators
     # This condition below is true when the request method is POST and the
     # form data passes all the defined validation checks.
     if form.validate_on_submit():
@@ -196,7 +198,7 @@ def upload_sm():
 def upload_psychotherapy():
     """This is the upload route for psychotherapy session datasets"""
     form = UploadForm()  # Create an instance of the UploadForm
-    form.annotator.choices = form_choices()  # Set the choices for the annotator
+    form.annotators.choices = form_choices()  # Set the choices for the annotators
     # This condition below is true when the request method is POST and the
     # form data passes all the defined validation checks.
     if form.validate_on_submit():

@@ -1,6 +1,12 @@
 # Desc: Upload forms for the app
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, TextAreaField, FileField, SelectField
+from wtforms import (
+    StringField,
+    SubmitField,
+    TextAreaField,
+    FileField,
+    SelectMultipleField,
+)
 from wtforms.validators import DataRequired, Length, ValidationError
 from app.models import Dataset
 from flask_login import current_user
@@ -20,21 +26,19 @@ class UploadForm(FlaskForm):
     submit = SubmitField("Upload dataset")
     # The annotator field is a SelectField, which is a drop-down menu.
     # The coerce=int argument ensures that the value of the field is an integer.
-    annotator = SelectField("Annotator", coerce=int)  # who is annotating the dataset
+    annotators = SelectMultipleField(
+        "Annotators", coerce=int, validators=[DataRequired()]
+    )  # who will be annotating the dataset
 
     def validate_name(self, name):
         """
-        Validate the dataset name.
-        Check that the specified annotator does not already have a dataset with
-        the same name.
-        This is a custom validator, and for it to work, the function name must be
-        in the format validate_<field_name>.
+        Ensure that the dataset name is unique,
+        and does not already exist in the database.
+        This is a custom validator, and for it to work, it must
+        be named "validate_<field_name>".
         """
-        dataset_name = Dataset.query.filter_by(
-            name=name.data,
-            id_annotator=self.annotator.data,
-        ).first()
-        if dataset_name is not None:
+        dataset = Dataset.query.filter_by(name=name.data).first()
+        if dataset:
             raise ValidationError(
                 "Dataset name already exists. Please choose another name."
             )
