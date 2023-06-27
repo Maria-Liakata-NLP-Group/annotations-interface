@@ -3,6 +3,13 @@ from app import db
 from flask import render_template
 
 
+@bp.app_errorhandler(400)
+def bad_request_error(error):
+    """400 error handler"""
+    db.session.rollback()
+    return render_template("errors/400.html"), 400
+
+
 @bp.app_errorhandler(404)
 def not_found_error(error):
     """404 error handler"""

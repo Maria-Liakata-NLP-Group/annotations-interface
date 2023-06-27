@@ -6,7 +6,7 @@ from app import db
 from app.upload import bp
 from app.models import SMPost, SMReply, Dataset, User, Psychotherapy, DatasetType
 from werkzeug.utils import secure_filename
-from flask import request, redirect, url_for, flash, render_template, current_app
+from flask import request, redirect, url_for, flash, render_template, current_app, abort
 from flask_login import login_required, current_user
 from app.upload.forms import UploadForm
 
@@ -48,35 +48,38 @@ def sm_dict_to_sql(sm_data: dict, dataset: Dataset):
         dataset (Dataset): The dataset object, created when the user uploaded
             the pickle file.
     """
-    users = list(sm_data.keys())
-    for user in users:
-        timelines = list(sm_data[user].keys())
-        for timeline in timelines:
-            posts = sm_data[user][timeline]
-            for post in posts:
-                sm_post = SMPost(
-                    user_id=user,
-                    timeline_id=timeline,
-                    post_id=post["post_id"],
-                    mood=post["mood"],
-                    date=format_datetime(post["date"]),
-                    ldate=datetime(*post["ldate"]),
-                    question=post["question"],
-                    dataset=dataset,
-                )
-                db.session.add(sm_post)
-                replies = post["replies"]
-                for reply in replies:
-                    sm_reply = SMReply(
-                        reply_id=reply["id"],
-                        user_id=reply["user"],
-                        date=format_datetime(reply["date"]),
-                        ldate=datetime(*reply["ldate"]),
-                        comment=reply["comment"],
-                        post=sm_post,
+    try:
+        users = list(sm_data.keys())
+        for user in users:
+            timelines = list(sm_data[user].keys())
+            for timeline in timelines:
+                posts = sm_data[user][timeline]
+                for post in posts:
+                    sm_post = SMPost(
+                        user_id=user,
+                        timeline_id=timeline,
+                        post_id=post["post_id"],
+                        mood=post["mood"],
+                        date=format_datetime(post["date"]),
+                        ldate=datetime(*post["ldate"]),
+                        question=post["question"],
                         dataset=dataset,
                     )
-                    db.session.add(sm_reply)
+                    db.session.add(sm_post)
+                    replies = post["replies"]
+                    for reply in replies:
+                        sm_reply = SMReply(
+                            reply_id=reply["id"],
+                            user_id=reply["user"],
+                            date=format_datetime(reply["date"]),
+                            ldate=datetime(*reply["ldate"]),
+                            comment=reply["comment"],
+                            post=sm_post,
+                            dataset=dataset,
+                        )
+                        db.session.add(sm_reply)
+    except:
+        abort(400)  # raise a HTTP 400 Bad Request error
 
 
 def psychotherapy_df_to_sql(psychotherapy_df: pd.DataFrame, dataset: Dataset):
@@ -89,19 +92,22 @@ def psychotherapy_df_to_sql(psychotherapy_df: pd.DataFrame, dataset: Dataset):
         dataset (Dataset): The dataset object, created when the user uploaded
             the pickle file.
     """
-    for index, row in psychotherapy_df.iterrows():
-        # each row is a turn of speech (event_text) by the therapist,
-        # patient or annotator (event_speaker)
-        psychotherapy = Psychotherapy(
-            event_id=index,
-            event_text=row.event_plaintext,
-            event_speaker=row.event_speaker,
-            date=format_date(row.date),
-            t_init=row.t_init,
-            c_code=row.c_code,
-            dataset=dataset,
-        )
-        db.session.add(psychotherapy)
+    try:
+        for index, row in psychotherapy_df.iterrows():
+            # each row is a turn of speech (event_text) by the therapist,
+            # patient or annotator (event_speaker)
+            psychotherapy = Psychotherapy(
+                event_id=index,
+                event_text=row.event_plaintext,
+                event_speaker=row.event_speaker,
+                date=format_date(row.date),
+                t_init=row.t_init,
+                c_code=row.c_code,
+                dataset=dataset,
+            )
+            db.session.add(psychotherapy)
+    except:
+        abort(400)  # raise a HTTP 400 Bad Request error
 
 
 def form_choices():
