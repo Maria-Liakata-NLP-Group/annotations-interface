@@ -15,6 +15,14 @@ def new_user():
 
 
 @pytest.fixture(scope="module")
+def another_user():
+    """Fixture to create another user"""
+    user = User(username="test2", email="test2@example.com")
+    user.set_password("test2password")
+    return user
+
+
+@pytest.fixture(scope="module")
 def new_sm_post():
     """Fixture to create a new social media post"""
     post = SMPost(
@@ -41,11 +49,15 @@ def new_sm_reply(new_sm_post):
 
 
 @pytest.fixture(scope="module")
-def new_dataset(new_user):
-    """Fixture to create a new dataset"""
+def new_dataset(new_user, another_user):
+    """Fixture to create a new dataset, with two annotators"""
     dataset = Dataset(
-        name="test dataset", description="test description", author=new_user
+        name="test dataset",
+        description="test description",
+        author=new_user,
     )
+    dataset.annotators.append(new_user)
+    dataset.annotators.append(another_user)
     return dataset
 
 

@@ -51,17 +51,18 @@ def test_new_sm_reply(new_sm_reply, new_sm_post):
     assert new_sm_reply.id_sm_post is None  # id_sm_post is set by database
 
 
-def test_new_dataset(new_dataset, new_user):
+def test_new_dataset(new_dataset, new_user, another_user):
     """
     GIVEN a Dataset model
     WHEN a new Dataset is created
-    THEN check the name, description, author, and id fields are defined correctly
+    THEN check the name, description, author, annotators, and id_author fields are defined correctly
     """
     assert new_dataset.name == "test dataset"
     assert new_dataset.description == "test description"
     assert new_dataset.author is new_user
     assert new_dataset.id_author is None  # id_author is set by database
-    assert not new_dataset.annotators.all()  # annotators is empty, set by database
+    assert new_dataset.annotators[0] is new_user
+    assert new_dataset.annotators[1] is another_user
 
 
 def test_roles(init_database):
