@@ -77,7 +77,6 @@ def sm_dict_to_sql(sm_data: dict, dataset: Dataset):
                         dataset=dataset,
                     )
                     db.session.add(sm_reply)
-            db.session.commit()  # commit after each timeline
 
 
 def psychotherapy_df_to_sql(psychotherapy_df: pd.DataFrame, dataset: Dataset):
@@ -103,7 +102,6 @@ def psychotherapy_df_to_sql(psychotherapy_df: pd.DataFrame, dataset: Dataset):
             dataset=dataset,
         )
         db.session.add(psychotherapy)
-    db.session.commit()
 
 
 def form_choices():
@@ -142,7 +140,6 @@ def new_dataset_to_db(form: UploadForm, dataset_type: DatasetType):
         annotator = User.query.get(annotator_id)
         dataset.annotators.append(annotator)
     db.session.add(dataset)  # Add the dataset to the database
-    db.session.commit()  # Commit the changes
     return dataset
 
 
@@ -181,6 +178,7 @@ def upload_sm():
             sm_dict_to_sql(
                 sm_data, dataset
             )  # Convert the dictionary to SQL and add it to the database
+            db.session.commit()  # Commit the changes to the database
             flash("File uploaded successfully")
             return redirect(
                 url_for("upload.upload_sm")
@@ -228,6 +226,7 @@ def upload_psychotherapy():
             psychotherapy_df_to_sql(
                 psychotherapy_data, dataset
             )  # Convert the dataframe to SQL and add it to the database
+            db.session.commit()  # Commit the changes to the database
             flash("File uploaded successfully")
             return redirect(
                 url_for("upload.upload_psychotherapy")
