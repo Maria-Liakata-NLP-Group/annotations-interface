@@ -70,7 +70,7 @@ def test_upload_sm_valid_dataset(test_client, init_database):
             data={
                 "name": "test_dataset",
                 "description": "test description",
-                "annotator": User.query.filter_by(username="admin1").first().id,
+                "annotators": User.query.filter_by(username="admin1").first().id,
                 "file": (handle, "timelines_example_lorem.pickle"),
             },
             follow_redirects=True,
@@ -90,7 +90,7 @@ def test_upload_sm_valid_dataset(test_client, init_database):
     assert dataset.name == "test_dataset"
     assert dataset.description == "test description"
     assert dataset.id_author == user.id
-    assert dataset.id_annotator == user.id
+    assert dataset.annotators.all()[0].id == user.id
     assert dataset.type.value == "Social Media Thread"
 
     posts = SMPost.query.filter_by(id_dataset=dataset.id).all()
@@ -132,7 +132,7 @@ def test_upload_based_on_role(test_client, init_database):
 
     soup = BeautifulSoup(response.data, "html.parser")  # parse HTML
     select_element = soup.find(
-        "select", id="annotator"
+        "select", id="annotators"
     )  # find the 'Annotator' SelectField
     expected_options = [
         "annotator1"
@@ -158,7 +158,7 @@ def test_upload_based_on_role(test_client, init_database):
 
     soup = BeautifulSoup(response.data, "html.parser")  # parse HTML
     select_element = soup.find(
-        "select", id="annotator"
+        "select", id="annotators"
     )  # find the 'Annotator' SelectField
     expected_options = [
         "annotator1",

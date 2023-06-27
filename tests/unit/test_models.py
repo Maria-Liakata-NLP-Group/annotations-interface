@@ -61,7 +61,7 @@ def test_new_dataset(new_dataset, new_user):
     assert new_dataset.description == "test description"
     assert new_dataset.author is new_user
     assert new_dataset.id_author is None  # id_author is set by database
-    assert new_dataset.id_annotator is None  # id_annotator is set by database
+    assert not new_dataset.annotators.all()  # annotators is empty, set by database
 
 
 def test_roles(init_database):
