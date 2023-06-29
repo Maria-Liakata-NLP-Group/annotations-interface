@@ -2,7 +2,16 @@ import pytest
 from datetime import date
 
 from app import create_app, db
-from app.models import User, SMAnnotation, SMPost, SMReply, Dataset, Role, Psychotherapy
+from app.models import (
+    User,
+    SMAnnotation,
+    SMPost,
+    SMReply,
+    Dataset,
+    Role,
+    Psychotherapy,
+    DatasetType,
+)
 from config import TestConfig
 
 
@@ -73,6 +82,16 @@ def test_client():
             yield testing_client  # this is where the testing happens!
 
 
+def create_users_for_db():
+    """Helper function to create users for the database"""
+    admin1 = User(username="admin1", email="admin1@example.com")
+    admin1.set_password("adminpassword1")
+    annotator1 = User(username="annotator1", email="annotator1@example.com")
+    annotator1.set_password("annotatorpassword1")
+    db.session.add(admin1)
+    db.session.add(annotator1)
+
+
 @pytest.fixture(scope="module")
 def init_database(test_client):
     """Fixture to initialize the database"""
@@ -83,14 +102,51 @@ def init_database(test_client):
     Role.insert_roles()
 
     # Insert user data
-    admin1 = User(username="admin1", email="admin1@example.com")
-    admin1.set_password("adminpassword1")
-    annotator1 = User(username="annotator1", email="annotator1@example.com")
-    annotator1.set_password("annotatorpassword1")
-    db.session.add(admin1)
-    db.session.add(annotator1)
+    create_users_for_db()
 
     # Commit the changes for the users
+    db.session.commit()
+
+    yield  # this is where the testing happens!
+
+    # Drop all the tables from the database
+    db.drop_all()
+
+
+@pytest.fixture(scope="module")
+def init_database_with_datasets(test_client):
+    """Fixture to initialize the database with datasets"""
+    # Create the database and the database tables
+    db.create_all()
+
+    # Insert role data
+    Role.insert_roles()
+
+    # Insert user data
+    create_users_for_db()
+
+    # Create a dataset authored by admin1, with two annotators
+    dataset = Dataset(
+        name="Social Media Dataset Test",
+        description="test description for SM dataset",
+        author=User.query.filter_by(username="admin1").first(),
+        type=DatasetType.sm_thread,
+    )
+    dataset.annotators.append(User.query.filter_by(username="admin1").first())
+    dataset.annotators.append(User.query.filter_by(username="annotator1").first())
+    db.session.add(dataset)
+
+    # Create another dataset authored by annotator1, with only one annotator
+    dataset = Dataset(
+        name="Psychotherapy Dataset Test",
+        description="test description for psychotherapy dataset",
+        author=User.query.filter_by(username="annotator1").first(),
+        type=DatasetType.psychotherapy,
+    )
+    dataset.annotators.append(User.query.filter_by(username="annotator1").first())
+    db.session.add(dataset)
+
+    # Commit the changes to the database
     db.session.commit()
 
     yield  # this is where the testing happens!
