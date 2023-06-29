@@ -1,3 +1,14 @@
 {% extends "base.html" %} {% block content %}
 <h1>Hi, {{ current_user.username }}</h1>
+<ol>
+  {% for dataset in datasets %}
+  <li>
+    <h2>{{ dataset.name }}</h2>
+    <p>Type: {{ dataset.type.value }}</p>
+    <p>Description: {{ dataset.description }}</p>
+    <p>Created: {{ dataset.timestamp.strftime("%d-%B-%Y %H:%M:%S") }}</p>
+    <p>Author: {{ dataset.author.username }}</p>
+  </li>
+  {% endfor %}
+</ol>
 {% endblock %}
