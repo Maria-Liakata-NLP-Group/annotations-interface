@@ -34,8 +34,9 @@ def test_home_page_logged_in(test_client, init_database_with_datasets):
     assert b"Hi, admin1" not in response.data
     assert b"Social Media Dataset Test" in response.data
     assert b"Psychotherapy Dataset Test" in response.data
-    assert b"Description: test description for SM dataset" in response.data
-    assert b"Description: test description for psychotherapy dataset" in response.data
+    assert b"test description for SM dataset" in response.data
+    assert b"test description for psychotherapy dataset" in response.data
+    assert b"Description" in response.data
     assert b"Type" in response.data
     assert b"Author" in response.data
     assert b"Created" in response.data
@@ -60,9 +61,7 @@ def test_home_page_logged_in(test_client, init_database_with_datasets):
     assert (
         b"Psychotherapy Dataset Test" not in response.data
     )  # admin1 is not an annotator for this dataset
-    assert (
-        b"Description: test description for psychotherapy dataset" not in response.data
-    )
+    assert b"test description for psychotherapy dataset" not in response.data
     # Log out
     response = test_client.get("/auth/logout", follow_redirects=True)
     assert response.status_code == 200
