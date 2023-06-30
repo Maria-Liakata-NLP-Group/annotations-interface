@@ -4,6 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager
 from sqlalchemy import MetaData
+from flask_bootstrap import Bootstrap
 
 # custom metadata naming convention
 # this is required for dealing with alembic migrations
@@ -22,6 +23,7 @@ db = SQLAlchemy(metadata=metadata)  # database instance
 migrate = Migrate()  # migration engine instance
 login = LoginManager()  # login manager instance
 login.login_view = "auth.login"  # login view function (endpoint) name
+bootstrap = Bootstrap()  # bootstrap instance
 
 
 def create_app(config_class=BaseConfig):
@@ -41,6 +43,9 @@ def create_app(config_class=BaseConfig):
     # see: https://blog.miguelgrinberg.com/post/fixing-alter-table-errors-with-flask-migrate-and-sqlite
     migrate.init_app(app, db, render_as_batch=True)
     login.init_app(app)
+
+    # bootstrap
+    bootstrap.init_app(app)
 
     # register blueprints
     register_blueprints(app)
