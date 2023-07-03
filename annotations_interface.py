@@ -8,6 +8,7 @@ from app.models import (
     Role,
     Permission,
     PSDialogTurn,
+    PSDialogEvent,
 )
 
 app = create_app()
@@ -26,6 +27,7 @@ def make_shell_context():
         "Role": Role,
         "Permission": Permission,
         "PSDialogTurn": PSDialogTurn,
+        "PSDialogEvent": PSDialogEvent,
     }
 
 

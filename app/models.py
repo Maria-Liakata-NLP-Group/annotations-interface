@@ -269,22 +269,41 @@ class Dataset(db.Model):
 
 class PSDialogTurn(db.Model):
     """
-    PSDialogTurn class for database.
-    Each row represents a different 'event' in the psychotherapy session,
-    i.e. a different speech turn by the therapist, client or annotator.
-    Each psychotherapy session should be a different dataset.
+    Psychotherapy Dialog Turn class for database
+    Each row is a different dialog turn in a psychotherapy session
+    A dialog turn is composed of one or more events (speech turns by therapist or client)
+    The start of a dialog turn is identified by a "timestamp" event in the dataset
     """
 
     __tablename__ = "ps_dialog_turn"
     id = db.Column(db.Integer, primary_key=True)
-    event_id = db.Column(
-        db.Integer, index=True, unique=False
-    )  # the event id (index) in the session (should be a dataset)
-    event_text = db.Column(db.Text)
-    event_speaker = db.Column(
-        db.String(64)
-    )  # one of 'Therapist', 'Client', 'Annotator'
-    date = db.Column(db.Date, default=date.today)
-    t_init = db.Column(db.String(64), index=True, unique=False)  # therapist ID
     c_code = db.Column(db.String(64), index=True, unique=False)  # patient ID
-    id_dataset = db.Column(db.Integer, db.ForeignKey("dataset.id"))
+    t_init = db.Column(db.String(64), default="__")  # therapist initials
+    date = db.Column(db.Date, default=date.today)  # date of session
+    # the timestamp is the time measured from the start of the session
+    timestamp = db.Column(
+        db.Time, default=datetime.strptime("00:00:00", "%H:%M:%S").time()
+    )
+    main_speaker = db.Column(db.String(64))  # one of 'Therapist', 'Client'
+    session_n = db.Column(db.Integer)  # session number
+    dialog_turn_n = db.Column(db.Integer)  # dialog turn number
+    id_dataset = db.Column(
+        db.Integer, db.ForeignKey("dataset.id")
+    )  # id of dataset associated with this dialog turn
+
+
+class PSDialogEvent(db.Model):
+    """
+    Psychotherapy Dialog Event class for database
+    Each row is a different dialog event in a psychotherapy session
+    A dialog event is a speech turn by therapist or client
+    """
+
+    __tablename__ = "ps_dialog_event"
+    id = db.Column(db.Integer, primary_key=True)
+    event_n = db.Column(db.Integer)  # event number
+    event_speaker = db.Column(db.String(64))  # one of 'Therapist', 'Client'
+    event_plaintext = db.Column(db.Text)  # speech turn
+    id_ps_dialog_turn = db.Column(
+        db.Integer, db.ForeignKey("ps_dialog_turn.id")
+    )  # id of dialog turn
