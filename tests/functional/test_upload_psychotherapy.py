@@ -2,7 +2,7 @@
 Functional tests for the upload (`upload`) blueprint.
 Psychotherapy session dataset upload page.
 """
-from app.models import User, Dataset, Psychotherapy
+from app.models import User, Dataset, PSDialogTurn
 from bs4 import BeautifulSoup
 from datetime import datetime
 
@@ -98,7 +98,7 @@ def test_upload_psychotherapy_valid_dataset(test_client, init_database):
     assert dataset.annotators.all() == [admin1, annotator1]
     assert dataset.type.value == "Psychotherapy Session"
 
-    psychotherapy = Psychotherapy.query.filter_by(id_dataset=dataset.id).all()
+    psychotherapy = PSDialogTurn.query.filter_by(id_dataset=dataset.id).all()
     assert len(psychotherapy) == 228
     psychotherapy[
         100

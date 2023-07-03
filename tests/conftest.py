@@ -9,7 +9,7 @@ from app.models import (
     SMReply,
     Dataset,
     Role,
-    Psychotherapy,
+    PSDialogTurn,
     DatasetType,
 )
 from config import TestConfig
@@ -158,7 +158,7 @@ def init_database_with_datasets(test_client):
 @pytest.fixture(scope="module")
 def new_psychotherapy_event():
     """Fixture to create a new psychotherapy session turn of speech"""
-    psychotherapy = Psychotherapy(
+    psychotherapy = PSDialogTurn(
         event_id=0,
         event_text="test event",
         event_speaker="test speaker",

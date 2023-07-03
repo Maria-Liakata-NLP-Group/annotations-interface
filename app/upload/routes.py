@@ -4,7 +4,7 @@ from datetime import datetime, timedelta, date
 import pandas as pd
 from app import db
 from app.upload import bp
-from app.models import SMPost, SMReply, Dataset, User, Psychotherapy, DatasetType
+from app.models import SMPost, SMReply, Dataset, User, PSDialogTurn, DatasetType
 from werkzeug.utils import secure_filename
 from flask import request, redirect, url_for, flash, render_template, current_app, abort
 from flask_login import login_required, current_user
@@ -96,7 +96,7 @@ def psychotherapy_df_to_sql(psychotherapy_df: pd.DataFrame, dataset: Dataset):
         for index, row in psychotherapy_df.iterrows():
             # each row is a turn of speech (event_text) by the therapist,
             # patient or annotator (event_speaker)
-            psychotherapy = Psychotherapy(
+            psychotherapy = PSDialogTurn(
                 event_id=index,
                 event_text=row.event_plaintext,
                 event_speaker=row.event_speaker,

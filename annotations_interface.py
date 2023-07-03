@@ -7,7 +7,7 @@ from app.models import (
     Dataset,
     Role,
     Permission,
-    Psychotherapy,
+    PSDialogTurn,
 )
 
 app = create_app()
@@ -25,7 +25,7 @@ def make_shell_context():
         "Dataset": Dataset,
         "Role": Role,
         "Permission": Permission,
-        "Psychotherapy": Psychotherapy,
+        "PSDialogTurn": PSDialogTurn,
     }
 
 

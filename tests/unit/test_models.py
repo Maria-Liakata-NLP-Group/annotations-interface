@@ -92,8 +92,8 @@ def test_roles(init_database):
 
 def test_new_psychotherapy_event(new_psychotherapy_event):
     """
-    GIVEN a Psychotherapy model
-    WHEN a new Psychotherapy is created
+    GIVEN a PSDialogTurn model
+    WHEN a new PSDialogTurn is created
     THEN check the event_id, event_text, event_speaker, date, t_init, and c_code fields are defined correctly
     """
     assert new_psychotherapy_event.event_id == 0

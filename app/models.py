@@ -259,22 +259,23 @@ class Dataset(db.Model):
         "SMReply", backref="dataset", lazy="dynamic"
     )  # one-to-many relationship with SMReply class
     psychotherapy = db.relationship(
-        "Psychotherapy", backref="dataset", lazy="dynamic"
-    )  # one-to-many relationship with Psychotherapy class
+        "PSDialogTurn", backref="dataset", lazy="dynamic"
+    )  # one-to-many relationship with PSDialogTurn class
 
     def __repr__(self):
         """How to print objects of this class"""
         return "<Dataset {}>".format(self.name)
 
 
-class Psychotherapy(db.Model):
+class PSDialogTurn(db.Model):
     """
-    Psychotherapy class for database.
+    PSDialogTurn class for database.
     Each row represents a different 'event' in the psychotherapy session,
     i.e. a different speech turn by the therapist, client or annotator.
     Each psychotherapy session should be a different dataset.
     """
 
+    __tablename__ = "ps_dialog_turn"
     id = db.Column(db.Integer, primary_key=True)
     event_id = db.Column(
         db.Integer, index=True, unique=False
