@@ -271,20 +271,22 @@ class PSDialogTurn(db.Model):
     """
     Psychotherapy Dialog Turn class for database
     Each row is a different dialog turn in a psychotherapy session
-    A dialog turn is composed of one or more events (speech turns by therapist or client)
+    A dialog turn is composed of one or more events (speech turns by therapist, client or annotator)
     The start of a dialog turn is identified by a "timestamp" event in the dataset
     """
 
     __tablename__ = "ps_dialog_turn"
     id = db.Column(db.Integer, primary_key=True)
     c_code = db.Column(db.String(64), index=True, unique=False)  # patient ID
-    t_init = db.Column(db.String(64), default="__")  # therapist initials
+    t_init = db.Column(db.String(64), default=None)  # therapist initials
     date = db.Column(db.Date, default=date.today)  # date of session
     # the timestamp is the time measured from the start of the session
     timestamp = db.Column(
         db.Time, default=datetime.strptime("00:00:00", "%H:%M:%S").time()
     )
-    main_speaker = db.Column(db.String(64))  # one of 'Therapist', 'Client'
+    main_speaker = db.Column(
+        db.String(64)
+    )  # one of 'Therapist', 'Client' or 'Annotator'
     session_n = db.Column(db.Integer)  # session number
     dialog_turn_n = db.Column(db.Integer)  # dialog turn number
     id_dataset = db.Column(
@@ -296,13 +298,15 @@ class PSDialogEvent(db.Model):
     """
     Psychotherapy Dialog Event class for database
     Each row is a different dialog event in a psychotherapy session
-    A dialog event is a speech turn by therapist or client
+    A dialog event is a speech turn by therapist, client or annotator
     """
 
     __tablename__ = "ps_dialog_event"
     id = db.Column(db.Integer, primary_key=True)
     event_n = db.Column(db.Integer)  # event number
-    event_speaker = db.Column(db.String(64))  # one of 'Therapist', 'Client'
+    event_speaker = db.Column(
+        db.String(64)
+    )  # one of 'Therapist', 'Client' or 'Annotator
     event_plaintext = db.Column(db.Text)  # speech turn
     id_ps_dialog_turn = db.Column(
         db.Integer, db.ForeignKey("ps_dialog_turn.id")
