@@ -138,9 +138,9 @@ def init_database_with_datasets(test_client):
         author=User.query.filter_by(username="admin1").first(),
         type=DatasetType.sm_thread,
     )
+    db.session.add(dataset)
     dataset.annotators.append(User.query.filter_by(username="admin1").first())
     dataset.annotators.append(User.query.filter_by(username="annotator1").first())
-    db.session.add(dataset)
 
     # Create another dataset authored by annotator1, with only one annotator
     dataset = Dataset(
@@ -149,8 +149,8 @@ def init_database_with_datasets(test_client):
         author=User.query.filter_by(username="annotator1").first(),
         type=DatasetType.psychotherapy,
     )
-    dataset.annotators.append(User.query.filter_by(username="annotator1").first())
     db.session.add(dataset)
+    dataset.annotators.append(User.query.filter_by(username="annotator1").first())
 
     # Commit the changes to the database
     db.session.commit()
