@@ -3,6 +3,13 @@ from app.models import SMPost, SMReply, Dataset, PSDialogTurn, PSDialogEvent
 from app import db
 from flask import abort
 import pandas as pd
+import pickle
+
+
+def read_pickle(file_path: str):
+    """Read a pickle file"""
+    with open(file_path, "rb") as handle:
+        return pickle.load(handle)
 
 
 def remove_microsecs(datetime_obj: datetime):

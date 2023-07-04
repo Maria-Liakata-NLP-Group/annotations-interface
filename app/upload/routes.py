@@ -1,5 +1,4 @@
 import os
-import pickle
 from app import db
 from app.upload import bp
 from app.models import Dataset, User, DatasetType
@@ -7,13 +6,7 @@ from werkzeug.utils import secure_filename
 from flask import request, redirect, url_for, flash, render_template, current_app
 from flask_login import login_required, current_user
 from app.upload.forms import UploadForm
-from app.upload.parsers import sm_dict_to_sql, psychotherapy_df_to_sql
-
-
-def read_pickle(file_path: str):
-    """Read a pickle file"""
-    with open(file_path, "rb") as handle:
-        return pickle.load(handle)
+from app.upload.parsers import sm_dict_to_sql, psychotherapy_df_to_sql, read_pickle
 
 
 def allowed_file(filename: str):
