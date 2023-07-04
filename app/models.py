@@ -258,9 +258,12 @@ class Dataset(db.Model):
     replies = db.relationship(
         "SMReply", backref="dataset", lazy="dynamic"
     )  # one-to-many relationship with SMReply class
-    psychotherapy = db.relationship(
+    dialog_turns = db.relationship(
         "PSDialogTurn", backref="dataset", lazy="dynamic"
     )  # one-to-many relationship with PSDialogTurn class
+    dialog_events = db.relationship(
+        "PSDialogEvent", backref="dataset", lazy="dynamic"
+    )  # one-to-many relationship with PSDialogEvent class
 
     def __repr__(self):
         """How to print objects of this class"""
@@ -292,6 +295,9 @@ class PSDialogTurn(db.Model):
     id_dataset = db.Column(
         db.Integer, db.ForeignKey("dataset.id")
     )  # id of dataset associated with this dialog turn
+    dialog_events = db.relationship(
+        "PSDialogEvent", backref="dialog_turn", lazy="dynamic"
+    )  # one-to-many relationship with PSDialogEvent class
 
 
 class PSDialogEvent(db.Model):
@@ -311,3 +317,6 @@ class PSDialogEvent(db.Model):
     id_ps_dialog_turn = db.Column(
         db.Integer, db.ForeignKey("ps_dialog_turn.id")
     )  # id of dialog turn
+    id_dataset = db.Column(
+        db.Integer, db.ForeignKey("dataset.id")
+    )  # id of dataset associated with this dialog event
