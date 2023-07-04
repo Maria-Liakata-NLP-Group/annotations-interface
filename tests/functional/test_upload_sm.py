@@ -4,6 +4,7 @@ Social media dataset upload page.
 """
 from app.models import User, Dataset, SMPost, SMReply
 from bs4 import BeautifulSoup
+import os
 
 
 def test_upload_sm_login_required(test_client):
@@ -64,14 +65,17 @@ def test_upload_sm_valid_dataset(test_client, init_database):
     assert response.status_code == 200
 
     # upload a valid dataset
-    with open("tests/data/timelines_example_lorem.pickle", "rb") as handle:
+    with open(test_client.application.config["SM_DATASET_PATH"], "rb") as handle:
         response = test_client.post(
             "/upload/upload_sm",
             data={
                 "name": "test_dataset",
                 "description": "test description",
                 "annotators": User.query.filter_by(username="admin1").first().id,
-                "file": (handle, "timelines_example_lorem.pickle"),
+                "file": (
+                    handle,
+                    os.path.basename(test_client.application.config["SM_DATASET_PATH"]),
+                ),
             },
             follow_redirects=True,
         )
@@ -132,14 +136,17 @@ def test_upload_sm_invalid_dataset(test_client, init_database):
     assert response.status_code == 200
 
     # upload an invalid dataset
-    with open("tests/data/psychotherapy_example_lorem.pickle", "rb") as handle:
+    with open(test_client.application.config["PS_DATASET_PATH"], "rb") as handle:
         response = test_client.post(
             "/upload/upload_sm",
             data={
                 "name": "invalid_dataset",
                 "description": "test description",
                 "annotators": User.query.filter_by(username="admin1").first().id,
-                "file": (handle, "psychotherapy_example_lorem.pickle"),
+                "file": (
+                    handle,
+                    os.path.basename(test_client.application.config["PS_DATASET_PATH"]),
+                ),
             },
             follow_redirects=True,
         )
