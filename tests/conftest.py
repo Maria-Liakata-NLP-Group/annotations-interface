@@ -110,7 +110,7 @@ def create_users_for_db():
 
 
 @pytest.fixture(scope="module")
-def init_database(test_client):
+def insert_users(test_client):
     """Fixture to initialize the database"""
     # Create the database and the database tables
     db.create_all()

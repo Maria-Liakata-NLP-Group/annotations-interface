@@ -19,7 +19,7 @@ def test_login_page(test_client):
     assert b"Click to Register" in response.data
 
 
-def test_valid_login_logout(test_client, init_database):
+def test_valid_login_logout(test_client, insert_users):
     """
     GIVEN a Flask application configured for testing
     WHEN the '/login' page is posted to (POST) with valid credentials
@@ -48,7 +48,7 @@ def test_valid_login_logout(test_client, init_database):
     assert b"admin1" not in response.data
 
 
-def test_invalid_login(test_client, init_database):
+def test_invalid_login(test_client, insert_users):
     """
     GIVEN a Flask application configured for testing
     WHEN the '/login' page is posted to (POST) with invalid credentials
@@ -67,7 +67,7 @@ def test_invalid_login(test_client, init_database):
     assert b"Click to Register" in response.data
 
 
-def test_valid_registration(test_client, init_database):
+def test_valid_registration(test_client, insert_users):
     """
     GIVEN a Flask application configured for testing
     WHEN the '/register' page is posted to (POST) with a registered username
@@ -109,7 +109,7 @@ def test_valid_registration(test_client, init_database):
     assert b"Sign In" in response.data
 
 
-def test_correct_role_assignment(test_client, init_database):
+def test_correct_role_assignment(test_client, insert_users):
     """
     GIVEN a Flask application configured for testing
     WHEN the '/register' page is posted to (POST) with a new username
