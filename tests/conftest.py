@@ -83,6 +83,14 @@ def flask_app():
         db.drop_all()
 
 
+@pytest.fixture(scope="session")
+def db_session(flask_app):
+    """Fixture to create a database session for testing"""
+    # Establish an application context before running the tests
+    with flask_app.app_context():
+        yield db.session
+
+
 @pytest.fixture(scope="module")
 def test_client(flask_app):
     """Fixture to create a test client for making HTTP requests"""
