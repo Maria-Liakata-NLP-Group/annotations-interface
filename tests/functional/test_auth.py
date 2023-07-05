@@ -32,7 +32,7 @@ def test_valid_login_logout(test_client, insert_users):
     )  # redirects to home page
     assert response.status_code == 200
     assert b"Logout" in response.data
-    assert b"admin1" in response.data
+    assert b"Hi, admin1" in response.data
     assert b"New User?" not in response.data
     assert b"Click to Register" not in response.data
     assert b"Sign In" not in response.data

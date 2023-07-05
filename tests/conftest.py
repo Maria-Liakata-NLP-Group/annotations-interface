@@ -123,45 +123,11 @@ def insert_users(db_session, user_admin1, user_annotator1):
 
 
 @pytest.fixture(scope="module")
-def init_database_with_datasets(test_client):
-    """Fixture to initialize the database with datasets"""
-    # Create the database and the database tables
-    db.create_all()
-
-    # Insert role data
-    Role.insert_roles()
-
-    # Insert user data
-    create_users_for_db()
-
-    # Create a dataset authored by admin1, with two annotators
-    dataset = Dataset(
-        name="Social Media Dataset Test",
-        description="test description for SM dataset",
-        author=User.query.filter_by(username="admin1").first(),
-        type=DatasetType.sm_thread,
-    )
-    dataset.annotators.append(User.query.filter_by(username="admin1").first())
-    dataset.annotators.append(User.query.filter_by(username="annotator1").first())
-    db.session.add(dataset)
-
-    # Create another dataset authored by annotator1, with only one annotator
-    dataset = Dataset(
-        name="Psychotherapy Dataset Test",
-        description="test description for psychotherapy dataset",
-        author=User.query.filter_by(username="annotator1").first(),
-        type=DatasetType.psychotherapy,
-    )
-    dataset.annotators.append(User.query.filter_by(username="annotator1").first())
-    db.session.add(dataset)
-
-    # Commit the changes to the database
-    db.session.commit()
-
-    yield  # this is where the testing happens!
-
-    # Drop all the tables from the database
-    db.drop_all()
+def insert_datasets(db_session, new_sm_dataset, new_ps_dataset):
+    """Fixture to insert datasets into the database"""
+    db_session.add(new_sm_dataset)
+    db_session.add(new_ps_dataset)
+    db_session.commit()
 
 
 @pytest.fixture(scope="module")
