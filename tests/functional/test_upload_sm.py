@@ -17,7 +17,7 @@ def test_upload_sm_login_required(test_client):
     assert "/auth/login" in response.headers["Location"]
 
 
-def test_upload_sm_valid_login(test_client, init_database):
+def test_upload_sm_valid_login(test_client, insert_users):
     """
     GIVEN a Flask application configured for testing
     WHEN the '/upload_sm' page is requested (GET) after logging in
@@ -26,7 +26,7 @@ def test_upload_sm_valid_login(test_client, init_database):
     # log in to the app
     response = test_client.post(
         "/auth/login",
-        data={"username": "admin1", "password": "adminpassword1"},
+        data={"username": "admin1", "password": "admin1password"},
         follow_redirects=True,
     )
     assert response.status_code == 200
@@ -45,7 +45,7 @@ def test_upload_sm_valid_login(test_client, init_database):
     assert response.status_code == 200
 
 
-def test_upload_sm_valid_dataset(test_client, init_database):
+def test_upload_sm_valid_dataset(test_client, insert_users):
     """
     GIVEN a Flask application configured for testing
     WHEN the '/upload_sm' page is requested (POST) with a valid dataset
@@ -54,7 +54,7 @@ def test_upload_sm_valid_dataset(test_client, init_database):
     # log in to the app
     response = test_client.post(
         "/auth/login",
-        data={"username": "admin1", "password": "adminpassword1"},
+        data={"username": "admin1", "password": "admin1password"},
         follow_redirects=True,
     )
     assert response.status_code == 200
@@ -112,7 +112,7 @@ def test_upload_sm_valid_dataset(test_client, init_database):
     assert len(replies) == 2
 
 
-def test_upload_sm_invalid_dataset(test_client, init_database):
+def test_upload_sm_invalid_dataset(test_client, insert_users):
     """
     GIVEN a Flask application configured for testing
     WHEN the '/upload_sm' page is requested (POST) with an invalid dataset
@@ -122,7 +122,7 @@ def test_upload_sm_invalid_dataset(test_client, init_database):
     # log in to the app
     response = test_client.post(
         "/auth/login",
-        data={"username": "admin1", "password": "adminpassword1"},
+        data={"username": "admin1", "password": "admin1password"},
         follow_redirects=True,
     )
     assert response.status_code == 200
@@ -155,7 +155,7 @@ def test_upload_sm_invalid_dataset(test_client, init_database):
     assert response.status_code == 200
 
 
-def test_upload_based_on_role(test_client, init_database):
+def test_upload_based_on_role(test_client, insert_users):
     """
     GIVEN a Flask application configured for testing
     WHEN the '/upload_sm' page is requested (GET) after logging in as a user with a role
@@ -164,7 +164,7 @@ def test_upload_based_on_role(test_client, init_database):
     # log in to the app as a user with the 'annotator' role
     response = test_client.post(
         "/auth/login",
-        data={"username": "annotator1", "password": "annotatorpassword1"},
+        data={"username": "annotator1", "password": "annotator1password"},
         follow_redirects=True,
     )
     assert response.status_code == 200
@@ -190,7 +190,7 @@ def test_upload_based_on_role(test_client, init_database):
     # log in to the app as a user with the 'admin' role
     response = test_client.post(
         "/auth/login",
-        data={"username": "admin1", "password": "adminpassword1"},
+        data={"username": "admin1", "password": "admin1password"},
         follow_redirects=True,
     )
     assert response.status_code == 200

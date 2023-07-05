@@ -16,18 +16,18 @@ from config import TestConfig
 
 
 @pytest.fixture(scope="module")
-def new_user():
-    """Fixture to create a new user"""
-    user = User(username="test", email="test@example.com")
-    user.set_password("testpassword")
+def user_admin1():
+    """Fixture to create a new admin user"""
+    user = User(username="admin1", email="admin1@example.com")
+    user.set_password("admin1password")
     return user
 
 
 @pytest.fixture(scope="module")
-def another_user():
-    """Fixture to create another user"""
-    user = User(username="test2", email="test2@example.com")
-    user.set_password("test2password")
+def user_annotator1():
+    """Fixture to create a new annotator user"""
+    user = User(username="annotator1", email="annotator1@example.com")
+    user.set_password("annotator1password")
     return user
 
 
@@ -44,9 +44,11 @@ def new_sm_post():
 
 
 @pytest.fixture(scope="module")
-def new_sm_annotation(new_user, new_sm_post):
+def new_sm_annotation(user_admin1, new_sm_post):
     """Fixture to create a new social media annotation"""
-    annotation = SMAnnotation(body="test annotation", author=new_user, post=new_sm_post)
+    annotation = SMAnnotation(
+        body="test annotation", author=user_admin1, post=new_sm_post
+    )
     return annotation
 
 
@@ -58,101 +60,74 @@ def new_sm_reply(new_sm_post):
 
 
 @pytest.fixture(scope="module")
-def new_dataset(new_user, another_user):
-    """Fixture to create a new dataset, with two annotators"""
+def new_sm_dataset(user_admin1, user_annotator1):
+    """Fixture to create a new social media dataset authored by admin1, with two annotators"""
     dataset = Dataset(
-        name="test dataset",
-        description="test description",
-        author=new_user,
+        name="Social Media Dataset Test",
+        description="test description for SM dataset",
+        author=user_admin1,
+        type=DatasetType.sm_thread,
     )
-    dataset.annotators.append(new_user)
-    dataset.annotators.append(another_user)
+    dataset.annotators.append(user_admin1)
+    dataset.annotators.append(user_annotator1)
     return dataset
 
 
 @pytest.fixture(scope="module")
-def test_client():
-    """Fixture to create a test client"""
-    # Create the Flask app configured for testing
-    flask_app = create_app(TestConfig)
-    # Create a test client using the Flask application configured for testing
-    with flask_app.test_client() as testing_client:
-        # Establish an application context before running the tests
-        with flask_app.app_context():
-            yield testing_client  # this is where the testing happens!
-
-
-def create_users_for_db():
-    """Helper function to create users for the database"""
-    admin1 = User(username="admin1", email="admin1@example.com")
-    admin1.set_password("adminpassword1")
-    annotator1 = User(username="annotator1", email="annotator1@example.com")
-    annotator1.set_password("annotatorpassword1")
-    db.session.add(admin1)
-    db.session.add(annotator1)
-
-
-@pytest.fixture(scope="module")
-def init_database(test_client):
-    """Fixture to initialize the database"""
-    # Create the database and the database tables
-    db.create_all()
-
-    # Insert role data
-    Role.insert_roles()
-
-    # Insert user data
-    create_users_for_db()
-
-    # Commit the changes for the users
-    db.session.commit()
-
-    yield  # this is where the testing happens!
-
-    # Drop all the tables from the database
-    db.drop_all()
-
-
-@pytest.fixture(scope="module")
-def init_database_with_datasets(test_client):
-    """Fixture to initialize the database with datasets"""
-    # Create the database and the database tables
-    db.create_all()
-
-    # Insert role data
-    Role.insert_roles()
-
-    # Insert user data
-    create_users_for_db()
-
-    # Create a dataset authored by admin1, with two annotators
-    dataset = Dataset(
-        name="Social Media Dataset Test",
-        description="test description for SM dataset",
-        author=User.query.filter_by(username="admin1").first(),
-        type=DatasetType.sm_thread,
-    )
-    dataset.annotators.append(User.query.filter_by(username="admin1").first())
-    dataset.annotators.append(User.query.filter_by(username="annotator1").first())
-    db.session.add(dataset)
-
-    # Create another dataset authored by annotator1, with only one annotator
+def new_ps_dataset(user_annotator1):
+    """Fixture to create a new psychotherapy dataset authored by annotator1, with only one annotator"""
     dataset = Dataset(
         name="Psychotherapy Dataset Test",
         description="test description for psychotherapy dataset",
-        author=User.query.filter_by(username="annotator1").first(),
+        author=user_annotator1,
         type=DatasetType.psychotherapy,
     )
-    dataset.annotators.append(User.query.filter_by(username="annotator1").first())
-    db.session.add(dataset)
+    dataset.annotators.append(user_annotator1)
+    return dataset
 
-    # Commit the changes to the database
-    db.session.commit()
 
-    yield  # this is where the testing happens!
+@pytest.fixture(scope="module")
+def flask_app():
+    """Fixture to create a Flask app configured for testing"""
+    flask_app = create_app(TestConfig)
+    # Establish an application context before running the tests
+    with flask_app.app_context():
+        db.create_all()
+        Role.insert_roles()
+        yield flask_app  # this is where the testing happens!
+        db.drop_all()
 
-    # Drop all the tables from the database
-    db.drop_all()
+
+@pytest.fixture(scope="module")
+def db_session(flask_app):
+    """Fixture to create a database session for testing"""
+    # Establish an application context before running the tests
+    with flask_app.app_context():
+        yield db.session
+
+
+@pytest.fixture(scope="function")
+def test_client(flask_app):
+    """Fixture to create a test client for making HTTP requests"""
+    # Create a test client using the Flask application configured for testing
+    with flask_app.test_client() as client:
+        yield client  # this is where the testing happens!
+
+
+@pytest.fixture(scope="function")
+def insert_users(db_session, user_admin1, user_annotator1):
+    """Fixture to insert users into the database"""
+    db_session.add(user_admin1)
+    db_session.add(user_annotator1)
+    db_session.commit()
+
+
+@pytest.fixture(scope="module")
+def insert_datasets(db_session, new_sm_dataset, new_ps_dataset):
+    """Fixture to insert datasets into the database"""
+    db_session.add(new_sm_dataset)
+    db_session.add(new_ps_dataset)
+    db_session.commit()
 
 
 @pytest.fixture(scope="module")
