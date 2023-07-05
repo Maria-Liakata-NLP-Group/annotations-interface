@@ -72,16 +72,23 @@ def new_dataset(user_admin1, user_annotator1):
     return dataset
 
 
-@pytest.fixture(scope="module")
-def test_client():
-    """Fixture to create a test client"""
-    # Create the Flask app configured for testing
+@pytest.fixture(scope="session")
+def flask_app():
+    """Fixture to create a Flask app configured for testing"""
     flask_app = create_app(TestConfig)
+    # Establish an application context before running the tests
+    with flask_app.app_context():
+        db.create_all()
+        yield flask_app  # this is where the testing happens!
+        db.drop_all()
+
+
+@pytest.fixture(scope="module")
+def test_client(flask_app):
+    """Fixture to create a test client for making HTTP requests"""
     # Create a test client using the Flask application configured for testing
-    with flask_app.test_client() as testing_client:
-        # Establish an application context before running the tests
-        with flask_app.app_context():
-            yield testing_client  # this is where the testing happens!
+    with flask_app.test_client() as client:
+        yield client  # this is where the testing happens!
 
 
 def create_users_for_db():
