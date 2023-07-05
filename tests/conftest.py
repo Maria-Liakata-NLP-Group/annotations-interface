@@ -86,7 +86,7 @@ def new_ps_dataset(user_annotator1):
     return dataset
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="module")
 def flask_app():
     """Fixture to create a Flask app configured for testing"""
     flask_app = create_app(TestConfig)
@@ -98,7 +98,7 @@ def flask_app():
         db.drop_all()
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="module")
 def db_session(flask_app):
     """Fixture to create a database session for testing"""
     # Establish an application context before running the tests

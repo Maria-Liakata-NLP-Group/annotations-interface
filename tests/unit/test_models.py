@@ -1,7 +1,7 @@
 from datetime import date
 
 
-def test_new_user(insert_users, user_admin1):
+def test_new_user(db_session, user_admin1):
     """
     GIVEN a User model
     WHEN a new User is created
@@ -65,7 +65,7 @@ def test_new_dataset(new_sm_dataset, user_admin1, user_annotator1):
     assert new_sm_dataset.annotators[1] is user_annotator1
 
 
-def test_roles(insert_users):
+def test_roles(db_session):
     """
     GIVEN a Role model
     WHEN a new Role is created
