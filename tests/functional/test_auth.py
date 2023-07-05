@@ -27,7 +27,7 @@ def test_valid_login_logout(test_client, insert_users):
     """
     response = test_client.post(
         "/auth/login",
-        data={"username": "admin1", "password": "adminpassword1"},
+        data={"username": "admin1", "password": "admin1password"},
         follow_redirects=True,
     )  # redirects to home page
     assert response.status_code == 200
@@ -79,8 +79,8 @@ def test_valid_registration(test_client, insert_users):
             "username": "admin1",
             "email": "admin1@example.com",
             "email2": "admin1@example.com",
-            "password": "adminpassword1",
-            "password2": "adminpassword1",
+            "password": "admin1password",
+            "password2": "admin1password",
         },
         follow_redirects=True,
     )

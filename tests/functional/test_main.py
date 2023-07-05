@@ -23,7 +23,7 @@ def test_home_page_logged_in(test_client, init_database_with_datasets):
     # Log in as annotator1
     response = test_client.post(
         "/auth/login",
-        data={"username": "annotator1", "password": "annotatorpassword1"},
+        data={"username": "annotator1", "password": "annotator1password"},
         follow_redirects=True,
     )
     assert response.status_code == 200
@@ -48,7 +48,7 @@ def test_home_page_logged_in(test_client, init_database_with_datasets):
     # Log in as admin1
     response = test_client.post(
         "/auth/login",
-        data={"username": "admin1", "password": "adminpassword1"},
+        data={"username": "admin1", "password": "admin1password"},
         follow_redirects=True,
     )
     assert response.status_code == 200

@@ -102,9 +102,9 @@ def test_client(flask_app):
 def create_users_for_db():
     """Helper function to create users for the database"""
     admin1 = User(username="admin1", email="admin1@example.com")
-    admin1.set_password("adminpassword1")
+    admin1.set_password("admin1password")
     annotator1 = User(username="annotator1", email="annotator1@example.com")
-    annotator1.set_password("annotatorpassword1")
+    annotator1.set_password("annotator1password")
     db.session.add(admin1)
     db.session.add(annotator1)
 
