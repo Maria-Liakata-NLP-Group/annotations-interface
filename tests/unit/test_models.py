@@ -51,7 +51,7 @@ def test_new_sm_reply(new_sm_reply, new_sm_post):
     assert new_sm_reply.id_sm_post is None  # id_sm_post is set by database
 
 
-def test_new_dataset(new_dataset, user_admin1, another_user):
+def test_new_dataset(new_dataset, user_admin1, user_annotator1):
     """
     GIVEN a Dataset model
     WHEN a new Dataset is created
@@ -62,7 +62,7 @@ def test_new_dataset(new_dataset, user_admin1, another_user):
     assert new_dataset.author is user_admin1
     assert new_dataset.id_author is None  # id_author is set by database
     assert new_dataset.annotators[0] is user_admin1
-    assert new_dataset.annotators[1] is another_user
+    assert new_dataset.annotators[1] is user_annotator1
 
 
 def test_roles(init_database):

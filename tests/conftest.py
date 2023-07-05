@@ -24,9 +24,9 @@ def user_admin1():
 
 
 @pytest.fixture(scope="module")
-def another_user():
-    """Fixture to create another user"""
-    user = User(username="test2", email="test2@example.com")
+def user_annotator1():
+    """Fixture to create a new annotator user"""
+    user = User(username="annotator1", email="annotator1@example.com")
     user.set_password("test2password")
     return user
 
@@ -60,7 +60,7 @@ def new_sm_reply(new_sm_post):
 
 
 @pytest.fixture(scope="module")
-def new_dataset(user_admin1, another_user):
+def new_dataset(user_admin1, user_annotator1):
     """Fixture to create a new dataset, with two annotators"""
     dataset = Dataset(
         name="test dataset",
@@ -68,7 +68,7 @@ def new_dataset(user_admin1, another_user):
         author=user_admin1,
     )
     dataset.annotators.append(user_admin1)
-    dataset.annotators.append(another_user)
+    dataset.annotators.append(user_annotator1)
     return dataset
 
 
