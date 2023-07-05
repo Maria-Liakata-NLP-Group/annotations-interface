@@ -79,6 +79,7 @@ def flask_app():
     # Establish an application context before running the tests
     with flask_app.app_context():
         db.create_all()
+        Role.insert_roles()
         yield flask_app  # this is where the testing happens!
         db.drop_all()
 
@@ -91,7 +92,7 @@ def db_session(flask_app):
         yield db.session
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope="function")
 def test_client(flask_app):
     """Fixture to create a test client for making HTTP requests"""
     # Create a test client using the Flask application configured for testing
@@ -99,35 +100,12 @@ def test_client(flask_app):
         yield client  # this is where the testing happens!
 
 
-def create_users_for_db():
-    """Helper function to create users for the database"""
-    admin1 = User(username="admin1", email="admin1@example.com")
-    admin1.set_password("admin1password")
-    annotator1 = User(username="annotator1", email="annotator1@example.com")
-    annotator1.set_password("annotator1password")
-    db.session.add(admin1)
-    db.session.add(annotator1)
-
-
-@pytest.fixture(scope="module")
-def insert_users(test_client):
-    """Fixture to initialize the database"""
-    # Create the database and the database tables
-    db.create_all()
-
-    # Insert role data
-    Role.insert_roles()
-
-    # Insert user data
-    create_users_for_db()
-
-    # Commit the changes for the users
-    db.session.commit()
-
-    yield  # this is where the testing happens!
-
-    # Drop all the tables from the database
-    db.drop_all()
+@pytest.fixture(scope="function")
+def insert_users(db_session, user_admin1, user_annotator1):
+    """Fixture to insert users into the database"""
+    db_session.add(user_admin1)
+    db_session.add(user_annotator1)
+    db_session.commit()
 
 
 @pytest.fixture(scope="module")
