@@ -60,14 +60,28 @@ def new_sm_reply(new_sm_post):
 
 
 @pytest.fixture(scope="module")
-def new_dataset(user_admin1, user_annotator1):
-    """Fixture to create a new dataset, with two annotators"""
+def new_sm_dataset(user_admin1, user_annotator1):
+    """Fixture to create a new social media dataset authored by admin1, with two annotators"""
     dataset = Dataset(
-        name="test dataset",
-        description="test description",
+        name="Social Media Dataset Test",
+        description="test description for SM dataset",
         author=user_admin1,
+        type=DatasetType.sm_thread,
     )
     dataset.annotators.append(user_admin1)
+    dataset.annotators.append(user_annotator1)
+    return dataset
+
+
+@pytest.fixture(scope="module")
+def new_ps_dataset(user_annotator1):
+    """Fixture to create a new psychotherapy dataset authored by annotator1, with only one annotator"""
+    dataset = Dataset(
+        name="Psychotherapy Dataset Test",
+        description="test description for psychotherapy dataset",
+        author=user_annotator1,
+        type=DatasetType.psychotherapy,
+    )
     dataset.annotators.append(user_annotator1)
     return dataset
 
