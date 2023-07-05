@@ -27,7 +27,7 @@ def user_admin1():
 def user_annotator1():
     """Fixture to create a new annotator user"""
     user = User(username="annotator1", email="annotator1@example.com")
-    user.set_password("test2password")
+    user.set_password("annotator1password")
     return user
 
 
