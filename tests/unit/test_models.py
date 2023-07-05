@@ -1,26 +1,26 @@
 from datetime import date
 
 
-def test_new_user(init_database, new_user):
+def test_new_user(init_database, user_admin1):
     """
     GIVEN a User model
     WHEN a new User is created
     THEN check the username, email, and password fields are defined correctly
     """
-    assert new_user.username == "test"
-    assert new_user.email == "test@example.com"
-    assert new_user.password_hash != "testpassword"
-    assert new_user.check_password("testpassword")
+    assert user_admin1.username == "admin1"
+    assert user_admin1.email == "admin1@example.com"
+    assert user_admin1.password_hash != "admin1password"
+    assert user_admin1.check_password("admin1password")
 
 
-def test_new_sm_annotation(new_sm_annotation, new_user, new_sm_post):
+def test_new_sm_annotation(new_sm_annotation, user_admin1, new_sm_post):
     """
     GIVEN a SMAnnotation model
     WHEN a new SMAnnotation is created
     THEN check the body, author, post, timestamp, id_user, and id_sm_post fields are defined correctly
     """
     assert new_sm_annotation.body == "test annotation"
-    assert new_sm_annotation.author is new_user
+    assert new_sm_annotation.author is user_admin1
     assert new_sm_annotation.post is new_sm_post
     assert new_sm_annotation.timestamp is None  # timestamp is set by database
     assert new_sm_annotation.id_user is None  # id_user is set by database
@@ -51,7 +51,7 @@ def test_new_sm_reply(new_sm_reply, new_sm_post):
     assert new_sm_reply.id_sm_post is None  # id_sm_post is set by database
 
 
-def test_new_dataset(new_dataset, new_user, another_user):
+def test_new_dataset(new_dataset, user_admin1, another_user):
     """
     GIVEN a Dataset model
     WHEN a new Dataset is created
@@ -59,9 +59,9 @@ def test_new_dataset(new_dataset, new_user, another_user):
     """
     assert new_dataset.name == "test dataset"
     assert new_dataset.description == "test description"
-    assert new_dataset.author is new_user
+    assert new_dataset.author is user_admin1
     assert new_dataset.id_author is None  # id_author is set by database
-    assert new_dataset.annotators[0] is new_user
+    assert new_dataset.annotators[0] is user_admin1
     assert new_dataset.annotators[1] is another_user
 
 

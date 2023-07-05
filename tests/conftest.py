@@ -16,10 +16,10 @@ from config import TestConfig
 
 
 @pytest.fixture(scope="module")
-def new_user():
-    """Fixture to create a new user"""
-    user = User(username="test", email="test@example.com")
-    user.set_password("testpassword")
+def user_admin1():
+    """Fixture to create a new admin user"""
+    user = User(username="admin1", email="admin1@example.com")
+    user.set_password("admin1password")
     return user
 
 
@@ -44,9 +44,11 @@ def new_sm_post():
 
 
 @pytest.fixture(scope="module")
-def new_sm_annotation(new_user, new_sm_post):
+def new_sm_annotation(user_admin1, new_sm_post):
     """Fixture to create a new social media annotation"""
-    annotation = SMAnnotation(body="test annotation", author=new_user, post=new_sm_post)
+    annotation = SMAnnotation(
+        body="test annotation", author=user_admin1, post=new_sm_post
+    )
     return annotation
 
 
@@ -58,14 +60,14 @@ def new_sm_reply(new_sm_post):
 
 
 @pytest.fixture(scope="module")
-def new_dataset(new_user, another_user):
+def new_dataset(user_admin1, another_user):
     """Fixture to create a new dataset, with two annotators"""
     dataset = Dataset(
         name="test dataset",
         description="test description",
-        author=new_user,
+        author=user_admin1,
     )
-    dataset.annotators.append(new_user)
+    dataset.annotators.append(user_admin1)
     dataset.annotators.append(another_user)
     return dataset
 
