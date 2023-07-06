@@ -3,7 +3,7 @@ from app import db
 from app.upload import bp
 from app.models import Dataset, User, DatasetType
 from werkzeug.utils import secure_filename
-from flask import request, redirect, url_for, flash, render_template, current_app
+from flask import request, redirect, url_for, flash, render_template, current_app, abort
 from flask_login import login_required, current_user
 from app.upload.forms import UploadForm
 from app.upload.parsers import sm_dict_to_sql, psychotherapy_df_to_sql, read_pickle
@@ -40,7 +40,7 @@ def get_file_path(filename: str):
 
 
 def new_dataset_to_db(form: UploadForm, dataset_type: DatasetType):
-    """Create a new dataset object and add it to the database"""
+    """Create a new dataset object and add it to the database session"""
     dataset = Dataset(
         name=form.name.data,
         description=form.description.data,
@@ -50,7 +50,7 @@ def new_dataset_to_db(form: UploadForm, dataset_type: DatasetType):
     for annotator_id in form.annotators.data:
         annotator = User.query.get(annotator_id)
         dataset.annotators.append(annotator)
-    db.session.add(dataset)  # Add the dataset to the database
+    db.session.add(dataset)
     return dataset
 
 
@@ -86,9 +86,13 @@ def upload_sm():
             dataset_type = DatasetType.sm_thread
             dataset = new_dataset_to_db(form, dataset_type)
             sm_data = read_pickle(file_path)  # Read the pickle file
-            sm_dict_to_sql(
-                sm_data, dataset
-            )  # Convert the dictionary to SQL and add it to the database
+            try:
+                sm_dict_to_sql(
+                    sm_data, dataset
+                )  # Convert the dictionary to SQL and add it to the database
+            except:
+                db.session.rollback()  # Rollback the changes to the database
+                abort(400)  # raise a HTTP 400 Bad Request error
             db.session.commit()  # Commit the changes to the database
             flash("File uploaded successfully")
             return redirect(
@@ -134,9 +138,13 @@ def upload_psychotherapy():
             dataset_type = DatasetType.psychotherapy
             dataset = new_dataset_to_db(form, dataset_type)
             psychotherapy_data = read_pickle(file_path)  # Read the pickle file
-            psychotherapy_df_to_sql(
-                psychotherapy_data, dataset
-            )  # Convert the dataframe to SQL and add it to the database
+            try:
+                psychotherapy_df_to_sql(
+                    psychotherapy_data, dataset
+                )  # Convert the dataframe to SQL and add it to the database
+            except:
+                db.session.rollback()  # Rollback the changes to the database
+                abort(400)  # raise a HTTP 400 Bad Request error
             db.session.commit()  # Commit the changes to the database
             flash("File uploaded successfully")
             return redirect(
