@@ -49,7 +49,7 @@ def test_upload_sm_valid_login(test_client, insert_users):
 def test_upload_sm_valid_dataset(test_client, insert_users):
     """
     GIVEN a Flask application configured for testing
-    WHEN the '/upload_sm' page is requested (POST) with a valid dataset
+    WHEN the '/upload_sm' page is requested (POST) with a valid dataset (with one annotator)
     THEN check the response is valid and the dataset is added to the database correctly
     """
     # log in to the app
@@ -64,8 +64,9 @@ def test_upload_sm_valid_dataset(test_client, insert_users):
     response = test_client.get("/upload/upload_sm")
     assert response.status_code == 200
 
+    path = test_client.application.config["SM_DATASET_PATH"]
     # upload a valid dataset
-    with open(test_client.application.config["SM_DATASET_PATH"], "rb") as handle:
+    with open(path, "rb") as handle:
         response = test_client.post(
             "/upload/upload_sm",
             data={
@@ -74,7 +75,7 @@ def test_upload_sm_valid_dataset(test_client, insert_users):
                 "annotators": User.query.filter_by(username="admin1").first().id,
                 "file": (
                     handle,
-                    os.path.basename(test_client.application.config["SM_DATASET_PATH"]),
+                    os.path.basename(path),
                 ),
             },
             follow_redirects=True,
@@ -124,8 +125,9 @@ def test_upload_sm_invalid_dataset(test_client, insert_users):
     response = test_client.get("/upload/upload_sm")
     assert response.status_code == 200
 
+    path = test_client.application.config["PS_DATASET_PATH"]
     # upload an invalid dataset
-    with open(test_client.application.config["PS_DATASET_PATH"], "rb") as handle:
+    with open(path, "rb") as handle:
         response = test_client.post(
             "/upload/upload_sm",
             data={
@@ -134,7 +136,7 @@ def test_upload_sm_invalid_dataset(test_client, insert_users):
                 "annotators": User.query.filter_by(username="admin1").first().id,
                 "file": (
                     handle,
-                    os.path.basename(test_client.application.config["PS_DATASET_PATH"]),
+                    os.path.basename(path),
                 ),
             },
             follow_redirects=True,
