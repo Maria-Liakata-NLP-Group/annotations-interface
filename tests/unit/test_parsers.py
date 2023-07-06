@@ -47,7 +47,6 @@ def test_psychotherapy_df_to_sql(flask_app, db_session):
     # check that the parsing is performed correctly and the data is added to the database
     dialog_turns = PSDialogTurn.query.filter_by(id_dataset=dataset.id).all()
     dialog_events = PSDialogEvent.query.filter_by(id_dataset=dataset.id).all()
-
     # check that the number of dialog turns and dialog events is correct
     # a Timestamp event marks the start of a dialog turn
     assert len(dialog_turns) == sum(df["event_speaker"] == "Timestamp")
@@ -57,10 +56,21 @@ def test_psychotherapy_df_to_sql(flask_app, db_session):
     dialog_turn = PSDialogTurn.query.filter_by(
         id_dataset=dataset.id, dialog_turn_n=3
     ).all()
-
     expected_timestamp = datetime.strptime(
         (df.loc[13, "event_plaintext"]).replace(" ", ""), ("%H:%M:%S")
     ).time()
-
     assert len(dialog_turn) == 1  # check that only one dialog turn is returned
-    assert dialog_turn[0].timestamp == expected_timestamp
+    dialog_turn = dialog_turn[0]
+    assert dialog_turn.timestamp == expected_timestamp
+    assert dialog_turn.main_speaker == "Client"
+    # check that the dialog turn has the correct number of dialog events
+    dialog_events = PSDialogEvent.query.filter_by(
+        id_dataset=dataset.id, id_ps_dialog_turn=dialog_turn.id
+    ).all()
+    assert len(dialog_events) == 7
+    dialog_event = dialog_events[0]
+    assert dialog_event.event_speaker == "Client"
+    assert dialog_event.event_plaintext == df.loc[14, "event_plaintext"]
+    assert (
+        dialog_event.event_n == int(df.loc[14, "event_n"]) - 4
+    )  # -4 because the first 4 events are Timestamps
