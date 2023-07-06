@@ -118,7 +118,7 @@ def psychotherapy_df_to_sql(df: pd.DataFrame, dataset: Dataset):
             ps_dialog_event = PSDialogEvent(
                 event_n=event_counter,
                 event_speaker=df.loc[j, "event_speaker"],
-                event_plain_text=df.loc[j, "event_plaintext"],
+                event_plaintext=df.loc[j, "event_plaintext"],
                 dialog_turn=ps_dialog_turn,
                 dataset=dataset,
             )
