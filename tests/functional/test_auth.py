@@ -19,7 +19,7 @@ def test_login_page(test_client):
     assert b"Click to Register" in response.data
 
 
-def test_valid_login_logout(test_client, init_database):
+def test_valid_login_logout(test_client, insert_users):
     """
     GIVEN a Flask application configured for testing
     WHEN the '/login' page is posted to (POST) with valid credentials
@@ -27,12 +27,12 @@ def test_valid_login_logout(test_client, init_database):
     """
     response = test_client.post(
         "/auth/login",
-        data={"username": "admin1", "password": "adminpassword1"},
+        data={"username": "admin1", "password": "admin1password"},
         follow_redirects=True,
     )  # redirects to home page
     assert response.status_code == 200
     assert b"Logout" in response.data
-    assert b"admin1" in response.data
+    assert b"Hi, admin1" in response.data
     assert b"New User?" not in response.data
     assert b"Click to Register" not in response.data
     assert b"Sign In" not in response.data
@@ -48,7 +48,7 @@ def test_valid_login_logout(test_client, init_database):
     assert b"admin1" not in response.data
 
 
-def test_invalid_login(test_client, init_database):
+def test_invalid_login(test_client, insert_users):
     """
     GIVEN a Flask application configured for testing
     WHEN the '/login' page is posted to (POST) with invalid credentials
@@ -67,7 +67,7 @@ def test_invalid_login(test_client, init_database):
     assert b"Click to Register" in response.data
 
 
-def test_valid_registration(test_client, init_database):
+def test_valid_registration(test_client, insert_users):
     """
     GIVEN a Flask application configured for testing
     WHEN the '/register' page is posted to (POST) with a registered username
@@ -79,8 +79,8 @@ def test_valid_registration(test_client, init_database):
             "username": "admin1",
             "email": "admin1@example.com",
             "email2": "admin1@example.com",
-            "password": "adminpassword1",
-            "password2": "adminpassword1",
+            "password": "admin1password",
+            "password2": "admin1password",
         },
         follow_redirects=True,
     )
@@ -109,7 +109,7 @@ def test_valid_registration(test_client, init_database):
     assert b"Sign In" in response.data
 
 
-def test_correct_role_assignment(test_client, init_database):
+def test_correct_role_assignment(test_client, insert_users):
     """
     GIVEN a Flask application configured for testing
     WHEN the '/register' page is posted to (POST) with a new username
