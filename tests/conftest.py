@@ -1,5 +1,5 @@
 import pytest
-from datetime import date
+from datetime import datetime, date
 
 from app import create_app, db
 from app.models import (
@@ -9,7 +9,8 @@ from app.models import (
     SMReply,
     Dataset,
     Role,
-    Psychotherapy,
+    PSDialogTurn,
+    PSDialogEvent,
     DatasetType,
 )
 from config import TestConfig
@@ -32,13 +33,14 @@ def user_annotator1():
 
 
 @pytest.fixture(scope="module")
-def new_sm_post():
+def new_sm_post(new_sm_dataset):
     """Fixture to create a new social media post"""
     post = SMPost(
         question="test post",
         user_id="1",
         timeline_id="1",
         post_id=1,
+        dataset=new_sm_dataset,
     )
     return post
 
@@ -53,9 +55,13 @@ def new_sm_annotation(user_admin1, new_sm_post):
 
 
 @pytest.fixture(scope="module")
-def new_sm_reply(new_sm_post):
+def new_sm_reply(new_sm_post, new_sm_dataset):
     """Fixture to create a new social media reply"""
-    reply = SMReply(comment="test reply", post=new_sm_post)
+    reply = SMReply(
+        comment="test reply",
+        post=new_sm_post,
+        dataset=new_sm_dataset,
+    )
     return reply
 
 
@@ -131,14 +137,28 @@ def insert_datasets(db_session, new_sm_dataset, new_ps_dataset):
 
 
 @pytest.fixture(scope="module")
-def new_psychotherapy_event():
-    """Fixture to create a new psychotherapy session turn of speech"""
-    psychotherapy = Psychotherapy(
-        event_id=0,
-        event_text="test event",
-        event_speaker="test speaker",
+def new_ps_dialog_turn(new_ps_dataset):
+    """Fixture to create a new psychotherapy dialog turn"""
+    dialog_turn = PSDialogTurn(
+        c_code="ab1234",
         date=date.today(),
-        t_init="ab",
-        c_code="bc1234",
+        timestamp=datetime.strptime("00:00:00", "%H:%M:%S").time(),
+        main_speaker="Client",
+        session_n=1,
+        dialog_turn_n=1,
+        dataset=new_ps_dataset,
     )
-    return psychotherapy
+    return dialog_turn
+
+
+@pytest.fixture(scope="module")
+def new_ps_dialog_event(new_ps_dataset, new_ps_dialog_turn):
+    """Fixture to create a new psychotherapy dialog event or speech turn"""
+    dialog_event = PSDialogEvent(
+        event_n=1,
+        event_speaker="Therapist",
+        event_plaintext="Hello, how are you?",
+        dialog_turn=new_ps_dialog_turn,
+        dataset=new_ps_dataset,
+    )
+    return dialog_event

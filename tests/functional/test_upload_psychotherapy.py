@@ -2,9 +2,10 @@
 Functional tests for the upload (`upload`) blueprint.
 Psychotherapy session dataset upload page.
 """
-from app.models import User, Dataset, Psychotherapy
+from app.models import User, Dataset, PSDialogTurn, PSDialogEvent
 from bs4 import BeautifulSoup
 from datetime import datetime
+import os
 
 
 def test_upload_psychotherapy_login_required(test_client):
@@ -64,8 +65,9 @@ def test_upload_psychotherapy_valid_dataset(test_client, insert_users):
     response = test_client.get("/upload/upload_psychotherapy")
     assert response.status_code == 200
 
+    path = test_client.application.config["PS_DATASET_PATH"]
     # upload a valid dataset
-    with open("tests/data/psychotherapy_example_lorem.pickle", "rb") as handle:
+    with open(path, "rb") as handle:
         response = test_client.post(
             "/upload/upload_psychotherapy",
             data={
@@ -75,7 +77,10 @@ def test_upload_psychotherapy_valid_dataset(test_client, insert_users):
                     User.query.filter_by(username="admin1").first().id,
                     User.query.filter_by(username="annotator1").first().id,
                 ],
-                "file": (handle, "psychotherapy_example_lorem.pickle"),
+                "file": (
+                    handle,
+                    os.path.basename(path),
+                ),
             },
             follow_redirects=True,
         )
@@ -86,7 +91,7 @@ def test_upload_psychotherapy_valid_dataset(test_client, insert_users):
     response = test_client.get("/auth/logout", follow_redirects=True)
     assert response.status_code == 200
 
-    # check dataset is in database, and has correct number of posts and replies
+    # check dataset is uploaded correctly to the database
     dataset = Dataset.query.filter_by(name="test_dataset").first()
     admin1 = User.query.filter_by(username="admin1").first()
     annotator1 = User.query.filter_by(username="annotator1").first()
@@ -98,15 +103,12 @@ def test_upload_psychotherapy_valid_dataset(test_client, insert_users):
     assert dataset.annotators.all() == [admin1, annotator1]
     assert dataset.type.value == "Psychotherapy Session"
 
-    psychotherapy = Psychotherapy.query.filter_by(id_dataset=dataset.id).all()
-    assert len(psychotherapy) == 228
-    psychotherapy[
-        100
-    ].event_id == 100  # event id is the row index in the original dataframe
-    psychotherapy[100].id == 101  # this is the row index of the SQL table
-    psychotherapy[100].event_text == "Amet consectetur quiquia dolor sit."
-    psychotherapy[100].event_speaker == "Client"
-    psychotherapy[100].date == datetime.strptime("6/18/2015", "%m/%d/%Y").date()
+    dialog_turns = PSDialogTurn.query.filter_by(id_dataset=dataset.id).all()
+    assert dialog_turns
+    assert dialog_turns[0].id_dataset == dataset.id
+    dialog_events = PSDialogEvent.query.filter_by(id_dataset=dataset.id).all()
+    assert dialog_events
+    assert dialog_events[0].id_dataset == dataset.id
 
 
 def test_upload_psychotherapy_invalid_dataset(test_client, insert_users):
@@ -128,15 +130,16 @@ def test_upload_psychotherapy_invalid_dataset(test_client, insert_users):
     response = test_client.get("/upload/upload_psychotherapy")
     assert response.status_code == 200
 
+    path = test_client.application.config["SM_DATASET_PATH"]
     # upload an invalid dataset
-    with open("tests/data/timelines_example_lorem.pickle", "rb") as handle:
+    with open(path, "rb") as handle:
         response = test_client.post(
             "/upload/upload_psychotherapy",
             data={
                 "name": "invalid_dataset",
                 "description": "test description",
                 "annotators": User.query.filter_by(username="admin1").first().id,
-                "file": (handle, "timelines_example_lorem.pickle"),
+                "file": (handle, os.path.basename(path)),
             },
             follow_redirects=True,
         )

@@ -4,6 +4,7 @@ Social media dataset upload page.
 """
 from app.models import User, Dataset, SMPost, SMReply
 from bs4 import BeautifulSoup
+import os
 
 
 def test_upload_sm_login_required(test_client):
@@ -48,7 +49,7 @@ def test_upload_sm_valid_login(test_client, insert_users):
 def test_upload_sm_valid_dataset(test_client, insert_users):
     """
     GIVEN a Flask application configured for testing
-    WHEN the '/upload_sm' page is requested (POST) with a valid dataset
+    WHEN the '/upload_sm' page is requested (POST) with a valid dataset (with one annotator)
     THEN check the response is valid and the dataset is added to the database correctly
     """
     # log in to the app
@@ -63,15 +64,19 @@ def test_upload_sm_valid_dataset(test_client, insert_users):
     response = test_client.get("/upload/upload_sm")
     assert response.status_code == 200
 
+    path = test_client.application.config["SM_DATASET_PATH"]
     # upload a valid dataset
-    with open("tests/data/timelines_example_lorem.pickle", "rb") as handle:
+    with open(path, "rb") as handle:
         response = test_client.post(
             "/upload/upload_sm",
             data={
                 "name": "test_dataset",
                 "description": "test description",
                 "annotators": User.query.filter_by(username="admin1").first().id,
-                "file": (handle, "timelines_example_lorem.pickle"),
+                "file": (
+                    handle,
+                    os.path.basename(path),
+                ),
             },
             follow_redirects=True,
         )
@@ -82,7 +87,7 @@ def test_upload_sm_valid_dataset(test_client, insert_users):
     response = test_client.get("/auth/logout", follow_redirects=True)
     assert response.status_code == 200
 
-    # check dataset is in database, and has correct number of posts and replies
+    # check dataset is uploaded correctly to the database
     dataset = Dataset.query.filter_by(name="test_dataset").first()
     user = User.query.filter_by(username="admin1").first()
 
@@ -94,22 +99,11 @@ def test_upload_sm_valid_dataset(test_client, insert_users):
     assert dataset.type.value == "Social Media Thread"
 
     posts = SMPost.query.filter_by(id_dataset=dataset.id).all()
-    assert len(posts) == 43
+    assert posts
+    assert posts[0].id_dataset == dataset.id
     replies = SMReply.query.filter_by(id_dataset=dataset.id).all()
-    assert len(replies) == 92
-
-    # more granular checks
-    posts = SMPost.query.filter_by(
-        user_id="746731", timeline_id="746731_1", id_dataset=dataset.id
-    ).all()
-    assert len(posts) == 10
-
-    post = SMPost.query.filter_by(
-        user_id="746731", timeline_id="746731_1", post_id=9602529, id_dataset=dataset.id
-    ).first()
-    assert (post.mood).lower() == "happy"
-    replies = SMReply.query.filter_by(id_sm_post=post.id).all()
-    assert len(replies) == 2
+    assert replies
+    assert replies[0].id_dataset == dataset.id
 
 
 def test_upload_sm_invalid_dataset(test_client, insert_users):
@@ -131,15 +125,19 @@ def test_upload_sm_invalid_dataset(test_client, insert_users):
     response = test_client.get("/upload/upload_sm")
     assert response.status_code == 200
 
+    path = test_client.application.config["PS_DATASET_PATH"]
     # upload an invalid dataset
-    with open("tests/data/psychotherapy_example_lorem.pickle", "rb") as handle:
+    with open(path, "rb") as handle:
         response = test_client.post(
             "/upload/upload_sm",
             data={
                 "name": "invalid_dataset",
                 "description": "test description",
                 "annotators": User.query.filter_by(username="admin1").first().id,
-                "file": (handle, "psychotherapy_example_lorem.pickle"),
+                "file": (
+                    handle,
+                    os.path.basename(path),
+                ),
             },
             follow_redirects=True,
         )

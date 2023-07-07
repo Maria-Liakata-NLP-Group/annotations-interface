@@ -31,3 +31,9 @@ class TestConfig(BaseConfig):
     SQLALCHEMY_DATABASE_URI = "sqlite:///:memory:"  # in-memory database
     WTF_CSRF_ENABLED = False  # disable CSRF tokens in the Forms
     APP_ADMIN = get_app_admin("['admin1@example.com', 'admin2@example.com']")
+    SM_DATASET_PATH = os.path.join(
+        basedir, "tests", "data", "timelines_example_lorem.pickle"
+    )
+    PS_DATASET_PATH = os.path.join(
+        basedir, "tests", "data", "psychotherapy_example_lorem.pickle"
+    )

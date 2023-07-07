@@ -1,113 +1,18 @@
 import os
-import pickle
-from datetime import datetime, timedelta, date
-import pandas as pd
 from app import db
 from app.upload import bp
-from app.models import SMPost, SMReply, Dataset, User, Psychotherapy, DatasetType
+from app.models import Dataset, User, DatasetType
 from werkzeug.utils import secure_filename
 from flask import request, redirect, url_for, flash, render_template, current_app, abort
 from flask_login import login_required, current_user
 from app.upload.forms import UploadForm
-
-
-def read_pickle(file_path: str):
-    """Read a pickle file"""
-    with open(file_path, "rb") as handle:
-        return pickle.load(handle)
+from app.upload.parsers import sm_dict_to_sql, psychotherapy_df_to_sql, read_pickle
 
 
 def allowed_file(filename: str):
     """Check if the file extension is allowed"""
     allowed_extensions = {"pickle", "pkl"}
     return "." in filename and filename.rsplit(".", 1)[1].lower() in allowed_extensions
-
-
-def format_datetime(datetime_obj: datetime):
-    """Format datetime object to remove microseconds"""
-    datetime_obj = datetime_obj - timedelta(microseconds=datetime_obj.microsecond)
-    return datetime_obj
-
-
-def format_date(date_str: str):
-    """Parse the date string and return a date object"""
-    try:
-        date_obj = datetime.strptime(date_str, "%m/%d/%Y").date()
-    except ValueError:
-        date_obj = datetime.strptime(date_str, "%m-%d-%Y").date()
-    return date_obj
-
-
-def sm_dict_to_sql(sm_data: dict, dataset: Dataset):
-    """
-    Convert the social media dictionary to SQL and add it to the database.
-
-    Args:
-        sm_data (dict): The social media dictionary, read from the pickle file
-            uploaded by the user.
-        dataset (Dataset): The dataset object, created when the user uploaded
-            the pickle file.
-    """
-    try:
-        users = list(sm_data.keys())
-        for user in users:
-            timelines = list(sm_data[user].keys())
-            for timeline in timelines:
-                posts = sm_data[user][timeline]
-                for post in posts:
-                    sm_post = SMPost(
-                        user_id=user,
-                        timeline_id=timeline,
-                        post_id=post["post_id"],
-                        mood=post["mood"],
-                        date=format_datetime(post["date"]),
-                        ldate=datetime(*post["ldate"]),
-                        question=post["question"],
-                        dataset=dataset,
-                    )
-                    db.session.add(sm_post)
-                    replies = post["replies"]
-                    for reply in replies:
-                        sm_reply = SMReply(
-                            reply_id=reply["id"],
-                            user_id=reply["user"],
-                            date=format_datetime(reply["date"]),
-                            ldate=datetime(*reply["ldate"]),
-                            comment=reply["comment"],
-                            post=sm_post,
-                            dataset=dataset,
-                        )
-                        db.session.add(sm_reply)
-    except:
-        abort(400)  # raise a HTTP 400 Bad Request error
-
-
-def psychotherapy_df_to_sql(psychotherapy_df: pd.DataFrame, dataset: Dataset):
-    """
-    Convert the psychotherapy dataframe to SQL and add it to the database.
-
-    Args:
-        psychotherapy_df (pd.DataFrame): The psychotherapy dataframe, read from
-            the pickle file uploaded by the user.
-        dataset (Dataset): The dataset object, created when the user uploaded
-            the pickle file.
-    """
-    try:
-        for index, row in psychotherapy_df.iterrows():
-            # each row is a turn of speech (event_text) by the therapist,
-            # patient or annotator (event_speaker)
-            psychotherapy = Psychotherapy(
-                event_id=index,
-                event_text=row.event_plaintext,
-                event_speaker=row.event_speaker,
-                date=format_date(row.date),
-                t_init=row.t_init,
-                c_code=row.c_code,
-                dataset=dataset,
-            )
-            db.session.add(psychotherapy)
-    except:
-        abort(400)  # raise a HTTP 400 Bad Request error
 
 
 def form_choices():
@@ -135,7 +40,7 @@ def get_file_path(filename: str):
 
 
 def new_dataset_to_db(form: UploadForm, dataset_type: DatasetType):
-    """Create a new dataset object and add it to the database"""
+    """Create a new dataset object and add it to the database session"""
     dataset = Dataset(
         name=form.name.data,
         description=form.description.data,
@@ -145,7 +50,7 @@ def new_dataset_to_db(form: UploadForm, dataset_type: DatasetType):
     for annotator_id in form.annotators.data:
         annotator = User.query.get(annotator_id)
         dataset.annotators.append(annotator)
-    db.session.add(dataset)  # Add the dataset to the database
+    db.session.add(dataset)
     return dataset
 
 
@@ -181,9 +86,13 @@ def upload_sm():
             dataset_type = DatasetType.sm_thread
             dataset = new_dataset_to_db(form, dataset_type)
             sm_data = read_pickle(file_path)  # Read the pickle file
-            sm_dict_to_sql(
-                sm_data, dataset
-            )  # Convert the dictionary to SQL and add it to the database
+            try:
+                sm_dict_to_sql(
+                    sm_data, dataset
+                )  # Convert the dictionary to SQL and add it to the database
+            except:
+                db.session.rollback()  # Rollback the changes to the database
+                abort(400)  # raise a HTTP 400 Bad Request error
             db.session.commit()  # Commit the changes to the database
             flash("File uploaded successfully")
             return redirect(
@@ -229,9 +138,13 @@ def upload_psychotherapy():
             dataset_type = DatasetType.psychotherapy
             dataset = new_dataset_to_db(form, dataset_type)
             psychotherapy_data = read_pickle(file_path)  # Read the pickle file
-            psychotherapy_df_to_sql(
-                psychotherapy_data, dataset
-            )  # Convert the dataframe to SQL and add it to the database
+            try:
+                psychotherapy_df_to_sql(
+                    psychotherapy_data, dataset
+                )  # Convert the dataframe to SQL and add it to the database
+            except:
+                db.session.rollback()  # Rollback the changes to the database
+                abort(400)  # raise a HTTP 400 Bad Request error
             db.session.commit()  # Commit the changes to the database
             flash("File uploaded successfully")
             return redirect(
