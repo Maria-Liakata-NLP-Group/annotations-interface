@@ -1,4 +1,6 @@
-# unit tests for parsers.py of the upload blueprint
+"""
+Unit tests for the parsers module in the upload blueprint.
+"""
 from app.upload.parsers import read_pickle, sm_dict_to_sql, psychotherapy_df_to_sql
 from app.models import Dataset, SMPost, SMReply, PSDialogTurn, PSDialogEvent
 from datetime import datetime
