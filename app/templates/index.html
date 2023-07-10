@@ -7,7 +7,21 @@
     <div class="col-md-6">
       <div class="card mb-4">
         <div class="card-body">
-          <h2 class="card-title">{{ dataset.name }}</h2>
+          {% if dataset.type.value == "Psychotherapy Session" %}
+          <h2 class="card-title">
+            <a
+              href="{{ url_for('annotate.annotate_ps', dataset_id=dataset.id) }}"
+              >{{ dataset.name }}</a
+            >
+          </h2>
+          {% elif dataset.type.value == "Social Media Thread" %}
+          <h2 class="card-title">
+            <a
+              href="{{ url_for('annotate.annotate_sm', dataset_id=dataset.id) }}"
+              >{{ dataset.name }}</a
+            >
+          </h2>
+          {% endif %}
           <p class="card-text">
             <strong>Type:</strong> {{ dataset.type.value }}
           </p>

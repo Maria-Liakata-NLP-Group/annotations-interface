@@ -76,5 +76,9 @@ def register_blueprints(app):
 
     app.register_blueprint(errors_bp)
 
+    from app.annotate import bp as annotate_bp
+
+    app.register_blueprint(annotate_bp, url_prefix="/annotate")
+
 
 from app import models

@@ -1,7 +1,7 @@
 from app.annotate import bp
 from flask import render_template
 from flask_login import login_required
-from models import Dataset
+from app.models import Dataset
 
 
 @bp.route("/annotate_ps/<int:dataset_id>")
@@ -11,4 +11,14 @@ def annotate_ps(dataset_id):
     dataset = Dataset.query.get_or_404(
         dataset_id
     )  # fetch the dataset from the database
-    return render_template("annotate_ps.html", dataset=dataset)
+    return render_template("annotate/annotate_ps.html", dataset=dataset)
+
+
+@bp.route("/annotate_sm/<int:dataset_id>")
+@login_required
+def annotate_sm(dataset_id):
+    """This is the annotations page for social media datasets"""
+    dataset = Dataset.query.get_or_404(
+        dataset_id
+    )  # fetch the dataset from the database
+    return render_template("annotate/annotate_sm.html", dataset=dataset)
