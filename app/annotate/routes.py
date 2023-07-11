@@ -1,5 +1,5 @@
 from app.annotate import bp
-from flask import render_template, request
+from flask import render_template, request, url_for
 from flask_login import login_required
 from app.models import Dataset
 from app.annotate.utils import split_dialog_turns, get_events_from_sections
@@ -26,11 +26,15 @@ def annotate_ps(dataset_id):
         has_prev = page > 1  # check if there is a previous page
         has_next = page < len(events)  # check if there is a next page
         if has_prev:
-            prev_url = f"/annotate_psychotherapy/{dataset_id}?page={page - 1}"
+            prev_url = url_for(
+                "annotate.annotate_ps", dataset_id=dataset_id, page=page - 1
+            )
         else:
             prev_url = None
         if has_next:
-            next_url = f"/annotate_psychotherapy/{dataset_id}?page={page + 1}"
+            next_url = url_for(
+                "annotate.annotate_ps", dataset_id=dataset_id, page=page + 1
+            )
         else:
             next_url = None
         return render_template(
