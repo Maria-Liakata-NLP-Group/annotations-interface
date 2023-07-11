@@ -14,6 +14,7 @@ from app.models import (
     DatasetType,
 )
 from config import TestConfig
+from app.upload.parsers import read_pickle, psychotherapy_df_to_sql
 
 
 @pytest.fixture(scope="module")
@@ -133,6 +134,15 @@ def insert_datasets(db_session, new_sm_dataset, new_ps_dataset):
     """Fixture to insert datasets into the database"""
     db_session.add(new_sm_dataset)
     db_session.add(new_ps_dataset)
+    db_session.commit()
+
+
+@pytest.fixture(scope="module")
+def insert_ps_dialog_turns(flask_app, db_session, insert_datasets):
+    """Fixture to insert psychotherapy dialog turns (and corresponding events) into the database"""
+    df = read_pickle(flask_app.config["PS_DATASET_PATH"])
+    dataset = Dataset.query.filter_by(name="Psychotherapy Dataset Test").first()
+    psychotherapy_df_to_sql(df, dataset)
     db_session.commit()
 
 
