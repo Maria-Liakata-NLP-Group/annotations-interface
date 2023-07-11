@@ -2,6 +2,7 @@
 Miscellaneous utility functions for the annotate blueprint
 """
 from datetime import datetime
+import itertools
 
 
 def split_dialog_turns(dialog_turns, time_interval=300):
@@ -42,6 +43,7 @@ def split_dialog_turns(dialog_turns, time_interval=300):
 def get_events_from_sections(sections):
     """
     Get the events corresponding to each section of dialog turns.
+    The events are sorted by event number in ascending order (i.e. in time order).
 
     Parameters
     ----------
@@ -55,5 +57,12 @@ def get_events_from_sections(sections):
     """
     events = []
     for section in sections:
-        events.append([dialog_turn.dialog_events for dialog_turn in section])
+        events.append(
+            list(
+                itertools.chain.from_iterable(
+                    dialog_turn.dialog_events.order_by("event_n").all()
+                    for dialog_turn in section
+                )
+            )
+        )
     return events

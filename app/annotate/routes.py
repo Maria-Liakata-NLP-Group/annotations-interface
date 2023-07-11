@@ -21,11 +21,25 @@ def annotate_ps(dataset_id):
         # get the events corresponding to each section
         events = get_events_from_sections(sections)  # a list of lists
         # get the page number from the request
-        page = request.args.get("page", 1, type=int)
+        page = request.args.get("page", 1, type=int)  # default page is 1
         page_items = events[page - 1]  # get the events for the current page
         has_prev = page > 1  # check if there is a previous page
         has_next = page < len(events)  # check if there is a next page
-        return render_template("annotate/annotate_ps.html", dataset_name=dataset.name)
+        if has_prev:
+            prev_url = f"/annotate_psychotherapy/{dataset_id}?page={page - 1}"
+        else:
+            prev_url = None
+        if has_next:
+            next_url = f"/annotate_psychotherapy/{dataset_id}?page={page + 1}"
+        else:
+            next_url = None
+        return render_template(
+            "annotate/annotate_ps.html",
+            dataset_name=dataset.name,
+            page_items=page_items,
+            next_url=next_url,
+            prev_url=prev_url,
+        )
     except IndexError:
         # if there are no dialog turns in the dataset, return the template without any events
         return render_template("annotate/annotate_ps.html", dataset_name=dataset.name)
