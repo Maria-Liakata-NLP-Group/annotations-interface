@@ -4,8 +4,16 @@ Psychotherapy session dataset annotation page.
 """
 from flask_login import current_user
 from bs4 import BeautifulSoup
+import pytest
 
 
+@pytest.mark.order(
+    after="tests/unit/test_upload_parsers.py::test_psychotherapy_df_to_sql"
+)
+@pytest.mark.dependency(
+    depends=["tests/unit/test_upload_parsers.py::test_psychotherapy_df_to_sql"],
+    scope="session",
+)
 def test_annotate_ps_valid_login(test_client, insert_users, insert_ps_dialog_turns):
     """
     GIVEN a Flask application configured for testing and a dataset with psychotherapy dialog turns

@@ -4,6 +4,7 @@ Unit tests for the parsers module in the upload blueprint.
 from app.upload.parsers import read_pickle, sm_dict_to_sql, psychotherapy_df_to_sql
 from app.models import Dataset, SMPost, SMReply, PSDialogTurn, PSDialogEvent
 from datetime import datetime
+import pytest
 
 
 def test_sm_dict_to_sql(flask_app, db_session, insert_datasets):
@@ -36,6 +37,8 @@ def test_sm_dict_to_sql(flask_app, db_session, insert_datasets):
     assert len(replies) == 2
 
 
+@pytest.mark.order(after="test_sm_dict_to_sql")
+@pytest.mark.dependency()
 def test_psychotherapy_df_to_sql(flask_app, db_session):
     """
     Test the psychotherapy_df_to_sql function,
