@@ -1,17 +1,34 @@
 from app.annotate import bp
-from flask import render_template
+from flask import render_template, request
 from flask_login import login_required
 from app.models import Dataset
+from app.annotate.utils import split_dialog_turns, get_events_from_sections
 
 
-@bp.route("/annotate_ps/<int:dataset_id>")
+@bp.route("/annotate_psychotherapy/<int:dataset_id>")
 @login_required
 def annotate_ps(dataset_id):
     """This is the annotations page for psychotherapy datasets"""
     dataset = Dataset.query.get_or_404(
         dataset_id
     )  # fetch the dataset from the database
-    return render_template("annotate/annotate_ps.html", dataset=dataset)
+    dialog_turns = dataset.dialog_turns.order_by(
+        "timestamp"
+    ).all()  # fetch all dialog turns associated with the dataset
+    # split the dialog turns into sections of five minutes
+    try:
+        sections = split_dialog_turns(dialog_turns)
+        # get the events corresponding to each section
+        events = get_events_from_sections(sections)  # a list of lists
+        # get the page number from the request
+        page = request.args.get("page", 1, type=int)
+        page_items = events[page - 1]  # get the events for the current page
+        has_prev = page > 1  # check if there is a previous page
+        has_next = page < len(events)  # check if there is a next page
+        return render_template("annotate/annotate_ps.html", dataset_name=dataset.name)
+    except IndexError:
+        # if there are no dialog turns in the dataset, return the template without any events
+        return render_template("annotate/annotate_ps.html", dataset_name=dataset.name)
 
 
 @bp.route("/annotate_sm/<int:dataset_id>")
