@@ -7,9 +7,6 @@ from bs4 import BeautifulSoup
 import pytest
 
 
-@pytest.mark.order(
-    after="tests/unit/test_upload_parsers.py::test_psychotherapy_df_to_sql"
-)
 @pytest.mark.dependency(
     depends=["tests/unit/test_upload_parsers.py::test_psychotherapy_df_to_sql"],
     scope="session",

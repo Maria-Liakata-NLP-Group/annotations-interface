@@ -37,7 +37,6 @@ def test_sm_dict_to_sql(flask_app, db_session, insert_datasets):
     assert len(replies) == 2
 
 
-@pytest.mark.order(after="test_sm_dict_to_sql")
 @pytest.mark.dependency()
 def test_psychotherapy_df_to_sql(flask_app, db_session):
     """
