@@ -32,6 +32,7 @@ def annotate_ps(dataset_id):
         has_prev = page > 1  # check if there is a previous page
         has_next = page < len(events)  # check if there is a next page
         start_time = start_times[page - 1]  # get the starting time of the current page
+        total_pages = len(events)  # get the total number of pages
         if has_prev:
             prev_url = url_for(
                 "annotate.annotate_ps", dataset_id=dataset_id, page=page - 1
@@ -51,6 +52,8 @@ def annotate_ps(dataset_id):
             next_url=next_url,
             prev_url=prev_url,
             start_time=start_time,
+            page=page,
+            total_pages=total_pages,
         )
     except IndexError:
         # if there are no dialog turns in the dataset, return the template without any events

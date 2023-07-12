@@ -4,6 +4,7 @@
     <h1>
       Annotating psychotherapy session: <strong>{{ dataset_name }}</strong>
     </h1>
+    <h2>Page {{ page }} of {{ total_pages }}</h2>
     <p>Time since start of session: {{ start_time.strftime("%H:%M:%S") }}</p>
     <ul class="list-group">
       {% for item in page_items %} {% if item.event_speaker == 'Therapist' %}
