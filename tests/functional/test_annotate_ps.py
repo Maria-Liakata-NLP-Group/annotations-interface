@@ -44,6 +44,10 @@ def test_annotate_ps_valid_login(test_client, insert_users, insert_ps_dialog_tur
     assert previous_button is not None
     next_button = pager.find("li", class_="next")
     assert next_button is not None
+    first_button = pager.find("li", class_="first")
+    assert first_button is not None
+    last_button = pager.find("li", class_="last")
+    assert last_button is not None
 
     # move to the next page
     response = test_client.get(
