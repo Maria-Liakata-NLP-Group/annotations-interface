@@ -22,12 +22,16 @@ def annotate_ps(dataset_id):
             dialog_turns, time_interval=app_config["PS_MINS_PER_PAGE"] * 60
         )
         # get the events corresponding to each section
-        events = get_events_from_sections(sections)  # a list of lists
+        events = get_events_from_sections(sections)  # a list of lists containing events
+        start_times = [
+            section[0].timestamp for section in sections
+        ]  # the starting times of each section
         # get the page number from the request
         page = request.args.get("page", 1, type=int)  # default page is 1
         page_items = events[page - 1]  # get the events for the current page
         has_prev = page > 1  # check if there is a previous page
         has_next = page < len(events)  # check if there is a next page
+        start_time = start_times[page - 1]  # get the starting time of the current page
         if has_prev:
             prev_url = url_for(
                 "annotate.annotate_ps", dataset_id=dataset_id, page=page - 1
@@ -46,6 +50,7 @@ def annotate_ps(dataset_id):
             page_items=page_items,
             next_url=next_url,
             prev_url=prev_url,
+            start_time=start_time,
         )
     except IndexError:
         # if there are no dialog turns in the dataset, return the template without any events
