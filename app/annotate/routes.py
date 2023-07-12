@@ -29,10 +29,12 @@ def annotate_ps(dataset_id):
         # get the page number from the request
         page = request.args.get("page", 1, type=int)  # default page is 1
         page_items = events[page - 1]  # get the events for the current page
-        has_prev = page > 1  # check if there is a previous page
-        has_next = page < len(events)  # check if there is a next page
         start_time = start_times[page - 1]  # get the starting time of the current page
-        total_pages = len(events)  # get the total number of pages
+        total_pages = len(events)  # total number of pages
+        has_prev = page > 1  # check if there is a previous page
+        has_next = page < total_pages  # check if there is a next page
+        is_first = page == 1  # check if the current page is the first page
+        is_last = page == total_pages  # check if the current page is the last page
         if has_prev:
             prev_url = url_for(
                 "annotate.annotate_ps", dataset_id=dataset_id, page=page - 1
@@ -45,12 +47,24 @@ def annotate_ps(dataset_id):
             )
         else:
             next_url = None
+        if is_first:
+            first_url = None
+        else:
+            first_url = url_for("annotate.annotate_ps", dataset_id=dataset_id, page=1)
+        if is_last:
+            last_url = None
+        else:
+            last_url = url_for(
+                "annotate.annotate_ps", dataset_id=dataset_id, page=total_pages
+            )
         return render_template(
             "annotate/annotate_ps.html",
             dataset_name=dataset.name,
             page_items=page_items,
             next_url=next_url,
             prev_url=prev_url,
+            first_url=first_url,
+            last_url=last_url,
             start_time=start_time,
             page=page,
             total_pages=total_pages,

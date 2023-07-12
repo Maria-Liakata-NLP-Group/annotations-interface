@@ -34,6 +34,16 @@
             Next <span aria-hidden="true">&rarr;</span>
           </a>
         </li>
+        <li class="first{% if not first_url %} disabled{% endif %}">
+          <a href="{{ first_url or '#' }}">
+            <span aria-hidden="true">&larr;</span> First
+          </a>
+        </li>
+        <li class="last{% if not last_url %} disabled{% endif %}">
+          <a href="{{ last_url or '#' }}">
+            Last <span aria-hidden="true">&rarr;</span>
+          </a>
+        </li>
       </ul>
     </nav>
   </div>
