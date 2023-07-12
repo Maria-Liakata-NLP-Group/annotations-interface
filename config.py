@@ -19,6 +19,7 @@ class BaseConfig(object):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     UPLOAD_FOLDER = os.path.join(basedir, "data")  # folder for uploaded files
     APP_ADMIN = os.environ.get("APP_ADMIN")  # admin email(s), specified in .flaskenv
+    PS_MINS_PER_PAGE = 5  # number of minutes per page in psychotherapy timeline
     if APP_ADMIN:
         # convert string to list if APP_ADMIN environment variable is set
         APP_ADMIN = get_app_admin(APP_ADMIN)
