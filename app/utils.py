@@ -4,8 +4,30 @@ Utility classes for models.py
 from enum import Enum
 
 
+class SMAnnotationType(Enum):
+    """Enum for social media annotation types"""
+
+    escalation = "Escalation"
+    switch = "Switch"
+
+
+class DatasetType(Enum):
+    """Enum for dataset types"""
+
+    sm_thread = "Social Media Thread"
+    psychotherapy = "Psychotherapy Session"
+
+
+class Permission:
+    """Permissions for roles"""
+
+    READ = 1  # read datasets
+    WRITE = 2  # annotate datasets
+    ADMIN = 4  # admin
+
+
 class SubcategoriesA(Enum):
-    """Subcategories for label A"""
+    """Enum for psychotherapy annotation label A"""
 
     subcategory1 = "subcategory1"
     subcategory2 = "subcategory2"
@@ -15,7 +37,7 @@ class SubcategoriesA(Enum):
 
 
 class SubcategoriesB(Enum):
-    """Subcategories for label B"""
+    """Enum for psychotherapy annotation label B"""
 
     subcategory1 = "subcategory1"
     subcategory2 = "subcategory2"
@@ -25,7 +47,7 @@ class SubcategoriesB(Enum):
 
 
 class SubcategoriesC(Enum):
-    """Subcategories for label C"""
+    """Enum for psychotherapy annotation label C"""
 
     subcategory1 = "subcategory1"
     subcategory2 = "subcategory2"
@@ -35,7 +57,7 @@ class SubcategoriesC(Enum):
 
 
 class SubcategoriesD(Enum):
-    """Subcategories for label D"""
+    """Enum for psychotherapy annotation label D"""
 
     subcategory1 = "subcategory1"
     subcategory2 = "subcategory2"
@@ -45,7 +67,7 @@ class SubcategoriesD(Enum):
 
 
 class SubcategoriesE(Enum):
-    """Subcategories for label E"""
+    """Enum for psychotherapy annotation label E"""
 
     subcategory1 = "subcategory1"
     subcategory2 = "subcategory2"
@@ -55,7 +77,7 @@ class SubcategoriesE(Enum):
 
 
 class LabelStrength(Enum):
-    """Label strength"""
+    """Psychotherapy annotation label strength"""
 
     high = "high"
     medium = "medium"

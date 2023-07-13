@@ -5,6 +5,9 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin, AnonymousUserMixin
 from flask import current_app
 from app.utils import (
+    SMAnnotationType,
+    DatasetType,
+    Permission,
     SubcategoriesA,
     SubcategoriesB,
     SubcategoriesC,
@@ -13,20 +16,6 @@ from app.utils import (
     LabelStrength,
     Speaker,
 )
-
-
-class AnnotationType(Enum):
-    """Enum for annotation types"""
-
-    escalation = "Escalation"
-    switch = "Switch"
-
-
-class DatasetType(Enum):
-    """Enum for dataset types"""
-
-    sm_thread = "Social Media Thread"
-    psychotherapy = "Psychotherapy Session"
 
 
 @login.user_loader
@@ -177,19 +166,11 @@ class Role(db.Model):
         return "<Role {}>".format(self.name)
 
 
-class Permission:
-    """Permissions for roles"""
-
-    READ = 1  # read datasets
-    WRITE = 2  # annotate datasets
-    ADMIN = 4  # admin
-
-
 class SMAnnotation(db.Model):
     """Social Media Annotation class for database"""
 
     id = db.Column(db.Integer, primary_key=True)
-    type = db.Column(db.Enum(AnnotationType), nullable=True)  # type of annotation
+    type = db.Column(db.Enum(SMAnnotationType), nullable=True)  # type of annotation
     body = db.Column(db.Text)  # annotation body
     timestamp = db.Column(
         db.DateTime, index=True, default=datetime.utcnow
