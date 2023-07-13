@@ -11,6 +11,7 @@ from app.utils import (
     SubcategoriesD,
     SubcategoriesE,
     LabelStrength,
+    Speaker,
 )
 
 
@@ -54,6 +55,9 @@ class User(UserMixin, db.Model):
     annotations_sm = db.relationship(
         "SMAnnotation", backref="author", lazy="dynamic"
     )  # one-to-many relationship with SMAnnotation class
+    annotations_dialog_turn = db.relationship(
+        "PSDialogTurnAnnotation", backref="author", lazy="dynamic"
+    )  # one-to-many relationship with PSDialogTurnAnnotation class
     authored_datasets = db.relationship(
         "Dataset",
         backref="author",
@@ -354,6 +358,15 @@ class PSDialogTurnAnnotation(db.Model):
     strength_c = db.Column(db.Enum(LabelStrength), nullable=True)
     strength_d = db.Column(db.Enum(LabelStrength), nullable=True)
     strength_e = db.Column(db.Enum(LabelStrength), nullable=True)
+    comment_a = db.Column(db.Text, nullable=True)
+    comment_b = db.Column(db.Text, nullable=True)
+    comment_c = db.Column(db.Text, nullable=True)
+    comment_d = db.Column(db.Text, nullable=True)
+    comment_e = db.Column(db.Text, nullable=True)
+    speaker = db.Column(db.Enum(Speaker), nullable=True)
+    id_user = db.Column(
+        db.Integer, db.ForeignKey("user.id")
+    )  # id of user (annotator) who created this annotation
     id_ps_dialog_turn = db.Column(
         db.Integer, db.ForeignKey("ps_dialog_turn.id")
     )  # id of dialog turn associated with this annotation

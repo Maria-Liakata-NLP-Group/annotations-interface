@@ -60,3 +60,10 @@ class LabelStrength(Enum):
     high = "high"
     medium = "medium"
     low = "low"
+
+
+class Speaker(Enum):
+    """Speaker in a psychotherapy session"""
+
+    client = "client"
+    therapist = "therapist"
