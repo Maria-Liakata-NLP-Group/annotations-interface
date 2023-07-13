@@ -1,4 +1,6 @@
 from datetime import datetime, date
+from app.models import PSDialogTurnAnnotation, PSDialogTurn, User, Dataset
+from app.utils import SubcategoriesA, SubcategoriesB, LabelStrength, Speaker
 
 
 def test_new_user(db_session, user_admin1):
@@ -123,3 +125,27 @@ def test_new_ps_dialog_event(new_ps_dialog_event, new_ps_dialog_turn, new_ps_dat
         new_ps_dialog_event.id_ps_dialog_turn is None
     )  # id_dialog_turn is set by database
     assert new_ps_dialog_event.id_dataset is None  # id_dataset is set by database
+
+
+def test_new_ps_dialog_turn_annotation(
+    insert_users,
+    insert_datasets,
+    insert_ps_dialog_turns,
+    db_session,
+    new_ps_dialog_turn_annotation,
+):
+    db_session.add(new_ps_dialog_turn_annotation)
+    db_session.commit()
+
+    annotation = PSDialogTurnAnnotation.query.all()[0]
+    assert annotation.category_a == SubcategoriesA.subcategory1
+    assert annotation.category_b == SubcategoriesB.subcategory2
+    assert annotation.strength_a == LabelStrength.low
+    assert annotation.strength_b == LabelStrength.medium
+    assert annotation.speaker == Speaker.client
+    assert annotation.dialog_turn == PSDialogTurn.query.all()[0]
+    assert annotation.author == User.query.filter_by(username="annotator1").first()
+    assert (
+        annotation.dataset
+        == Dataset.query.filter_by(name="Psychotherapy Dataset Test").first()
+    )

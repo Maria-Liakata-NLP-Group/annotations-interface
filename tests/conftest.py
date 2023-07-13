@@ -12,6 +12,13 @@ from app.models import (
     PSDialogTurn,
     PSDialogEvent,
     DatasetType,
+    PSDialogTurnAnnotation,
+)
+from app.utils import (
+    SubcategoriesA,
+    SubcategoriesB,
+    LabelStrength,
+    Speaker,
 )
 from config import TestConfig
 from app.upload.parsers import read_pickle, psychotherapy_df_to_sql
@@ -172,3 +179,21 @@ def new_ps_dialog_event(new_ps_dataset, new_ps_dialog_turn):
         dataset=new_ps_dataset,
     )
     return dialog_event
+
+
+@pytest.fixture(scope="module")
+def new_ps_dialog_turn_annotation(new_ps_dataset, new_ps_dialog_turn, user_annotator1):
+    """Fixture to create a new psychotherapy dialog turn annotation"""
+    dialog_turn_annotation = PSDialogTurnAnnotation(
+        category_a=SubcategoriesA.subcategory1,
+        category_b=SubcategoriesB.subcategory2,
+        strength_a=LabelStrength.low,
+        strength_b=LabelStrength.medium,
+        comment_a="test comment a",
+        comment_b="test comment b",
+        speaker=Speaker.client,
+        author=user_annotator1,
+        dialog_turn=new_ps_dialog_turn,
+        dataset=new_ps_dataset,
+    )
+    return dialog_turn_annotation
