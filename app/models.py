@@ -4,6 +4,14 @@ from enum import Enum
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin, AnonymousUserMixin
 from flask import current_app
+from app.utils import (
+    SubcategoriesA,
+    SubcategoriesB,
+    SubcategoriesC,
+    SubcategoriesD,
+    SubcategoriesE,
+    LabelStrength,
+)
 
 
 class AnnotationType(Enum):
@@ -264,6 +272,9 @@ class Dataset(db.Model):
     dialog_events = db.relationship(
         "PSDialogEvent", backref="dataset", lazy="dynamic"
     )  # one-to-many relationship with PSDialogEvent class
+    dialog_turns_annotations = db.relationship(
+        "PSDialogTurnAnnotation", backref="dataset", lazy="dynamic"
+    )  # one-to-many relationship with PSDialogTurnAnnotation class
 
     def __repr__(self):
         """How to print objects of this class"""
@@ -298,6 +309,9 @@ class PSDialogTurn(db.Model):
     dialog_events = db.relationship(
         "PSDialogEvent", backref="dialog_turn", lazy="dynamic"
     )  # one-to-many relationship with PSDialogEvent class
+    annotations = db.relationship(
+        "PSDialogTurnAnnotation", backref="dialog_turn", lazy="dynamic"
+    )  # one-to-many relationship with PSDialogTurnAnnotation class
 
 
 class PSDialogEvent(db.Model):
@@ -320,3 +334,29 @@ class PSDialogEvent(db.Model):
     id_dataset = db.Column(
         db.Integer, db.ForeignKey("dataset.id")
     )  # id of dataset associated with this dialog event
+
+
+class PSDialogTurnAnnotation(db.Model):
+    """
+    Psychotherapy Dialog Turn Annotation class for database.
+    This captures annotations of psychotherapy sessions at the 'segment' level.
+    """
+
+    __tablename__ = "ps_dialog_turn_annotation"
+    id = db.Column(db.Integer, primary_key=True)
+    category_a = db.Column(db.Enum(SubcategoriesA), nullable=True)
+    category_b = db.Column(db.Enum(SubcategoriesB), nullable=True)
+    category_c = db.Column(db.Enum(SubcategoriesC), nullable=True)
+    category_d = db.Column(db.Enum(SubcategoriesD), nullable=True)
+    category_e = db.Column(db.Enum(SubcategoriesE), nullable=True)
+    strength_a = db.Column(db.Enum(LabelStrength), nullable=True)
+    strength_b = db.Column(db.Enum(LabelStrength), nullable=True)
+    strength_c = db.Column(db.Enum(LabelStrength), nullable=True)
+    strength_d = db.Column(db.Enum(LabelStrength), nullable=True)
+    strength_e = db.Column(db.Enum(LabelStrength), nullable=True)
+    id_ps_dialog_turn = db.Column(
+        db.Integer, db.ForeignKey("ps_dialog_turn.id")
+    )  # id of dialog turn associated with this annotation
+    id_dataset = db.Column(
+        db.Integer, db.ForeignKey("dataset.id")
+    )  # id of dataset associated with this annotation
