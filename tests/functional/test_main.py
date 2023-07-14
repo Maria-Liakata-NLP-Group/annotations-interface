@@ -14,7 +14,7 @@ def test_home_page(test_client):
     assert "/auth/login" in response.headers["Location"]
 
 
-def test_home_page_logged_in(test_client, insert_users, insert_datasets):
+def test_home_page_logged_in(test_client, insert_datasets):
     """
     GIVEN a Flask application configured for testing
     WHEN the '/' page is requested (GET) after logging in

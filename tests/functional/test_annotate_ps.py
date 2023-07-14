@@ -11,7 +11,7 @@ import pytest
     depends=["tests/unit/test_upload_parsers.py::test_psychotherapy_df_to_sql"],
     scope="session",
 )
-def test_annotate_ps_valid_login(test_client, insert_users, insert_ps_dialog_turns):
+def test_annotate_ps_valid_login(test_client, insert_ps_dialog_turns):
     """
     GIVEN a Flask application configured for testing and a dataset with psychotherapy dialog turns
     WHEN the '/annotate_psychotherapy' page is requested (GET) after logging in
@@ -24,6 +24,7 @@ def test_annotate_ps_valid_login(test_client, insert_users, insert_ps_dialog_tur
         follow_redirects=True,
     )
     assert response.status_code == 200
+    assert b"Hi, annotator1" in response.data
 
     # get the dataset id for the logged in user
     dataset = current_user.datasets.filter_by(name="Psychotherapy Dataset Test").all()
