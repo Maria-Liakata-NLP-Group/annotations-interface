@@ -29,51 +29,51 @@ class Permission:
 class SubLabelsA(Enum):
     """Enum for psychotherapy annotation label A"""
 
-    sublabel1 = "subcategory1"
-    sublabel2 = "subcategory2"
-    sublabel3 = "subcategory3"
-    sublabel4 = "subcategory4"
-    sublabel5 = "subcategory5"
+    sublabel1 = "sublabel1"
+    sublabel2 = "sublabel2"
+    sublabel3 = "sublabel3"
+    sublabel4 = "sublabel4"
+    sublabel5 = "sublabel5"
 
 
 class SubLabelsB(Enum):
     """Enum for psychotherapy annotation label B"""
 
-    sublabel1 = "subcategory1"
-    sublabel2 = "subcategory2"
-    sublabel3 = "subcategory3"
-    sublabel4 = "subcategory4"
-    sublabel5 = "subcategory5"
+    sublabel1 = "sublabel1"
+    sublabel2 = "sublabel2"
+    sublabel3 = "sublabel3"
+    sublabel4 = "sublabel4"
+    sublabel5 = "sublabel5"
 
 
 class SubLabelsC(Enum):
     """Enum for psychotherapy annotation label C"""
 
-    sublabel1 = "subcategory1"
-    sublabel2 = "subcategory2"
-    sublabel3 = "subcategory3"
-    sublabel4 = "subcategory4"
-    sublabel5 = "subcategory5"
+    sublabel1 = "sublabel1"
+    sublabel2 = "sublabel2"
+    sublabel3 = "sublabel3"
+    sublabel4 = "sublabel4"
+    sublabel5 = "sublabel5"
 
 
 class SubLabelsD(Enum):
     """Enum for psychotherapy annotation label D"""
 
-    sublabel1 = "subcategory1"
-    sublabel2 = "subcategory2"
-    sublabel3 = "subcategory3"
-    sublabel4 = "subcategory4"
-    sublabel5 = "subcategory5"
+    sublabel1 = "sublabel1"
+    sublabel2 = "sublabel2"
+    sublabel3 = "sublabel3"
+    sublabel4 = "sublabel4"
+    sublabel5 = "sublabel5"
 
 
 class SubLabelsE(Enum):
     """Enum for psychotherapy annotation label E"""
 
-    sublabel1 = "subcategory1"
-    sublabel2 = "subcategory2"
-    sublabel3 = "subcategory3"
-    sublabel4 = "subcategory4"
-    sublabel5 = "subcategory5"
+    sublabel1 = "sublabel1"
+    sublabel2 = "sublabel2"
+    sublabel3 = "sublabel3"
+    sublabel4 = "sublabel4"
+    sublabel5 = "sublabel5"
 
 
 class LabelStrength(Enum):
