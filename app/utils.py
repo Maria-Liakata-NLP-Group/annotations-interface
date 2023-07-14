@@ -89,3 +89,13 @@ class Speaker(Enum):
 
     client = "client"
     therapist = "therapist"
+
+
+class LabelNames(Enum):
+    """Enum for psychotherapy annotation label names"""
+
+    label_a = "label A"
+    label_b = "label B"
+    label_c = "label C"
+    label_d = "label D"
+    label_e = "label E"
