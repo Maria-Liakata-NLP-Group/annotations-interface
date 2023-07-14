@@ -15,8 +15,8 @@ from app.models import (
     PSDialogTurnAnnotation,
 )
 from app.utils import (
-    SubcategoriesA,
-    SubcategoriesB,
+    SubLabelsA,
+    SubLabelsB,
     LabelStrength,
     Speaker,
 )
@@ -185,8 +185,8 @@ def new_ps_dialog_event(new_ps_dataset, new_ps_dialog_turn):
 def new_ps_dialog_turn_annotation(new_ps_dataset, new_ps_dialog_turn, user_annotator1):
     """Fixture to create a new psychotherapy dialog turn annotation"""
     dialog_turn_annotation = PSDialogTurnAnnotation(
-        category_a=SubcategoriesA.subcategory1,
-        category_b=SubcategoriesB.subcategory2,
+        category_a=SubLabelsA.subcategory1,
+        category_b=SubLabelsB.subcategory2,
         strength_a=LabelStrength.low,
         strength_b=LabelStrength.medium,
         comment_a="test comment a",

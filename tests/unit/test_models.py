@@ -9,7 +9,7 @@ from app.models import (
     PSDialogTurn,
     PSDialogEvent,
 )
-from app.utils import SubcategoriesA, SubcategoriesB, LabelStrength, Speaker
+from app.utils import SubLabelsA, SubLabelsB, LabelStrength, Speaker
 
 
 def test_new_user(db_session, user_admin1):
@@ -179,8 +179,8 @@ def test_new_ps_dialog_turn_annotation(
     annotation = PSDialogTurnAnnotation.query.all()[0]
     annotator1 = User.query.filter_by(username="annotator1").first()
     dataset = Dataset.query.filter_by(name="Psychotherapy Dataset Test").first()
-    assert annotation.category_a == SubcategoriesA.subcategory1
-    assert annotation.category_b == SubcategoriesB.subcategory2
+    assert annotation.category_a == SubLabelsA.subcategory1
+    assert annotation.category_b == SubLabelsB.subcategory2
     assert annotation.strength_a == LabelStrength.low
     assert annotation.strength_b == LabelStrength.medium
     assert annotation.speaker == Speaker.client

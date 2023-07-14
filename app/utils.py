@@ -26,7 +26,7 @@ class Permission:
     ADMIN = 4  # admin
 
 
-class SubcategoriesA(Enum):
+class SubLabelsA(Enum):
     """Enum for psychotherapy annotation label A"""
 
     subcategory1 = "subcategory1"
@@ -36,7 +36,7 @@ class SubcategoriesA(Enum):
     subcategory5 = "subcategory5"
 
 
-class SubcategoriesB(Enum):
+class SubLabelsB(Enum):
     """Enum for psychotherapy annotation label B"""
 
     subcategory1 = "subcategory1"
@@ -46,7 +46,7 @@ class SubcategoriesB(Enum):
     subcategory5 = "subcategory5"
 
 
-class SubcategoriesC(Enum):
+class SubLabelsC(Enum):
     """Enum for psychotherapy annotation label C"""
 
     subcategory1 = "subcategory1"
@@ -56,7 +56,7 @@ class SubcategoriesC(Enum):
     subcategory5 = "subcategory5"
 
 
-class SubcategoriesD(Enum):
+class SubLabelsD(Enum):
     """Enum for psychotherapy annotation label D"""
 
     subcategory1 = "subcategory1"
@@ -66,7 +66,7 @@ class SubcategoriesD(Enum):
     subcategory5 = "subcategory5"
 
 
-class SubcategoriesE(Enum):
+class SubLabelsE(Enum):
     """Enum for psychotherapy annotation label E"""
 
     subcategory1 = "subcategory1"
