@@ -329,11 +329,11 @@ class PSDialogTurnAnnotation(db.Model):
 
     __tablename__ = "ps_dialog_turn_annotation"
     id = db.Column(db.Integer, primary_key=True)
-    category_a = db.Column(db.Enum(SubLabelsA), nullable=True)
-    category_b = db.Column(db.Enum(SubLabelsB), nullable=True)
-    category_c = db.Column(db.Enum(SubLabelsC), nullable=True)
-    category_d = db.Column(db.Enum(SubLabelsD), nullable=True)
-    category_e = db.Column(db.Enum(SubLabelsE), nullable=True)
+    label_a = db.Column(db.Enum(SubLabelsA), nullable=True)
+    label_b = db.Column(db.Enum(SubLabelsB), nullable=True)
+    label_c = db.Column(db.Enum(SubLabelsC), nullable=True)
+    label_d = db.Column(db.Enum(SubLabelsD), nullable=True)
+    label_e = db.Column(db.Enum(SubLabelsE), nullable=True)
     strength_a = db.Column(db.Enum(LabelStrength), nullable=True)
     strength_b = db.Column(db.Enum(LabelStrength), nullable=True)
     strength_c = db.Column(db.Enum(LabelStrength), nullable=True)
