@@ -35,6 +35,7 @@ def test_annotate_ps_valid_login(test_client, insert_ps_dialog_turns):
     assert response.status_code == 200
     assert b"Annotating psychotherapy session" in response.data
     assert b"Psychotherapy Dataset Test" in response.data
+    assert b"Time since start of session:" in response.data
     assert b"Client:" in response.data
     assert b"Therapist:" in response.data
     # check that the pager is present
@@ -57,6 +58,7 @@ def test_annotate_ps_valid_login(test_client, insert_ps_dialog_turns):
     assert response.status_code == 200
     assert b"Annotating psychotherapy session" in response.data
     assert b"Psychotherapy Dataset Test" in response.data
+    assert b"Time since start of session:" in response.data
     assert b"Client:" in response.data
     assert b"Therapist:" in response.data
 
