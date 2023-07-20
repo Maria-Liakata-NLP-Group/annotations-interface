@@ -1,4 +1,5 @@
-{% extends "base.html" %} {% block app_content %}
+{% extends "base.html" %} {% import "bootstrap/wtf.html" as wtf %} {% block
+app_content %}
 <body>
   <div class="container">
     <h1>
@@ -46,6 +47,36 @@
         </li>
       </ul>
     </nav>
+
+    <!-- Buttons to Toggle Forms -->
+    <div class="d-flex justify-content-center">
+      <button
+        type="button"
+        class="btn btn-primary mx-2"
+        data-toggle="collapse"
+        data-target="#form_client"
+      >
+        Client
+      </button>
+      <button
+        type="button"
+        class="btn btn-primary mx-2"
+        data-toggle="collapse"
+        data-target="#form_therapist"
+      >
+        Therapist
+      </button>
+    </div>
+
+    <!-- Form 1 -->
+    <div id="form_client" class="collapse">
+      {{ wtf.quick_form(form_client) }}
+    </div>
+
+    <!-- Form 2 -->
+    <div id="form_therapist" class="collapse">
+      {{ wtf.quick_form(form_therapist) }}
+    </div>
   </div>
 </body>
 {% endblock %}

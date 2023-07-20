@@ -140,6 +140,8 @@ def annotate_ps(dataset_id):
             start_time=start_time,
             page=page,
             total_pages=total_pages,
+            form_client=form_client,
+            form_therapist=form_therapist,
         )
     except IndexError:
         # if there are no dialog turns in the dataset, return the template without any events
