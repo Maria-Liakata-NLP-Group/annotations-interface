@@ -23,6 +23,8 @@ app_content %}
       </li>
       {% endfor %}
     </ul>
+
+    <!-- Pagination -->
     <nav aria-label="...">
       <ul class="pager">
         <li class="previous{% if not prev_url %} disabled{% endif %}">
@@ -48,11 +50,14 @@ app_content %}
       </ul>
     </nav>
 
-    <!-- Buttons to Toggle Forms -->
+    <h3>Annotate this page:</h3>
+
+    <!-- Buttons to toggle annotation forms at the segment level -->
     <div class="d-flex justify-content-center">
       <button
         type="button"
         class="btn btn-primary mx-2"
+        id="btn_client"
         data-toggle="collapse"
         data-target="#form_client"
       >
@@ -61,6 +66,7 @@ app_content %}
       <button
         type="button"
         class="btn btn-primary mx-2"
+        id="btn_therapist"
         data-toggle="collapse"
         data-target="#form_therapist"
       >
@@ -79,4 +85,20 @@ app_content %}
     </div>
   </div>
 </body>
+{% endblock %}
+
+<!-- Use JavaScript to hide one form when the other form is selected -->
+{% block scripts %} {{ super() }}
+<script>
+  $(document).ready(function () {
+    $(document).ready(function () {
+      $("#btn_client").on("click", function () {
+        $("#form_therapist").collapse("hide");
+      });
+      $("#btn_therapist").on("click", function () {
+        $("#form_client").collapse("hide");
+      });
+    });
+  });
+</script>
 {% endblock %}
