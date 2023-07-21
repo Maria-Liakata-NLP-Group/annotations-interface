@@ -1,5 +1,13 @@
 {% extends "base.html" %} {% import "bootstrap/wtf.html" as wtf %} {% block
-app_content %}
+app_content %} {% block head%} {{ super() }}
+<!-- Reference custom CSS file for button rendering -->
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="{{ url_for('static', filename='styles.css') }}"
+/>
+{% endblock %}
+
 <body>
   <div class="container">
     <h1>
@@ -85,26 +93,6 @@ app_content %}
     </div>
   </div>
 </body>
-{% endblock %}
-
-<!-- Custom CSS Styles for buttons -->
-{% block styles %} {{ super() }}
-<style>
-  /* Custom styles for buttons */
-  #btn_client,
-  #btn_therapist {
-    background-color: #007bff;
-    border-color: #007bff;
-    color: #fff;
-  }
-  /* Custom styles for active buttons */
-  #btn_client.active,
-  #btn_therapist.active {
-    background-color: #0069d9;
-    border: 2px solid black;
-    color: #fff;
-  }
-</style>
 {% endblock %}
 
 <!-- Use JavaScript to handle button behavior dynamically when clicked on -->

@@ -1,0 +1,14 @@
+/* Custom styles for buttons */
+#btn_client,
+#btn_therapist {
+  background-color: #007bff;
+  border-color: #007bff;
+  color: #fff;
+}
+/* Custom styles for active buttons */
+#btn_client.active,
+#btn_therapist.active {
+  background-color: #0069d9;
+  border: 2px solid black;
+  color: #fff;
+}
