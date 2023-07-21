@@ -84,12 +84,68 @@ app_content %} {% block head%} {{ super() }}
 
     <!-- Form 1 -->
     <div id="form_client" class="collapse">
-      {{ wtf.quick_form(form_client) }}
+      <div class="row">
+        <div class="col-md-4">
+          {{ wtf.form_field(form_client.label_a) }} {{
+          wtf.form_field(form_client.label_b) }} {{
+          wtf.form_field(form_client.label_c) }} {{
+          wtf.form_field(form_client.label_d) }} {{
+          wtf.form_field(form_client.label_e) }}
+        </div>
+        <div class="col-md-4">
+          <strong>{{ form_client.strength_a.label }}</strong>
+          {{ wtf.form_field(form_client.strength_a) }}
+          <strong>{{ form_client.strength_b.label }}</strong>
+          {{ wtf.form_field(form_client.strength_b) }}
+          <strong>{{ form_client.strength_c.label }}</strong>
+          {{ wtf.form_field(form_client.strength_c) }}
+          <strong>{{ form_client.strength_d.label }}</strong>
+          {{ wtf.form_field(form_client.strength_d) }}
+          <strong>{{ form_client.strength_e.label }}</strong>
+          {{ wtf.form_field(form_client.strength_e) }}
+        </div>
+        <div class="col-md-4">
+          {{ wtf.form_field(form_client.comment_a) }} {{
+          wtf.form_field(form_client.comment_b) }} {{
+          wtf.form_field(form_client.comment_c) }} {{
+          wtf.form_field(form_client.comment_d) }} {{
+          wtf.form_field(form_client.comment_e) }}
+        </div>
+      </div>
+      {{ wtf.form_field(form_client.submit) }}
     </div>
 
     <!-- Form 2 -->
     <div id="form_therapist" class="collapse">
-      {{ wtf.quick_form(form_therapist) }}
+      <div class="row">
+        <div class="col-md-4">
+          {{ wtf.form_field(form_therapist.label_a) }} {{
+          wtf.form_field(form_therapist.label_b) }} {{
+          wtf.form_field(form_therapist.label_c) }} {{
+          wtf.form_field(form_therapist.label_d) }} {{
+          wtf.form_field(form_therapist.label_e) }}
+        </div>
+        <div class="col-md-4">
+          <strong>{{ form_therapist.strength_a.label }}</strong>
+          {{ wtf.form_field(form_therapist.strength_a) }}
+          <strong>{{ form_therapist.strength_b.label }}</strong>
+          {{ wtf.form_field(form_therapist.strength_b) }}
+          <strong>{{ form_therapist.strength_c.label }}</strong>
+          {{ wtf.form_field(form_therapist.strength_c) }}
+          <strong>{{ form_therapist.strength_d.label }}</strong>
+          {{ wtf.form_field(form_therapist.strength_d) }}
+          <strong>{{ form_therapist.strength_e.label }}</strong>
+          {{ wtf.form_field(form_therapist.strength_e) }}
+        </div>
+        <div class="col-md-4">
+          {{ wtf.form_field(form_therapist.comment_a) }} {{
+          wtf.form_field(form_therapist.comment_b) }} {{
+          wtf.form_field(form_therapist.comment_c) }} {{
+          wtf.form_field(form_therapist.comment_d) }} {{
+          wtf.form_field(form_therapist.comment_e) }}
+        </div>
+      </div>
+      {{ wtf.form_field(form_therapist.submit) }}
     </div>
   </div>
 </body>
