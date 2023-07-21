@@ -97,34 +97,8 @@ app_content %} {% block head%} {{ super() }}
 
 <!-- Use JavaScript to handle button behavior dynamically when clicked on -->
 {% block scripts %} {{ super() }}
-<script>
-  $(document).ready(function () {
-    $("#btn_client").on("click", function () {
-      if ($(this).hasClass("active")) {
-        // Button is already active, so deactivate it
-        $("#form_client").collapse("hide"); // Hide client form
-        $(this).removeClass("active"); // Remove active class from client button
-      } else {
-        // Button is not active, so activate it
-        $("#form_therapist").collapse("hide"); // Hide therapist form
-        $("#form_client").collapse("show"); // Show client form
-        $("#btn_therapist").removeClass("active"); // Remove active class from therapist button
-        $(this).addClass("active"); // Add active class to client button
-      }
-    });
-    $("#btn_therapist").on("click", function () {
-      if ($(this).hasClass("active")) {
-        // Button is already active, so deactivate it
-        $("#form_therapist").collapse("hide"); // Hide therapist form
-        $(this).removeClass("active"); // Remove active class from therapist button
-      } else {
-        // Button is not active, so activate it
-        $("#form_client").collapse("hide"); // Hide client form
-        $("#form_therapist").collapse("show"); // Show therapist form
-        $("#btn_client").removeClass("active"); // Remove active class from client button
-        $(this).addClass("active"); // Add active class to therapist button
-      }
-    });
-  });
-</script>
+<script
+  type="text/javascript"
+  src="{{ url_for('static', filename='scripts.js') }}"
+></script>
 {% endblock %}
