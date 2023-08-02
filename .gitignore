@@ -9,3 +9,6 @@ app.db
 # data files uploaded by users
 data/*
 !data/README.md
+
+# tests coverage
+.coverage
