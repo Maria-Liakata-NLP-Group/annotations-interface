@@ -42,14 +42,22 @@ def test_annotate_ps_valid_login(test_client, insert_ps_dialog_turns):
     soup = BeautifulSoup(response.data, "html.parser")
     pager = soup.find("ul", class_="pager")
     assert pager is not None
+    # previous button should be disabled
     previous_button = pager.find("li", class_="previous")
     assert previous_button is not None
+    assert "disabled" in previous_button.attrs["class"]
+    # next button should not be disabled
     next_button = pager.find("li", class_="next")
     assert next_button is not None
+    assert "disabled" not in next_button.attrs["class"]
+    # first button should be disabled
     first_button = pager.find("li", class_="first")
     assert first_button is not None
+    assert "disabled" in first_button.attrs["class"]
+    # last button should not be disabled
     last_button = pager.find("li", class_="last")
     assert last_button is not None
+    assert "disabled" not in last_button.attrs["class"]
 
     # move to the next page
     response = test_client.get(
