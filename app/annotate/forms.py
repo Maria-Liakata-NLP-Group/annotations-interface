@@ -2,7 +2,7 @@
 Annotation forms for the app
 """
 from flask_wtf import FlaskForm
-from wtforms import RadioField, SelectMultipleField, SubmitField, TextAreaField
+from wtforms import RadioField, SelectField, SubmitField, TextAreaField
 from wtforms.validators import DataRequired, Length
 
 from app.utils import (
@@ -19,7 +19,7 @@ from app.utils import (
 def create_label_field(label_name, label_choices):
     """Create a label field for the psychotherapy annotation form"""
 
-    return SelectMultipleField(
+    return SelectField(
         label_name,
         choices=[(label.name, label.value) for label in label_choices],
         validators=[DataRequired()],
