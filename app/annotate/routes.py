@@ -1,7 +1,7 @@
 from app.annotate import bp
 from app.annotate.forms import PSAnnotationForm
 from app import db
-from flask import render_template, request, url_for, current_app
+from flask import render_template, request, url_for, current_app, abort, flash
 from flask_login import login_required, current_user
 from app.models import Dataset, PSDialogTurnAnnotation
 from app.utils import Speaker
@@ -108,27 +108,33 @@ def annotate_ps(dataset_id):
         speaker = Speaker.client
         # the condition below is True when the request method is POST and all validators pass
         if form_client.validate_on_submit():
-            # save the annotations to the database
+            # add the annotations to the database session
             try:
                 new_dialog_turn_annotation_to_db(
                     form_client, speaker, dataset_id, dialog_turn_ids
                 )
-                db.session.commit()
             except:
                 db.session.rollback()
+                abort(500)
+            # commit the changes to the database
+            db.session.commit()
+            flash("Your annotations have been saved.", "success")
         # annotation form for the therapist
         form_therapist = PSAnnotationForm()
         speaker = Speaker.therapist
         # the condition below is True when the request method is POST and all validators pass
         if form_therapist.validate_on_submit():
-            # save the annotations to the database
+            # add the annotations to the database session
             try:
                 new_dialog_turn_annotation_to_db(
                     form_therapist, speaker, dataset_id, dialog_turn_ids
                 )
-                db.session.commit()
             except:
                 db.session.rollback()
+                abort(500)
+            # commit the changes to the database
+            db.session.commit()
+            flash("Your annotations have been saved.", "success")
         return render_template(
             "annotate/annotate_ps.html",
             dataset_name=dataset.name,
