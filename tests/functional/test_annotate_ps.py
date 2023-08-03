@@ -15,7 +15,7 @@ def test_annotate_ps_valid_login(test_client, insert_ps_dialog_turns):
     """
     GIVEN a Flask application configured for testing and a dataset with psychotherapy dialog turns
     WHEN the '/annotate_psychotherapy' page is requested (GET) after logging in
-    THEN check the response is valid and contains expected data
+    THEN check the response is valid, contains expected data and the pager is present
     """
     # log in to the app
     response = test_client.post(
@@ -59,7 +59,7 @@ def test_annotate_ps_valid_login(test_client, insert_ps_dialog_turns):
     assert last_button is not None
     assert "disabled" not in last_button.attrs["class"]
 
-    # move to the next page
+    # move to the next page (page 2)
     response = test_client.get(
         "/annotate/annotate_psychotherapy/" + str(dataset_id) + "?page=2"
     )
@@ -69,6 +69,26 @@ def test_annotate_ps_valid_login(test_client, insert_ps_dialog_turns):
     assert b"Time since start of session:" in response.data
     assert b"Client:" in response.data
     assert b"Therapist:" in response.data
+    # check that the pager is present
+    soup = BeautifulSoup(response.data, "html.parser")
+    pager = soup.find("ul", class_="pager")
+    assert pager is not None
+    # previous button should not be disabled
+    previous_button = pager.find("li", class_="previous")
+    assert previous_button is not None
+    assert "disabled" not in previous_button.attrs["class"]
+    # next button should not be disabled
+    next_button = pager.find("li", class_="next")
+    assert next_button is not None
+    assert "disabled" not in next_button.attrs["class"]
+    # first button should not be disabled
+    first_button = pager.find("li", class_="first")
+    assert first_button is not None
+    assert "disabled" not in first_button.attrs["class"]
+    # last button should not be disabled
+    last_button = pager.find("li", class_="last")
+    assert last_button is not None
+    assert "disabled" not in last_button.attrs["class"]
 
     # log out
     response = test_client.get("/auth/logout", follow_redirects=True)
