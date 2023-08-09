@@ -1,7 +1,7 @@
 from app.annotate import bp
 from app.annotate.forms import PSAnnotationForm
 from app import db
-from flask import render_template, request, url_for, current_app, abort, flash
+from flask import render_template, request, url_for, current_app, abort, flash, redirect
 from flask_login import login_required, current_user
 from app.models import Dataset, PSDialogTurnAnnotation
 from app.utils import Speaker
@@ -119,6 +119,9 @@ def annotate_ps(dataset_id):
             # commit the changes to the database
             db.session.commit()
             flash("Your annotations have been saved.", "success")
+            return redirect(
+                url_for("annotate.annotate_ps", dataset_id=dataset_id, page=page)
+            )  # redirect to the same page
         # annotation form for the therapist
         form_therapist = PSAnnotationForm()
         speaker = Speaker.therapist
@@ -135,6 +138,9 @@ def annotate_ps(dataset_id):
             # commit the changes to the database
             db.session.commit()
             flash("Your annotations have been saved.", "success")
+            return redirect(
+                url_for("annotate.annotate_ps", dataset_id=dataset_id, page=page)
+            )  # redirect to the same page
         return render_template(
             "annotate/annotate_ps.html",
             dataset_name=dataset.name,
