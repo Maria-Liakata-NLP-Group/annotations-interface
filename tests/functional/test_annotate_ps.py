@@ -15,7 +15,7 @@ from app.utils import (
     SubLabelsD,
     SubLabelsE,
 )
-from app.annotate.utils import split_dialog_turns
+from app.models import PSDialogTurnAnnotation
 
 
 @pytest.mark.dependency(
@@ -106,14 +106,41 @@ def test_annotate_ps_valid_login(test_client, insert_ps_dialog_turns):
     assert response.status_code == 200
 
 
+def create_segment_level_annotation_data(form_who, speaker):
+    """
+    Create a dictionary with the data for a segment level annotation form
+    """
+    data = {
+        f"{form_who}.label_a": SubLabelsA.sublabel1,
+        f"{form_who}.label_b": SubLabelsB.sublabel1,
+        f"{form_who}.label_c": SubLabelsC.sublabel1,
+        f"{form_who}.label_d": SubLabelsD.sublabel1,
+        f"{form_who}.label_e": SubLabelsE.sublabel1,
+        f"{form_who}.strength_a": LabelStrength.medium,
+        f"{form_who}.strength_b": LabelStrength.medium,
+        f"{form_who}.strength_c": LabelStrength.medium,
+        f"{form_who}.strength_d": LabelStrength.medium,
+        f"{form_who}.strength_e": LabelStrength.medium,
+        f"{form_who}.comment_a": "test comment",
+        f"{form_who}.comment_b": "test comment",
+        f"{form_who}.comment_c": "test comment",
+        f"{form_who}.comment_d": "test comment",
+        f"{form_who}.comment_e": "test comment",
+        "speaker": speaker,
+    }
+    return data
+
+
+# TODO: test not working, need to fix
+@pytest.mark.order(after="test_annotate_ps_valid_login")
 @pytest.mark.dependency(
     depends=["tests/unit/test_upload_parsers.py::test_psychotherapy_df_to_sql"],
     scope="session",
 )
-def test_annotate_ps_valid_dialog_turn_annotation(test_client, insert_ps_dialog_turns):
+def test_annotate_ps_valid_segment_level_annotation(test_client):
     """
     GIVEN a Flask application configured for testing and a dataset with psychotherapy dialog turns
-    WHEN the '/annotate_psychotherapy' page is requested (POST) with valid dialog turn annotations
+    WHEN the '/annotate_psychotherapy' page is requested (POST) with a valid annotation at the segment level
     THEN check the response is valid and the annotations are saved to the database
     """
     # log in to the app
@@ -141,23 +168,27 @@ def test_annotate_ps_valid_dialog_turn_annotation(test_client, insert_ps_dialog_
     assert therapist_button is not None
 
     # submit an annotation for the client
-    client_data = {
-        "form_client.label_a": SubLabelsA.sublabel1,
-        "form_client.label_b": SubLabelsB.sublabel1,
-        "form_client.label_c": SubLabelsC.sublabel1,
-        "form_client.label_d": SubLabelsD.sublabel1,
-        "form_client.label_e": SubLabelsE.sublabel1,
-        "form_client.strength_a": LabelStrength.medium,
-        "form_client.strength_b": LabelStrength.medium,
-        "form_client.strength_c": LabelStrength.medium,
-        "form_client.strength_d": LabelStrength.medium,
-        "form_client.strength_e": LabelStrength.medium,
-        "form_client.comment_a": "test comment",
-        "form_client.comment_b": "test comment",
-        "form_client.comment_c": "test comment",
-        "form_client.comment_d": "test comment",
-        "form_client.comment_e": "test comment",
-        "speaker": Speaker.client,
-    }
+    client_data = create_segment_level_annotation_data(
+        form_who="form_client", speaker=Speaker.client
+    )
     response_client = test_client.post(url, data=client_data, follow_redirects=True)
     assert response_client.status_code == 200
+    assert b"Your annotations have been saved" in response_client.data
+
+    # submit an annotation for the therapist
+    therapist_data = create_segment_level_annotation_data(
+        form_who="form_therapist", speaker=Speaker.therapist
+    )
+    response_therapist = test_client.post(
+        url, data=therapist_data, follow_redirects=True
+    )
+    assert response_therapist.status_code == 200
+
+    # check that the annotations are properly saved to the database
+    # get the annotations for the client
+    annotations_client = (
+        PSDialogTurnAnnotation.query.filter_by(id_dataset=dataset_id)
+        .filter_by(speaker=Speaker.client)
+        .all()
+    )
+    assert annotations_client
