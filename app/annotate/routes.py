@@ -103,44 +103,46 @@ def annotate_ps(dataset_id):
         start_time = start_times[page - 1]  # get the starting time of the current page
         # get the IDs of the dialog turns in the current page
         dialog_turn_ids = [dialog_turn.id for dialog_turn in sections[page - 1]]
-        # annotation form for the client
+        # create annotation form instances for the client and the therapist
         form_client = PSAnnotationForm()
-        speaker = Speaker.client
-        # the condition below is True when the request method is POST and all validators pass
-        if form_client.validate_on_submit():
-            # add the annotations to the database session
-            try:
-                new_dialog_turn_annotation_to_db(
-                    form_client, speaker, dataset_id, dialog_turn_ids
-                )
-            except:
-                db.session.rollback()
-                abort(500)
-            # commit the changes to the database
-            db.session.commit()
-            flash("Your annotations have been saved.", "success")
-            return redirect(
-                url_for("annotate.annotate_ps", dataset_id=dataset_id, page=page)
-            )  # redirect to the same page
-        # annotation form for the therapist
         form_therapist = PSAnnotationForm()
-        speaker = Speaker.therapist
-        # the condition below is True when the request method is POST and all validators pass
-        if form_therapist.validate_on_submit():
-            # add the annotations to the database session
-            try:
-                new_dialog_turn_annotation_to_db(
-                    form_therapist, speaker, dataset_id, dialog_turn_ids
-                )
-            except:
-                db.session.rollback()
-                abort(500)
-            # commit the changes to the database
-            db.session.commit()
-            flash("Your annotations have been saved.", "success")
-            return redirect(
-                url_for("annotate.annotate_ps", dataset_id=dataset_id, page=page)
-            )  # redirect to the same page
+        # the submit button is named "submit_form_client" or "submit_form_therapist" depending on the speaker
+        if "submit_form_client" in request.form:
+            # the condition below checks that the form was submitted (via POST request) and that all validators pass
+            if form_client.validate_on_submit():
+                speaker = Speaker.client
+                # add the annotations to the database session
+                try:
+                    new_dialog_turn_annotation_to_db(
+                        form_client, speaker, dataset_id, dialog_turn_ids
+                    )
+                except:
+                    db.session.rollback()
+                    abort(500)
+                # commit the changes to the database
+                db.session.commit()
+                flash("Your annotations have been saved.", "success")
+                return redirect(
+                    url_for("annotate.annotate_ps", dataset_id=dataset_id, page=page)
+                )  # redirect to the same page
+        elif "submit_form_therapist" in request.form:
+            # the condition below checks that the form was submitted (via POST request) and that all validators pass
+            if form_therapist.validate_on_submit():
+                speaker = Speaker.therapist
+                # add the annotations to the database session
+                try:
+                    new_dialog_turn_annotation_to_db(
+                        form_therapist, speaker, dataset_id, dialog_turn_ids
+                    )
+                except:
+                    db.session.rollback()
+                    abort(500)
+                # commit the changes to the database
+                db.session.commit()
+                flash("Your annotations have been saved.", "success")
+                return redirect(
+                    url_for("annotate.annotate_ps", dataset_id=dataset_id, page=page)
+                )  # redirect to the same page
         return render_template(
             "annotate/annotate_ps.html",
             dataset_name=dataset.name,

@@ -124,7 +124,9 @@ app_content %} {% block head%} {{ super() }}
         wtf.form_field(form_client.comment_e) }}
       </div>
       <p></p>
-      <p>{{ wtf.form_field(form_client.submit) }}</p>
+      <p>
+        <input type="submit" name="submit_form_client" value="Submit" />
+      </p>
     </form>
 
     <!-- Form 2 -->
@@ -169,7 +171,9 @@ app_content %} {% block head%} {{ super() }}
         wtf.form_field(form_therapist.comment_e) }}
       </div>
       <p></p>
-      <p>{{ wtf.form_field(form_therapist.submit) }}</p>
+      <p>
+        <input type="submit" name="submit_form_therapist" value="Submit" />
+      </p>
     </form>
   </div>
 </body>
