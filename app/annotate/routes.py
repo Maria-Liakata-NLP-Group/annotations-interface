@@ -1,5 +1,5 @@
 from app.annotate import bp
-from app.annotate.forms import PSAnnotationForm
+from app.annotate.forms import PSAnnotationFormClient, PSAnnotationFormTherapist
 from app import db
 from flask import render_template, request, url_for, current_app, abort, flash, redirect
 from flask_login import login_required, current_user
@@ -104,8 +104,8 @@ def annotate_ps(dataset_id):
         # get the IDs of the dialog turns in the current page
         dialog_turn_ids = [dialog_turn.id for dialog_turn in sections[page - 1]]
         # create annotation form instances for the client and the therapist
-        form_client = PSAnnotationForm()
-        form_therapist = PSAnnotationForm()
+        form_client = PSAnnotationFormClient()
+        form_therapist = PSAnnotationFormTherapist()
         # the submit button is named "submit_form_client" or "submit_form_therapist" depending on the speaker
         if "submit_form_client" in request.form:
             # the condition below checks that the form was submitted (via POST request) and that all validators pass
