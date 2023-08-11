@@ -54,6 +54,7 @@ def new_dialog_turn_annotation_to_db(form, speaker, dataset_id, dialog_turn_ids)
             strength_b=form.strength_b.data,
             strength_c=form.strength_c.data,
             strength_d=form.strength_d.data,
+            strength_e=form.strength_e.data,
             comment_a=form.comment_a.data,
             comment_b=form.comment_b.data,
             comment_c=form.comment_c.data,
