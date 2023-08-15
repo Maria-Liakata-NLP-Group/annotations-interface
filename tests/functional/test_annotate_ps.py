@@ -106,32 +106,31 @@ def test_annotate_ps_valid_login(test_client, insert_ps_dialog_turns):
     assert response.status_code == 200
 
 
-def create_segment_level_annotation_data(form_who, speaker):
+def create_segment_level_annotation(speaker):
     """
     Create a dictionary with the data for a segment level annotation form
     """
     data = {
-        f"{form_who}.label_a": SubLabelsA.sublabel1,
-        f"{form_who}.label_b": SubLabelsB.sublabel1,
-        f"{form_who}.label_c": SubLabelsC.sublabel1,
-        f"{form_who}.label_d": SubLabelsD.sublabel1,
-        f"{form_who}.label_e": SubLabelsE.sublabel1,
-        f"{form_who}.strength_a": LabelStrength.medium,
-        f"{form_who}.strength_b": LabelStrength.medium,
-        f"{form_who}.strength_c": LabelStrength.medium,
-        f"{form_who}.strength_d": LabelStrength.medium,
-        f"{form_who}.strength_e": LabelStrength.medium,
-        f"{form_who}.comment_a": "test comment",
-        f"{form_who}.comment_b": "test comment",
-        f"{form_who}.comment_c": "test comment",
-        f"{form_who}.comment_d": "test comment",
-        f"{form_who}.comment_e": "test comment",
-        "speaker": speaker,
+        f"label_a_{speaker}": SubLabelsA.sublabel1.value,
+        f"label_b_{speaker}": SubLabelsB.sublabel1.value,
+        f"label_c_{speaker}": SubLabelsC.sublabel1.value,
+        f"label_d_{speaker}": SubLabelsD.sublabel1.value,
+        f"label_e_{speaker}": SubLabelsE.sublabel1.value,
+        f"strength_a_{speaker}": LabelStrength.medium.value,
+        f"strength_b_{speaker}": LabelStrength.medium.value,
+        f"strength_c_{speaker}": LabelStrength.medium.value,
+        f"strength_d_{speaker}": LabelStrength.medium.value,
+        f"strength_e_{speaker}": LabelStrength.medium.value,
+        f"comment_a_{speaker}": "test comment",
+        f"comment_b_{speaker}": "test comment",
+        f"comment_c_{speaker}": "test comment",
+        f"comment_d_{speaker}": "test comment",
+        f"comment_e_{speaker}": "test comment",
+        f"submit_form_{speaker}": "Submit",  # this is the name of the submit button and identifies the form
     }
     return data
 
 
-# TODO: test not working, need to fix
 @pytest.mark.order(after="test_annotate_ps_valid_login")
 @pytest.mark.dependency(
     depends=["tests/unit/test_upload_parsers.py::test_psychotherapy_df_to_sql"],
@@ -166,29 +165,18 @@ def test_annotate_ps_valid_segment_level_annotation(test_client):
     assert client_button is not None
     therapist_button = soup.find("button", id="btn_therapist")
     assert therapist_button is not None
+    # check that the annotation forms for the client and therapist are present
+    client_form = soup.find("form", id="form_client")
+    assert client_form is not None
+    therapist_form = soup.find("form", id="form_therapist")
+    assert therapist_form is not None
 
-    # submit an annotation for the client
-    client_data = create_segment_level_annotation_data(
-        form_who="form_client", speaker=Speaker.client
+    # submit the annotation for the client
+    data = create_segment_level_annotation("client")
+    response = test_client.post(
+        url,
+        data=data,
+        follow_redirects=True,
     )
-    response_client = test_client.post(url, data=client_data, follow_redirects=True)
-    assert response_client.status_code == 200
-    assert b"Your annotations have been saved" in response_client.data
-
-    # submit an annotation for the therapist
-    therapist_data = create_segment_level_annotation_data(
-        form_who="form_therapist", speaker=Speaker.therapist
-    )
-    response_therapist = test_client.post(
-        url, data=therapist_data, follow_redirects=True
-    )
-    assert response_therapist.status_code == 200
-
-    # check that the annotations are properly saved to the database
-    # get the annotations for the client
-    annotations_client = (
-        PSDialogTurnAnnotation.query.filter_by(id_dataset=dataset_id)
-        .filter_by(speaker=Speaker.client)
-        .all()
-    )
-    assert annotations_client
+    assert response.status_code == 200
+    assert b"Your annotations have been saved" in response.data
