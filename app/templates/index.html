@@ -2,6 +2,7 @@
 <div class="container">
   <h1 class="mt-4">Hi, {{ current_user.username }}</h1>
   <p class="lead">These are the datasets you can annotate:</p>
+  {% if datasets %}
   <div class="row">
     {% for dataset in datasets %}
     <div class="col-md-6">
@@ -40,5 +41,8 @@
     </div>
     {% endfor %}
   </div>
+  {% else %}
+  <p>No datasets have been assigned to you yet.</p>
+  {% endif %}
 </div>
 {% endblock %}
