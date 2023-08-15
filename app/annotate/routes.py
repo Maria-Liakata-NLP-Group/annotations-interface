@@ -5,37 +5,11 @@ from flask import render_template, request, url_for, current_app, abort, flash, 
 from flask_login import login_required, current_user
 from app.models import Dataset, PSDialogTurnAnnotation
 from app.utils import Speaker
-from app.annotate.utils import split_dialog_turns, get_events_from_sections
-
-
-def get_page_items(page, events, dataset_id):
-    """Get the events for the current page and the urls for the pager"""
-    page_items = events[page - 1]  # get the events for the current page
-    total_pages = len(events)  # total number of pages
-    has_prev = page > 1  # check if there is a previous page
-    has_next = page < total_pages  # check if there is a next page
-    is_first = page == 1  # check if the current page is the first page
-    is_last = page == total_pages  # check if the current page is the last page
-    # create the urls for the pager
-    if has_prev:
-        prev_url = url_for("annotate.annotate_ps", dataset_id=dataset_id, page=page - 1)
-    else:
-        prev_url = None
-    if has_next:
-        next_url = url_for("annotate.annotate_ps", dataset_id=dataset_id, page=page + 1)
-    else:
-        next_url = None
-    if is_first:
-        first_url = None
-    else:
-        first_url = url_for("annotate.annotate_ps", dataset_id=dataset_id, page=1)
-    if is_last:
-        last_url = None
-    else:
-        last_url = url_for(
-            "annotate.annotate_ps", dataset_id=dataset_id, page=total_pages
-        )
-    return page_items, next_url, prev_url, first_url, last_url, total_pages
+from app.annotate.utils import (
+    split_dialog_turns,
+    get_events_from_sections,
+    get_page_items,
+)
 
 
 def new_dialog_turn_annotation_to_db(form, speaker, dataset_id, dialog_turn_ids):

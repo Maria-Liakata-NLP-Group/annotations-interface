@@ -3,6 +3,7 @@ Miscellaneous utility functions for the annotate blueprint
 """
 from datetime import datetime
 import itertools
+from flask import url_for
 
 
 def split_dialog_turns(dialog_turns, time_interval=300):
@@ -66,3 +67,59 @@ def get_events_from_sections(sections):
             )
         )
     return events
+
+
+def get_page_items(page, events, dataset_id):
+    """
+    Get the events for the current page and the urls for the pager.
+
+    Parameters
+    ----------
+    page : int
+        The current page number
+    events : list
+        A list of sections, each section is a list of PSDialogEvent objects
+    dataset_id : int
+        The id of the dataset
+
+    Returns
+    -------
+    page_items : list
+        A list of PSDialogEvent objects for the current page
+    next_url : str
+        The url for the next page
+    prev_url : str
+        The url for the previous page
+    first_url : str
+        The url for the first page
+    last_url : str
+        The url for the last page
+    total_pages : int
+        The total number of pages
+    """
+    page_items = events[page - 1]  # get the events for the current page
+    total_pages = len(events)  # total number of pages
+    has_prev = page > 1  # check if there is a previous page
+    has_next = page < total_pages  # check if there is a next page
+    is_first = page == 1  # check if the current page is the first page
+    is_last = page == total_pages  # check if the current page is the last page
+    # create the urls for the pager
+    if has_prev:
+        prev_url = url_for("annotate.annotate_ps", dataset_id=dataset_id, page=page - 1)
+    else:
+        prev_url = None
+    if has_next:
+        next_url = url_for("annotate.annotate_ps", dataset_id=dataset_id, page=page + 1)
+    else:
+        next_url = None
+    if is_first:
+        first_url = None
+    else:
+        first_url = url_for("annotate.annotate_ps", dataset_id=dataset_id, page=1)
+    if is_last:
+        last_url = None
+    else:
+        last_url = url_for(
+            "annotate.annotate_ps", dataset_id=dataset_id, page=total_pages
+        )
+    return page_items, next_url, prev_url, first_url, last_url, total_pages
