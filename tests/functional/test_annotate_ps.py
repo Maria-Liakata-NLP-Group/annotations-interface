@@ -7,7 +7,6 @@ from flask import url_for
 from bs4 import BeautifulSoup
 import pytest
 from app.utils import (
-    Speaker,
     LabelStrength,
     SubLabelsA,
     SubLabelsB,
@@ -108,7 +107,13 @@ def test_annotate_ps_valid_login(test_client, insert_ps_dialog_turns):
 
 def create_segment_level_annotation(speaker):
     """
-    Create a dictionary with the data for a segment level annotation form
+    Create a dictionary with the data for a segment level psychotherapy annotation form
+
+    Args:
+        speaker (str): the speaker of the dialog turn. One of 'client' or 'therapist'
+
+    Returns:
+        data (dict): the data for the form
     """
     data = {
         f"label_a_{speaker}": SubLabelsA.sublabel1.value,
@@ -180,3 +185,27 @@ def test_annotate_ps_valid_segment_level_annotation(test_client):
     )
     assert response.status_code == 200
     assert b"Your annotations have been saved" in response.data
+
+    # check that the annotation has been saved to the database
+    annotation = PSDialogTurnAnnotation.query.filter_by(
+        id_dataset=dataset_id, speaker="client"
+    ).first()
+    assert annotation is not None
+    assert annotation.comment_a == "test comment"
+
+    # submit the annotation for the therapist
+    data = create_segment_level_annotation("therapist")
+    response = test_client.post(
+        url,
+        data=data,
+        follow_redirects=True,
+    )
+    assert response.status_code == 200
+    assert b"Your annotations have been saved" in response.data
+
+    # check that the annotation has been saved to the database
+    annotation = PSDialogTurnAnnotation.query.filter_by(
+        id_dataset=dataset_id, speaker="therapist"
+    ).first()
+    assert annotation is not None
+    assert annotation.comment_a == "test comment"
