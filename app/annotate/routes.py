@@ -62,6 +62,7 @@ def annotate_ps(dataset_id):
         events = get_events_from_sections(sections)  # a list of lists containing events
         # get the page number from the request
         page = request.args.get("page", 1, type=int)  # default page is 1
+        # get the events for the current page and the urls for the pager
         (
             page_items,
             next_url,
@@ -69,9 +70,7 @@ def annotate_ps(dataset_id):
             first_url,
             last_url,
             total_pages,
-        ) = get_page_items(
-            page, events, dataset_id
-        )  # get the events for the current page and the urls for the pager
+        ) = get_page_items(page, events, dataset_id)
         start_times = [
             section[0].timestamp for section in sections
         ]  # the starting times of each section

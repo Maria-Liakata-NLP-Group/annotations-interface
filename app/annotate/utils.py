@@ -123,3 +123,23 @@ def get_page_items(page, events, dataset_id):
             "annotate.annotate_ps", dataset_id=dataset_id, page=total_pages
         )
     return page_items, next_url, prev_url, first_url, last_url, total_pages
+
+
+def fetch_dialog_turn_annotations(dialog_turns):
+    """
+    Fetch the annotations for the dialog turns.
+
+    Parameters
+    ----------
+    dialog_turns : list
+        A list of PSDialogTurn objects
+
+    Returns
+    -------
+    annotations : list
+        A list of annotations, each annotation is a list of PSDialogTurnAnnotation objects
+    """
+    annotations = []
+    for dialog_turn in dialog_turns:
+        annotations.append(dialog_turn.annotations.all())
+    return annotations
