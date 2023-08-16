@@ -329,6 +329,9 @@ class PSDialogTurnAnnotation(db.Model):
 
     __tablename__ = "ps_dialog_turn_annotation"
     id = db.Column(db.Integer, primary_key=True)
+    timestamp = db.Column(
+        db.DateTime, index=True, default=datetime.utcnow
+    )  # when annotation was created
     label_a = db.Column(db.Enum(SubLabelsA), nullable=True)
     label_b = db.Column(db.Enum(SubLabelsB), nullable=True)
     label_c = db.Column(db.Enum(SubLabelsC), nullable=True)
