@@ -5,6 +5,7 @@ from datetime import datetime
 import itertools
 from flask import url_for
 from flask_login import current_user
+from app.utils import Speaker
 
 
 def split_dialog_turns(dialog_turns, time_interval=300):
@@ -126,23 +127,28 @@ def get_page_items(page, events, dataset_id):
     return page_items, next_url, prev_url, first_url, last_url, total_pages
 
 
-def fetch_dialog_turn_annotations(dialog_turns):
+def fetch_dialog_turn_annotations(dialog_turns: list, speaker: Speaker):
     """
-    Fetch the annotations for the dialog turns.
+    Given a list of dialog turns, fetch the most recent annotation for the
+    given speaker for the first dialog turn of the list.
 
     Parameters
     ----------
     dialog_turns : list
         A list of PSDialogTurn objects
+    speaker : Speaker
+        The speaker (client or therapist)
 
     Returns
     -------
-    annotations : list
-        A list of annotations, each annotation is a list of PSDialogTurnAnnotation objects
+    annotations : PSDialogTurnAnnotation object
+        The most recent annotation for the given speaker for the first dialog turn
     """
-    annotations = []
     for dialog_turn in dialog_turns:
-        annotations.append(
-            dialog_turn.annotations.filter_by(id_user=current_user.id).all()
-        )
+        annotations = dialog_turn.annotations.filter_by(
+            speaker=speaker, id_user=current_user.id
+        ).all()
+        if any(annotations):
+            annotations = annotations[-1]
+            break
     return annotations

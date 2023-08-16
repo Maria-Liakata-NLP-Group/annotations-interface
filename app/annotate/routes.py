@@ -9,6 +9,7 @@ from app.annotate.utils import (
     split_dialog_turns,
     get_events_from_segments,
     get_page_items,
+    fetch_dialog_turn_annotations,
 )
 
 
@@ -77,9 +78,23 @@ def annotate_ps(dataset_id):
         start_time = start_times[page - 1]  # get the starting time of the current page
         # get the IDs of the dialog turns in the current page
         dialog_turn_ids = [dialog_turn.id for dialog_turn in segments[page - 1]]
-        # create annotation form instances for the client and the therapist
-        form_client = PSAnnotationFormClient()
-        form_therapist = PSAnnotationFormTherapist()
+        # fetch the annotations for the current page
+        annotations_client = fetch_dialog_turn_annotations(
+            dialog_turns=segments[page - 1], speaker=Speaker.client
+        )
+        annotations_therapist = fetch_dialog_turn_annotations(
+            dialog_turns=segments[page - 1], speaker=Speaker.therapist
+        )
+        if annotations_client:
+            # if there are annotations, fill the form with the values
+            form_client = PSAnnotationFormClient(obj=annotations_client)
+        else:
+            # if there are no annotations, create an empty form
+            form_client = PSAnnotationFormClient()
+        if annotations_therapist:
+            form_therapist = PSAnnotationFormTherapist(obj=annotations_therapist)
+        else:
+            form_therapist = PSAnnotationFormTherapist()
         # the submit button is named "submit_form_client" or "submit_form_therapist" depending on the speaker
         if "submit_form_client" in request.form:
             # the condition below checks that the form was submitted (via POST request) and that all validators pass
