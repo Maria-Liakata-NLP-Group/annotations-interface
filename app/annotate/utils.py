@@ -4,6 +4,7 @@ Miscellaneous utility functions for the annotate blueprint
 from datetime import datetime
 import itertools
 from flask import url_for
+from flask_login import current_user
 
 
 def split_dialog_turns(dialog_turns, time_interval=300):
@@ -141,5 +142,7 @@ def fetch_dialog_turn_annotations(dialog_turns):
     """
     annotations = []
     for dialog_turn in dialog_turns:
-        annotations.append(dialog_turn.annotations.all())
+        annotations.append(
+            dialog_turn.annotations.filter_by(id_user=current_user.id).all()
+        )
     return annotations
