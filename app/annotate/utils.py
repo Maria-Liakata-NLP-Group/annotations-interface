@@ -8,7 +8,7 @@ from flask import url_for
 
 def split_dialog_turns(dialog_turns, time_interval=300):
     """
-    Split a list of dialog turns into time sections, identified by the timestamp.
+    Split a list of dialog turns into time segments, identified by the timestamp.
     The dialog turns must be sorted by timestamp in ascending order.
 
     Parameters
@@ -20,49 +20,49 @@ def split_dialog_turns(dialog_turns, time_interval=300):
 
     Returns
     -------
-    sections : list
-        A list of sections, each section is a list of PSDialogTurn objects
+    segments : list
+        A list of segments, each segment is a list of PSDialogTurn objects
     """
-    sections = []
-    section = [dialog_turns[0]]
+    segments = []
+    segment = [dialog_turns[0]]
     # "timestamp" is a time object, so we need to convert it to
     # a datetime object to get a time difference
     current_date = datetime.now().date()
-    datetime1 = datetime.combine(current_date, section[0].timestamp)
+    datetime1 = datetime.combine(current_date, segment[0].timestamp)
     for dialog_turn in dialog_turns[1:]:
         datetime2 = datetime.combine(current_date, dialog_turn.timestamp)
         if (datetime2 - datetime1).total_seconds() < time_interval:
-            section.append(dialog_turn)
+            segment.append(dialog_turn)
         else:
-            sections.append(section)
-            section = [dialog_turn]
-            datetime1 = datetime.combine(current_date, section[0].timestamp)
-    sections.append(section)
-    return sections
+            segments.append(segment)
+            segment = [dialog_turn]
+            datetime1 = datetime.combine(current_date, segment[0].timestamp)
+    segments.append(segment)
+    return segments
 
 
-def get_events_from_sections(sections):
+def get_events_from_segments(segments):
     """
-    Get the events corresponding to each section of dialog turns.
+    Get the events corresponding to each segment of dialog turns.
     The events are sorted by event number in ascending order (i.e. in time order).
 
     Parameters
     ----------
-    sections : list
-        A list of sections, each section is a list of PSDialogTurn objects
+    segments : list
+        A list of segments, each segment is a list of PSDialogTurn objects
 
     Returns
     -------
     events : list
-        A list of sections, each section is a list of PSDialogEvent objects
+        A list of segments, each segment is a list of PSDialogEvent objects
     """
     events = []
-    for section in sections:
+    for segment in segments:
         events.append(
             list(
                 itertools.chain.from_iterable(
                     dialog_turn.dialog_events.order_by("event_n").all()
-                    for dialog_turn in section
+                    for dialog_turn in segment
                 )
             )
         )
@@ -78,7 +78,7 @@ def get_page_items(page, events, dataset_id):
     page : int
         The current page number
     events : list
-        A list of sections, each section is a list of PSDialogEvent objects
+        A list of segments, each segment is a list of PSDialogEvent objects
     dataset_id : int
         The id of the dataset
 

@@ -7,7 +7,7 @@ from app.models import Dataset, PSDialogTurnAnnotation
 from app.utils import Speaker
 from app.annotate.utils import (
     split_dialog_turns,
-    get_events_from_sections,
+    get_events_from_segments,
     get_page_items,
 )
 
@@ -59,7 +59,7 @@ def annotate_ps(dataset_id):
             dialog_turns, time_interval=app_config["PS_MINS_PER_PAGE"] * 60
         )
         # get the events corresponding to each segment
-        events = get_events_from_sections(segments)  # a list of lists containing events
+        events = get_events_from_segments(segments)  # a list of lists containing events
         # get the page number from the request
         page = request.args.get("page", 1, type=int)  # default page is 1
         # get the events for the current page and the urls for the pager
