@@ -53,13 +53,13 @@ def annotate_ps(dataset_id):
         "timestamp"
     ).all()  # fetch all dialog turns associated with the dataset
     try:
-        # split the dialog turns into sections of a given time interval (specified in the app config)
+        # split the dialog turns into segments of a given time interval (specified in the app config)
         app_config = current_app.config  # Get the app config
-        sections = split_dialog_turns(
+        segments = split_dialog_turns(
             dialog_turns, time_interval=app_config["PS_MINS_PER_PAGE"] * 60
         )
-        # get the events corresponding to each section
-        events = get_events_from_sections(sections)  # a list of lists containing events
+        # get the events corresponding to each segment
+        events = get_events_from_sections(segments)  # a list of lists containing events
         # get the page number from the request
         page = request.args.get("page", 1, type=int)  # default page is 1
         # get the events for the current page and the urls for the pager
@@ -72,11 +72,11 @@ def annotate_ps(dataset_id):
             total_pages,
         ) = get_page_items(page, events, dataset_id)
         start_times = [
-            section[0].timestamp for section in sections
-        ]  # the starting times of each section
+            segment[0].timestamp for segment in segments
+        ]  # the starting times of each segment
         start_time = start_times[page - 1]  # get the starting time of the current page
         # get the IDs of the dialog turns in the current page
-        dialog_turn_ids = [dialog_turn.id for dialog_turn in sections[page - 1]]
+        dialog_turn_ids = [dialog_turn.id for dialog_turn in segments[page - 1]]
         # create annotation form instances for the client and the therapist
         form_client = PSAnnotationFormClient()
         form_therapist = PSAnnotationFormTherapist()
