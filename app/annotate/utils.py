@@ -6,6 +6,7 @@ import itertools
 from flask import url_for
 from flask_login import current_user
 from app.utils import Speaker
+from sqlalchemy import desc
 
 
 def split_dialog_turns(dialog_turns, time_interval=300):
@@ -129,26 +130,34 @@ def get_page_items(page, events, dataset_id):
 
 def fetch_dialog_turn_annotations(dialog_turns: list, speaker: Speaker):
     """
-    Given a list of dialog turns, fetch the most recent annotation for the
-    given speaker for the first dialog turn of the list.
+    Fetch the the annotations for the dialog turns and only return the annotation
+    with the latest timestamp.
 
     Parameters
     ----------
     dialog_turns : list
         A list of PSDialogTurn objects
     speaker : Speaker
-        The speaker (client or therapist)
+        The speaker the annotation is for (client or therapist)
 
     Returns
     -------
-    annotations : PSDialogTurnAnnotation object
-        The most recent annotation for the given speaker for the first dialog turn
+    annotations : PSDialogTurnAnnotation
+        The annotation with the latest timestamp if it exists, otherwise None
     """
+
+    annotations = []
     for dialog_turn in dialog_turns:
-        annotations = dialog_turn.annotations.filter_by(
-            speaker=speaker, id_user=current_user.id
-        ).all()
-        if any(annotations):
-            annotations = annotations[-1]
-            break
-    return annotations
+        annotation = (
+            dialog_turn.annotations.filter_by(id_user=current_user.id, speaker=speaker)
+            .order_by(desc("timestamp"))
+            .first()
+        )
+        if annotation:
+            annotations.append(annotation)
+    # sort the annotations by timestamp in ascending order
+    if annotations:
+        annotations.sort(key=lambda x: x.timestamp)
+        return annotations[-1]
+    else:
+        return None

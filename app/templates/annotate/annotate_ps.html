@@ -96,6 +96,16 @@ app_content %} {% block head%} {{ super() }}
       {{ form_client.hidden_tag() }}
       <!-- Hidden CSRF token -->
 
+      {% if annotations_client %}
+      <p></p>
+      <div class="alert alert-warning" role="alert">
+        Annotations for the client for some or all speech turns on this page
+        have already been submitted. Showing the most recent annotations,
+        submitted at {{ annotations_client.timestamp.strftime("%d-%B-%Y
+        %H:%M:%S") }} UTC.
+      </div>
+      {% endif %}
+
       <div class="form-group">
         {{ wtf.form_field(form_client.label_a) }} {{
         wtf.form_field(form_client.strength_a) }} {{
@@ -138,6 +148,16 @@ app_content %} {% block head%} {{ super() }}
     >
       {{ form_therapist.hidden_tag() }}
       <!-- Hidden CSRF token -->
+
+      {% if annotations_therapist %}
+      <p></p>
+      <div class="alert alert-warning" role="alert">
+        Annotations for the therapist for some or all speech turns on this page
+        have already been submitted. Showing the most recent annotations,
+        submitted at {{ annotations_therapist.timestamp.strftime("%d-%B-%Y
+        %H:%M:%S") }} UTC.
+      </div>
+      {% endif %}
 
       <div class="form-group">
         {{ wtf.form_field(form_therapist.label_a) }} {{
