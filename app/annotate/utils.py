@@ -143,7 +143,8 @@ def fetch_dialog_turn_annotations(dialog_turns: list, speaker: Speaker):
     Returns
     -------
     annotations : PSDialogTurnAnnotation
-        The annotation with the latest timestamp if it exists, otherwise None
+        The annotation with the latest timestamp if it exists, otherwise None.
+        The "label_*" and "strength_*" attributes are converted to their corresponding Enum values.
     """
 
     annotations = []
@@ -158,6 +159,14 @@ def fetch_dialog_turn_annotations(dialog_turns: list, speaker: Speaker):
     # sort the annotations by timestamp in ascending order
     if annotations:
         annotations.sort(key=lambda x: x.timestamp)
-        return annotations[-1]
+        annotation = annotations[-1]
+        # convert the "label_*" and "strength_*" attributes to their corresponding Enum values
+        # this is needed so that the annotations form can be pre-populated correctly
+        for attr in annotation.__dict__.keys():
+            if attr.startswith("label_"):
+                setattr(annotation, attr, getattr(annotation, attr).value)
+            elif attr.startswith("strength_"):
+                setattr(annotation, attr, getattr(annotation, attr).value)
     else:
-        return None
+        annotation = None
+    return annotation
