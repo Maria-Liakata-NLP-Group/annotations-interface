@@ -155,11 +155,11 @@ def fetch_dialog_turn_annotations(dialog_turns: list, speaker: Speaker):
             dialog_turn.annotations.filter_by(id_user=current_user.id, speaker=speaker)
             .order_by(desc("timestamp"))
             .first()
-        )
+        )  # for this dialog turn, get the annotation with the latest timestamp
         if annotation:
             annotations.append(annotation)
-    # sort the annotations by timestamp in ascending order
     if annotations:
+        # sort the annotations by timestamp in ascending order and get the last one
         annotations.sort(key=lambda x: x.timestamp)
         annotation = annotations[-1]
         # convert the "label_*" and "strength_*" attributes to their corresponding Enum values
