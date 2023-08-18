@@ -7,6 +7,8 @@ from flask import url_for
 from flask_login import current_user
 from app.utils import Speaker
 from sqlalchemy import desc
+from app.models import PSDialogTurnAnnotation
+from app import db
 
 
 def split_dialog_turns(dialog_turns, time_interval=300):
@@ -170,3 +172,44 @@ def fetch_dialog_turn_annotations(dialog_turns: list, speaker: Speaker):
     else:
         annotation = None
     return annotation
+
+
+def new_dialog_turn_annotation_to_db(form, speaker, dataset_id, dialog_turn_ids):
+    """
+    Create a new psychotherapy dialog turn annotation object and add it to the database session.
+    Loops through the dialog turn IDs and creates a new annotation for each one.
+
+    Parameters
+    ----------
+    form : PSAnnotationFormClient or PSAnnotationFormTherapist
+        The form containing the annotation data
+    speaker : Speaker
+        The speaker the annotation is for (client or therapist)
+    dataset_id : int
+        The id of the dataset the dialog turns belong to
+    dialog_turn_ids : list
+        A list of dialog turn IDs
+    """
+    for dialog_turn_id in dialog_turn_ids:
+        dialog_turn_annotation = PSDialogTurnAnnotation(
+            label_a=form.label_a.data,
+            label_b=form.label_b.data,
+            label_c=form.label_c.data,
+            label_d=form.label_d.data,
+            label_e=form.label_e.data,
+            strength_a=form.strength_a.data,
+            strength_b=form.strength_b.data,
+            strength_c=form.strength_c.data,
+            strength_d=form.strength_d.data,
+            strength_e=form.strength_e.data,
+            comment_a=form.comment_a.data,
+            comment_b=form.comment_b.data,
+            comment_c=form.comment_c.data,
+            comment_d=form.comment_d.data,
+            comment_e=form.comment_e.data,
+            speaker=speaker,
+            id_user=current_user.id,
+            id_ps_dialog_turn=dialog_turn_id,
+            id_dataset=dataset_id,
+        )
+        db.session.add(dialog_turn_annotation)

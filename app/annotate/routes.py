@@ -2,45 +2,16 @@ from app.annotate import bp
 from app.annotate.forms import PSAnnotationFormClient, PSAnnotationFormTherapist
 from app import db
 from flask import render_template, request, url_for, current_app, abort, flash, redirect
-from flask_login import login_required, current_user
-from app.models import Dataset, PSDialogTurnAnnotation
+from flask_login import login_required
+from app.models import Dataset
 from app.utils import Speaker
 from app.annotate.utils import (
     split_dialog_turns,
     get_events_from_segments,
     get_page_items,
     fetch_dialog_turn_annotations,
+    new_dialog_turn_annotation_to_db,
 )
-
-
-def new_dialog_turn_annotation_to_db(form, speaker, dataset_id, dialog_turn_ids):
-    """
-    Create a new psychotherapy dialog turn annotation object and add it to the database session.
-    Loops through the dialog turn IDs and creates a new annotation for each one.
-    """
-    for dialog_turn_id in dialog_turn_ids:
-        dialog_turn_annotation = PSDialogTurnAnnotation(
-            label_a=form.label_a.data,
-            label_b=form.label_b.data,
-            label_c=form.label_c.data,
-            label_d=form.label_d.data,
-            label_e=form.label_e.data,
-            strength_a=form.strength_a.data,
-            strength_b=form.strength_b.data,
-            strength_c=form.strength_c.data,
-            strength_d=form.strength_d.data,
-            strength_e=form.strength_e.data,
-            comment_a=form.comment_a.data,
-            comment_b=form.comment_b.data,
-            comment_c=form.comment_c.data,
-            comment_d=form.comment_d.data,
-            comment_e=form.comment_e.data,
-            speaker=speaker,
-            id_user=current_user.id,
-            id_ps_dialog_turn=dialog_turn_id,
-            id_dataset=dataset_id,
-        )
-        db.session.add(dialog_turn_annotation)
 
 
 @bp.route("/annotate_psychotherapy/<int:dataset_id>", methods=["GET", "POST"])
