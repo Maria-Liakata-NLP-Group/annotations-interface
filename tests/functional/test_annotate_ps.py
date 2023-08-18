@@ -8,6 +8,8 @@ from bs4 import BeautifulSoup
 import pytest
 from app.models import PSDialogTurnAnnotation
 from tests.functional.utils import create_segment_level_annotation
+import re
+from app.utils import SubLabelsA, LabelStrength
 
 
 @pytest.mark.dependency(
@@ -99,6 +101,7 @@ def test_annotate_ps_valid_login(test_client, insert_ps_dialog_turns):
 
 
 @pytest.mark.order(after="test_annotate_ps_valid_login")
+@pytest.mark.dependency()
 @pytest.mark.dependency(
     depends=["tests/unit/test_upload_parsers.py::test_psychotherapy_df_to_sql"],
     scope="session",
@@ -153,7 +156,9 @@ def test_annotate_ps_valid_segment_level_annotation(test_client):
         id_dataset=dataset_id, speaker="client"
     ).first()
     assert annotation is not None
-    assert annotation.comment_a == "test comment"
+    assert annotation.label_a == SubLabelsA.sublabel1
+    assert annotation.strength_a == LabelStrength.high
+    assert annotation.comment_a == "test comment A"
 
     # submit the annotation for the therapist
     data = create_segment_level_annotation("therapist")
@@ -170,4 +175,86 @@ def test_annotate_ps_valid_segment_level_annotation(test_client):
         id_dataset=dataset_id, speaker="therapist"
     ).first()
     assert annotation is not None
-    assert annotation.comment_a == "test comment"
+    assert annotation.comment_a == "test comment A"
+
+    # log out
+    response = test_client.get("/auth/logout", follow_redirects=True)
+    assert response.status_code == 200
+
+
+@pytest.mark.dependency(
+    depends=["test_annotate_ps_valid_segment_level_annotation"],
+)
+@pytest.mark.order(after="test_annotate_ps_valid_segment_level_annotation")
+def test_annotate_ps_retrieve_existing_annotations(test_client):
+    """
+    GIVEN a Flask application configured for testing and a dataset with psychotherapy dialog turns
+    WHEN the '/annotate_psychotherapy' page is requested (GET) with a valid annotation at the segment level
+    THEN check the response is valid and the existing annotations are pre-populated in the form
+    """
+    # log in to the app
+    response = test_client.post(
+        "/auth/login",
+        data={"username": "annotator1", "password": "annotator1password"},
+        follow_redirects=True,
+    )
+    assert response.status_code == 200
+
+    # get the dataset id for the logged in user
+    dataset = current_user.datasets.filter_by(name="Psychotherapy Dataset Test").all()
+    dataset_id = dataset[0].id
+
+    # test that the annotations form for page 1 is pre-populated with the existing annotations
+    page = 1
+    url = url_for("annotate.annotate_ps", dataset_id=dataset_id, page=page)
+    response = test_client.get(url)
+    assert response.status_code == 200
+
+    # normalize the response to remove extra whitespace
+    normalized_response = re.sub(r"\s+", " ", response.text)
+    assert (
+        "Annotations for the client for some or all speech turns on this page have already been submitted"
+        in normalized_response
+    )
+    assert (
+        "Annotations for the therapist for some or all speech turns on this page have already been submitted"
+        in normalized_response
+    )
+
+    # check the form fields for the client
+    soup = BeautifulSoup(response.data, "html.parser")
+    comment_field = soup.find("textarea", id="comment_a_client")
+    assert comment_field is not None
+    assert (comment_field.get_text()).strip("\r\n ").lstrip() == "test comment A"
+    select_field = soup.find("select", id="label_b_client")
+    assert select_field is not None
+    assert (
+        select_field.find("option", selected=True).get_text()
+        == SubLabelsA.sublabel2.value
+    )
+    select_field = soup.find("select", id="strength_c_client")
+    assert select_field is not None
+    assert (
+        select_field.find("option", selected=True).get_text() == LabelStrength.low.value
+    )
+
+    # check the form fields for the therapist
+    comment_field = soup.find("textarea", id="comment_a_therapist")
+    assert comment_field is not None
+    assert (comment_field.get_text()).strip("\r\n ").lstrip() == "test comment A"
+    select_field = soup.find("select", id="label_c_therapist")
+    assert select_field is not None
+    assert (
+        select_field.find("option", selected=True).get_text()
+        == SubLabelsA.sublabel3.value
+    )
+    select_field = soup.find("select", id="strength_d_therapist")
+    assert select_field is not None
+    assert (
+        select_field.find("option", selected=True).get_text()
+        == LabelStrength.high.value
+    )
+
+    # log out
+    response = test_client.get("/auth/logout", follow_redirects=True)
+    assert response.status_code == 200
