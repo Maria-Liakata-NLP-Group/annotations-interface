@@ -33,7 +33,7 @@ class SubLabelsA(Enum):
     sublabel2 = "sublabel2"
     sublabel3 = "sublabel3"
     sublabel4 = "sublabel4"
-    sublabel5 = "sublabel5"
+    other = "other"
 
 
 class SubLabelsB(Enum):
@@ -43,7 +43,7 @@ class SubLabelsB(Enum):
     sublabel2 = "sublabel2"
     sublabel3 = "sublabel3"
     sublabel4 = "sublabel4"
-    sublabel5 = "sublabel5"
+    other = "other"
 
 
 class SubLabelsC(Enum):
@@ -53,7 +53,7 @@ class SubLabelsC(Enum):
     sublabel2 = "sublabel2"
     sublabel3 = "sublabel3"
     sublabel4 = "sublabel4"
-    sublabel5 = "sublabel5"
+    other = "other"
 
 
 class SubLabelsD(Enum):
@@ -63,7 +63,7 @@ class SubLabelsD(Enum):
     sublabel2 = "sublabel2"
     sublabel3 = "sublabel3"
     sublabel4 = "sublabel4"
-    sublabel5 = "sublabel5"
+    other = "other"
 
 
 class SubLabelsE(Enum):
@@ -73,7 +73,7 @@ class SubLabelsE(Enum):
     sublabel2 = "sublabel2"
     sublabel3 = "sublabel3"
     sublabel4 = "sublabel4"
-    sublabel5 = "sublabel5"
+    other = "other"
 
 
 class LabelStrength(Enum):
