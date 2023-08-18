@@ -153,7 +153,7 @@ def annotate_ps(dataset_id):
         return render_template("annotate/annotate_ps.html", dataset_name=dataset.name)
 
 
-@bp.route("/annotate_sm/<int:dataset_id>")
+@bp.route("/annotate_social_media/<int:dataset_id>")
 @login_required
 def annotate_sm(dataset_id):
     """This is the annotations page for social media datasets"""
