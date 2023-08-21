@@ -8,8 +8,7 @@ from wtforms import (
     SelectMultipleField,
 )
 from wtforms.validators import DataRequired, Length, ValidationError
-from app.models import Dataset
-from flask_login import current_user
+from app.models import Dataset, User
 
 
 class UploadForm(FlaskForm):
@@ -33,13 +32,15 @@ class UploadForm(FlaskForm):
 
     def validate_name(self, name):
         """
-        Ensure that the dataset name is unique,
-        and does not already exist in the database.
-        This is a custom validator, and for it to work, it must
-        be named "validate_<field_name>".
+        Check that none of the selected annotators already
+        have a dataset assigned to them with the same name.
         """
-        dataset = Dataset.query.filter_by(name=name.data).first()
-        if dataset:
-            raise ValidationError(
-                "Dataset name already exists. Please choose another name."
-            )
+        annotators = self.annotators.data
+        datasets = Dataset.query.filter_by(name=name.data).all()
+        for dataset in datasets:
+            for annotator in annotators:
+                annotator = User.query.get(annotator)
+                if annotator in dataset.annotators.all():
+                    raise ValidationError(
+                        f"User '{annotator.username}' already has a dataset with the name '{name.data}'"
+                    )
