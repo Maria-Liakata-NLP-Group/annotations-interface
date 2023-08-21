@@ -10,6 +10,8 @@ from app.models import (
     PSDialogEvent,
 )
 from app.utils import SubLabelsA, SubLabelsB, LabelStrength, Speaker
+import pytest
+from sqlalchemy.exc import IntegrityError
 
 
 def test_new_user(db_session, user_admin1):
@@ -25,6 +27,37 @@ def test_new_user(db_session, user_admin1):
     assert user.email == "admin1@example.com"
     assert user.password_hash != "admin1password"
     assert user.check_password("admin1password")
+
+
+@pytest.mark.order(after="test_new_user")
+def test_unique_username(db_session):
+    """
+    GIVEN a User model
+    WHEN a new User is created with an existing username in the database
+    THEN check that an exception is raised
+    """
+    user = User(username="admin1", email="test@example.com")
+    user.set_password("testpassword")
+    db_session.add(user)
+    # test that an exception is raised
+    with pytest.raises(IntegrityError):
+        db_session.commit()
+    db_session.rollback()
+
+
+@pytest.mark.order(after="test_new_user")
+def test_unique_email(db_session):
+    """
+    GIVEN a User model
+    WHEN a new User is created with an existing email in the database
+    THEN check that an exception is raised
+    """
+    user = User(username="test", email="admin1@example.com")
+    user.set_password("testpassword")
+    db_session.add(user)
+    with pytest.raises(IntegrityError):
+        db_session.commit()
+    db_session.rollback()
 
 
 def test_new_dataset(db_session, new_sm_dataset):
