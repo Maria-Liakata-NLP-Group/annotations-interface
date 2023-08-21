@@ -67,7 +67,7 @@ def test_invalid_login(test_client, insert_users):
     assert b"Click to Register" in response.data
 
 
-def test_valid_registration(test_client, insert_users):
+def test_uniqueness_of_username_and_email(test_client, insert_users):
     """
     GIVEN a Flask application configured for testing
     WHEN the '/register' page is posted to (POST) with a registered username
@@ -110,9 +110,11 @@ def test_valid_registration(test_client, insert_users):
     # check that the url is still /register
     assert response.request.path == "/auth/register"
 
+
+def test_valid_registration(test_client, insert_users):
     """
     GIVEN a Flask application configured for testing
-    WHEN the '/register' page is posted to (POST) with a new username
+    WHEN the '/register' page is posted to (POST) with a new username and email address
     THEN check the user is redirected to the login page
     """
     response = test_client.post(
@@ -128,7 +130,8 @@ def test_valid_registration(test_client, insert_users):
     )
     assert response.status_code == 200
     assert b"You have successfully registered!" in response.data
-    assert b"Sign In" in response.data
+    # check that the url is now /login
+    assert response.request.path == "/auth/login"
 
 
 def test_correct_role_assignment(test_client, insert_users):
