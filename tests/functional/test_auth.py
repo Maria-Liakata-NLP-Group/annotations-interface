@@ -86,7 +86,29 @@ def test_valid_registration(test_client, insert_users):
     )
     assert response.status_code == 200
     assert b"Username already exists. Please use a different username." in response.data
-    assert b"Register" in response.data
+    # check that the url is still /register
+    assert response.request.path == "/auth/register"
+
+    """
+    GIVEN a Flask application configured for testing
+    WHEN the '/register' page is posted to (POST) with a registered email address
+    THEN check an error message is returned to the user and they are prompted to try again
+    """
+    response = test_client.post(
+        "/auth/register",
+        data={
+            "username": "test",
+            "email": "admin1@example.com",
+            "email2": "admin1@example.com",
+            "password": "testpassword",
+            "password2": "testpassword",
+        },
+        follow_redirects=True,
+    )
+    assert response.status_code == 200
+    assert b"Email already exists. Please use a different email." in response.data
+    # check that the url is still /register
+    assert response.request.path == "/auth/register"
 
     """
     GIVEN a Flask application configured for testing
