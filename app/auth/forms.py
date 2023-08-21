@@ -35,3 +35,9 @@ class RegisterForm(FlaskForm):
             raise ValidationError(
                 "Username already exists. Please use a different username."
             )
+
+    def validate_email(self, email):
+        """Validates email"""
+        email = User.query.filter_by(email=email.data).first()
+        if email is not None:
+            raise ValidationError("Email already exists. Please use a different email.")
