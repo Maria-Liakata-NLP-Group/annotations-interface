@@ -60,7 +60,7 @@ def create_text_area_field(label, name, required_if, max_length=200):
     """
 
     value = "other"
-    message = "If you select 'Other', please provide a comment."
+    message = "If you select Other, please provide a comment."
     return TextAreaField(
         label,
         validators=[RequiredIf(required_if, value, message), Length(max=max_length)],

@@ -258,3 +258,34 @@ def test_annotate_ps_retrieve_existing_annotations(test_client):
     # log out
     response = test_client.get("/auth/logout", follow_redirects=True)
     assert response.status_code == 200
+
+
+@pytest.mark.order(after="test_annotate_ps_retrieve_existing_annotations")
+def test_annotate_ps_comment_is_compulsory_if_label_is_other(test_client):
+    """
+    GIVEN a Flask application configured for testing and a dataset with psychotherapy dialog turns
+    WHEN the '/annotate_psychotherapy' page is requested (POST) with an invalid annotation at the segment level
+    THEN check a validation error is raised if the label is "Other" and the comment is empty
+    """
+    # log in to the app
+    response = test_client.post(
+        "/auth/login",
+        data={"username": "annotator1", "password": "annotator1password"},
+        follow_redirects=True,
+    )
+    assert response.status_code == 200
+
+    # get the dataset id for the logged in user
+    dataset = current_user.datasets.filter_by(name="Psychotherapy Dataset Test").all()
+    dataset_id = dataset[0].id
+    page = 1
+    url = url_for("annotate.annotate_ps", dataset_id=dataset_id, page=page)
+    # set the label to "Other" and the comment to empty
+    data = create_segment_level_annotation("client")
+    data["label_a_client"] = SubLabelsA.other.value
+    data["comment_a_client"] = ""
+    response = test_client.post(url, data=data, follow_redirects=True)
+    assert response.status_code == 200
+    normalized_response = re.sub(r"\s+", " ", response.text)
+    assert "Your annotations have been saved" not in normalized_response
+    assert "If you select Other, please provide a comment." in normalized_response
