@@ -70,7 +70,6 @@ def downgrade():
             nullable=True,
             type_=sa.Enum(
                 "sublabel1",
-                "attachment",
                 "sublabel2",
                 "sublabel3",
                 "sublabel4",
