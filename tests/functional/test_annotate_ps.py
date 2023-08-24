@@ -9,7 +9,7 @@ import pytest
 from app.models import PSDialogTurnAnnotation
 from tests.functional.utils import create_segment_level_annotation
 import re
-from app.utils import SubLabelsA, LabelStrength
+from app.utils import SubLabelsA, SubLabelsB, LabelStrength
 
 
 @pytest.mark.dependency(
@@ -230,7 +230,7 @@ def test_annotate_ps_retrieve_existing_annotations(test_client):
     assert select_field is not None
     assert (
         select_field.find("option", selected=True).get_text()
-        == SubLabelsA.sublabel2.value
+        == SubLabelsB.sublabel2.value
     )
     select_field = soup.find("select", id="strength_c_client")
     assert select_field is not None

@@ -30,7 +30,7 @@ class SubLabelsA(Enum):
     """Enum for psychotherapy annotation label A"""
 
     attachment = "attachment"
-    sublabel2 = "sublabel2"
+    identity = "identity"
     sublabel3 = "sublabel3"
     sublabel4 = "sublabel4"
     other = "other"
