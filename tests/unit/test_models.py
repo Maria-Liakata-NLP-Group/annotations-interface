@@ -212,7 +212,7 @@ def test_new_ps_dialog_turn_annotation(
     annotation = PSDialogTurnAnnotation.query.all()[0]
     annotator1 = User.query.filter_by(username="annotator1").first()
     dataset = Dataset.query.filter_by(name="Psychotherapy Dataset Test").first()
-    assert annotation.label_a == SubLabelsA.sublabel1
+    assert annotation.label_a == SubLabelsA.attachment
     assert annotation.label_b == SubLabelsB.sublabel2
     assert annotation.strength_a == LabelStrength.low
     assert annotation.strength_b == LabelStrength.medium

@@ -156,7 +156,7 @@ def test_annotate_ps_valid_segment_level_annotation(test_client):
         id_dataset=dataset_id, speaker="client"
     ).first()
     assert annotation is not None
-    assert annotation.label_a == SubLabelsA.sublabel1
+    assert annotation.label_a == SubLabelsA.attachment
     assert annotation.strength_a == LabelStrength.high
     assert annotation.comment_a == "test comment A"
 

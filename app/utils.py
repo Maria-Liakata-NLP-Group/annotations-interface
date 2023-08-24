@@ -29,7 +29,7 @@ class Permission:
 class SubLabelsA(Enum):
     """Enum for psychotherapy annotation label A"""
 
-    sublabel1 = "sublabel1"
+    attachment = "attachment"
     sublabel2 = "sublabel2"
     sublabel3 = "sublabel3"
     sublabel4 = "sublabel4"

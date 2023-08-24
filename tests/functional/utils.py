@@ -19,7 +19,7 @@ def create_segment_level_annotation(speaker):
         data (dict): the data for the form
     """
     data = {
-        f"label_a_{speaker}": SubLabelsA.sublabel1.value,
+        f"label_a_{speaker}": SubLabelsA.attachment.value,
         f"label_b_{speaker}": SubLabelsB.sublabel2.value,
         f"label_c_{speaker}": SubLabelsC.sublabel3.value,
         f"label_d_{speaker}": SubLabelsD.sublabel4.value,
