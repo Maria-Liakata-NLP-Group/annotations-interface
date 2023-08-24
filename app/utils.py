@@ -31,7 +31,7 @@ class SubLabelsA(Enum):
 
     attachment = "attachment"
     identity = "identity"
-    sublabel3 = "sublabel3"
+    security = "security"
     sublabel4 = "sublabel4"
     other = "other"
 
