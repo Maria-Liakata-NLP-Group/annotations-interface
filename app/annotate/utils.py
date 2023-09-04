@@ -162,13 +162,13 @@ def fetch_dialog_turn_annotations(dialog_turns: list, speaker: Speaker):
         # sort the annotations by timestamp in ascending order and get the last one
         annotations.sort(key=lambda x: x.timestamp)
         annotation = annotations[-1]
-        # convert the "label_*" and "strength_*" attributes to their corresponding Enum values
+        # convert the "label_*" and "strength_*" attributes to their corresponding Enum names
         # this is needed so that the annotations form can be pre-populated correctly
         for attr in annotation.__dict__.keys():
             if attr.startswith("label_"):
-                setattr(annotation, attr, getattr(annotation, attr).value)
+                setattr(annotation, attr, getattr(annotation, attr).name)
             elif attr.startswith("strength_"):
-                setattr(annotation, attr, getattr(annotation, attr).value)
+                setattr(annotation, attr, getattr(annotation, attr).name)
     else:
         annotation = None
     return annotation
