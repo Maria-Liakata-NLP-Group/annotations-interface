@@ -32,7 +32,7 @@ class SubLabelsA(Enum):
     attachment = "attachment"
     identity = "identity"
     security = "security"
-    sublabel4 = "sublabel4"
+    excitement = "excitement/interest/joy"
     other = "other"
 
 
