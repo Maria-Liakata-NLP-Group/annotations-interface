@@ -76,8 +76,8 @@ class SubLabelsE(Enum):
     other = "other"
 
 
-class LabelScale(Enum):
-    """Psychotherapy annotation label scale"""
+class LabelStrength(Enum):
+    """Psychotherapy annotation label strength"""
 
     high = "high"
     medium = "medium"

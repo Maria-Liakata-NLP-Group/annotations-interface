@@ -17,7 +17,7 @@ from app.models import (
 from app.utils import (
     SubLabelsA,
     SubLabelsB,
-    LabelScale,
+    LabelStrength,
     Speaker,
 )
 from config import TestConfig
@@ -187,8 +187,8 @@ def new_ps_dialog_turn_annotation(new_ps_dataset, new_ps_dialog_turn, user_annot
     dialog_turn_annotation = PSDialogTurnAnnotation(
         label_a=SubLabelsA.attachment,
         label_b=SubLabelsB.sublabel2,
-        strength_a=LabelScale.low,
-        strength_b=LabelScale.medium,
+        strength_a=LabelStrength.low,
+        strength_b=LabelStrength.medium,
         comment_a="test comment a",
         comment_b="test comment b",
         speaker=Speaker.client,
