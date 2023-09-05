@@ -9,7 +9,7 @@ from app.models import (
     PSDialogTurn,
     PSDialogEvent,
 )
-from app.utils import SubLabelsA, SubLabelsB, LabelStrength, Speaker
+from app.utils import SubLabelsA, SubLabelsB, LabelScale, Speaker
 import pytest
 from sqlalchemy.exc import IntegrityError
 
@@ -214,8 +214,8 @@ def test_new_ps_dialog_turn_annotation(
     dataset = Dataset.query.filter_by(name="Psychotherapy Dataset Test").first()
     assert annotation.label_a == SubLabelsA.attachment
     assert annotation.label_b == SubLabelsB.sublabel2
-    assert annotation.strength_a == LabelStrength.low
-    assert annotation.strength_b == LabelStrength.medium
+    assert annotation.strength_a == LabelScale.low
+    assert annotation.strength_b == LabelScale.medium
     assert annotation.speaker == Speaker.client
     assert annotation.dialog_turn == new_ps_dialog_turn
     assert annotation.author == annotator1

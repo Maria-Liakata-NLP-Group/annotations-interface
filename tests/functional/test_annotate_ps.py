@@ -9,7 +9,7 @@ import pytest
 from app.models import PSDialogTurnAnnotation
 from tests.functional.utils import create_segment_level_annotation
 import re
-from app.utils import SubLabelsA, SubLabelsB, SubLabelsC, LabelStrength
+from app.utils import SubLabelsA, SubLabelsB, SubLabelsC, LabelScale
 
 
 @pytest.mark.dependency(
@@ -157,7 +157,7 @@ def test_annotate_ps_valid_segment_level_annotation(test_client):
     ).first()
     assert annotation is not None
     assert annotation.label_a == SubLabelsA.excitement
-    assert annotation.strength_a == LabelStrength.high
+    assert annotation.strength_a == LabelScale.high
     assert annotation.comment_a == "test comment A"
 
     # submit the annotation for the therapist
@@ -240,9 +240,7 @@ def test_annotate_ps_retrieve_existing_annotations(test_client):
     )
     select_field = soup.find("select", id="strength_c_client")
     assert select_field is not None
-    assert (
-        select_field.find("option", selected=True).get_text() == LabelStrength.low.value
-    )
+    assert select_field.find("option", selected=True).get_text() == LabelScale.low.value
 
     # check the form fields for the therapist
     comment_field = soup.find("textarea", id="comment_a_therapist")
@@ -257,8 +255,7 @@ def test_annotate_ps_retrieve_existing_annotations(test_client):
     select_field = soup.find("select", id="strength_d_therapist")
     assert select_field is not None
     assert (
-        select_field.find("option", selected=True).get_text()
-        == LabelStrength.high.value
+        select_field.find("option", selected=True).get_text() == LabelScale.high.value
     )
 
     # log out

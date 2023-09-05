@@ -12,7 +12,7 @@ from app.utils import (
     SubLabelsC,
     SubLabelsD,
     SubLabelsE,
-    LabelStrength,
+    LabelScale,
     Speaker,
 )
 
@@ -336,11 +336,11 @@ class PSDialogTurnAnnotation(db.Model):
     label_c = db.Column(db.Enum(SubLabelsC), nullable=True)
     label_d = db.Column(db.Enum(SubLabelsD), nullable=True)
     label_e = db.Column(db.Enum(SubLabelsE), nullable=True)
-    strength_a = db.Column(db.Enum(LabelStrength), nullable=True)
-    strength_b = db.Column(db.Enum(LabelStrength), nullable=True)
-    strength_c = db.Column(db.Enum(LabelStrength), nullable=True)
-    strength_d = db.Column(db.Enum(LabelStrength), nullable=True)
-    strength_e = db.Column(db.Enum(LabelStrength), nullable=True)
+    strength_a = db.Column(db.Enum(LabelScale), nullable=True)
+    strength_b = db.Column(db.Enum(LabelScale), nullable=True)
+    strength_c = db.Column(db.Enum(LabelScale), nullable=True)
+    strength_d = db.Column(db.Enum(LabelScale), nullable=True)
+    strength_e = db.Column(db.Enum(LabelScale), nullable=True)
     comment_a = db.Column(db.Text, nullable=True)
     comment_b = db.Column(db.Text, nullable=True)
     comment_c = db.Column(db.Text, nullable=True)
