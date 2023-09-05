@@ -156,7 +156,7 @@ def test_annotate_ps_valid_segment_level_annotation(test_client):
         id_dataset=dataset_id, speaker="client"
     ).first()
     assert annotation is not None
-    assert annotation.label_a == SubLabelsA.attachment
+    assert annotation.label_a == SubLabelsA.excitement
     assert annotation.strength_a == LabelStrength.high
     assert annotation.comment_a == "test comment A"
 
@@ -223,6 +223,12 @@ def test_annotate_ps_retrieve_existing_annotations(test_client):
 
     # check the form fields for the client
     soup = BeautifulSoup(response.data, "html.parser")
+    select_field = soup.find("select", id="label_a_client")
+    assert select_field is not None
+    assert (
+        select_field.find("option", selected=True).get_text()
+        == SubLabelsA.excitement.value
+    )
     comment_field = soup.find("textarea", id="comment_a_client")
     assert comment_field is not None
     assert (comment_field.get_text()).strip("\r\n ").lstrip() == "test comment A"
