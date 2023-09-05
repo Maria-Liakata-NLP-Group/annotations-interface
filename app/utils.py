@@ -26,13 +26,23 @@ class Permission:
     ADMIN = 4  # admin
 
 
-class SubLabelsA(Enum):
-    """Enum for psychotherapy annotation label A"""
+class SubLabelsAClient(Enum):
+    """Enum for psychotherapy annotation label A for the client"""
 
     attachment = "attachment"
     identity = "identity"
     security = "security"
     excitement = "excitement/interest/joy"
+    other = "other"
+
+
+class SubLabelsATherapist(Enum):
+    """Enum for psychotherapy annotation label A for the therapist"""
+
+    emotional = "emotional empathy, encouragement, warmth"
+    cognitive = "cognitive empathy (empathic accuracy)"
+    respect = "respect, appreciation"
+    calming = "calming, down-regulating"
     other = "other"
 
 
@@ -94,7 +104,8 @@ class Speaker(Enum):
 class LabelNames(Enum):
     """Enum for psychotherapy annotation label names"""
 
-    label_a = "label A"
+    label_a_client = "Need"
+    label_a_therapist = "Supportive"
     label_b = "label B"
     label_c = "label C"
     label_d = "label D"

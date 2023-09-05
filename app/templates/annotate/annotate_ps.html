@@ -107,7 +107,7 @@ app_content %} {% block head%} {{ super() }}
       {% endif %}
 
       <div class="form-group">
-        {{ wtf.form_field(form_client.label_a) }} {{
+        {{ wtf.form_field(form_client.label_a_client) }} {{
         wtf.form_field(form_client.strength_a) }} {{
         wtf.form_field(form_client.comment_a) }}
       </div>
@@ -160,7 +160,7 @@ app_content %} {% block head%} {{ super() }}
       {% endif %}
 
       <div class="form-group">
-        {{ wtf.form_field(form_therapist.label_a) }} {{
+        {{ wtf.form_field(form_therapist.label_a_therapist) }} {{
         wtf.form_field(form_therapist.strength_a) }} {{
         wtf.form_field(form_therapist.comment_a) }}
       </div>

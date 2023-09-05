@@ -7,7 +7,8 @@ from app.utils import (
     SMAnnotationType,
     DatasetType,
     Permission,
-    SubLabelsA,
+    SubLabelsAClient,
+    SubLabelsATherapist,
     SubLabelsB,
     SubLabelsC,
     SubLabelsD,
@@ -331,7 +332,10 @@ class PSDialogTurnAnnotation(db.Model):
     timestamp = db.Column(
         db.DateTime, index=True, default=datetime.utcnow
     )  # when annotation was created
-    label_a = db.Column(db.Enum(SubLabelsA), nullable=True)
+    label_a_client = db.Column(db.Enum(SubLabelsAClient), nullable=True, default=None)
+    label_a_therapist = db.Column(
+        db.Enum(SubLabelsATherapist), nullable=True, default=None
+    )
     label_b = db.Column(db.Enum(SubLabelsB), nullable=True)
     label_c = db.Column(db.Enum(SubLabelsC), nullable=True)
     label_d = db.Column(db.Enum(SubLabelsD), nullable=True)

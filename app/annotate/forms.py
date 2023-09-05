@@ -14,7 +14,8 @@ from wtforms.validators import (
 from app.utils import (
     LabelNames,
     LabelStrength,
-    SubLabelsA,
+    SubLabelsAClient,
+    SubLabelsATherapist,
     SubLabelsB,
     SubLabelsC,
     SubLabelsD,
@@ -71,8 +72,10 @@ def create_text_area_field(label, name, required_if, max_length=200):
 class PSAnnotationFormClient(FlaskForm):
     """Segment level annotation form of psychotherapy datasets for the client"""
 
-    label_a = create_select_field(
-        label=LabelNames.label_a.value, choices=SubLabelsA, name="label_a_client"
+    label_a_client = create_select_field(
+        label=LabelNames.label_a_client.value,
+        choices=SubLabelsAClient,
+        name="label_a_client",
     )
     label_b = create_select_field(
         label=LabelNames.label_b.value, choices=SubLabelsB, name="label_b_client"
@@ -102,7 +105,7 @@ class PSAnnotationFormClient(FlaskForm):
         label="Strength", choices=LabelStrength, name="strength_e_client"
     )
     comment_a = create_text_area_field(
-        label="Comment", name="comment_a_client", required_if="label_a"
+        label="Comment", name="comment_a_client", required_if="label_a_client"
     )
     comment_b = create_text_area_field(
         label="Comment", name="comment_b_client", required_if="label_b"
@@ -122,8 +125,10 @@ class PSAnnotationFormClient(FlaskForm):
 class PSAnnotationFormTherapist(FlaskForm):
     """Segment level annotation form of psychotherapy datasets for the therapist"""
 
-    label_a = create_select_field(
-        label=LabelNames.label_a.value, choices=SubLabelsA, name="label_a_therapist"
+    label_a_therapist = create_select_field(
+        label=LabelNames.label_a_therapist.value,
+        choices=SubLabelsATherapist,
+        name="label_a_therapist",
     )
     label_b = create_select_field(
         label=LabelNames.label_b.value, choices=SubLabelsB, name="label_b_therapist"
@@ -153,7 +158,7 @@ class PSAnnotationFormTherapist(FlaskForm):
         label="Strength", choices=LabelStrength, name="strength_e_therapist"
     )
     comment_a = create_text_area_field(
-        label="Comment", name="comment_a_therapist", required_if="label_a"
+        label="Comment", name="comment_a_therapist", required_if="label_a_therapist"
     )
     comment_b = create_text_area_field(
         label="Comment", name="comment_b_therapist", required_if="label_b"

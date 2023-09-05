@@ -165,7 +165,7 @@ def fetch_dialog_turn_annotations(dialog_turns: list, speaker: Speaker):
         # convert the "label_*" and "strength_*" attributes to their corresponding Enum names
         # this is needed so that the annotations form can be pre-populated correctly
         for attr in annotation.__dict__.keys():
-            if attr.startswith("label_"):
+            if attr.startswith("label_") and getattr(annotation, attr) is not None:
                 setattr(annotation, attr, getattr(annotation, attr).name)
             elif attr.startswith("strength_"):
                 setattr(annotation, attr, getattr(annotation, attr).name)
@@ -190,26 +190,51 @@ def new_dialog_turn_annotation_to_db(form, speaker, dataset_id, dialog_turn_ids)
     dialog_turn_ids : list
         A list of dialog turn IDs
     """
-    for dialog_turn_id in dialog_turn_ids:
-        dialog_turn_annotation = PSDialogTurnAnnotation(
-            label_a=form.label_a.data,
-            label_b=form.label_b.data,
-            label_c=form.label_c.data,
-            label_d=form.label_d.data,
-            label_e=form.label_e.data,
-            strength_a=form.strength_a.data,
-            strength_b=form.strength_b.data,
-            strength_c=form.strength_c.data,
-            strength_d=form.strength_d.data,
-            strength_e=form.strength_e.data,
-            comment_a=form.comment_a.data,
-            comment_b=form.comment_b.data,
-            comment_c=form.comment_c.data,
-            comment_d=form.comment_d.data,
-            comment_e=form.comment_e.data,
-            speaker=speaker,
-            id_user=current_user.id,
-            id_ps_dialog_turn=dialog_turn_id,
-            id_dataset=dataset_id,
-        )
-        db.session.add(dialog_turn_annotation)
+    if speaker == Speaker.client:
+        for dialog_turn_id in dialog_turn_ids:
+            dialog_turn_annotation = PSDialogTurnAnnotation(
+                label_a_client=form.label_a_client.data,
+                label_b=form.label_b.data,
+                label_c=form.label_c.data,
+                label_d=form.label_d.data,
+                label_e=form.label_e.data,
+                strength_a=form.strength_a.data,
+                strength_b=form.strength_b.data,
+                strength_c=form.strength_c.data,
+                strength_d=form.strength_d.data,
+                strength_e=form.strength_e.data,
+                comment_a=form.comment_a.data,
+                comment_b=form.comment_b.data,
+                comment_c=form.comment_c.data,
+                comment_d=form.comment_d.data,
+                comment_e=form.comment_e.data,
+                speaker=speaker,
+                id_user=current_user.id,
+                id_ps_dialog_turn=dialog_turn_id,
+                id_dataset=dataset_id,
+            )
+            db.session.add(dialog_turn_annotation)
+    elif speaker == Speaker.therapist:
+        for dialog_turn_id in dialog_turn_ids:
+            dialog_turn_annotation = PSDialogTurnAnnotation(
+                label_a_therapist=form.label_a_therapist.data,
+                label_b=form.label_b.data,
+                label_c=form.label_c.data,
+                label_d=form.label_d.data,
+                label_e=form.label_e.data,
+                strength_a=form.strength_a.data,
+                strength_b=form.strength_b.data,
+                strength_c=form.strength_c.data,
+                strength_d=form.strength_d.data,
+                strength_e=form.strength_e.data,
+                comment_a=form.comment_a.data,
+                comment_b=form.comment_b.data,
+                comment_c=form.comment_c.data,
+                comment_d=form.comment_d.data,
+                comment_e=form.comment_e.data,
+                speaker=speaker,
+                id_user=current_user.id,
+                id_ps_dialog_turn=dialog_turn_id,
+                id_dataset=dataset_id,
+            )
+            db.session.add(dialog_turn_annotation)
