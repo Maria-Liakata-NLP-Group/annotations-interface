@@ -17,7 +17,8 @@ from app.models import (
 from app.utils import (
     SubLabelsAClient,
     SubLabelsATherapist,
-    SubLabelsB,
+    SubLabelsBClient,
+    SubLabelsBTherapist,
     LabelStrength,
     Speaker,
 )
@@ -188,7 +189,8 @@ def new_ps_dialog_turn_annotation(new_ps_dataset, new_ps_dialog_turn, user_annot
     dialog_turn_annotation = PSDialogTurnAnnotation(
         label_a_client=SubLabelsAClient.attachment,
         label_a_therapist=SubLabelsATherapist.emotional,
-        label_b=SubLabelsB.sublabel2,
+        label_b_client=SubLabelsBClient.attachment,
+        label_b_therapist=SubLabelsBTherapist.interpretation,
         strength_a=LabelStrength.low,
         strength_b=LabelStrength.medium,
         comment_a="test comment a",

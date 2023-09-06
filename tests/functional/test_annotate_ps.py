@@ -13,9 +13,11 @@ from tests.functional.utils import (
 )
 import re
 from app.utils import (
+    Speaker,
     SubLabelsAClient,
     SubLabelsATherapist,
-    SubLabelsB,
+    SubLabelsBClient,
+    SubLabelsBTherapist,
     SubLabelsC,
     LabelStrength,
 )
@@ -161,11 +163,16 @@ def test_annotate_ps_valid_segment_level_annotation(test_client):
     assert b"Your annotations have been saved" in response.data
 
     # check that the annotation has been saved to the database
+    # and that the labels for the therapist for this annotation are null
     annotation = PSDialogTurnAnnotation.query.filter_by(
-        id_dataset=dataset_id, speaker="client"
+        id_dataset=dataset_id,
+        speaker=Speaker.client.name,
     ).first()
     assert annotation is not None
     assert annotation.label_a_client == SubLabelsAClient.excitement
+    assert annotation.label_b_client == SubLabelsBClient.security
+    assert annotation.label_a_therapist is None
+    assert annotation.label_b_therapist is None
     assert annotation.strength_a == LabelStrength.high
     assert annotation.comment_a == "test comment A"
 
@@ -180,11 +187,16 @@ def test_annotate_ps_valid_segment_level_annotation(test_client):
     assert b"Your annotations have been saved" in response.data
 
     # check that the annotation has been saved to the database
+    # and that the labels for the client for this annotation are null
     annotation = PSDialogTurnAnnotation.query.filter_by(
-        id_dataset=dataset_id, speaker="therapist"
+        id_dataset=dataset_id,
+        speaker=Speaker.therapist.name,
     ).first()
     assert annotation is not None
     assert annotation.label_a_therapist == SubLabelsATherapist.emotional
+    assert annotation.label_b_therapist == SubLabelsBTherapist.reframing
+    assert annotation.label_a_client is None
+    assert annotation.label_b_client is None
     assert annotation.comment_a == "test comment A"
 
     # log out
@@ -246,7 +258,7 @@ def test_annotate_ps_retrieve_existing_annotations(test_client):
     assert select_field is not None
     assert (
         select_field.find("option", selected=True).get_text()
-        == SubLabelsB.sublabel2.value
+        == SubLabelsBClient.security.value
     )
     select_field = soup.find("select", id="strength_c_client")
     assert select_field is not None

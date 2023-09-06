@@ -12,7 +12,8 @@ from app.models import (
 from app.utils import (
     SubLabelsAClient,
     SubLabelsATherapist,
-    SubLabelsB,
+    SubLabelsBClient,
+    SubLabelsBTherapist,
     LabelStrength,
     Speaker,
 )
@@ -220,7 +221,8 @@ def test_new_ps_dialog_turn_annotation(
     dataset = Dataset.query.filter_by(name="Psychotherapy Dataset Test").first()
     assert annotation.label_a_client == SubLabelsAClient.attachment
     assert annotation.label_a_therapist == SubLabelsATherapist.emotional
-    assert annotation.label_b == SubLabelsB.sublabel2
+    assert annotation.label_b_client == SubLabelsBClient.attachment
+    assert annotation.label_b_therapist == SubLabelsBTherapist.interpretation
     assert annotation.strength_a == LabelStrength.low
     assert annotation.strength_b == LabelStrength.medium
     assert annotation.speaker == Speaker.client
