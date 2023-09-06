@@ -251,6 +251,12 @@ def test_annotate_ps_retrieve_existing_annotations(test_client):
         select_field.find("option", selected=True).get_text()
         == SubLabelsAClient.excitement.value
     )
+    select_field = soup.find("select", id="label_b_client")
+    assert select_field is not None
+    assert (
+        select_field.find("option", selected=True).get_text()
+        == SubLabelsBClient.security.value
+    )
     comment_field = soup.find("textarea", id="comment_a_client")
     assert comment_field is not None
     assert (comment_field.get_text()).strip("\r\n ").lstrip() == "test comment A"
