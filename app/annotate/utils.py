@@ -194,7 +194,7 @@ def new_dialog_turn_annotation_to_db(form, speaker, dataset_id, dialog_turn_ids)
         for dialog_turn_id in dialog_turn_ids:
             dialog_turn_annotation = PSDialogTurnAnnotation(
                 label_a_client=form.label_a_client.data,
-                label_b=form.label_b.data,
+                label_b_client=form.label_b_client.data,
                 label_c=form.label_c.data,
                 label_d=form.label_d.data,
                 label_e=form.label_e.data,
@@ -218,7 +218,7 @@ def new_dialog_turn_annotation_to_db(form, speaker, dataset_id, dialog_turn_ids)
         for dialog_turn_id in dialog_turn_ids:
             dialog_turn_annotation = PSDialogTurnAnnotation(
                 label_a_therapist=form.label_a_therapist.data,
-                label_b=form.label_b.data,
+                label_b_therapist=form.label_b_therapist.data,
                 label_c=form.label_c.data,
                 label_d=form.label_d.data,
                 label_e=form.label_e.data,

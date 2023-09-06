@@ -16,7 +16,8 @@ from app.utils import (
     LabelStrength,
     SubLabelsAClient,
     SubLabelsATherapist,
-    SubLabelsB,
+    SubLabelsBClient,
+    SubLabelsBTherapist,
     SubLabelsC,
     SubLabelsD,
     SubLabelsE,
@@ -77,8 +78,10 @@ class PSAnnotationFormClient(FlaskForm):
         choices=SubLabelsAClient,
         name="label_a_client",
     )
-    label_b = create_select_field(
-        label=LabelNames.label_b.value, choices=SubLabelsB, name="label_b_client"
+    label_b_client = create_select_field(
+        label=LabelNames.label_b_client.value,
+        choices=SubLabelsBClient,
+        name="label_b_client",
     )
     label_c = create_select_field(
         label=LabelNames.label_c.value, choices=SubLabelsC, name="label_c_client"
@@ -108,7 +111,7 @@ class PSAnnotationFormClient(FlaskForm):
         label="Comment", name="comment_a_client", required_if="label_a_client"
     )
     comment_b = create_text_area_field(
-        label="Comment", name="comment_b_client", required_if="label_b"
+        label="Comment", name="comment_b_client", required_if="label_b_client"
     )
     comment_c = create_text_area_field(
         label="Comment", name="comment_c_client", required_if="label_c"
@@ -130,8 +133,10 @@ class PSAnnotationFormTherapist(FlaskForm):
         choices=SubLabelsATherapist,
         name="label_a_therapist",
     )
-    label_b = create_select_field(
-        label=LabelNames.label_b.value, choices=SubLabelsB, name="label_b_therapist"
+    label_b_therapist = create_select_field(
+        label=LabelNames.label_b_therapist.value,
+        choices=SubLabelsBTherapist,
+        name="label_b_therapist",
     )
     label_c = create_select_field(
         label=LabelNames.label_c.value, choices=SubLabelsC, name="label_c_therapist"
@@ -161,7 +166,7 @@ class PSAnnotationFormTherapist(FlaskForm):
         label="Comment", name="comment_a_therapist", required_if="label_a_therapist"
     )
     comment_b = create_text_area_field(
-        label="Comment", name="comment_b_therapist", required_if="label_b"
+        label="Comment", name="comment_b_therapist", required_if="label_b_therapist"
     )
     comment_c = create_text_area_field(
         label="Comment", name="comment_c_therapist", required_if="label_c"
