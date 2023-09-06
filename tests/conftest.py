@@ -16,6 +16,7 @@ from app.models import (
 )
 from app.utils import (
     SubLabelsAClient,
+    SubLabelsATherapist,
     SubLabelsB,
     LabelStrength,
     Speaker,
@@ -186,6 +187,7 @@ def new_ps_dialog_turn_annotation(new_ps_dataset, new_ps_dialog_turn, user_annot
     """Fixture to create a new psychotherapy dialog turn annotation"""
     dialog_turn_annotation = PSDialogTurnAnnotation(
         label_a_client=SubLabelsAClient.attachment,
+        label_a_therapist=SubLabelsATherapist.emotional,
         label_b=SubLabelsB.sublabel2,
         strength_a=LabelStrength.low,
         strength_b=LabelStrength.medium,

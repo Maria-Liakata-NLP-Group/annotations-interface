@@ -12,7 +12,13 @@ from tests.functional.utils import (
     create_segment_level_annotation_therapist,
 )
 import re
-from app.utils import SubLabelsAClient, SubLabelsB, SubLabelsC, LabelStrength
+from app.utils import (
+    SubLabelsAClient,
+    SubLabelsATherapist,
+    SubLabelsB,
+    SubLabelsC,
+    LabelStrength,
+)
 
 
 @pytest.mark.dependency(
@@ -178,6 +184,7 @@ def test_annotate_ps_valid_segment_level_annotation(test_client):
         id_dataset=dataset_id, speaker="therapist"
     ).first()
     assert annotation is not None
+    assert annotation.label_a_therapist == SubLabelsATherapist.emotional
     assert annotation.comment_a == "test comment A"
 
     # log out
