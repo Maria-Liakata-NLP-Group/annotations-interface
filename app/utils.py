@@ -66,6 +66,25 @@ class SubLabelsBTherapist(Enum):
     other = "other"
 
 
+class SubLabelsCClient(Enum):
+    """Enum for psychotherapy annotation label C for the client"""
+
+    acceptance = "self acceptance, care and compassion"
+    esteem = "self esteem"
+    fight = "fight"
+    flight = "flight"
+    other = "other"
+
+
+class SubLabelsCTherapist(Enum):
+    """Enum for psychotherapy annotation label C for the therapist"""
+
+    questions = "questions"
+    exploration = "exploration and expansion"
+    upregulation = "upregulation of emotion"
+    other = "other"
+
+
 class SubLabelsC(Enum):
     """Enum for psychotherapy annotation label C"""
 
@@ -118,6 +137,8 @@ class LabelNames(Enum):
     label_a_therapist = "Supportive"
     label_b_client = "Response of Other"
     label_b_therapist = "Expressive"
+    label_c_client = "Response of Self"
+    label_c_therapist = "Exploratory"
     label_c = "label C"
     label_d = "label D"
     label_e = "label E"
