@@ -46,6 +46,26 @@ class SubLabelsATherapist(Enum):
     other = "other"
 
 
+class SubLabelsBClient(Enum):
+    """Enum for psychotherapy annotation label B for the client"""
+
+    attachment = "other's response to attachment needs"
+    identity = "other's response to identity needs"
+    security = "other's response to security needs"
+    excitement = "other's response to excitement needs"
+    other = "other"
+
+
+class SubLabelsBTherapist(Enum):
+    """Enum for psychotherapy annotation label B for the therapist"""
+
+    interpretation = "interpretation"
+    reframing = "reframing"
+    reflection = "reflection"
+    transference = "transference"
+    other = "other"
+
+
 class SubLabelsB(Enum):
     """Enum for psychotherapy annotation label B"""
 
@@ -106,6 +126,8 @@ class LabelNames(Enum):
 
     label_a_client = "Need"
     label_a_therapist = "Supportive"
+    label_b_client = "Response of Other"
+    label_b_therapist = "Expressive"
     label_b = "label B"
     label_c = "label C"
     label_d = "label D"
