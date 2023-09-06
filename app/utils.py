@@ -118,7 +118,6 @@ class LabelNames(Enum):
     label_a_therapist = "Supportive"
     label_b_client = "Response of Other"
     label_b_therapist = "Expressive"
-    label_b = "label B"
     label_c = "label C"
     label_d = "label D"
     label_e = "label E"
