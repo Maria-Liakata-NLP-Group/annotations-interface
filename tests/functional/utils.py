@@ -1,6 +1,7 @@
 from app.utils import (
     LabelStrength,
-    SubLabelsA,
+    SubLabelsAClient,
+    SubLabelsATherapist,
     SubLabelsB,
     SubLabelsC,
     SubLabelsD,
@@ -8,32 +9,53 @@ from app.utils import (
 )
 
 
-def create_segment_level_annotation(speaker):
+def create_segment_level_annotation_client():
     """
-    Create a dictionary with the data for a segment level psychotherapy annotation form
-
-    Args:
-        speaker (str): the speaker of the dialog turn. One of 'client' or 'therapist'
-
-    Returns:
-        data (dict): the data for the form
+    Create a dictionary with the data for a segment level annotation for the client.
     """
+
     data = {
-        f"label_a_{speaker}": SubLabelsA.excitement.name,
-        f"label_b_{speaker}": SubLabelsB.sublabel2.name,
-        f"label_c_{speaker}": SubLabelsC.sublabel3.name,
-        f"label_d_{speaker}": SubLabelsD.sublabel4.name,
-        f"label_e_{speaker}": SubLabelsE.other.name,
-        f"strength_a_{speaker}": LabelStrength.high.name,
-        f"strength_b_{speaker}": LabelStrength.medium.name,
-        f"strength_c_{speaker}": LabelStrength.low.name,
-        f"strength_d_{speaker}": LabelStrength.high.name,
-        f"strength_e_{speaker}": LabelStrength.medium.name,
-        f"comment_a_{speaker}": "test comment A",
-        f"comment_b_{speaker}": "test comment B",
-        f"comment_c_{speaker}": "test comment C",
-        f"comment_d_{speaker}": "test comment D",
-        f"comment_e_{speaker}": "test comment E",
-        f"submit_form_{speaker}": "Submit",  # this is the name of the submit button and identifies the form
+        "label_a_client": SubLabelsAClient.excitement.name,
+        "label_b_client": SubLabelsB.sublabel2.name,
+        "label_c_client": SubLabelsC.sublabel3.name,
+        "label_d_client": SubLabelsD.sublabel4.name,
+        "label_e_client": SubLabelsE.other.name,
+        "strength_a_client": LabelStrength.high.name,
+        "strength_b_client": LabelStrength.medium.name,
+        "strength_c_client": LabelStrength.low.name,
+        "strength_d_client": LabelStrength.high.name,
+        "strength_e_client": LabelStrength.medium.name,
+        "comment_a_client": "test comment A",
+        "comment_b_client": "test comment B",
+        "comment_c_client": "test comment C",
+        "comment_d_client": "test comment D",
+        "comment_e_client": "test comment E",
+        "submit_form_client": "Submit",  # this is the name of the submit button and identifies the form
+    }
+    return data
+
+
+def create_segment_level_annotation_therapist():
+    """
+    Create a dictionary with the data for a segment level annotation for the therapist.
+    """
+
+    data = {
+        "label_a_therapist": SubLabelsATherapist.emotional.name,
+        "label_b_therapist": SubLabelsB.sublabel2.name,
+        "label_c_therapist": SubLabelsC.sublabel3.name,
+        "label_d_therapist": SubLabelsD.sublabel4.name,
+        "label_e_therapist": SubLabelsE.other.name,
+        "strength_a_therapist": LabelStrength.high.name,
+        "strength_b_therapist": LabelStrength.medium.name,
+        "strength_c_therapist": LabelStrength.low.name,
+        "strength_d_therapist": LabelStrength.high.name,
+        "strength_e_therapist": LabelStrength.medium.name,
+        "comment_a_therapist": "test comment A",
+        "comment_b_therapist": "test comment B",
+        "comment_c_therapist": "test comment C",
+        "comment_d_therapist": "test comment D",
+        "comment_e_therapist": "test comment E",
+        "submit_form_therapist": "Submit",  # this is the name of the submit button and identifies the form
     }
     return data

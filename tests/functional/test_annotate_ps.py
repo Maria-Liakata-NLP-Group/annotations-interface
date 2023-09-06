@@ -7,9 +7,12 @@ from flask import url_for
 from bs4 import BeautifulSoup
 import pytest
 from app.models import PSDialogTurnAnnotation
-from tests.functional.utils import create_segment_level_annotation
+from tests.functional.utils import (
+    create_segment_level_annotation_client,
+    create_segment_level_annotation_therapist,
+)
 import re
-from app.utils import SubLabelsA, SubLabelsB, SubLabelsC, LabelStrength
+from app.utils import SubLabelsAClient, SubLabelsB, SubLabelsC, LabelStrength
 
 
 @pytest.mark.dependency(
@@ -142,7 +145,7 @@ def test_annotate_ps_valid_segment_level_annotation(test_client):
     assert therapist_form is not None
 
     # submit the annotation for the client
-    data = create_segment_level_annotation("client")
+    data = create_segment_level_annotation_client()
     response = test_client.post(
         url,
         data=data,
@@ -156,12 +159,12 @@ def test_annotate_ps_valid_segment_level_annotation(test_client):
         id_dataset=dataset_id, speaker="client"
     ).first()
     assert annotation is not None
-    assert annotation.label_a == SubLabelsA.excitement
+    assert annotation.label_a_client == SubLabelsAClient.excitement
     assert annotation.strength_a == LabelStrength.high
     assert annotation.comment_a == "test comment A"
 
     # submit the annotation for the therapist
-    data = create_segment_level_annotation("therapist")
+    data = create_segment_level_annotation_therapist()
     response = test_client.post(
         url,
         data=data,
@@ -227,7 +230,7 @@ def test_annotate_ps_retrieve_existing_annotations(test_client):
     assert select_field is not None
     assert (
         select_field.find("option", selected=True).get_text()
-        == SubLabelsA.excitement.value
+        == SubLabelsAClient.excitement.value
     )
     comment_field = soup.find("textarea", id="comment_a_client")
     assert comment_field is not None
@@ -287,8 +290,8 @@ def test_annotate_ps_comment_is_compulsory_if_label_is_other(test_client):
     page = 1
     url = url_for("annotate.annotate_ps", dataset_id=dataset_id, page=page)
     # set the label to "Other" and the comment to empty
-    data = create_segment_level_annotation("client")
-    data["label_a_client"] = SubLabelsA.other.value
+    data = create_segment_level_annotation_client()
+    data["label_a_client"] = SubLabelsAClient.other.value
     data["comment_a_client"] = ""
     response = test_client.post(url, data=data, follow_redirects=True)
     assert response.status_code == 200
