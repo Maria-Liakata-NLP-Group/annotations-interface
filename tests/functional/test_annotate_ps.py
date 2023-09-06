@@ -18,7 +18,7 @@ from app.utils import (
     SubLabelsATherapist,
     SubLabelsBClient,
     SubLabelsBTherapist,
-    SubLabelsC,
+    SubLabelsCTherapist,
     LabelStrength,
 )
 
@@ -280,7 +280,7 @@ def test_annotate_ps_retrieve_existing_annotations(test_client):
     assert select_field is not None
     assert (
         select_field.find("option", selected=True).get_text()
-        == SubLabelsC.sublabel3.value
+        == SubLabelsCTherapist.exploration.value
     )
     select_field = soup.find("select", id="strength_d_therapist")
     assert select_field is not None
