@@ -12,3 +12,6 @@ data/*
 
 # tests coverage
 .coverage
+
+# vscode
+.vscode/
