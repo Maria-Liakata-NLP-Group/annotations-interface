@@ -85,16 +85,6 @@ class SubLabelsCTherapist(Enum):
     other = "other"
 
 
-class SubLabelsC(Enum):
-    """Enum for psychotherapy annotation label C"""
-
-    sublabel1 = "sublabel1"
-    sublabel2 = "sublabel2"
-    sublabel3 = "sublabel3"
-    sublabel4 = "sublabel4"
-    other = "other"
-
-
 class SubLabelsD(Enum):
     """Enum for psychotherapy annotation label D"""
 
@@ -139,6 +129,5 @@ class LabelNames(Enum):
     label_b_therapist = "Expressive"
     label_c_client = "Response of Self"
     label_c_therapist = "Exploratory"
-    label_c = "label C"
     label_d = "label D"
     label_e = "label E"
