@@ -19,6 +19,7 @@ from app.utils import (
     SubLabelsBClient,
     SubLabelsBTherapist,
     SubLabelsCTherapist,
+    SubLabelsEClient,
     LabelStrength,
 )
 
@@ -171,8 +172,10 @@ def test_annotate_ps_valid_segment_level_annotation(test_client):
     assert annotation is not None
     assert annotation.label_a_client == SubLabelsAClient.excitement
     assert annotation.label_b_client == SubLabelsBClient.security
+    assert annotation.label_e_client == SubLabelsEClient.insight
     assert annotation.label_a_therapist is None
     assert annotation.label_b_therapist is None
+    assert annotation.label_e_therapist is None
     assert annotation.strength_a == LabelStrength.high
     assert annotation.comment_a == "test comment A"
 
