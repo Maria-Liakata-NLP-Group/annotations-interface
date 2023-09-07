@@ -156,6 +156,46 @@ class LabelStrengthDClient(Enum):
     strength5 = "5. highly adaptive"
 
 
+class LabelStrengthATherapist(Enum):
+    """Enum for psychotherapy annotation label A strength for the therapist"""
+
+    low = "1. low quality"
+    medium = "3. medium quality"
+    high = "5. high quality"
+
+
+class LabelStrengthBTherapist(Enum):
+    """Enum for psychotherapy annotation label B strength for the therapist"""
+
+    low = "1. low quality"
+    medium = "3. medium quality"
+    high = "5. high quality"
+
+
+class LabelStrengthCTherapist(Enum):
+    """Enum for psychotherapy annotation label C strength for the therapist"""
+
+    low = "1. low quality"
+    medium = "3. medium quality"
+    high = "5. high quality"
+
+
+class LabelStrengthDTherapist(Enum):
+    """Enum for psychotherapy annotation label D strength for the therapist"""
+
+    low = "1. low quality"
+    medium = "3. medium quality"
+    high = "5. high quality"
+
+
+class LabelStrengthETherapist(Enum):
+    """Enum for psychotherapy annotation label E strength for the therapist"""
+
+    low = "1. low quality"
+    medium = "3. medium quality"
+    high = "5. high quality"
+
+
 class LabelStrength(Enum):
     """Psychotherapy annotation label strength"""
 
