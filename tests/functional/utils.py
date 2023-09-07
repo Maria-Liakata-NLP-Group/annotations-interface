@@ -6,7 +6,8 @@ from app.utils import (
     SubLabelsBTherapist,
     SubLabelsCClient,
     SubLabelsCTherapist,
-    SubLabelsD,
+    SubLabelsDClient,
+    SubLabelsDTherapist,
     SubLabelsE,
 )
 
@@ -20,7 +21,7 @@ def create_segment_level_annotation_client():
         "label_a_client": SubLabelsAClient.excitement.name,
         "label_b_client": SubLabelsBClient.security.name,
         "label_c_client": SubLabelsCClient.esteem.name,
-        "label_d_client": SubLabelsD.sublabel4.name,
+        "label_d_client": SubLabelsDClient.positive.name,
         "label_e_client": SubLabelsE.other.name,
         "strength_a_client": LabelStrength.high.name,
         "strength_b_client": LabelStrength.medium.name,
@@ -46,7 +47,7 @@ def create_segment_level_annotation_therapist():
         "label_a_therapist": SubLabelsATherapist.emotional.name,
         "label_b_therapist": SubLabelsBTherapist.reframing.name,
         "label_c_therapist": SubLabelsCTherapist.exploration.name,
-        "label_d_therapist": SubLabelsD.sublabel4.name,
+        "label_d_therapist": SubLabelsDTherapist.restructuring.name,
         "label_e_therapist": SubLabelsE.other.name,
         "strength_a_therapist": LabelStrength.high.name,
         "strength_b_therapist": LabelStrength.medium.name,
