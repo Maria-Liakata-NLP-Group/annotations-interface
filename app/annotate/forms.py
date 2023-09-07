@@ -24,6 +24,16 @@ from app.utils import (
     SubLabelsDTherapist,
     SubLabelsEClient,
     SubLabelsETherapist,
+    LabelStrengthAClient,
+    LabelStrengthATherapist,
+    LabelStrengthBClient,
+    LabelStrengthBTherapist,
+    LabelStrengthCClient,
+    LabelStrengthCTherapist,
+    LabelStrengthDClient,
+    LabelStrengthDTherapist,
+    LabelStrengthEClient,
+    LabelStrengthETherapist,
 )
 
 
@@ -101,7 +111,7 @@ class PSAnnotationFormClient(FlaskForm):
         choices=SubLabelsEClient,
         name="label_e_client",
     )
-    strength_a = create_select_field(
+    strength_a_client = create_select_field(
         label="Strength", choices=LabelStrength, name="strength_a_client"
     )
     strength_b = create_select_field(
@@ -162,7 +172,7 @@ class PSAnnotationFormTherapist(FlaskForm):
         choices=SubLabelsETherapist,
         name="label_e_therapist",
     )
-    strength_a = create_select_field(
+    strength_a_therapist = create_select_field(
         label="Strength", choices=LabelStrength, name="strength_a_therapist"
     )
     strength_b = create_select_field(
