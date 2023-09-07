@@ -156,6 +156,16 @@ class LabelStrengthDClient(Enum):
     strength5 = "5. highly adaptive"
 
 
+class LabelStrengthEClient(Enum):
+    """Enum for psychotherapy annotation label E strength for the client"""
+
+    strength1 = "1. no recognition"
+    strength2 = "2. low recognition"
+    strength3 = "3. moderate recognition"
+    strength4 = "4. good recognition"
+    strength5 = "5. excellent recognition (Aha! moment)"
+
+
 class LabelStrengthATherapist(Enum):
     """Enum for psychotherapy annotation label A strength for the therapist"""
 
