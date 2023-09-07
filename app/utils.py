@@ -149,5 +149,6 @@ class LabelNames(Enum):
     label_c_client = "Response of Self"
     label_c_therapist = "Exploratory"
     label_d_client = "Emotional experience and regulation"
+    label_d_therapist = "Directive"
     label_d = "label D"
     label_e = "label E"
