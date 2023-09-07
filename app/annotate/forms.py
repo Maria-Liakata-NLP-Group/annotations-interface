@@ -117,7 +117,7 @@ class PSAnnotationFormClient(FlaskForm):
     strength_b_client = create_select_field(
         label="Strength", choices=LabelStrength, name="strength_b_client"
     )
-    strength_c = create_select_field(
+    strength_c_client = create_select_field(
         label="Strength", choices=LabelStrength, name="strength_c_client"
     )
     strength_d = create_select_field(
@@ -178,7 +178,7 @@ class PSAnnotationFormTherapist(FlaskForm):
     strength_b_therapist = create_select_field(
         label="Strength", choices=LabelStrength, name="strength_b_therapist"
     )
-    strength_c = create_select_field(
+    strength_c_therapist = create_select_field(
         label="Strength", choices=LabelStrength, name="strength_c_therapist"
     )
     strength_d = create_select_field(

@@ -118,7 +118,7 @@ app_content %} {% block head%} {{ super() }}
       </div>
       <div class="form-group">
         {{ wtf.form_field(form_client.label_c_client) }} {{
-        wtf.form_field(form_client.strength_c) }} {{
+        wtf.form_field(form_client.strength_c_client) }} {{
         wtf.form_field(form_client.comment_c) }}
       </div>
       <div class="form-group">
@@ -171,7 +171,7 @@ app_content %} {% block head%} {{ super() }}
       </div>
       <div class="form-group">
         {{ wtf.form_field(form_therapist.label_c_therapist) }} {{
-        wtf.form_field(form_therapist.strength_c) }} {{
+        wtf.form_field(form_therapist.strength_c_therapist) }} {{
         wtf.form_field(form_therapist.comment_c) }}
       </div>
       <div class="form-group">
