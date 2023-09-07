@@ -85,6 +85,25 @@ class SubLabelsCTherapist(Enum):
     other = "other"
 
 
+class SubLabelsDClient(Enum):
+    """Enum for psychotherapy annotation label D for the client"""
+
+    hard_negative = "hard negative"
+    soft_negative = "soft negative"
+    neutral = "neutral"
+    positive = "positive"
+
+
+class SubLabelsDTherapist(Enum):
+    """Enum for psychotherapy annotation label D for the therapist"""
+
+    restructuring = "cognitive restructuring"
+    suggest_change = "suggests change in behavior or behavioral activation"
+    encouragement = "encourages the patient to think or do things they are afraid of"
+    advice = "provides advice, sets an agenda"
+    other = "other"
+
+
 class SubLabelsD(Enum):
     """Enum for psychotherapy annotation label D"""
 
@@ -129,5 +148,6 @@ class LabelNames(Enum):
     label_b_therapist = "Expressive"
     label_c_client = "Response of Self"
     label_c_therapist = "Exploratory"
+    label_d_client = "Emotional experience and regulation"
     label_d = "label D"
     label_e = "label E"
