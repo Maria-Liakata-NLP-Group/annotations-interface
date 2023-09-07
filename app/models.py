@@ -396,11 +396,6 @@ class PSDialogTurnAnnotation(db.Model):
     strength_e_therapist = db.Column(
         db.Enum(LabelStrengthETherapist), nullable=True, default=None
     )
-    strength_a = db.Column(db.Enum(LabelStrength), nullable=True)
-    strength_b = db.Column(db.Enum(LabelStrength), nullable=True)
-    strength_c = db.Column(db.Enum(LabelStrength), nullable=True)
-    strength_d = db.Column(db.Enum(LabelStrength), nullable=True)
-    strength_e = db.Column(db.Enum(LabelStrength), nullable=True)
     comment_a = db.Column(db.Text, nullable=True)
     comment_b = db.Column(db.Text, nullable=True)
     comment_c = db.Column(db.Text, nullable=True)
