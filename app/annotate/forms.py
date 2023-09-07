@@ -22,7 +22,8 @@ from app.utils import (
     SubLabelsCTherapist,
     SubLabelsDClient,
     SubLabelsDTherapist,
-    SubLabelsE,
+    SubLabelsEClient,
+    SubLabelsETherapist,
 )
 
 
@@ -95,8 +96,10 @@ class PSAnnotationFormClient(FlaskForm):
         choices=SubLabelsDClient,
         name="label_d_client",
     )
-    label_e = create_select_field(
-        label=LabelNames.label_e.value, choices=SubLabelsE, name="label_e_client"
+    label_e_client = create_select_field(
+        label=LabelNames.label_e_client.value,
+        choices=SubLabelsEClient,
+        name="label_e_client",
     )
     strength_a = create_select_field(
         label="Strength", choices=LabelStrength, name="strength_a_client"
@@ -126,7 +129,7 @@ class PSAnnotationFormClient(FlaskForm):
         label="Comment", name="comment_d_client", required_if="label_d_client"
     )
     comment_e = create_text_area_field(
-        label="Comment", name="comment_e_client", required_if="label_e"
+        label="Comment", name="comment_e_client", required_if="label_e_client"
     )
     submit = SubmitField("Submit")
 
@@ -154,8 +157,10 @@ class PSAnnotationFormTherapist(FlaskForm):
         choices=SubLabelsDTherapist,
         name="label_d_therapist",
     )
-    label_e = create_select_field(
-        label=LabelNames.label_e.value, choices=SubLabelsE, name="label_e_therapist"
+    label_e_therapist = create_select_field(
+        label=LabelNames.label_e_therapist.value,
+        choices=SubLabelsETherapist,
+        name="label_e_therapist",
     )
     strength_a = create_select_field(
         label="Strength", choices=LabelStrength, name="strength_a_therapist"
@@ -185,6 +190,6 @@ class PSAnnotationFormTherapist(FlaskForm):
         label="Comment", name="comment_d_therapist", required_if="label_d_therapist"
     )
     comment_e = create_text_area_field(
-        label="Comment", name="comment_e_therapist", required_if="label_e"
+        label="Comment", name="comment_e_therapist", required_if="label_e_therapist"
     )
     submit = SubmitField("Submit")
