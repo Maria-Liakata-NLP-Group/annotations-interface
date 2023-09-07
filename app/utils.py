@@ -116,6 +116,46 @@ class SubLabelsETherapist(Enum):
     general_helpfulness = "general helpfulness"
 
 
+class LabelStrengthAClient(Enum):
+    """Enum for psychotherapy annotation label A strength for the client"""
+
+    strength1 = "1. highly maladaptive"
+    strength2 = "2. very maladaptive"
+    strength3 = "3. moderately adaptive/maladaptive"
+    strength4 = "4. very adaptive"
+    strength5 = "5. highly adaptive"
+
+
+class LabelStrengthBClient(Enum):
+    """Enum for psychotherapy annotation label B strength for the client"""
+
+    strength1 = "1. highly maladaptive"
+    strength2 = "2. very maladaptive"
+    strength3 = "3. moderately adaptive/maladaptive"
+    strength4 = "4. very adaptive"
+    strength5 = "5. highly adaptive"
+
+
+class LabelStrengthCClient(Enum):
+    """Enum for psychotherapy annotation label C strength for the client"""
+
+    strength1 = "1. highly maladaptive"
+    strength2 = "2. very maladaptive"
+    strength3 = "3. moderately adaptive/maladaptive"
+    strength4 = "4. very adaptive"
+    strength5 = "5. highly adaptive"
+
+
+class LabelStrengthDClient(Enum):
+    """Enum for psychotherapy annotation label D strength for the client"""
+
+    strength1 = "1. highly maladaptive"
+    strength2 = "2. very maladaptive"
+    strength3 = "3. moderately adaptive/maladaptive"
+    strength4 = "4. very adaptive"
+    strength5 = "5. highly adaptive"
+
+
 class LabelStrength(Enum):
     """Psychotherapy annotation label strength"""
 
