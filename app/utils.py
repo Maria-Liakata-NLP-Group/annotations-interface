@@ -104,6 +104,18 @@ class SubLabelsDTherapist(Enum):
     other = "other"
 
 
+class SubLabelsEClient(Enum):
+    """Enum for psychotherapy annotation label E for the client"""
+
+    insight = "insight"
+
+
+class SubLabelsETherapist(Enum):
+    """Enum for psychotherapy annotation label E for the therapist"""
+
+    general_helpfulness = "general helpfulness"
+
+
 class SubLabelsE(Enum):
     """Enum for psychotherapy annotation label E"""
 
@@ -140,4 +152,6 @@ class LabelNames(Enum):
     label_c_therapist = "Exploratory"
     label_d_client = "Emotional experience and regulation"
     label_d_therapist = "Directive"
+    label_e_client = "Insight"
+    label_e_therapist = "General helpfulness"
     label_e = "label E"

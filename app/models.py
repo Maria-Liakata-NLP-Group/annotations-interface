@@ -15,7 +15,8 @@ from app.utils import (
     SubLabelsCTherapist,
     SubLabelsDClient,
     SubLabelsDTherapist,
-    SubLabelsE,
+    SubLabelsEClient,
+    SubLabelsETherapist,
     LabelStrength,
     Speaker,
 )
@@ -351,7 +352,10 @@ class PSDialogTurnAnnotation(db.Model):
     label_d_therapist = db.Column(
         db.Enum(SubLabelsDTherapist), nullable=True, default=None
     )
-    label_e = db.Column(db.Enum(SubLabelsE), nullable=True)
+    label_e_client = db.Column(db.Enum(SubLabelsEClient), nullable=True, default=None)
+    label_e_therapist = db.Column(
+        db.Enum(SubLabelsETherapist), nullable=True, default=None
+    )
     strength_a = db.Column(db.Enum(LabelStrength), nullable=True)
     strength_b = db.Column(db.Enum(LabelStrength), nullable=True)
     strength_c = db.Column(db.Enum(LabelStrength), nullable=True)
