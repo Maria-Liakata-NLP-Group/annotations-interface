@@ -116,16 +116,6 @@ class SubLabelsETherapist(Enum):
     general_helpfulness = "general helpfulness"
 
 
-class SubLabelsE(Enum):
-    """Enum for psychotherapy annotation label E"""
-
-    sublabel1 = "sublabel1"
-    sublabel2 = "sublabel2"
-    sublabel3 = "sublabel3"
-    sublabel4 = "sublabel4"
-    other = "other"
-
-
 class LabelStrength(Enum):
     """Psychotherapy annotation label strength"""
 
@@ -154,4 +144,3 @@ class LabelNames(Enum):
     label_d_therapist = "Directive"
     label_e_client = "Insight"
     label_e_therapist = "General helpfulness"
-    label_e = "label E"
