@@ -20,7 +20,9 @@ from app.utils import (
     SubLabelsBTherapist,
     SubLabelsCTherapist,
     SubLabelsEClient,
-    LabelStrength,
+    LabelStrengthAClient,
+    LabelStrengthCClient,
+    LabelStrengthDTherapist,
 )
 
 
@@ -176,7 +178,7 @@ def test_annotate_ps_valid_segment_level_annotation(test_client):
     assert annotation.label_a_therapist is None
     assert annotation.label_b_therapist is None
     assert annotation.label_e_therapist is None
-    assert annotation.strength_a == LabelStrength.high
+    assert annotation.strength_a_client == LabelStrengthAClient.highly_maladaptive
     assert annotation.comment_a == "test comment A"
 
     # submit the annotation for the therapist
@@ -272,7 +274,8 @@ def test_annotate_ps_retrieve_existing_annotations(test_client):
     select_field = soup.find("select", id="strength_c_client")
     assert select_field is not None
     assert (
-        select_field.find("option", selected=True).get_text() == LabelStrength.low.value
+        select_field.find("option", selected=True).get_text()
+        == LabelStrengthCClient.moderately_adaptive.value
     )
 
     # check the form fields for the therapist
@@ -289,7 +292,7 @@ def test_annotate_ps_retrieve_existing_annotations(test_client):
     assert select_field is not None
     assert (
         select_field.find("option", selected=True).get_text()
-        == LabelStrength.high.value
+        == LabelStrengthDTherapist.low.name,
     )
 
     # log out

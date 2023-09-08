@@ -14,7 +14,8 @@ from app.utils import (
     SubLabelsATherapist,
     SubLabelsBClient,
     SubLabelsBTherapist,
-    LabelStrength,
+    LabelStrengthAClient,
+    LabelStrengthBTherapist,
     Speaker,
 )
 import pytest
@@ -223,8 +224,8 @@ def test_new_ps_dialog_turn_annotation(
     assert annotation.label_a_therapist == SubLabelsATherapist.emotional
     assert annotation.label_b_client == SubLabelsBClient.attachment
     assert annotation.label_b_therapist == SubLabelsBTherapist.interpretation
-    assert annotation.strength_a == LabelStrength.low
-    assert annotation.strength_b == LabelStrength.medium
+    assert annotation.strength_a_client == LabelStrengthAClient.moderately_adaptive
+    assert annotation.strength_b_therapist == LabelStrengthBTherapist.high
     assert annotation.speaker == Speaker.client
     assert annotation.dialog_turn == new_ps_dialog_turn
     assert annotation.author == annotator1

@@ -19,7 +19,8 @@ from app.utils import (
     SubLabelsATherapist,
     SubLabelsBClient,
     SubLabelsBTherapist,
-    LabelStrength,
+    LabelStrengthAClient,
+    LabelStrengthBTherapist,
     Speaker,
 )
 from config import TestConfig
@@ -191,8 +192,8 @@ def new_ps_dialog_turn_annotation(new_ps_dataset, new_ps_dialog_turn, user_annot
         label_a_therapist=SubLabelsATherapist.emotional,
         label_b_client=SubLabelsBClient.attachment,
         label_b_therapist=SubLabelsBTherapist.interpretation,
-        strength_a=LabelStrength.low,
-        strength_b=LabelStrength.medium,
+        strength_a_client=LabelStrengthAClient.moderately_adaptive,
+        strength_b_therapist=LabelStrengthBTherapist.high,
         comment_a="test comment a",
         comment_b="test comment b",
         speaker=Speaker.client,
