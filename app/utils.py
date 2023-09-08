@@ -119,51 +119,51 @@ class SubLabelsETherapist(Enum):
 class LabelStrengthAClient(Enum):
     """Enum for psychotherapy annotation label A strength for the client"""
 
-    strength1 = "1. highly maladaptive"
-    strength2 = "2. very maladaptive"
-    strength3 = "3. moderately adaptive/maladaptive"
-    strength4 = "4. very adaptive"
-    strength5 = "5. highly adaptive"
+    highly_maladaptive = "1. highly maladaptive"
+    very_maladaptive = "2. very maladaptive"
+    moderately_adaptive = "3. moderately adaptive/maladaptive"
+    very_adaptive = "4. very adaptive"
+    highly_adaptive = "5. highly adaptive"
 
 
 class LabelStrengthBClient(Enum):
     """Enum for psychotherapy annotation label B strength for the client"""
 
-    strength1 = "1. highly maladaptive"
-    strength2 = "2. very maladaptive"
-    strength3 = "3. moderately adaptive/maladaptive"
-    strength4 = "4. very adaptive"
-    strength5 = "5. highly adaptive"
+    highly_maladaptive = "1. highly maladaptive"
+    very_maladaptive = "2. very maladaptive"
+    moderately_adaptive = "3. moderately adaptive/maladaptive"
+    very_adaptive = "4. very adaptive"
+    highly_adaptive = "5. highly adaptive"
 
 
 class LabelStrengthCClient(Enum):
     """Enum for psychotherapy annotation label C strength for the client"""
 
-    strength1 = "1. highly maladaptive"
-    strength2 = "2. very maladaptive"
-    strength3 = "3. moderately adaptive/maladaptive"
-    strength4 = "4. very adaptive"
-    strength5 = "5. highly adaptive"
+    highly_maladaptive = "1. highly maladaptive"
+    very_maladaptive = "2. very maladaptive"
+    moderately_adaptive = "3. moderately adaptive/maladaptive"
+    very_adaptive = "4. very adaptive"
+    highly_adaptive = "5. highly adaptive"
 
 
 class LabelStrengthDClient(Enum):
     """Enum for psychotherapy annotation label D strength for the client"""
 
-    strength1 = "1. highly maladaptive"
-    strength2 = "2. very maladaptive"
-    strength3 = "3. moderately adaptive/maladaptive"
-    strength4 = "4. very adaptive"
-    strength5 = "5. highly adaptive"
+    highly_maladaptive = "1. highly maladaptive"
+    very_maladaptive = "2. very maladaptive"
+    moderately_adaptive = "3. moderately adaptive/maladaptive"
+    very_adaptive = "4. very adaptive"
+    highly_adaptive = "5. highly adaptive"
 
 
 class LabelStrengthEClient(Enum):
     """Enum for psychotherapy annotation label E strength for the client"""
 
-    strength1 = "1. no recognition"
-    strength2 = "2. low recognition"
-    strength3 = "3. moderate recognition"
-    strength4 = "4. good recognition"
-    strength5 = "5. excellent recognition (Aha! moment)"
+    no_recognition = "1. no recognition"
+    low_recognition = "2. low recognition"
+    moderate_recognition = "3. moderate recognition"
+    good_recognition = "4. good recognition"
+    excellent_recognition = "5. excellent recognition (Aha! moment)"
 
 
 class LabelStrengthATherapist(Enum):
