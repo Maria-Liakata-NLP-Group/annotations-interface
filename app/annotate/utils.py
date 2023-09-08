@@ -132,8 +132,8 @@ def get_page_items(page, events, dataset_id):
 
 def fetch_dialog_turn_annotations(dialog_turns: list, speaker: Speaker):
     """
-    Fetch the the annotations for the dialog turns and only return the annotation
-    with the latest timestamp.
+    Fetch the annotations for the dialog turns from the database and
+    only return the annotation with the latest timestamp.
 
     Parameters
     ----------
@@ -167,7 +167,7 @@ def fetch_dialog_turn_annotations(dialog_turns: list, speaker: Speaker):
         for attr in annotation.__dict__.keys():
             if attr.startswith("label_") and getattr(annotation, attr) is not None:
                 setattr(annotation, attr, getattr(annotation, attr).name)
-            elif attr.startswith("strength_"):
+            elif attr.startswith("strength_") and getattr(annotation, attr) is not None:
                 setattr(annotation, attr, getattr(annotation, attr).name)
     else:
         annotation = None
