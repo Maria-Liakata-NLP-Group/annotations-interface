@@ -27,7 +27,6 @@ from app.utils import (
     LabelStrengthDTherapist,
     LabelStrengthETherapist,
     LabelStrengthEClient,
-    LabelStrength,
     Speaker,
 )
 

@@ -13,7 +13,6 @@ from wtforms.validators import (
 
 from app.utils import (
     LabelNames,
-    LabelStrength,
     SubLabelsAClient,
     SubLabelsATherapist,
     SubLabelsBClient,
@@ -112,19 +111,19 @@ class PSAnnotationFormClient(FlaskForm):
         name="label_e_client",
     )
     strength_a_client = create_select_field(
-        label="Strength", choices=LabelStrength, name="strength_a_client"
+        label="Strength", choices=LabelStrengthAClient, name="strength_a_client"
     )
     strength_b_client = create_select_field(
-        label="Strength", choices=LabelStrength, name="strength_b_client"
+        label="Strength", choices=LabelStrengthBClient, name="strength_b_client"
     )
     strength_c_client = create_select_field(
-        label="Strength", choices=LabelStrength, name="strength_c_client"
+        label="Strength", choices=LabelStrengthCClient, name="strength_c_client"
     )
     strength_d_client = create_select_field(
-        label="Strength", choices=LabelStrength, name="strength_d_client"
+        label="Strength", choices=LabelStrengthDClient, name="strength_d_client"
     )
     strength_e_client = create_select_field(
-        label="Strength", choices=LabelStrength, name="strength_e_client"
+        label="Strength", choices=LabelStrengthEClient, name="strength_e_client"
     )
     comment_a = create_text_area_field(
         label="Comment", name="comment_a_client", required_if="label_a_client"
@@ -173,19 +172,19 @@ class PSAnnotationFormTherapist(FlaskForm):
         name="label_e_therapist",
     )
     strength_a_therapist = create_select_field(
-        label="Strength", choices=LabelStrength, name="strength_a_therapist"
+        label="Strength", choices=LabelStrengthATherapist, name="strength_a_therapist"
     )
     strength_b_therapist = create_select_field(
-        label="Strength", choices=LabelStrength, name="strength_b_therapist"
+        label="Strength", choices=LabelStrengthBTherapist, name="strength_b_therapist"
     )
     strength_c_therapist = create_select_field(
-        label="Strength", choices=LabelStrength, name="strength_c_therapist"
+        label="Strength", choices=LabelStrengthCTherapist, name="strength_c_therapist"
     )
     strength_d_therapist = create_select_field(
-        label="Strength", choices=LabelStrength, name="strength_d_therapist"
+        label="Strength", choices=LabelStrengthDTherapist, name="strength_d_therapist"
     )
     strength_e_therapist = create_select_field(
-        label="Strength", choices=LabelStrength, name="strength_e_therapist"
+        label="Strength", choices=LabelStrengthETherapist, name="strength_e_therapist"
     )
     comment_a = create_text_area_field(
         label="Comment", name="comment_a_therapist", required_if="label_a_therapist"
