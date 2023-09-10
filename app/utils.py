@@ -4,13 +4,6 @@ Utility classes for models.py
 from enum import Enum
 
 
-class SMAnnotationType(Enum):
-    """Enum for social media annotation types"""
-
-    escalation = "Escalation"
-    switch = "Switch"
-
-
 class DatasetType(Enum):
     """Enum for dataset types"""
 
@@ -19,11 +12,21 @@ class DatasetType(Enum):
 
 
 class Permission:
-    """Permissions for roles"""
+    """Permissions for user roles"""
 
     READ = 1  # read datasets
     WRITE = 2  # annotate datasets
     ADMIN = 4  # admin
+
+
+### SOCIAL MEDIA ANNOTATIONS ###
+
+
+class SMAnnotationType(Enum):
+    """Enum for social media annotation types"""
+
+    escalation = "Escalation"
+    switch = "Switch"
 
 
 ### PSYCHOTHERAPY ANNOTATIONS ###
@@ -215,6 +218,7 @@ class LabelStrengthETherapist(Enum):
     high = "5. high quality"
 
 
+# Speaker types
 class Speaker(Enum):
     """Speaker in a psychotherapy session"""
 
@@ -222,6 +226,7 @@ class Speaker(Enum):
     therapist = "therapist"
 
 
+# Label names
 class LabelNames(Enum):
     """Enum for psychotherapy annotation label names"""
 
