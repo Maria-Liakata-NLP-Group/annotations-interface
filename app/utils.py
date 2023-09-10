@@ -26,6 +26,10 @@ class Permission:
     ADMIN = 4  # admin
 
 
+### PSYCHOTHERAPY ANNOTATIONS ###
+
+
+# Sublabels for Client/Patient
 class SubLabelsAClient(Enum):
     """Enum for psychotherapy annotation label A for the client"""
 
@@ -33,16 +37,6 @@ class SubLabelsAClient(Enum):
     identity = "identity"
     security = "security"
     excitement = "excitement/interest/joy"
-    other = "other"
-
-
-class SubLabelsATherapist(Enum):
-    """Enum for psychotherapy annotation label A for the therapist"""
-
-    emotional = "emotional empathy, encouragement, warmth"
-    cognitive = "cognitive empathy (empathic accuracy)"
-    respect = "respect, appreciation"
-    calming = "calming, down-regulating"
     other = "other"
 
 
@@ -56,16 +50,6 @@ class SubLabelsBClient(Enum):
     other = "other"
 
 
-class SubLabelsBTherapist(Enum):
-    """Enum for psychotherapy annotation label B for the therapist"""
-
-    interpretation = "interpretation"
-    reframing = "reframing"
-    reflection = "reflection"
-    transference = "transference"
-    other = "other"
-
-
 class SubLabelsCClient(Enum):
     """Enum for psychotherapy annotation label C for the client"""
 
@@ -73,15 +57,6 @@ class SubLabelsCClient(Enum):
     esteem = "self esteem"
     fight = "fight"
     flight = "flight"
-    other = "other"
-
-
-class SubLabelsCTherapist(Enum):
-    """Enum for psychotherapy annotation label C for the therapist"""
-
-    questions = "questions"
-    exploration = "exploration and expansion"
-    upregulation = "upregulation of emotion"
     other = "other"
 
 
@@ -94,6 +69,44 @@ class SubLabelsDClient(Enum):
     positive = "positive"
 
 
+class SubLabelsEClient(Enum):
+    """Enum for psychotherapy annotation label E for the client"""
+
+    insight = "insight"
+
+
+# Sublabels for Therapist
+
+
+class SubLabelsATherapist(Enum):
+    """Enum for psychotherapy annotation label A for the therapist"""
+
+    emotional = "emotional empathy, encouragement, warmth"
+    cognitive = "cognitive empathy (empathic accuracy)"
+    respect = "respect, appreciation"
+    calming = "calming, down-regulating"
+    other = "other"
+
+
+class SubLabelsBTherapist(Enum):
+    """Enum for psychotherapy annotation label B for the therapist"""
+
+    interpretation = "interpretation"
+    reframing = "reframing"
+    reflection = "reflection"
+    transference = "transference"
+    other = "other"
+
+
+class SubLabelsCTherapist(Enum):
+    """Enum for psychotherapy annotation label C for the therapist"""
+
+    questions = "questions"
+    exploration = "exploration and expansion"
+    upregulation = "upregulation of emotion"
+    other = "other"
+
+
 class SubLabelsDTherapist(Enum):
     """Enum for psychotherapy annotation label D for the therapist"""
 
@@ -104,18 +117,13 @@ class SubLabelsDTherapist(Enum):
     other = "other"
 
 
-class SubLabelsEClient(Enum):
-    """Enum for psychotherapy annotation label E for the client"""
-
-    insight = "insight"
-
-
 class SubLabelsETherapist(Enum):
     """Enum for psychotherapy annotation label E for the therapist"""
 
     general_helpfulness = "general helpfulness"
 
 
+# Label strengths for Client/Patient
 class LabelStrengthAClient(Enum):
     """Enum for psychotherapy annotation label A strength for the client"""
 
@@ -166,6 +174,7 @@ class LabelStrengthEClient(Enum):
     excellent_recognition = "5. excellent recognition (Aha! moment)"
 
 
+# Label strengths for Therapist
 class LabelStrengthATherapist(Enum):
     """Enum for psychotherapy annotation label A strength for the therapist"""
 
