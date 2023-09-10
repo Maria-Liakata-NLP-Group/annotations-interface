@@ -126,6 +126,22 @@ class SubLabelsETherapist(Enum):
     general_helpfulness = "general helpfulness"
 
 
+# Sublabels for Dyad
+class SubLabelsADyad(Enum):
+    """Enum for psychotherapy annotation label A for the dyad"""
+
+    bond = "bond"
+    tasks_goals = "tasks and goals"
+
+
+class SubLabelsBDyad(Enum):
+    """Enum for psychotherapy annotation label B for the dyad"""
+
+    confrontational = "confrontational rupture"
+    withdrawal = "withdrawal rupture"
+    other = "other"
+
+
 # Label strengths for Client/Patient
 class LabelStrengthAClient(Enum):
     """Enum for psychotherapy annotation label A strength for the client"""
@@ -218,12 +234,30 @@ class LabelStrengthETherapist(Enum):
     high = "5. high quality"
 
 
+# Label strengths for Dyad
+class LabelStrengthADyad(Enum):
+    """Enum for psychotherapy annotation label A strength for the dyad"""
+
+    low = "1. low alliance/collaboration/reciprocity"
+    medium = "3. moderate alliance/collaboration/reciprocity"
+    high = "5. high alliance/collaboration/reciprocity"
+
+
+class LabelStrengthBDyad(Enum):
+    """Enum for psychotherapy annotation label B strength for the dyad"""
+
+    high = "1. tension is high"
+    medium = "3. tension is moderate"
+    low = "5. tension is low"
+
+
 # Speaker types
 class Speaker(Enum):
     """Speaker in a psychotherapy session"""
 
     client = "client"
     therapist = "therapist"
+    dyad = "dyad"
 
 
 # Label names
@@ -232,6 +266,8 @@ class LabelNames(Enum):
 
     label_a_client = "Need"
     label_a_therapist = "Supportive"
+    label_a_dyad = "Alliance/Reciprocity"
+    label_b_dyad = "Tension"
     label_b_client = "Response of Other"
     label_b_therapist = "Expressive"
     label_c_client = "Response of Self"
