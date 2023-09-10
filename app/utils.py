@@ -215,14 +215,6 @@ class LabelStrengthETherapist(Enum):
     high = "5. high quality"
 
 
-class LabelStrength(Enum):
-    """Psychotherapy annotation label strength"""
-
-    high = "high"
-    medium = "medium"
-    low = "low"
-
-
 class Speaker(Enum):
     """Speaker in a psychotherapy session"""
 
