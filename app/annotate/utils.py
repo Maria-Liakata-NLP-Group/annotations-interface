@@ -9,6 +9,11 @@ from app.utils import Speaker
 from sqlalchemy import desc
 from app.models import PSDialogTurnAnnotation
 from app import db
+from app.annotate.forms import (
+    PSAnnotationFormClient,
+    PSAnnotationFormTherapist,
+    PSAnnotationFormDyad,
+)
 
 
 def split_dialog_turns(dialog_turns, time_interval=300):
@@ -140,7 +145,7 @@ def fetch_dialog_turn_annotations(dialog_turns: list, speaker: Speaker):
     dialog_turns : list
         A list of PSDialogTurn objects
     speaker : Speaker
-        The speaker the annotation is for (client or therapist)
+        The speaker the annotation is for (client, therapist or dyad)
 
     Returns
     -------
@@ -184,7 +189,7 @@ def new_dialog_turn_annotation_to_db(form, speaker, dataset_id, dialog_turn_ids)
     form : PSAnnotationFormClient or PSAnnotationFormTherapist
         The form containing the annotation data
     speaker : Speaker
-        The speaker the annotation is for (client or therapist)
+        The speaker the annotation is for (client, therapist or dyad)
     dataset_id : int
         The id of the dataset the dialog turns belong to
     dialog_turn_ids : list
@@ -238,3 +243,55 @@ def new_dialog_turn_annotation_to_db(form, speaker, dataset_id, dialog_turn_ids)
                 id_dataset=dataset_id,
             )
             db.session.add(dialog_turn_annotation)
+    elif speaker == Speaker.dyad:
+        for dialog_turn_id in dialog_turn_ids:
+            dialog_turn_annotation = PSDialogTurnAnnotation(
+                label_a_dyad=form.label_a_dyad.data,
+                label_b_dyad=form.label_b_dyad.data,
+                strength_a_dyad=form.strength_a_dyad.data,
+                strength_b_dyad=form.strength_b_dyad.data,
+                comment_a=form.comment_a.data,
+                comment_b=form.comment_b.data,
+                speaker=speaker,
+                id_user=current_user.id,
+                id_ps_dialog_turn=dialog_turn_id,
+                id_dataset=dataset_id,
+            )
+            db.session.add(dialog_turn_annotation)
+
+
+def create_psy_annotation_forms(
+    annotations_client, annotations_therapist, annotations_dyad
+):
+    """
+    Create the annotation forms for the psychotherapy dialog turns,
+    either pre-populated with previous annotation values or empty.
+
+    Parameters
+    ----------
+    annotations_client : PSDialogTurnAnnotation or None for client annotations
+    annotations_therapist : PSDialogTurnAnnotation or None for therapist annotations
+    annotations_dyad : PSDialogTurnAnnotation or None for dyad annotations
+
+    Returns
+    -------
+    form_client : PSAnnotationFormClient (pre-populated with previous annotation values or empty)
+    form_therapist : PSAnnotationFormTherapist (pre-populated with previous annotation values or empty)
+    form_dyad : PSAnnotationFormDyad (pre-populated with previous annotation values or empty)
+    """
+
+    if annotations_client:
+        # if there are annotations, fill the form with the values
+        form_client = PSAnnotationFormClient(obj=annotations_client)
+    else:
+        # if there are no annotations, create an empty form
+        form_client = PSAnnotationFormClient()
+    if annotations_therapist:
+        form_therapist = PSAnnotationFormTherapist(obj=annotations_therapist)
+    else:
+        form_therapist = PSAnnotationFormTherapist()
+    if annotations_dyad:
+        form_dyad = PSAnnotationFormDyad(obj=annotations_dyad)
+    else:
+        form_dyad = PSAnnotationFormDyad()
+    return form_client, form_therapist, form_dyad

@@ -7,7 +7,6 @@ from wtforms.validators import (
     DataRequired,
     Length,
     Optional,
-    ValidationError,
     InputRequired,
 )
 
@@ -15,8 +14,10 @@ from app.utils import (
     LabelNames,
     SubLabelsAClient,
     SubLabelsATherapist,
+    SubLabelsADyad,
     SubLabelsBClient,
     SubLabelsBTherapist,
+    SubLabelsBDyad,
     SubLabelsCClient,
     SubLabelsCTherapist,
     SubLabelsDClient,
@@ -73,7 +74,7 @@ def create_text_area_field(label, name, required_if, max_length=200):
     The field is required if the field with the given name is set to the given value.
     """
 
-    value = "other"
+    value = "other"  # value of the field that requires the text area field
     message = "If you select Other, please provide a comment."
     return TextAreaField(
         label,
@@ -202,3 +203,26 @@ class PSAnnotationFormTherapist(FlaskForm):
         label="Comment", name="comment_e_therapist", required_if="label_e_therapist"
     )
     submit = SubmitField("Submit")
+
+
+class PSAnnotationFormDyad(FlaskForm):
+    """Segment level annotation form of psychotherapy datasets for the dyad"""
+
+    label_a_dyad = create_select_field(
+        label=LabelNames.label_a_dyad.value, choices=SubLabelsADyad, name="label_a_dyad"
+    )
+    label_b_dyad = create_select_field(
+        label=LabelNames.label_b_dyad.value, choices=SubLabelsBDyad, name="label_b_dyad"
+    )
+    strength_a_dyad = create_select_field(
+        label="Strength", choices=LabelStrengthAClient, name="strength_a_dyad"
+    )
+    strength_b_dyad = create_select_field(
+        label="Strength", choices=LabelStrengthBClient, name="strength_b_dyad"
+    )
+    comment_a = create_text_area_field(
+        label="Comment", name="comment_a_dyad", required_if="label_a_dyad"
+    )
+    comment_b = create_text_area_field(
+        label="Comment", name="comment_b_dyad", required_if="label_b_dyad"
+    )

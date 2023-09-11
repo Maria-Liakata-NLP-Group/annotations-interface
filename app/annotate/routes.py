@@ -1,5 +1,4 @@
 from app.annotate import bp
-from app.annotate.forms import PSAnnotationFormClient, PSAnnotationFormTherapist
 from app import db
 from flask import render_template, request, url_for, current_app, abort, flash, redirect
 from flask_login import login_required
@@ -11,6 +10,7 @@ from app.annotate.utils import (
     get_page_items,
     fetch_dialog_turn_annotations,
     new_dialog_turn_annotation_to_db,
+    create_psy_annotation_forms,
 )
 
 
@@ -56,16 +56,13 @@ def annotate_ps(dataset_id):
         annotations_therapist = fetch_dialog_turn_annotations(
             dialog_turns=segments[page - 1], speaker=Speaker.therapist
         )
-        if annotations_client:
-            # if there are annotations, fill the form with the values
-            form_client = PSAnnotationFormClient(obj=annotations_client)
-        else:
-            # if there are no annotations, create an empty form
-            form_client = PSAnnotationFormClient()
-        if annotations_therapist:
-            form_therapist = PSAnnotationFormTherapist(obj=annotations_therapist)
-        else:
-            form_therapist = PSAnnotationFormTherapist()
+        annotations_dyad = fetch_dialog_turn_annotations(
+            dialog_turns=segments[page - 1], speaker=Speaker.dyad
+        )
+        # create the forms
+        [form_client, form_therapist, form_dyad] = create_psy_annotation_forms(
+            annotations_client, annotations_therapist, annotations_dyad
+        )
         # the submit button is named "submit_form_client" or "submit_form_therapist" depending on the speaker
         if "submit_form_client" in request.form:
             # the condition below checks that the form was submitted (via POST request) and that all validators pass
