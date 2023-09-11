@@ -135,6 +135,7 @@ def annotate_ps(dataset_id):
             form_dyad=form_dyad,
             annotations_client=annotations_client,
             annotations_therapist=annotations_therapist,
+            annotations_dyad=annotations_dyad,
         )
     except IndexError:
         # if there are no dialog turns in the dataset, return the template without any events
