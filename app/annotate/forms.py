@@ -26,8 +26,10 @@ from app.utils import (
     SubLabelsETherapist,
     LabelStrengthAClient,
     LabelStrengthATherapist,
+    LabelStrengthADyad,
     LabelStrengthBClient,
     LabelStrengthBTherapist,
+    LabelStrengthBDyad,
     LabelStrengthCClient,
     LabelStrengthCTherapist,
     LabelStrengthDClient,
@@ -215,10 +217,10 @@ class PSAnnotationFormDyad(FlaskForm):
         label=LabelNames.label_b_dyad.value, choices=SubLabelsBDyad, name="label_b_dyad"
     )
     strength_a_dyad = create_select_field(
-        label="Strength", choices=LabelStrengthAClient, name="strength_a_dyad"
+        label="Strength", choices=LabelStrengthADyad, name="strength_a_dyad"
     )
     strength_b_dyad = create_select_field(
-        label="Strength", choices=LabelStrengthBClient, name="strength_b_dyad"
+        label="Strength", choices=LabelStrengthBDyad, name="strength_b_dyad"
     )
     comment_a = create_text_area_field(
         label="Comment", name="comment_a_dyad", required_if="label_a_dyad"
