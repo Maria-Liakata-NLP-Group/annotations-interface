@@ -63,7 +63,8 @@ def annotate_ps(dataset_id):
         [form_client, form_therapist, form_dyad] = create_psy_annotation_forms(
             annotations_client, annotations_therapist, annotations_dyad
         )
-        # the submit button is named "submit_form_client" or "submit_form_therapist" depending on the speaker
+        # the submit button is named "submit_form_client", "submit_form_therapist" or
+        # "submit_form_dyad" depending on the speaker
         if "submit_form_client" in request.form:
             # the condition below checks that the form was submitted (via POST request) and that all validators pass
             if form_client.validate_on_submit():
@@ -100,6 +101,24 @@ def annotate_ps(dataset_id):
                 return redirect(
                     url_for("annotate.annotate_ps", dataset_id=dataset_id, page=page)
                 )  # redirect to the same page
+        elif "submit_form_dyad" in request.form:
+            # the condition below checks that the form was submitted (via POST request) and that all validators pass
+            if form_dyad.validate_on_submit():
+                speaker = Speaker.dyad
+                # add the annotations to the database session
+                try:
+                    new_dialog_turn_annotation_to_db(
+                        form_dyad, speaker, dataset_id, dialog_turn_ids
+                    )
+                except:
+                    db.session.rollback()
+                    abort(500)
+                # commit the changes to the database
+                db.session.commit()
+                flash("Your annotations have been saved.", "success")
+                return redirect(
+                    url_for("annotate.annotate_ps", dataset_id=dataset_id, page=page)
+                )
         return render_template(
             "annotate/annotate_ps.html",
             dataset_name=dataset.name,
@@ -113,6 +132,7 @@ def annotate_ps(dataset_id):
             total_pages=total_pages,
             form_client=form_client,
             form_therapist=form_therapist,
+            form_dyad=form_dyad,
             annotations_client=annotations_client,
             annotations_therapist=annotations_therapist,
         )

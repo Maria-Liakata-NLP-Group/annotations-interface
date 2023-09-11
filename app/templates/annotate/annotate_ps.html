@@ -189,6 +189,43 @@ app_content %} {% block head%} {{ super() }}
         <input type="submit" name="submit_form_therapist" value="Submit" />
       </p>
     </form>
+
+    <!-- Form 3 -->
+    <form
+      action=""
+      class="form-inline"
+      method="post"
+      role="form"
+      class="collapse"
+      id="form_dyad"
+    >
+      {{ form_dyad.hidden_tag() }}
+      <!-- Hidden CSRF token -->
+
+      {% if annotations_dyad %}
+      <p></p>
+      <div class="alert alert-warning" role="alert">
+        Annotations for the dyad for some or all speech turns on this page have
+        already been submitted. Showing the most recent annotations, submitted
+        at {{ annotations_dyad.timestamp.strftime("%d-%B-%Y %H:%M:%S") }} UTC.
+      </div>
+      {% endif %}
+
+      <div class="form-group">
+        {{ wtf.form_field(form_dyad.label_a_dyad) }} {{
+        wtf.form_field(form_dyad.strength_a_dyad) }} {{
+        wtf.form_field(form_dyad.comment_a) }}
+      </div>
+      <div class="form-group">
+        {{ wtf.form_field(form_dyad.label_b_dyad) }} {{
+        wtf.form_field(form_dyad.strength_b_dyad) }} {{
+        wtf.form_field(form_dyad.comment_b) }}
+      </div>
+      <p></p>
+      <p>
+        <input type="submit" name="submit_form_dyad" value="Submit" />
+      </p>
+    </form>
   </div>
 </body>
 {% endblock %}
