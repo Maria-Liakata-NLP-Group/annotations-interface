@@ -10,6 +10,14 @@ app_content %} {% block head%} {{ super() }}
 
 <body>
   <div class="container" style="padding-bottom: 30px">
+    <!-- flash a message if any of the forms has an error -->
+    {% for form in [form_client, form_therapist, form_dyad] %} {% if form.errors
+    %}
+    <div class="alert alert-danger" role="alert">
+      There were errors in the annotations form. Please correct them and try
+      again.
+    </div>
+    {% endif %} {% endfor %}
     <h1>
       Annotating psychotherapy session: <strong>{{ dataset_name }}</strong>
     </h1>
