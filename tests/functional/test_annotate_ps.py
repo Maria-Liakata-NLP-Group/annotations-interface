@@ -449,6 +449,64 @@ def test_annotate_ps_retrieve_existing_annotations_therapist(test_client):
     assert response.status_code == 200
 
 
+@pytest.mark.dependency(
+    depends=["test_annotate_ps_valid_segment_level_annotation_dyad"],
+)
+@pytest.mark.order(after="test_annotate_ps_retrieve_existing_annotations_therapist")
+def test_annotate_ps_retrieve_existing_annotations_dyad(test_client):
+    """
+    GIVEN a Flask application configured for testing and a dataset with psychotherapy dialog turns
+    WHEN the '/annotate_psychotherapy' page is requested (GET) with a valid annotation for the dyad at the segment level
+    THEN check the response is valid and the existing annotations are pre-populated in the dyad form
+    """
+    # log in to the app
+    response = test_client.post(
+        "/auth/login",
+        data={"username": "annotator1", "password": "annotator1password"},
+        follow_redirects=True,
+    )
+    assert response.status_code == 200
+
+    # get the dataset id for the logged in user
+    dataset = current_user.datasets.filter_by(name="Psychotherapy Dataset Test").all()
+    dataset_id = dataset[0].id
+
+    # test that the annotations form for page 1 is pre-populated with the existing annotations
+    page = 1
+    url = url_for("annotate.annotate_ps", dataset_id=dataset_id, page=page)
+    response = test_client.get(url)
+    assert response.status_code == 200
+
+    # normalize the response to remove extra whitespace
+    normalized_response = re.sub(r"\s+", " ", response.text)
+    assert (
+        "Annotations for the dyad for some or all speech turns on this page have already been submitted"
+        in normalized_response
+    )
+
+    # check the form fields for the dyad
+    soup = BeautifulSoup(response.data, "html.parser")
+    comment_field = soup.find("textarea", id="comment_a_dyad")
+    assert comment_field is not None
+    assert (comment_field.get_text()).strip("\r\n ").lstrip() == "test comment A"
+    select_field = soup.find("select", id="label_a_dyad")
+    assert select_field is not None
+    assert (
+        select_field.find("option", selected=True).get_text()
+        == SubLabelsADyad.tasks_goals.value
+    )
+    select_field = soup.find("select", id="strength_b_dyad")
+    assert select_field is not None
+    assert (
+        select_field.find("option", selected=True).get_text()
+        == LabelStrengthBDyad.medium.value
+    )
+
+    # log out
+    response = test_client.get("/auth/logout", follow_redirects=True)
+    assert response.status_code == 200
+
+
 @pytest.mark.order(after="test_annotate_ps_retrieve_existing_annotations_therapist")
 def test_annotate_ps_comment_is_compulsory_if_label_is_other(test_client):
     """
