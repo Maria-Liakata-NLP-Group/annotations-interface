@@ -10,19 +10,24 @@ from app.models import PSDialogTurnAnnotation
 from tests.functional.utils import (
     create_segment_level_annotation_client,
     create_segment_level_annotation_therapist,
+    create_segment_level_annotation_dyad,
 )
 import re
 from app.utils import (
     Speaker,
     SubLabelsAClient,
     SubLabelsATherapist,
+    SubLabelsADyad,
     SubLabelsBClient,
     SubLabelsBTherapist,
+    SubLabelsBDyad,
     SubLabelsCTherapist,
     SubLabelsEClient,
     LabelStrengthAClient,
     LabelStrengthCClient,
     LabelStrengthDTherapist,
+    LabelStrengthADyad,
+    LabelStrengthBDyad,
 )
 
 
@@ -173,7 +178,7 @@ def test_annotate_ps_valid_segment_level_annotation_client(test_client):
     assert annotation.label_e_client == SubLabelsEClient.insight
     assert annotation.label_a_therapist is None
     assert annotation.label_b_therapist is None
-    assert annotation.label_e_therapist is None
+    assert annotation.label_a_dyad is None
     assert annotation.strength_a_client == LabelStrengthAClient.highly_maladaptive
     assert annotation.comment_a == "test comment A"
 
@@ -241,7 +246,75 @@ def test_annotate_ps_valid_segment_level_annotation_therapist(test_client):
     assert annotation.label_b_therapist == SubLabelsBTherapist.reframing
     assert annotation.label_a_client is None
     assert annotation.label_b_client is None
+    assert annotation.label_a_dyad is None
     assert annotation.comment_a == "test comment A"
+
+    # log out
+    response = test_client.get("/auth/logout", follow_redirects=True)
+    assert response.status_code == 200
+
+
+@pytest.mark.order(after="test_annotate_ps_valid_segment_level_annotation_therapist")
+@pytest.mark.dependency(
+    depends=["tests/unit/test_upload_parsers.py::test_psychotherapy_df_to_sql"],
+    scope="session",
+)
+def test_annotate_ps_valid_segment_level_annotation_dyad(test_client):
+    """
+    GIVEN a Flask application configured for testing and a dataset with psychotherapy dialog turns
+    WHEN the '/annotate_psychotherapy' page is requested (POST) with a valid annotation for the dyad at the segment level
+    THEN check the response is valid and the annotations are saved to the database
+    """
+    # log in to the app
+    response = test_client.post(
+        "/auth/login",
+        data={"username": "annotator1", "password": "annotator1password"},
+        follow_redirects=True,
+    )
+    assert response.status_code == 200
+
+    # get the dataset id for the logged in user
+    dataset = current_user.datasets.filter_by(name="Psychotherapy Dataset Test").all()
+    dataset_id = dataset[0].id
+
+    # check that the "dyad" button is present in page 1
+    # the button is used to toggle the annotation form
+    page = 1
+    url = url_for("annotate.annotate_ps", dataset_id=dataset_id, page=page)
+    response = test_client.get(url)
+    assert response.status_code == 200
+    soup = BeautifulSoup(response.data, "html.parser")
+    dyad_button = soup.find("button", id="btn_dyad")
+    assert dyad_button is not None
+    # check that the annotation form for the dyad is present
+    dyad_form = soup.find("form", id="form_dyad")
+    assert dyad_form is not None
+
+    # submit the annotation for the dyad
+    page = 1
+    url = url_for("annotate.annotate_ps", dataset_id=dataset_id, page=page)
+    data = create_segment_level_annotation_dyad()
+    response = test_client.post(
+        url,
+        data=data,
+        follow_redirects=True,
+    )
+    assert response.status_code == 200
+    assert b"Your annotations have been saved" in response.data
+
+    # check that the annotation has been saved to the database
+    annotation = PSDialogTurnAnnotation.query.filter_by(
+        id_dataset=dataset_id,
+        speaker=Speaker.dyad.name,
+    ).first()
+    assert annotation is not None
+    assert annotation.label_a_dyad == SubLabelsADyad.tasks_goals
+    assert annotation.label_b_dyad == SubLabelsBDyad.withdrawal
+    assert annotation.strength_a_dyad == LabelStrengthADyad.low
+    assert annotation.strength_b_dyad == LabelStrengthBDyad.medium
+    assert annotation.comment_a == "test comment A"
+    assert annotation.label_a_client is None
+    assert annotation.label_a_therapist is None
 
     # log out
     response = test_client.get("/auth/logout", follow_redirects=True)
@@ -251,7 +324,7 @@ def test_annotate_ps_valid_segment_level_annotation_therapist(test_client):
 @pytest.mark.dependency(
     depends=["test_annotate_ps_valid_segment_level_annotation_client"],
 )
-@pytest.mark.order(after="test_annotate_ps_valid_segment_level_annotation_therapist")
+@pytest.mark.order(after="test_annotate_ps_valid_segment_level_annotation_dyad")
 def test_annotate_ps_retrieve_existing_annotations_client(test_client):
     """
     GIVEN a Flask application configured for testing and a dataset with psychotherapy dialog turns
