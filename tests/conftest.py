@@ -19,8 +19,11 @@ from app.utils import (
     SubLabelsATherapist,
     SubLabelsBClient,
     SubLabelsBTherapist,
+    SubLabelsADyad,
+    SubLabelsBDyad,
     LabelStrengthAClient,
     LabelStrengthBTherapist,
+    LabelStrengthADyad,
     Speaker,
 )
 from config import TestConfig
@@ -190,10 +193,13 @@ def new_ps_dialog_turn_annotation(new_ps_dataset, new_ps_dialog_turn, user_annot
     dialog_turn_annotation = PSDialogTurnAnnotation(
         label_a_client=SubLabelsAClient.attachment,
         label_a_therapist=SubLabelsATherapist.emotional,
+        label_a_dyad=SubLabelsADyad.bond,
         label_b_client=SubLabelsBClient.attachment,
         label_b_therapist=SubLabelsBTherapist.interpretation,
+        label_b_dyad=SubLabelsBDyad.confrontational,
         strength_a_client=LabelStrengthAClient.moderately_adaptive,
         strength_b_therapist=LabelStrengthBTherapist.high,
+        strength_a_dyad=LabelStrengthADyad.medium,
         comment_a="test comment a",
         comment_b="test comment b",
         speaker=Speaker.client,

@@ -12,10 +12,13 @@ from app.models import (
 from app.utils import (
     SubLabelsAClient,
     SubLabelsATherapist,
+    SubLabelsADyad,
     SubLabelsBClient,
     SubLabelsBTherapist,
+    SubLabelsBDyad,
     LabelStrengthAClient,
     LabelStrengthBTherapist,
+    LabelStrengthADyad,
     Speaker,
 )
 import pytest
@@ -222,10 +225,13 @@ def test_new_ps_dialog_turn_annotation(
     dataset = Dataset.query.filter_by(name="Psychotherapy Dataset Test").first()
     assert annotation.label_a_client == SubLabelsAClient.attachment
     assert annotation.label_a_therapist == SubLabelsATherapist.emotional
+    assert annotation.label_a_dyad == SubLabelsADyad.bond
     assert annotation.label_b_client == SubLabelsBClient.attachment
     assert annotation.label_b_therapist == SubLabelsBTherapist.interpretation
+    assert annotation.label_b_dyad == SubLabelsBDyad.confrontational
     assert annotation.strength_a_client == LabelStrengthAClient.moderately_adaptive
     assert annotation.strength_b_therapist == LabelStrengthBTherapist.high
+    assert annotation.strength_a_dyad == LabelStrengthADyad.medium
     assert annotation.speaker == Speaker.client
     assert annotation.dialog_turn == new_ps_dialog_turn
     assert annotation.author == annotator1
