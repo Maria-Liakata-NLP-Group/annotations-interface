@@ -181,7 +181,7 @@ def test_annotate_ps_valid_segment_level_annotation_client(test_client):
     assert annotation.label_a_dyad is None
     assert annotation.strength_a_client == LabelStrengthAClient.highly_maladaptive
     assert annotation.comment_a == "test comment A"
-    assert annotation.comment_summary == "test comment summary"
+    assert annotation.comment_summary == "test comment summary client"
 
     # log out
     response = test_client.get("/auth/logout", follow_redirects=True)
@@ -249,6 +249,7 @@ def test_annotate_ps_valid_segment_level_annotation_therapist(test_client):
     assert annotation.label_b_client is None
     assert annotation.label_a_dyad is None
     assert annotation.comment_a == "test comment A"
+    assert annotation.comment_summary == "test comment summary therapist"
 
     # log out
     response = test_client.get("/auth/logout", follow_redirects=True)
@@ -316,6 +317,7 @@ def test_annotate_ps_valid_segment_level_annotation_dyad(test_client):
     assert annotation.comment_a == "test comment A"
     assert annotation.label_a_client is None
     assert annotation.label_a_therapist is None
+    assert annotation.comment_summary == "test comment summary dyad"
 
     # log out
     response = test_client.get("/auth/logout", follow_redirects=True)
@@ -386,6 +388,11 @@ def test_annotate_ps_retrieve_existing_annotations_client(test_client):
         select_field.find("option", selected=True).get_text()
         == LabelStrengthCClient.moderately_adaptive.value
     )
+    comment_field = soup.find("textarea", id="comment_summary_client")
+    assert comment_field is not None
+    assert (comment_field.get_text()).strip(
+        "\r\n "
+    ).lstrip() == "test comment summary client"
 
     # log out
     response = test_client.get("/auth/logout", follow_redirects=True)
@@ -444,6 +451,11 @@ def test_annotate_ps_retrieve_existing_annotations_therapist(test_client):
         select_field.find("option", selected=True).get_text()
         == LabelStrengthDTherapist.low.value
     )
+    comment_field = soup.find("textarea", id="comment_summary_therapist")
+    assert comment_field is not None
+    assert (comment_field.get_text()).strip(
+        "\r\n "
+    ).lstrip() == "test comment summary therapist"
 
     # log out
     response = test_client.get("/auth/logout", follow_redirects=True)
@@ -502,6 +514,11 @@ def test_annotate_ps_retrieve_existing_annotations_dyad(test_client):
         select_field.find("option", selected=True).get_text()
         == LabelStrengthBDyad.medium.value
     )
+    comment_field = soup.find("textarea", id="comment_summary_dyad")
+    assert comment_field is not None
+    assert (comment_field.get_text()).strip(
+        "\r\n "
+    ).lstrip() == "test comment summary dyad"
 
     # log out
     response = test_client.get("/auth/logout", follow_redirects=True)
