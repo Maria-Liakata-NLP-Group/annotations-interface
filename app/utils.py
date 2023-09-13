@@ -78,6 +78,14 @@ class SubLabelsEClient(Enum):
     insight = "insight"
 
 
+class SubLabelsFClient(Enum):
+    """Enum for psychotherapy annotation label F for the client"""
+
+    no_change = "no change"
+    switch = "switch"
+    escalation = "escalation"
+
+
 # Sublabels for Therapist
 
 
@@ -193,6 +201,16 @@ class LabelStrengthEClient(Enum):
     excellent_recognition = "5. excellent recognition (Aha! moment)"
 
 
+class LabelStrengthFClient(Enum):
+    """Enum for psychotherapy annotation label F strength for the client"""
+
+    significant_deterioration = "1. significant deterioration"
+    some_deterioration = "2. some deterioration"
+    no_change = "3. no change"
+    some_improvement = "4. some improvement"
+    significant_improvement = "5. significant improvement"
+
+
 # Label strengths for Therapist
 class LabelStrengthATherapist(Enum):
     """Enum for psychotherapy annotation label A strength for the therapist"""
@@ -276,3 +294,4 @@ class LabelNames(Enum):
     label_d_therapist = "(D) Directive"
     label_e_client = "(E) Insight"
     label_e_therapist = "(E) General helpfulness"
+    label_f_client = "(F) Moment of Change"
