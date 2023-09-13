@@ -202,6 +202,7 @@ def new_ps_dialog_turn_annotation(new_ps_dataset, new_ps_dialog_turn, user_annot
         strength_a_dyad=LabelStrengthADyad.medium,
         comment_a="test comment a",
         comment_b="test comment b",
+        comment_summary="test comment summary",
         speaker=Speaker.client,
         author=user_annotator1,
         dialog_turn=new_ps_dialog_turn,

@@ -181,6 +181,7 @@ def test_annotate_ps_valid_segment_level_annotation_client(test_client):
     assert annotation.label_a_dyad is None
     assert annotation.strength_a_client == LabelStrengthAClient.highly_maladaptive
     assert annotation.comment_a == "test comment A"
+    assert annotation.comment_summary == "test comment summary"
 
     # log out
     response = test_client.get("/auth/logout", follow_redirects=True)

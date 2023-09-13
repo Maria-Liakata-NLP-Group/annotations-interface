@@ -236,3 +236,5 @@ def test_new_ps_dialog_turn_annotation(
     assert annotation.dialog_turn == new_ps_dialog_turn
     assert annotation.author == annotator1
     assert annotation.dataset == dataset
+    assert annotation.comment_a == "test comment a"
+    assert annotation.comment_summary == "test comment summary"

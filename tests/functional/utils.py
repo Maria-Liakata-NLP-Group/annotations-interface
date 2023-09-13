@@ -47,6 +47,7 @@ def create_segment_level_annotation_client():
         "comment_c_client": "test comment C",
         "comment_d_client": "test comment D",
         "comment_e_client": "test comment E",
+        "comment_summary_client": "test comment summary",
         "submit_form_client": "Submit",  # this is the name of the submit button and identifies the form
     }
     return data
@@ -73,6 +74,7 @@ def create_segment_level_annotation_therapist():
         "comment_c_therapist": "test comment C",
         "comment_d_therapist": "test comment D",
         "comment_e_therapist": "test comment E",
+        "comment_summary_therapist": "test comment summary",
         "submit_form_therapist": "Submit",  # this is the name of the submit button and identifies the form
     }
     return data
@@ -90,6 +92,7 @@ def create_segment_level_annotation_dyad():
         "strength_b_dyad": LabelStrengthBDyad.medium.name,
         "comment_a_dyad": "test comment A",
         "comment_b_dyad": "test comment B",
+        "comment_summary_dyad": "test comment summary",
         "submit_form_dyad": "Submit",  # this is the name of the submit button and identifies the form
     }
     return data
