@@ -153,6 +153,10 @@ app_content %} {% block head%} {{ super() }}
         wtf.form_field(form_client.comment_e) }}
       </div>
       <p></p>
+      <div style="text-align: center">
+        {{ wtf.form_field(form_client.comment_summary) }}
+      </div>
+      <p></p>
       <p>
         <input type="submit" name="submit_form_client" value="Submit" />
       </p>
@@ -210,6 +214,10 @@ app_content %} {% block head%} {{ super() }}
         wtf.form_field(form_therapist.comment_e) }}
       </div>
       <p></p>
+      <div style="text-align: center">
+        {{ wtf.form_field(form_therapist.comment_summary) }}
+      </div>
+      <p></p>
       <p>
         <input type="submit" name="submit_form_therapist" value="Submit" />
       </p>
@@ -246,6 +254,10 @@ app_content %} {% block head%} {{ super() }}
         {{ wtf.form_field(form_dyad.label_b_dyad) }} {{
         wtf.form_field(form_dyad.strength_b_dyad) }} {{
         wtf.form_field(form_dyad.comment_b) }}
+      </div>
+      <p></p>
+      <div style="text-align: center">
+        {{ wtf.form_field(form_dyad.comment_summary) }}
       </div>
       <p></p>
       <p>

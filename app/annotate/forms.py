@@ -70,10 +70,13 @@ def create_select_field(label, choices, name):
     )
 
 
-def create_text_area_field(label, name, required_if=None, max_length=200):
+def create_text_area_field(
+    label, name, required_if=None, max_length=200, rows=2, cols=10
+):
     """
     Create a text area field with the given label, name and max length.
     The field is required if the field with the given name is set to the given value.
+    Otherwise, the field is optional.
     """
 
     if required_if:
@@ -86,7 +89,7 @@ def create_text_area_field(label, name, required_if=None, max_length=200):
         label,
         validators=validators,
         name=name,
-        render_kw={"rows": 2, "cols": 10},
+        render_kw={"rows": rows, "cols": cols},
     )
 
 
@@ -147,6 +150,13 @@ class PSAnnotationFormClient(FlaskForm):
     )
     comment_e = create_text_area_field(
         label="Comment", name="comment_e_client", required_if="label_e_client"
+    )
+    comment_summary = create_text_area_field(
+        label="Summary Comment",
+        name="comment_summary_client",
+        max_length=500,
+        rows=3,
+        cols=15,
     )
     submit = SubmitField("Submit")
 
@@ -209,6 +219,13 @@ class PSAnnotationFormTherapist(FlaskForm):
     comment_e = create_text_area_field(
         label="Comment", name="comment_e_therapist", required_if="label_e_therapist"
     )
+    comment_summary = create_text_area_field(
+        label="Summary Comment",
+        name="comment_summary_therapist",
+        max_length=500,
+        rows=3,
+        cols=15,
+    )
     submit = SubmitField("Submit")
 
 
@@ -232,4 +249,11 @@ class PSAnnotationFormDyad(FlaskForm):
     )
     comment_b = create_text_area_field(
         label="Comment", name="comment_b_dyad", required_if="label_b_dyad"
+    )
+    comment_summary = create_text_area_field(
+        label="Summary Comment",
+        name="comment_summary_dyad",
+        max_length=500,
+        rows=3,
+        cols=15,
     )
