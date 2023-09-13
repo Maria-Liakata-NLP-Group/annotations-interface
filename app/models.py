@@ -412,6 +412,7 @@ class PSDialogTurnAnnotation(db.Model):
     comment_c = db.Column(db.Text, nullable=True)
     comment_d = db.Column(db.Text, nullable=True)
     comment_e = db.Column(db.Text, nullable=True)
+    comment_summary = db.Column(db.Text, nullable=True)
     speaker = db.Column(db.Enum(Speaker), nullable=True)
     id_user = db.Column(
         db.Integer, db.ForeignKey("user.id")
