@@ -82,6 +82,7 @@ def create_text_area_field(label, name, required_if, max_length=200):
         label,
         validators=[RequiredIf(required_if, value, message), Length(max=max_length)],
         name=name,
+        render_kw={"rows": 2, "cols": 10},
     )
 
 
