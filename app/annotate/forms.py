@@ -70,17 +70,21 @@ def create_select_field(label, choices, name):
     )
 
 
-def create_text_area_field(label, name, required_if, max_length=200):
+def create_text_area_field(label, name, required_if=None, max_length=200):
     """
     Create a text area field with the given label, name and max length.
     The field is required if the field with the given name is set to the given value.
     """
 
-    value = "other"  # value of the field that requires the text area field
-    message = "If you select Other, please provide a comment."
+    if required_if:
+        value = "other"  # value of the field that requires the text area field
+        message = "If you select Other, please provide a comment."
+        validators = [RequiredIf(required_if, value, message), Length(max=max_length)]
+    else:
+        validators = [Length(max=max_length)]
     return TextAreaField(
         label,
-        validators=[RequiredIf(required_if, value, message), Length(max=max_length)],
+        validators=validators,
         name=name,
         render_kw={"rows": 2, "cols": 10},
     )

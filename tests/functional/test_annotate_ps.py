@@ -507,7 +507,7 @@ def test_annotate_ps_retrieve_existing_annotations_dyad(test_client):
     assert response.status_code == 200
 
 
-@pytest.mark.order(after="test_annotate_ps_retrieve_existing_annotations_therapist")
+@pytest.mark.order(after="test_annotate_ps_retrieve_existing_annotations_dyad")
 def test_annotate_ps_comment_is_compulsory_if_label_is_other(test_client):
     """
     GIVEN a Flask application configured for testing and a dataset with psychotherapy dialog turns
