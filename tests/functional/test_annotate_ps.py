@@ -37,7 +37,7 @@ from app.utils import (
     depends=["tests/unit/test_upload_parsers.py::test_psychotherapy_df_to_sql"],
     scope="session",
 )
-def test_annotate_ps_valid_login(test_client, insert_ps_dialog_turns):
+def test_valid_login(test_client, insert_ps_dialog_turns):
     """
     GIVEN a Flask application configured for testing and a dataset with psychotherapy dialog turns
     WHEN the '/annotate_psychotherapy' page is requested (GET) after logging in
@@ -121,13 +121,13 @@ def test_annotate_ps_valid_login(test_client, insert_ps_dialog_turns):
     assert response.status_code == 200
 
 
-@pytest.mark.order(after="test_annotate_ps_valid_login")
+@pytest.mark.order(after="test_valid_login")
 @pytest.mark.dependency()
 @pytest.mark.dependency(
     depends=["tests/unit/test_upload_parsers.py::test_psychotherapy_df_to_sql"],
     scope="session",
 )
-def test_annotate_ps_valid_segment_level_annotation_client(test_client):
+def test_valid_segment_level_annotation_client(test_client):
     """
     GIVEN a Flask application configured for testing and a dataset with psychotherapy dialog turns
     WHEN the '/annotate_psychotherapy' page is requested (POST) with a valid annotation for the client at the segment level
@@ -192,12 +192,12 @@ def test_annotate_ps_valid_segment_level_annotation_client(test_client):
     assert response.status_code == 200
 
 
-@pytest.mark.order(after="test_annotate_ps_valid_segment_level_annotation_client")
+@pytest.mark.order(after="test_valid_segment_level_annotation_client")
 @pytest.mark.dependency(
     depends=["tests/unit/test_upload_parsers.py::test_psychotherapy_df_to_sql"],
     scope="session",
 )
-def test_annotate_ps_valid_segment_level_annotation_therapist(test_client):
+def test_valid_segment_level_annotation_therapist(test_client):
     """
     GIVEN a Flask application configured for testing and a dataset with psychotherapy dialog turns
     WHEN the '/annotate_psychotherapy' page is requested (POST) with a valid annotation for the therapist at the segment level
@@ -260,12 +260,12 @@ def test_annotate_ps_valid_segment_level_annotation_therapist(test_client):
     assert response.status_code == 200
 
 
-@pytest.mark.order(after="test_annotate_ps_valid_segment_level_annotation_therapist")
+@pytest.mark.order(after="test_valid_segment_level_annotation_therapist")
 @pytest.mark.dependency(
     depends=["tests/unit/test_upload_parsers.py::test_psychotherapy_df_to_sql"],
     scope="session",
 )
-def test_annotate_ps_valid_segment_level_annotation_dyad(test_client):
+def test_valid_segment_level_annotation_dyad(test_client):
     """
     GIVEN a Flask application configured for testing and a dataset with psychotherapy dialog turns
     WHEN the '/annotate_psychotherapy' page is requested (POST) with a valid annotation for the dyad at the segment level
@@ -329,10 +329,10 @@ def test_annotate_ps_valid_segment_level_annotation_dyad(test_client):
 
 
 @pytest.mark.dependency(
-    depends=["test_annotate_ps_valid_segment_level_annotation_client"],
+    depends=["test_valid_segment_level_annotation_client"],
 )
-@pytest.mark.order(after="test_annotate_ps_valid_segment_level_annotation_dyad")
-def test_annotate_ps_retrieve_existing_annotations_client(test_client):
+@pytest.mark.order(after="test_valid_segment_level_annotation_dyad")
+def test_retrieve_existing_annotations_client(test_client):
     """
     GIVEN a Flask application configured for testing and a dataset with psychotherapy dialog turns
     WHEN the '/annotate_psychotherapy' page is requested (GET) with a valid annotation for the client at the segment level
@@ -404,10 +404,10 @@ def test_annotate_ps_retrieve_existing_annotations_client(test_client):
 
 
 @pytest.mark.dependency(
-    depends=["test_annotate_ps_valid_segment_level_annotation_therapist"],
+    depends=["test_valid_segment_level_annotation_therapist"],
 )
-@pytest.mark.order(after="test_annotate_ps_retrieve_existing_annotations_client")
-def test_annotate_ps_retrieve_existing_annotations_therapist(test_client):
+@pytest.mark.order(after="test_retrieve_existing_annotations_client")
+def test_retrieve_existing_annotations_therapist(test_client):
     """
     GIVEN a Flask application configured for testing and a dataset with psychotherapy dialog turns
     WHEN the '/annotate_psychotherapy' page is requested (GET) with a valid annotation for the therapist at the segment level
@@ -467,10 +467,10 @@ def test_annotate_ps_retrieve_existing_annotations_therapist(test_client):
 
 
 @pytest.mark.dependency(
-    depends=["test_annotate_ps_valid_segment_level_annotation_dyad"],
+    depends=["test_valid_segment_level_annotation_dyad"],
 )
-@pytest.mark.order(after="test_annotate_ps_retrieve_existing_annotations_therapist")
-def test_annotate_ps_retrieve_existing_annotations_dyad(test_client):
+@pytest.mark.order(after="test_retrieve_existing_annotations_therapist")
+def test_retrieve_existing_annotations_dyad(test_client):
     """
     GIVEN a Flask application configured for testing and a dataset with psychotherapy dialog turns
     WHEN the '/annotate_psychotherapy' page is requested (GET) with a valid annotation for the dyad at the segment level
@@ -529,8 +529,8 @@ def test_annotate_ps_retrieve_existing_annotations_dyad(test_client):
     assert response.status_code == 200
 
 
-@pytest.mark.order(after="test_annotate_ps_retrieve_existing_annotations_dyad")
-def test_annotate_ps_comment_is_compulsory_if_label_is_other(test_client):
+@pytest.mark.order(after="test_retrieve_existing_annotations_dyad")
+def test_comment_is_compulsory_if_label_is_other(test_client):
     """
     GIVEN a Flask application configured for testing and a dataset with psychotherapy dialog turns
     WHEN the '/annotate_psychotherapy' page is requested (POST) with an invalid annotation at the segment level
