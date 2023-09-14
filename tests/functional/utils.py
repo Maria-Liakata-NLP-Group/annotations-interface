@@ -11,6 +11,7 @@ from app.utils import (
     SubLabelsDTherapist,
     SubLabelsEClient,
     SubLabelsETherapist,
+    SubLabelsFClient,
     LabelStrengthAClient,
     LabelStrengthATherapist,
     LabelStrengthADyad,
@@ -23,6 +24,7 @@ from app.utils import (
     LabelStrengthDTherapist,
     LabelStrengthEClient,
     LabelStrengthETherapist,
+    LabelStrengthFClient,
 )
 
 
@@ -37,11 +39,13 @@ def create_segment_level_annotation_client():
         "label_c_client": SubLabelsCClient.esteem.name,
         "label_d_client": SubLabelsDClient.positive.name,
         "label_e_client": SubLabelsEClient.insight.name,
+        "label_f_client": SubLabelsFClient.no_change.name,
         "strength_a_client": LabelStrengthAClient.highly_maladaptive.name,
         "strength_b_client": LabelStrengthBClient.very_maladaptive.name,
         "strength_c_client": LabelStrengthCClient.moderately_adaptive.name,
         "strength_d_client": LabelStrengthDClient.very_adaptive.name,
         "strength_e_client": LabelStrengthEClient.low_recognition.name,
+        "strength_f_client": LabelStrengthFClient.no_change.name,
         "comment_a_client": "test comment A",
         "comment_b_client": "test comment B",
         "comment_c_client": "test comment C",

@@ -24,6 +24,7 @@ from app.utils import (
     SubLabelsDTherapist,
     SubLabelsEClient,
     SubLabelsETherapist,
+    SubLabelsFClient,
     LabelStrengthAClient,
     LabelStrengthATherapist,
     LabelStrengthADyad,
@@ -36,6 +37,7 @@ from app.utils import (
     LabelStrengthDTherapist,
     LabelStrengthEClient,
     LabelStrengthETherapist,
+    LabelStrengthFClient,
 )
 
 
@@ -121,6 +123,11 @@ class PSAnnotationFormClient(FlaskForm):
         choices=SubLabelsEClient,
         name="label_e_client",
     )
+    label_f_client = create_select_field(
+        label=LabelNames.label_f_client.value,
+        choices=SubLabelsFClient,
+        name="label_f_client",
+    )
     strength_a_client = create_select_field(
         label="Strength", choices=LabelStrengthAClient, name="strength_a_client"
     )
@@ -135,6 +142,9 @@ class PSAnnotationFormClient(FlaskForm):
     )
     strength_e_client = create_select_field(
         label="Strength", choices=LabelStrengthEClient, name="strength_e_client"
+    )
+    strength_f_client = create_select_field(
+        label="Strength", choices=LabelStrengthFClient, name="strength_f_client"
     )
     comment_a = create_text_area_field(
         label="Comment", name="comment_a_client", required_if="label_a_client"
@@ -151,6 +161,7 @@ class PSAnnotationFormClient(FlaskForm):
     comment_e = create_text_area_field(
         label="Comment", name="comment_e_client", required_if="label_e_client"
     )
+    comment_f = create_text_area_field(label="Comment", name="comment_f_client")
     comment_summary = create_text_area_field(
         label="Summary Comment",
         name="comment_summary_client",
