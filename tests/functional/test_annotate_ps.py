@@ -23,11 +23,13 @@ from app.utils import (
     SubLabelsBDyad,
     SubLabelsCTherapist,
     SubLabelsEClient,
+    SubLabelsFClient,
     LabelStrengthAClient,
     LabelStrengthCClient,
     LabelStrengthDTherapist,
     LabelStrengthADyad,
     LabelStrengthBDyad,
+    LabelStrengthFClient,
 )
 
 
@@ -176,10 +178,12 @@ def test_annotate_ps_valid_segment_level_annotation_client(test_client):
     assert annotation.label_a_client == SubLabelsAClient.excitement
     assert annotation.label_b_client == SubLabelsBClient.security
     assert annotation.label_e_client == SubLabelsEClient.insight
+    assert annotation.label_f_client == SubLabelsFClient.switch
     assert annotation.label_a_therapist is None
     assert annotation.label_b_therapist is None
     assert annotation.label_a_dyad is None
     assert annotation.strength_a_client == LabelStrengthAClient.highly_maladaptive
+    assert annotation.strength_f_client == LabelStrengthFClient.some_improvement
     assert annotation.comment_a == "test comment A"
     assert annotation.comment_summary == "test comment summary client"
 
