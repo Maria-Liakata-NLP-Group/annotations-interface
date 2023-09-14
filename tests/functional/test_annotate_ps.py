@@ -121,7 +121,7 @@ def test_valid_login(test_client, insert_ps_dialog_turns):
     assert response.status_code == 200
 
 
-@pytest.mark.order(after="test_valid_login")
+@pytest.mark.order(after="test_default_values_for_label_f_client")
 @pytest.mark.dependency()
 @pytest.mark.dependency(
     depends=["tests/unit/test_upload_parsers.py::test_psychotherapy_df_to_sql"],
@@ -397,6 +397,18 @@ def test_retrieve_existing_annotations_client(test_client):
     assert (comment_field.get_text()).strip(
         "\r\n "
     ).lstrip() == "test comment summary client"
+    select_field = soup.find("select", id="label_f_client")
+    assert select_field is not None
+    assert (
+        select_field.find("option", selected=True).get_text()
+        == SubLabelsFClient.switch.value
+    )
+    select_field = soup.find("select", id="strength_f_client")
+    assert select_field is not None
+    assert (
+        select_field.find("option", selected=True).get_text()
+        == LabelStrengthFClient.some_improvement.value
+    )
 
     # log out
     response = test_client.get("/auth/logout", follow_redirects=True)
@@ -558,3 +570,46 @@ def test_comment_is_compulsory_if_label_is_other(test_client):
     normalized_response = re.sub(r"\s+", " ", response.text)
     assert "Your annotations have been saved" not in normalized_response
     assert "If you select Other, please provide a comment." in normalized_response
+
+
+@pytest.mark.order(after="test_valid_login")
+def test_default_values_for_label_f_client(test_client):
+    """
+    GIVEN a Flask application configured for testing and a dataset with psychotherapy dialog turns
+    WHEN the '/annotate_psychotherapy' page is requested (GET) without any existing annotations
+    THEN check the default value for label_f_client and strength_f_client is "no change"
+    """
+
+    # log in to the app
+    response = test_client.post(
+        "/auth/login",
+        data={"username": "annotator1", "password": "annotator1password"},
+        follow_redirects=True,
+    )
+    assert response.status_code == 200
+
+    # get the dataset id for the logged in user
+    dataset = current_user.datasets.filter_by(name="Psychotherapy Dataset Test").first()
+    dataset_id = dataset.id
+
+    # check that the "label_f_client" and "strength_f_client"
+    # fields have the default value "no change"
+    page = 1
+    url = url_for("annotate.annotate_ps", dataset_id=dataset_id, page=page)
+    response = test_client.get(url)
+    assert response.status_code == 200
+
+    soup = BeautifulSoup(response.data, "html.parser")
+    select_field = soup.find("select", id="label_f_client")
+    assert select_field is not None
+    assert (
+        select_field.find("option", selected=True).get_text()
+        == SubLabelsFClient.no_change.value
+    )
+
+    select_field = soup.find("select", id="strength_f_client")
+    assert select_field is not None
+    assert (
+        select_field.find("option", selected=True).get_text()
+        == LabelStrengthFClient.no_change.value
+    )
