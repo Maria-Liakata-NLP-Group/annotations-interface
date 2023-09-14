@@ -1,8 +1,8 @@
 """include moment of change for the client
 
-Revision ID: 206d5e3d9b1d
+Revision ID: e4c699f4e9a2
 Revises: c5d203a5ac98
-Create Date: 2023-09-13 13:47:39.741183
+Create Date: 2023-09-14 14:57:42.960238
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = "206d5e3d9b1d"
+revision = "e4c699f4e9a2"
 down_revision = "c5d203a5ac98"
 branch_labels = None
 depends_on = None
@@ -24,7 +24,6 @@ def upgrade():
                 "label_f_client",
                 sa.Enum("no_change", "switch", "escalation", name="sublabelsfclient"),
                 nullable=True,
-                default="no_change",
             )
         )
         batch_op.add_column(
@@ -39,7 +38,6 @@ def upgrade():
                     name="labelstrengthfclient",
                 ),
                 nullable=True,
-                default="no_change",
             )
         )
         batch_op.add_column(sa.Column("comment_f", sa.Text(), nullable=True))

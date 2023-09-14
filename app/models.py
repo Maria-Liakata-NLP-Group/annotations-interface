@@ -373,9 +373,7 @@ class PSDialogTurnAnnotation(db.Model):
     label_e_therapist = db.Column(
         db.Enum(SubLabelsETherapist), nullable=True, default=None
     )
-    label_f_client = db.Column(
-        db.Enum(SubLabelsFClient), nullable=True, default="no_change"
-    )
+    label_f_client = db.Column(db.Enum(SubLabelsFClient), nullable=True, default=None)
     strength_a_client = db.Column(
         db.Enum(LabelStrengthAClient), nullable=True, default=None
     )
@@ -413,7 +411,7 @@ class PSDialogTurnAnnotation(db.Model):
         db.Enum(LabelStrengthBDyad), nullable=True, default=None
     )
     strength_f_client = db.Column(
-        db.Enum(LabelStrengthFClient), nullable=True, default="no_change"
+        db.Enum(LabelStrengthFClient), nullable=True, default=None
     )
     comment_a = db.Column(db.Text, nullable=True)
     comment_b = db.Column(db.Text, nullable=True)
