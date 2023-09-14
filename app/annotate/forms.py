@@ -61,14 +61,15 @@ class RequiredIf(InputRequired):
             Optional().__call__(form, field)
 
 
-def create_select_field(label, choices, name):
-    """Create a select field with the given label, choices and name"""
+def create_select_field(label, choices, name, default=None):
+    """Create a select field with the given label, choices, name and default value"""
 
     return SelectField(
         label=label,
         choices=[(choice.name, choice.value) for choice in choices],
         validators=[DataRequired()],
         name=name,
+        default=default,
     )
 
 
@@ -127,6 +128,7 @@ class PSAnnotationFormClient(FlaskForm):
         label=LabelNames.label_f_client.value,
         choices=SubLabelsFClient,
         name="label_f_client",
+        default=SubLabelsFClient.no_change.name,
     )
     strength_a_client = create_select_field(
         label="Strength", choices=LabelStrengthAClient, name="strength_a_client"
@@ -144,7 +146,10 @@ class PSAnnotationFormClient(FlaskForm):
         label="Strength", choices=LabelStrengthEClient, name="strength_e_client"
     )
     strength_f_client = create_select_field(
-        label="Strength", choices=LabelStrengthFClient, name="strength_f_client"
+        label="Strength",
+        choices=LabelStrengthFClient,
+        name="strength_f_client",
+        default=LabelStrengthFClient.no_change.name,
     )
     comment_a = create_text_area_field(
         label="Comment", name="comment_a_client", required_if="label_a_client"
