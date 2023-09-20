@@ -1,6 +1,8 @@
 from datetime import datetime, date
 from app.models import (
-    PSDialogTurnAnnotation,
+    PSDialogTurnAnnotationClient,
+    PSDialogTurnAnnotationTherapist,
+    PSDialogTurnAnnotationDyad,
     User,
     Dataset,
     SMPost,
@@ -19,7 +21,6 @@ from app.utils import (
     LabelStrengthAClient,
     LabelStrengthBTherapist,
     LabelStrengthADyad,
-    Speaker,
 )
 import pytest
 from sqlalchemy.exc import IntegrityError
@@ -207,34 +208,83 @@ def test_new_ps_dialog_event(db_session, new_ps_dialog_event):
     assert ps_dialog_event.id_dataset is ps_dataset.id
 
 
-def test_new_ps_dialog_turn_annotation(
+def test_new_ps_dialog_turn_annotation_client(
     db_session,
     new_ps_dialog_turn,
-    new_ps_dialog_turn_annotation,
+    new_ps_dialog_turn_annotation_client,
 ):
     """
-    GIVEN a PSDialogTurnAnnotation model
-    WHEN a new PSDialogTurnAnnotation is created and added to the database
+    GIVEN a PSDialogTurnAnnotationClient model
+    WHEN a new PSDialogTurnAnnotationClient is created and added to the database
     THEN check its fields are defined correctly
     """
-    db_session.add(new_ps_dialog_turn_annotation)
+    db_session.add(new_ps_dialog_turn_annotation_client)
     db_session.commit()
 
-    annotation = PSDialogTurnAnnotation.query.all()[0]
+    annotation = PSDialogTurnAnnotationClient.query.all()[0]
     annotator1 = User.query.filter_by(username="annotator1").first()
     dataset = Dataset.query.filter_by(name="Psychotherapy Dataset Test").first()
-    assert annotation.label_a_client == SubLabelsAClient.attachment
-    assert annotation.label_a_therapist == SubLabelsATherapist.emotional
-    assert annotation.label_a_dyad == SubLabelsADyad.bond
-    assert annotation.label_b_client == SubLabelsBClient.attachment
-    assert annotation.label_b_therapist == SubLabelsBTherapist.interpretation
-    assert annotation.label_b_dyad == SubLabelsBDyad.confrontational
-    assert annotation.strength_a_client == LabelStrengthAClient.moderately_adaptive
-    assert annotation.strength_b_therapist == LabelStrengthBTherapist.high
-    assert annotation.strength_a_dyad == LabelStrengthADyad.medium
-    assert annotation.speaker == Speaker.client
+    assert annotation.label_a == SubLabelsAClient.attachment
+    assert annotation.label_b == SubLabelsBClient.attachment
+    assert annotation.strength_a == LabelStrengthAClient.moderately_adaptive
+    assert annotation.comment_a == "test comment a"
+    assert annotation.comment_b == "test comment b"
+    assert annotation.comment_summary == "test comment summary"
     assert annotation.dialog_turn == new_ps_dialog_turn
     assert annotation.author == annotator1
     assert annotation.dataset == dataset
+
+
+def test_new_ps_dialog_turn_annotation_therapist(
+    db_session,
+    new_ps_dialog_turn,
+    new_ps_dialog_turn_annotation_therapist,
+):
+    """
+    GIVEN a PSDialogTurnAnnotationTherapist model
+    WHEN a new PSDialogTurnAnnotationTherapist is created and added to the database
+    THEN check its fields are defined correctly
+    """
+
+    db_session.add(new_ps_dialog_turn_annotation_therapist)
+    db_session.commit()
+
+    annotation = PSDialogTurnAnnotationTherapist.query.all()[0]
+    annotator1 = User.query.filter_by(username="annotator1").first()
+    dataset = Dataset.query.filter_by(name="Psychotherapy Dataset Test").first()
+    assert annotation.label_a == SubLabelsATherapist.emotional
+    assert annotation.label_b == SubLabelsBTherapist.reframing
+    assert annotation.strength_b == LabelStrengthBTherapist.high
     assert annotation.comment_a == "test comment a"
+    assert annotation.comment_b == "test comment b"
     assert annotation.comment_summary == "test comment summary"
+    assert annotation.dialog_turn == new_ps_dialog_turn
+    assert annotation.author == annotator1
+    assert annotation.dataset == dataset
+
+
+def test_new_ps_dialog_turn_annotation_dyad(
+    db_session,
+    new_ps_dialog_turn,
+    new_ps_dialog_turn_annotation_dyad,
+):
+    """
+    GIVEN a PSDialogTurnAnnotationDyad model
+    WHEN a new PSDialogTurnAnnotationDyad is created and added to the database
+    THEN check its fields are defined correctly
+    """
+    db_session.add(new_ps_dialog_turn_annotation_dyad)
+    db_session.commit()
+
+    annotation = PSDialogTurnAnnotationDyad.query.all()[0]
+    annotator1 = User.query.filter_by(username="annotator1").first()
+    dataset = Dataset.query.filter_by(name="Psychotherapy Dataset Test").first()
+    assert annotation.label_a == SubLabelsADyad.bond
+    assert annotation.label_b == SubLabelsBDyad.other
+    assert annotation.strength_a == LabelStrengthADyad.medium
+    assert annotation.comment_a == "test comment a"
+    assert annotation.comment_b == "test comment b"
+    assert annotation.comment_summary == "test comment summary"
+    assert annotation.dialog_turn == new_ps_dialog_turn
+    assert annotation.author == annotator1
+    assert annotation.dataset == dataset

@@ -12,7 +12,9 @@ from app.models import (
     PSDialogTurn,
     PSDialogEvent,
     DatasetType,
-    PSDialogTurnAnnotation,
+    PSDialogTurnAnnotationClient,
+    PSDialogTurnAnnotationTherapist,
+    PSDialogTurnAnnotationDyad,
 )
 from app.utils import (
     SubLabelsAClient,
@@ -24,7 +26,6 @@ from app.utils import (
     LabelStrengthAClient,
     LabelStrengthBTherapist,
     LabelStrengthADyad,
-    Speaker,
 )
 from config import TestConfig
 from app.upload.parsers import read_pickle, psychotherapy_df_to_sql
@@ -188,22 +189,55 @@ def new_ps_dialog_event(new_ps_dataset, new_ps_dialog_turn):
 
 
 @pytest.fixture(scope="module")
-def new_ps_dialog_turn_annotation(new_ps_dataset, new_ps_dialog_turn, user_annotator1):
-    """Fixture to create a new psychotherapy dialog turn annotation"""
-    dialog_turn_annotation = PSDialogTurnAnnotation(
-        label_a_client=SubLabelsAClient.attachment,
-        label_a_therapist=SubLabelsATherapist.emotional,
-        label_a_dyad=SubLabelsADyad.bond,
-        label_b_client=SubLabelsBClient.attachment,
-        label_b_therapist=SubLabelsBTherapist.interpretation,
-        label_b_dyad=SubLabelsBDyad.confrontational,
-        strength_a_client=LabelStrengthAClient.moderately_adaptive,
-        strength_b_therapist=LabelStrengthBTherapist.high,
-        strength_a_dyad=LabelStrengthADyad.medium,
+def new_ps_dialog_turn_annotation_client(
+    new_ps_dataset, new_ps_dialog_turn, user_annotator1
+):
+    """Fixture to create a new psychotherapy dialog turn annotation for the client"""
+    dialog_turn_annotation = PSDialogTurnAnnotationClient(
+        label_a=SubLabelsAClient.attachment,
+        label_b=SubLabelsBClient.attachment,
+        strength_a=LabelStrengthAClient.moderately_adaptive,
         comment_a="test comment a",
         comment_b="test comment b",
         comment_summary="test comment summary",
-        speaker=Speaker.client,
+        author=user_annotator1,
+        dialog_turn=new_ps_dialog_turn,
+        dataset=new_ps_dataset,
+    )
+    return dialog_turn_annotation
+
+
+@pytest.fixture(scope="module")
+def new_ps_dialog_turn_annotation_therapist(
+    new_ps_dataset, new_ps_dialog_turn, user_annotator1
+):
+    """Fixture to create a new psychotherapy dialog turn annotation for the therapist"""
+    dialog_turn_annotation = PSDialogTurnAnnotationTherapist(
+        label_a=SubLabelsATherapist.emotional,
+        label_b=SubLabelsBTherapist.reframing,
+        strength_b=LabelStrengthBTherapist.high,
+        comment_a="test comment a",
+        comment_b="test comment b",
+        comment_summary="test comment summary",
+        author=user_annotator1,
+        dialog_turn=new_ps_dialog_turn,
+        dataset=new_ps_dataset,
+    )
+    return dialog_turn_annotation
+
+
+@pytest.fixture(scope="module")
+def new_ps_dialog_turn_annotation_dyad(
+    new_ps_dataset, new_ps_dialog_turn, user_annotator1
+):
+    """Fixture to create a new psychotherapy dialog turn annotation for the dyad"""
+    dialog_turn_annotation = PSDialogTurnAnnotationDyad(
+        label_a=SubLabelsADyad.bond,
+        label_b=SubLabelsBDyad.other,
+        strength_a=LabelStrengthADyad.medium,
+        comment_a="test comment a",
+        comment_b="test comment b",
+        comment_summary="test comment summary",
         author=user_annotator1,
         dialog_turn=new_ps_dialog_turn,
         dataset=new_ps_dataset,
