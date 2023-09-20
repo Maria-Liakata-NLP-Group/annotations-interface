@@ -7,7 +7,11 @@ from flask import url_for
 from flask_login import current_user
 from app.utils import Speaker
 from sqlalchemy import desc
-from app.models import PSDialogTurnAnnotation
+from app.models import (
+    PSDialogTurnAnnotationClient,
+    PSDialogTurnAnnotationTherapist,
+    PSDialogTurnAnnotationDyad,
+)
 from app import db
 from app.annotate.forms import (
     PSAnnotationFormClient,
@@ -149,20 +153,39 @@ def fetch_dialog_turn_annotations(dialog_turns: list, speaker: Speaker):
 
     Returns
     -------
-    annotations : PSDialogTurnAnnotation
-        The annotation with the latest timestamp if it exists, otherwise None.
+    annotation : PSDialogTurnAnnotationClient or PSDialogTurnAnnotationTherapist or PSDialogTurnAnnotationDyad or None
+        The annotation with the latest timestamp for the client, therapist or dyad if it exists, otherwise None.
         The "label_*" and "strength_*" attributes are converted to their corresponding Enum values.
     """
 
     annotations = []
-    for dialog_turn in dialog_turns:
-        annotation = (
-            dialog_turn.annotations.filter_by(id_user=current_user.id, speaker=speaker)
-            .order_by(desc("timestamp"))
-            .first()
-        )  # for this dialog turn, get the annotation with the latest timestamp
-        if annotation:
-            annotations.append(annotation)
+    if speaker == Speaker.client:
+        for dialog_turn in dialog_turns:
+            annotation = (
+                dialog_turn.annotations_client.filter_by(id_user=current_user.id)
+                .order_by(desc("timestamp"))
+                .first()
+            )  # for this dialog turn, get the annotation for the client with the latest timestamp
+            if annotation:
+                annotations.append(annotation)
+    elif speaker == Speaker.therapist:
+        for dialog_turn in dialog_turns:
+            annotation = (
+                dialog_turn.annotations_therapist.filter_by(id_user=current_user.id)
+                .order_by(desc("timestamp"))
+                .first()
+            )  # for this dialog turn, get the annotation for the therapist with the latest timestamp
+            if annotation:
+                annotations.append(annotation)
+    elif speaker == Speaker.dyad:
+        for dialog_turn in dialog_turns:
+            annotation = (
+                dialog_turn.annotations_dyad.filter_by(id_user=current_user.id)
+                .order_by(desc("timestamp"))
+                .first()
+            )  # for this dialog turn, get the annotation for the dyad with the latest timestamp
+            if annotation:
+                annotations.append(annotation)
     if annotations:
         # sort the annotations by timestamp in ascending order and get the last one
         annotations.sort(key=lambda x: x.timestamp)
@@ -186,7 +209,7 @@ def new_dialog_turn_annotation_to_db(form, speaker, dataset_id, dialog_turn_ids)
 
     Parameters
     ----------
-    form : PSAnnotationFormClient or PSAnnotationFormTherapist
+    form : PSAnnotationFormClient or PSAnnotationFormTherapist or PSAnnotationFormDyad
         The form containing the annotation data
     speaker : Speaker
         The speaker the annotation is for (client, therapist or dyad)
@@ -197,19 +220,19 @@ def new_dialog_turn_annotation_to_db(form, speaker, dataset_id, dialog_turn_ids)
     """
     if speaker == Speaker.client:
         for dialog_turn_id in dialog_turn_ids:
-            dialog_turn_annotation = PSDialogTurnAnnotation(
-                label_a_client=form.label_a_client.data,
-                label_b_client=form.label_b_client.data,
-                label_c_client=form.label_c_client.data,
-                label_d_client=form.label_d_client.data,
-                label_e_client=form.label_e_client.data,
-                label_f_client=form.label_f_client.data,
-                strength_a_client=form.strength_a_client.data,
-                strength_b_client=form.strength_b_client.data,
-                strength_c_client=form.strength_c_client.data,
-                strength_d_client=form.strength_d_client.data,
-                strength_e_client=form.strength_e_client.data,
-                strength_f_client=form.strength_f_client.data,
+            dialog_turn_annotation = PSDialogTurnAnnotationClient(
+                label_a=form.label_a.data,
+                label_b=form.label_b.data,
+                label_c=form.label_c.data,
+                label_d=form.label_d.data,
+                label_e=form.label_e.data,
+                label_f=form.label_f.data,
+                strength_a=form.strength_a.data,
+                strength_b=form.strength_b.data,
+                strength_c=form.strength_c.data,
+                strength_d=form.strength_d.data,
+                strength_e=form.strength_e.data,
+                strength_f=form.strength_f.data,
                 comment_a=form.comment_a.data,
                 comment_b=form.comment_b.data,
                 comment_c=form.comment_c.data,
@@ -217,7 +240,6 @@ def new_dialog_turn_annotation_to_db(form, speaker, dataset_id, dialog_turn_ids)
                 comment_e=form.comment_e.data,
                 comment_f=form.comment_f.data,
                 comment_summary=form.comment_summary.data,
-                speaker=speaker,
                 id_user=current_user.id,
                 id_ps_dialog_turn=dialog_turn_id,
                 id_dataset=dataset_id,
@@ -225,24 +247,23 @@ def new_dialog_turn_annotation_to_db(form, speaker, dataset_id, dialog_turn_ids)
             db.session.add(dialog_turn_annotation)
     elif speaker == Speaker.therapist:
         for dialog_turn_id in dialog_turn_ids:
-            dialog_turn_annotation = PSDialogTurnAnnotation(
-                label_a_therapist=form.label_a_therapist.data,
-                label_b_therapist=form.label_b_therapist.data,
-                label_c_therapist=form.label_c_therapist.data,
-                label_d_therapist=form.label_d_therapist.data,
-                label_e_therapist=form.label_e_therapist.data,
-                strength_a_therapist=form.strength_a_therapist.data,
-                strength_b_therapist=form.strength_b_therapist.data,
-                strength_c_therapist=form.strength_c_therapist.data,
-                strength_d_therapist=form.strength_d_therapist.data,
-                strength_e_therapist=form.strength_e_therapist.data,
+            dialog_turn_annotation = PSDialogTurnAnnotationTherapist(
+                label_a=form.label_a.data,
+                label_b=form.label_b.data,
+                label_c=form.label_c.data,
+                label_d=form.label_d.data,
+                label_e=form.label_e.data,
+                strength_a=form.strength_a.data,
+                strength_b=form.strength_b.data,
+                strength_c=form.strength_c.data,
+                strength_d=form.strength_d.data,
+                strength_e=form.strength_e.data,
                 comment_a=form.comment_a.data,
                 comment_b=form.comment_b.data,
                 comment_c=form.comment_c.data,
                 comment_d=form.comment_d.data,
                 comment_e=form.comment_e.data,
                 comment_summary=form.comment_summary.data,
-                speaker=speaker,
                 id_user=current_user.id,
                 id_ps_dialog_turn=dialog_turn_id,
                 id_dataset=dataset_id,
@@ -250,15 +271,14 @@ def new_dialog_turn_annotation_to_db(form, speaker, dataset_id, dialog_turn_ids)
             db.session.add(dialog_turn_annotation)
     elif speaker == Speaker.dyad:
         for dialog_turn_id in dialog_turn_ids:
-            dialog_turn_annotation = PSDialogTurnAnnotation(
-                label_a_dyad=form.label_a_dyad.data,
-                label_b_dyad=form.label_b_dyad.data,
-                strength_a_dyad=form.strength_a_dyad.data,
-                strength_b_dyad=form.strength_b_dyad.data,
+            dialog_turn_annotation = PSDialogTurnAnnotationDyad(
+                label_a=form.label_a.data,
+                label_b=form.label_b.data,
+                strength_a=form.strength_a.data,
+                strength_b=form.strength_b.data,
                 comment_a=form.comment_a.data,
                 comment_b=form.comment_b.data,
                 comment_summary=form.comment_summary.data,
-                speaker=speaker,
                 id_user=current_user.id,
                 id_ps_dialog_turn=dialog_turn_id,
                 id_dataset=dataset_id,
@@ -275,9 +295,9 @@ def create_psy_annotation_forms(
 
     Parameters
     ----------
-    annotations_client : PSDialogTurnAnnotation or None for client annotations
-    annotations_therapist : PSDialogTurnAnnotation or None for therapist annotations
-    annotations_dyad : PSDialogTurnAnnotation or None for dyad annotations
+    annotations_client : PSDialogTurnAnnotationClient or None for client annotations
+    annotations_therapist : PSDialogTurnAnnotationTherapist or None for therapist annotations
+    annotations_dyad : PSDialogTurnAnnotationDyad or None for dyad annotations
 
     Returns
     -------
