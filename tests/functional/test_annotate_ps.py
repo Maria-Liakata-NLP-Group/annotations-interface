@@ -6,7 +6,11 @@ from flask_login import current_user
 from flask import url_for
 from bs4 import BeautifulSoup
 import pytest
-from app.models import PSDialogTurnAnnotation
+from app.models import (
+    PSDialogTurnAnnotationClient,
+    PSDialogTurnAnnotationTherapist,
+    PSDialogTurnAnnotationDyad,
+)
 from tests.functional.utils import (
     create_segment_level_annotation_client,
     create_segment_level_annotation_therapist,
@@ -170,20 +174,16 @@ def test_valid_segment_level_annotation_client(test_client):
 
     # check that the annotation has been saved to the database
     # and that the labels for the therapist for this annotation are null
-    annotation = PSDialogTurnAnnotation.query.filter_by(
+    annotation = PSDialogTurnAnnotationClient.query.filter_by(
         id_dataset=dataset_id,
-        speaker=Speaker.client.name,
     ).first()
     assert annotation is not None
-    assert annotation.label_a_client == SubLabelsAClient.excitement
-    assert annotation.label_b_client == SubLabelsBClient.security
-    assert annotation.label_e_client == SubLabelsEClient.insight
-    assert annotation.label_f_client == SubLabelsFClient.switch
-    assert annotation.label_a_therapist is None
-    assert annotation.label_b_therapist is None
-    assert annotation.label_a_dyad is None
-    assert annotation.strength_a_client == LabelStrengthAClient.highly_maladaptive
-    assert annotation.strength_f_client == LabelStrengthFClient.some_improvement
+    assert annotation.label_a == SubLabelsAClient.excitement
+    assert annotation.label_b == SubLabelsBClient.security
+    assert annotation.label_e == SubLabelsEClient.insight
+    assert annotation.label_f == SubLabelsFClient.switch
+    assert annotation.strength_a == LabelStrengthAClient.highly_maladaptive
+    assert annotation.strength_f == LabelStrengthFClient.some_improvement
     assert annotation.comment_a == "test comment A"
     assert annotation.comment_summary == "test comment summary client"
 
@@ -242,16 +242,12 @@ def test_valid_segment_level_annotation_therapist(test_client):
 
     # check that the annotation has been saved to the database
     # and that the labels for the client for this annotation are null
-    annotation = PSDialogTurnAnnotation.query.filter_by(
+    annotation = PSDialogTurnAnnotationTherapist.query.filter_by(
         id_dataset=dataset_id,
-        speaker=Speaker.therapist.name,
     ).first()
     assert annotation is not None
-    assert annotation.label_a_therapist == SubLabelsATherapist.emotional
-    assert annotation.label_b_therapist == SubLabelsBTherapist.reframing
-    assert annotation.label_a_client is None
-    assert annotation.label_b_client is None
-    assert annotation.label_a_dyad is None
+    assert annotation.label_a == SubLabelsATherapist.emotional
+    assert annotation.label_b == SubLabelsBTherapist.reframing
     assert annotation.comment_a == "test comment A"
     assert annotation.comment_summary == "test comment summary therapist"
 
@@ -309,18 +305,15 @@ def test_valid_segment_level_annotation_dyad(test_client):
     assert b"Your annotations have been saved" in response.data
 
     # check that the annotation has been saved to the database
-    annotation = PSDialogTurnAnnotation.query.filter_by(
+    annotation = PSDialogTurnAnnotationDyad.query.filter_by(
         id_dataset=dataset_id,
-        speaker=Speaker.dyad.name,
     ).first()
     assert annotation is not None
-    assert annotation.label_a_dyad == SubLabelsADyad.tasks_goals
-    assert annotation.label_b_dyad == SubLabelsBDyad.withdrawal
-    assert annotation.strength_a_dyad == LabelStrengthADyad.low
-    assert annotation.strength_b_dyad == LabelStrengthBDyad.medium
+    assert annotation.label_a == SubLabelsADyad.tasks_goals
+    assert annotation.label_b == SubLabelsBDyad.withdrawal
+    assert annotation.strength_a == LabelStrengthADyad.low
+    assert annotation.strength_b == LabelStrengthBDyad.medium
     assert annotation.comment_a == "test comment A"
-    assert annotation.label_a_client is None
-    assert annotation.label_a_therapist is None
     assert annotation.comment_summary == "test comment summary dyad"
 
     # log out
