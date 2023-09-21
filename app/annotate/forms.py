@@ -310,6 +310,12 @@ class PSAnnotationFormDyad(FlaskForm):
     comment_b = create_text_area_field(
         label="Comment", name="comment_b_dyad", required_if="label_b"
     )
+    relevant_events_a = create_multiple_select_field_without_choices(
+        label="Evidence", name="relevant_events_a_dyad"
+    )
+    relevant_events_b = create_multiple_select_field_without_choices(
+        label="Evidence", name="relevant_events_b_dyad"
+    )
     comment_summary = create_text_area_field(
         label="Summary Comment",
         name="comment_summary_dyad",

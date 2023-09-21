@@ -262,12 +262,14 @@ app_content %} {% block head%} {{ super() }}
       <div class="form-group">
         {{ wtf.form_field(form_dyad.label_a) }} {{
         wtf.form_field(form_dyad.strength_a) }} {{
+        wtf.form_field(form_dyad.relevant_events_a) }} {{
         wtf.form_field(form_dyad.comment_a) }}
       </div>
       <p></p>
       <div class="form-group">
         {{ wtf.form_field(form_dyad.label_b) }} {{
         wtf.form_field(form_dyad.strength_b) }} {{
+        wtf.form_field(form_dyad.relevant_events_b) }} {{
         wtf.form_field(form_dyad.comment_b) }}
       </div>
       <p></p>
