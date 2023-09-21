@@ -325,7 +325,22 @@ def create_psy_annotation_forms(
 
 
 def get_dynamic_choices(page_items: list, speaker: Speaker):
-    """Get the dynamic choices for the select multiple field in the annotation form."""
+    """
+    Get the dynamic choices for the select multiple field in the annotation form.
+
+    Parameters
+    ----------
+    page_items : list of PSDialogEvent objects
+        The events for the current page
+    speaker : Speaker
+        The speaker the annotation is for (client, therapist or dyad)
+
+    Returns
+    -------
+    choices : list of tuples
+        A list of tuples containing the event IDs and event numbers, to be used as choices
+        for the select multiple field
+    """
 
     if speaker == Speaker.client:
         choices = [
@@ -347,7 +362,24 @@ def get_dynamic_choices(page_items: list, speaker: Speaker):
 
 
 def assign_dynamic_choices(form: FlaskForm, page_items: list, speaker: Speaker):
-    """Assign the dynamic choices to the select multiple field(s) in the annotation form."""
+    """
+    Assign the dynamic choices to the select multiple field(s) in the annotation form.
+
+    Parameters
+    ----------
+    form : PSAnnotationFormClient or PSAnnotationFormTherapist or PSAnnotationFormDyad
+        The annotation form
+    page_items : list of PSDialogEvent objects
+        The events for the current page
+    speaker : Speaker
+        The speaker the annotation is for (client, therapist or dyad)
+
+    Returns
+    -------
+    form : PSAnnotationFormClient or PSAnnotationFormTherapist or PSAnnotationFormDyad
+        The annotation form with the dynamic choices assigned to the select multiple field(s) that
+        start with "relevant_events_"
+    """
 
     choices = get_dynamic_choices(page_items, speaker)
     # find the select multiple field(s) in the form. They all start with "relevant_events_".
