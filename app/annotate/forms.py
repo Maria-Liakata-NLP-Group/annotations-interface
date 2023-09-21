@@ -180,7 +180,7 @@ class PSAnnotationFormClient(FlaskForm):
     )
     comment_a = create_text_area_field(
         label="Comment", name="comment_a_client", required_if="label_a"
-    )
+    )  # Note that HTML "name" is unique and is used in the tests to identify the field
     comment_b = create_text_area_field(
         label="Comment", name="comment_b_client", required_if="label_b"
     )
@@ -210,10 +210,10 @@ class PSAnnotationFormClient(FlaskForm):
         label="Evidence", name="relevant_events_e_client"
     )
     start_event_f = create_select_field_without_choices(
-        label="Start", name="start_event_e_client"
+        label="Start", name="start_event_f_client"
     )
     end_event_f = create_select_field_without_choices(
-        label="End", name="end_event_e_client"
+        label="End", name="end_event_f_client"
     )
     comment_summary = create_text_area_field(
         label="Summary Comment",
