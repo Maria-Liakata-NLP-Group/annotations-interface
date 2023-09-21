@@ -184,6 +184,18 @@ class PSAnnotationFormClient(FlaskForm):
     relevant_events_a = create_multiple_select_field_without_choices(
         label="Evidence", name="relevant_events_a_client"
     )
+    relevant_events_b = create_multiple_select_field_without_choices(
+        label="Evidence", name="relevant_events_b_client"
+    )
+    relevant_events_c = create_multiple_select_field_without_choices(
+        label="Evidence", name="relevant_events_c_client"
+    )
+    relevant_events_d = create_multiple_select_field_without_choices(
+        label="Evidence", name="relevant_events_d_client"
+    )
+    relevant_events_e = create_multiple_select_field_without_choices(
+        label="Evidence", name="relevant_events_e_client"
+    )
     comment_summary = create_text_area_field(
         label="Summary Comment",
         name="comment_summary_client",
