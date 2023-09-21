@@ -161,6 +161,8 @@ app_content %} {% block head%} {{ super() }}
       <div class="form-group">
         {{ wtf.form_field(form_client.label_f) }} {{
         wtf.form_field(form_client.strength_f) }} {{
+        wtf.form_field(form_client.start_event_f) }} {{
+        wtf.form_field(form_client.end_event_f) }} {{
         wtf.form_field(form_client.comment_f) }}
       </div>
       <div style="text-align: center">

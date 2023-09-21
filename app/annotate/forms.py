@@ -73,6 +73,19 @@ def create_select_field(label, choices, name, default=None):
     )
 
 
+def create_select_field_without_choices(label, name):
+    """
+    Create a select field with the given label and name, but without choices.
+    This is used for select fields with dynamic choice values.
+    The data required validator is not used, the field is optional.
+    """
+
+    return SelectField(
+        label=label,
+        name=name,
+    )
+
+
 def create_select_multiple_field_without_choices(label, name):
     """
     Create a select multiple field with the given label and name, but without choices.
@@ -195,6 +208,12 @@ class PSAnnotationFormClient(FlaskForm):
     )
     relevant_events_e = create_select_multiple_field_without_choices(
         label="Evidence", name="relevant_events_e_client"
+    )
+    start_event_f = create_select_field_without_choices(
+        label="Start", name="start_event_e_client"
+    )
+    end_event_f = create_select_field_without_choices(
+        label="End", name="end_event_e_client"
     )
     comment_summary = create_text_area_field(
         label="Summary Comment",

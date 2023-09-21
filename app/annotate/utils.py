@@ -363,7 +363,7 @@ def get_dynamic_choices(page_items: list, speaker: Speaker):
 
 def assign_dynamic_choices(form: FlaskForm, page_items: list, speaker: Speaker):
     """
-    Assign the dynamic choices to the select multiple field(s) in the annotation form.
+    Assign the dynamic choices to the select fields or select multiple fields in the annotation form.
 
     Parameters
     ----------
@@ -377,13 +377,17 @@ def assign_dynamic_choices(form: FlaskForm, page_items: list, speaker: Speaker):
     Returns
     -------
     form : PSAnnotationFormClient or PSAnnotationFormTherapist or PSAnnotationFormDyad
-        The annotation form with the dynamic choices assigned to the select multiple field(s) that
-        start with "relevant_events_"
+        The annotation form with the dynamic choices assigned to the select fields or select
+        multiple fields that start with "start_event_", "end_event_" or "relevant_events_"
     """
 
     choices = get_dynamic_choices(page_items, speaker)
     # find the select multiple field(s) in the form. They all start with "relevant_events_".
     for field_name in form.__dict__.keys():
-        if field_name.startswith("relevant_events_"):
+        if (
+            field_name.startswith("relevant_events_")
+            or field_name.startswith("start_event_")
+            or field_name.startswith("end_event_")
+        ):
             form[field_name].choices = choices
     return form
