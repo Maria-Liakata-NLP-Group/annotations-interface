@@ -68,6 +68,9 @@ def annotate_ps(dataset_id):
             annotations_dyad,
         )
         form_client = assign_dynamic_choices(form_client, page_items, Speaker.client)
+        form_therapist = assign_dynamic_choices(
+            form_therapist, page_items, Speaker.therapist
+        )
         # the submit button is named "submit_form_client", "submit_form_therapist" or
         # "submit_form_dyad" depending on the speaker
         if "submit_form_client" in request.form:

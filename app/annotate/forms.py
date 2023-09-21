@@ -264,6 +264,21 @@ class PSAnnotationFormTherapist(FlaskForm):
     comment_e = create_text_area_field(
         label="Comment", name="comment_e_therapist", required_if="label_e"
     )
+    relevant_events_a = create_multiple_select_field_without_choices(
+        label="Evidence", name="relevant_events_a_therapist"
+    )
+    relevant_events_b = create_multiple_select_field_without_choices(
+        label="Evidence", name="relevant_events_b_therapist"
+    )
+    relevant_events_c = create_multiple_select_field_without_choices(
+        label="Evidence", name="relevant_events_c_therapist"
+    )
+    relevant_events_d = create_multiple_select_field_without_choices(
+        label="Evidence", name="relevant_events_d_therapist"
+    )
+    relevant_events_e = create_multiple_select_field_without_choices(
+        label="Evidence", name="relevant_events_e_therapist"
+    )
     comment_summary = create_text_area_field(
         label="Summary Comment",
         name="comment_summary_therapist",
