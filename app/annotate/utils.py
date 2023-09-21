@@ -1,6 +1,7 @@
 """
 Miscellaneous utility functions for the annotate blueprint
 """
+from flask_wtf import FlaskForm
 from datetime import datetime
 import itertools
 from flask import url_for
@@ -343,3 +344,14 @@ def get_dynamic_choices(page_items: list, speaker: Speaker):
             (item.id, item.event_n) for item in page_items
         ]  # all events are shown for the dyad
     return choices
+
+
+def assign_dynamic_choices(form: FlaskForm, page_items: list, speaker: Speaker):
+    """Assign the dynamic choices to the select multiple field(s) in the annotation form."""
+
+    choices = get_dynamic_choices(page_items, speaker)
+    # find the select multiple field(s) in the form. They all start with "relevant_events_".
+    for field_name in form.__dict__.keys():
+        if field_name.startswith("relevant_events_"):
+            form[field_name].choices = choices
+    return form

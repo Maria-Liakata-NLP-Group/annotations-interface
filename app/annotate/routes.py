@@ -12,6 +12,7 @@ from app.annotate.utils import (
     new_dialog_turn_annotation_to_db,
     create_psy_annotation_forms,
     get_dynamic_choices,
+    assign_dynamic_choices,
 )
 
 
@@ -66,9 +67,7 @@ def annotate_ps(dataset_id):
             annotations_therapist,
             annotations_dyad,
         )
-        form_client.relevant_events_a.choices = get_dynamic_choices(
-            page_items, Speaker.client
-        )
+        form_client = assign_dynamic_choices(form_client, page_items, Speaker.client)
         # the submit button is named "submit_form_client", "submit_form_therapist" or
         # "submit_form_dyad" depending on the speaker
         if "submit_form_client" in request.form:
