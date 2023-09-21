@@ -73,7 +73,7 @@ def create_select_field(label, choices, name, default=None):
     )
 
 
-def create_multiple_select_field_without_choices(label, name):
+def create_select_multiple_field_without_choices(label, name):
     """
     Create a select multiple field with the given label and name, but without choices.
     This is used for select multiple fields with dynamic choice values.
@@ -181,19 +181,19 @@ class PSAnnotationFormClient(FlaskForm):
         label="Comment", name="comment_e_client", required_if="label_e"
     )
     comment_f = create_text_area_field(label="Comment", name="comment_f_client")
-    relevant_events_a = create_multiple_select_field_without_choices(
+    relevant_events_a = create_select_multiple_field_without_choices(
         label="Evidence", name="relevant_events_a_client"
     )
-    relevant_events_b = create_multiple_select_field_without_choices(
+    relevant_events_b = create_select_multiple_field_without_choices(
         label="Evidence", name="relevant_events_b_client"
     )
-    relevant_events_c = create_multiple_select_field_without_choices(
+    relevant_events_c = create_select_multiple_field_without_choices(
         label="Evidence", name="relevant_events_c_client"
     )
-    relevant_events_d = create_multiple_select_field_without_choices(
+    relevant_events_d = create_select_multiple_field_without_choices(
         label="Evidence", name="relevant_events_d_client"
     )
-    relevant_events_e = create_multiple_select_field_without_choices(
+    relevant_events_e = create_select_multiple_field_without_choices(
         label="Evidence", name="relevant_events_e_client"
     )
     comment_summary = create_text_area_field(
@@ -264,19 +264,19 @@ class PSAnnotationFormTherapist(FlaskForm):
     comment_e = create_text_area_field(
         label="Comment", name="comment_e_therapist", required_if="label_e"
     )
-    relevant_events_a = create_multiple_select_field_without_choices(
+    relevant_events_a = create_select_multiple_field_without_choices(
         label="Evidence", name="relevant_events_a_therapist"
     )
-    relevant_events_b = create_multiple_select_field_without_choices(
+    relevant_events_b = create_select_multiple_field_without_choices(
         label="Evidence", name="relevant_events_b_therapist"
     )
-    relevant_events_c = create_multiple_select_field_without_choices(
+    relevant_events_c = create_select_multiple_field_without_choices(
         label="Evidence", name="relevant_events_c_therapist"
     )
-    relevant_events_d = create_multiple_select_field_without_choices(
+    relevant_events_d = create_select_multiple_field_without_choices(
         label="Evidence", name="relevant_events_d_therapist"
     )
-    relevant_events_e = create_multiple_select_field_without_choices(
+    relevant_events_e = create_select_multiple_field_without_choices(
         label="Evidence", name="relevant_events_e_therapist"
     )
     comment_summary = create_text_area_field(
@@ -310,10 +310,10 @@ class PSAnnotationFormDyad(FlaskForm):
     comment_b = create_text_area_field(
         label="Comment", name="comment_b_dyad", required_if="label_b"
     )
-    relevant_events_a = create_multiple_select_field_without_choices(
+    relevant_events_a = create_select_multiple_field_without_choices(
         label="Evidence", name="relevant_events_a_dyad"
     )
-    relevant_events_b = create_multiple_select_field_without_choices(
+    relevant_events_b = create_select_multiple_field_without_choices(
         label="Evidence", name="relevant_events_b_dyad"
     )
     comment_summary = create_text_area_field(
