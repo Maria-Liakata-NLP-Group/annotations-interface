@@ -2,7 +2,7 @@
 Annotation forms for the app
 """
 from flask_wtf import FlaskForm
-from wtforms import SelectField, SubmitField, TextAreaField
+from wtforms import SelectField, SubmitField, TextAreaField, SelectMultipleField
 from wtforms.validators import (
     DataRequired,
     Length,
@@ -70,6 +70,20 @@ def create_select_field(label, choices, name, default=None):
         validators=[DataRequired()],
         name=name,
         default=default,
+    )
+
+
+def create_multiple_select_field_without_choices(label, name):
+    """
+    Create a select multiple field with the given label and name, but without choices.
+    This is used for select multiple fields with dynamic choice values.
+    """
+
+    return SelectMultipleField(
+        label=label,
+        validators=[DataRequired()],
+        name=name,
+        coerce=int,
     )
 
 
@@ -167,6 +181,9 @@ class PSAnnotationFormClient(FlaskForm):
         label="Comment", name="comment_e_client", required_if="label_e"
     )
     comment_f = create_text_area_field(label="Comment", name="comment_f_client")
+    relevant_events_a = create_multiple_select_field_without_choices(
+        label="Evidence", name="relevant_events_a_client"
+    )
     comment_summary = create_text_area_field(
         label="Summary Comment",
         name="comment_summary_client",

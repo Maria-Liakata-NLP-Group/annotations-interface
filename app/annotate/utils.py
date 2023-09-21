@@ -321,3 +321,25 @@ def create_psy_annotation_forms(
     else:
         form_dyad = PSAnnotationFormDyad()
     return form_client, form_therapist, form_dyad
+
+
+def get_dynamic_choices(page_items: list, speaker: Speaker):
+    """Get the dynamic choices for the select multiple field in the annotation form."""
+
+    if speaker == Speaker.client:
+        choices = [
+            (item.id, item.event_n)
+            for item in page_items
+            if item.event_speaker.lower() == "client"
+        ]
+    elif speaker == Speaker.therapist:
+        choices = [
+            (item.id, item.event_n)
+            for item in page_items
+            if item.event_speaker.lower() == "therapist"
+        ]
+    elif speaker == Speaker.dyad:
+        choices = [
+            (item.id, item.event_n) for item in page_items
+        ]  # all events are shown for the dyad
+    return choices
