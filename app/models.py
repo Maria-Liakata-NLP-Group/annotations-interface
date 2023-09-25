@@ -43,10 +43,23 @@ def load_user(id):
     return User.query.get(int(id))
 
 
+# association table for many-to-many relationship between User and Dataset
 dataset_annotator = db.Table(
     "dataset_annotator",
     db.Column("id_dataset", db.Integer, db.ForeignKey("dataset.id")),
     db.Column("id_annotator", db.Integer, db.ForeignKey("user.id")),
+)
+
+
+# association table for many-to-many relationship between PSDialogTurn and PSDialogTurnAnnotationClient
+annotationclient_dialogturn = db.Table(
+    "annotationclient_dialogturn",
+    db.Column("id_dialog_turn", db.Integer, db.ForeignKey("ps_dialog_turn.id")),
+    db.Column(
+        "id_annotation_client",
+        db.Integer,
+        db.ForeignKey("ps_dialog_turn_annotation_client.id"),
+    ),
 )
 
 
@@ -325,9 +338,6 @@ class PSDialogTurn(db.Model):
     dialog_events = db.relationship(
         "PSDialogEvent", backref="dialog_turn", lazy="dynamic"
     )  # one-to-many relationship with PSDialogEvent class
-    annotations_client = db.relationship(
-        "PSDialogTurnAnnotationClient", backref="dialog_turn", lazy="dynamic"
-    )  # one-to-many relationship with PSDialogTurnAnnotationClient class
     annotations_therapist = db.relationship(
         "PSDialogTurnAnnotationTherapist", backref="dialog_turn", lazy="dynamic"
     )  # one-to-many relationship with PSDialogTurnAnnotationTherapist class
@@ -388,12 +398,15 @@ class PSDialogTurnAnnotationClient(db.Model):
     comment_e = db.Column(db.Text, nullable=True)
     comment_f = db.Column(db.Text, nullable=True)
     comment_summary = db.Column(db.Text, nullable=True)
+    dialog_turns = db.relationship(
+        "PSDialogTurn",
+        secondary=annotationclient_dialogturn,
+        backref=db.backref("annotations_client", lazy="dynamic"),
+        lazy="dynamic",
+    )  # many-to-many relationship with PSDialogTurn class
     id_user = db.Column(
         db.Integer, db.ForeignKey("user.id")
     )  # id of user (annotator) who created this annotation
-    id_ps_dialog_turn = db.Column(
-        db.Integer, db.ForeignKey("ps_dialog_turn.id")
-    )  # id of dialog turn associated with this annotation
     id_dataset = db.Column(
         db.Integer, db.ForeignKey("dataset.id")
     )  # id of dataset associated with this annotation
