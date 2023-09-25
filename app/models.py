@@ -74,6 +74,17 @@ annotationtherapist_dialogturn = db.Table(
     ),
 )
 
+# association table for many-to-many relationship between PSDialogTurn and PSDialogTurnAnnotationDyad
+annotationsdyad_dialogturn = db.Table(
+    "annotationsdyad_dialogturn",
+    db.Column("id_dialog_turn", db.Integer, db.ForeignKey("ps_dialog_turn.id")),
+    db.Column(
+        "id_annotation_dyad",
+        db.Integer,
+        db.ForeignKey("ps_dialog_turn_annotation_dyad.id"),
+    ),
+)
+
 
 class User(UserMixin, db.Model):
     """User class for database"""
@@ -350,9 +361,6 @@ class PSDialogTurn(db.Model):
     dialog_events = db.relationship(
         "PSDialogEvent", backref="dialog_turn", lazy="dynamic"
     )  # one-to-many relationship with PSDialogEvent class
-    annotations_dyad = db.relationship(
-        "PSDialogTurnAnnotationDyad", backref="dialog_turn", lazy="dynamic"
-    )  # one-to-many relationship with PSDialogTurnAnnotationDyad class
 
 
 class PSDialogEvent(db.Model):
@@ -490,12 +498,15 @@ class PSDialogTurnAnnotationDyad(db.Model):
     comment_a = db.Column(db.Text, nullable=True)
     comment_b = db.Column(db.Text, nullable=True)
     comment_summary = db.Column(db.Text, nullable=True)
+    dialog_turns = db.relationship(
+        "PSDialogTurn",
+        secondary=annotationsdyad_dialogturn,
+        backref=db.backref("annotations_dyad", lazy="dynamic"),
+        lazy="dynamic",
+    )  # many-to-many relationship with PSDialogTurn class
     id_user = db.Column(
         db.Integer, db.ForeignKey("user.id")
     )  # id of user (annotator) who created this annotation
-    id_ps_dialog_turn = db.Column(
-        db.Integer, db.ForeignKey("ps_dialog_turn.id")
-    )  # id of dialog turn associated with this annotation
     id_dataset = db.Column(
         db.Integer, db.ForeignKey("dataset.id")
     )  # id of dataset associated with this annotation
