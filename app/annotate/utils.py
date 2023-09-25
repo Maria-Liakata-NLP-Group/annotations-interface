@@ -203,10 +203,9 @@ def fetch_dialog_turn_annotations(dialog_turns: list, speaker: Speaker):
     return annotation
 
 
-def new_dialog_turn_annotation_to_db(form, speaker, dataset_id, dialog_turn_ids):
+def new_dialog_turn_annotation_to_db(form, speaker, dataset_id, dialog_turns):
     """
     Create a new psychotherapy dialog turn annotation object and add it to the database session.
-    Loops through the dialog turn IDs and creates a new annotation for each one.
 
     Parameters
     ----------
@@ -216,75 +215,69 @@ def new_dialog_turn_annotation_to_db(form, speaker, dataset_id, dialog_turn_ids)
         The speaker the annotation is for (client, therapist or dyad)
     dataset_id : int
         The id of the dataset the dialog turns belong to
-    dialog_turn_ids : list
-        A list of dialog turn IDs
+    dialog_turns : list of PSDialogTurn objects
+        The dialog turns the annotation is for
     """
     if speaker == Speaker.client:
-        for dialog_turn_id in dialog_turn_ids:
-            dialog_turn_annotation = PSDialogTurnAnnotationClient(
-                label_a=form.label_a.data,
-                label_b=form.label_b.data,
-                label_c=form.label_c.data,
-                label_d=form.label_d.data,
-                label_e=form.label_e.data,
-                label_f=form.label_f.data,
-                strength_a=form.strength_a.data,
-                strength_b=form.strength_b.data,
-                strength_c=form.strength_c.data,
-                strength_d=form.strength_d.data,
-                strength_e=form.strength_e.data,
-                strength_f=form.strength_f.data,
-                comment_a=form.comment_a.data,
-                comment_b=form.comment_b.data,
-                comment_c=form.comment_c.data,
-                comment_d=form.comment_d.data,
-                comment_e=form.comment_e.data,
-                comment_f=form.comment_f.data,
-                comment_summary=form.comment_summary.data,
-                id_user=current_user.id,
-                id_ps_dialog_turn=dialog_turn_id,
-                id_dataset=dataset_id,
-            )
-            db.session.add(dialog_turn_annotation)
+        dialog_turn_annotation = PSDialogTurnAnnotationClient(
+            label_a=form.label_a.data,
+            label_b=form.label_b.data,
+            label_c=form.label_c.data,
+            label_d=form.label_d.data,
+            label_e=form.label_e.data,
+            label_f=form.label_f.data,
+            strength_a=form.strength_a.data,
+            strength_b=form.strength_b.data,
+            strength_c=form.strength_c.data,
+            strength_d=form.strength_d.data,
+            strength_e=form.strength_e.data,
+            strength_f=form.strength_f.data,
+            comment_a=form.comment_a.data,
+            comment_b=form.comment_b.data,
+            comment_c=form.comment_c.data,
+            comment_d=form.comment_d.data,
+            comment_e=form.comment_e.data,
+            comment_f=form.comment_f.data,
+            comment_summary=form.comment_summary.data,
+            id_user=current_user.id,
+            id_dataset=dataset_id,
+        )
     elif speaker == Speaker.therapist:
-        for dialog_turn_id in dialog_turn_ids:
-            dialog_turn_annotation = PSDialogTurnAnnotationTherapist(
-                label_a=form.label_a.data,
-                label_b=form.label_b.data,
-                label_c=form.label_c.data,
-                label_d=form.label_d.data,
-                label_e=form.label_e.data,
-                strength_a=form.strength_a.data,
-                strength_b=form.strength_b.data,
-                strength_c=form.strength_c.data,
-                strength_d=form.strength_d.data,
-                strength_e=form.strength_e.data,
-                comment_a=form.comment_a.data,
-                comment_b=form.comment_b.data,
-                comment_c=form.comment_c.data,
-                comment_d=form.comment_d.data,
-                comment_e=form.comment_e.data,
-                comment_summary=form.comment_summary.data,
-                id_user=current_user.id,
-                id_ps_dialog_turn=dialog_turn_id,
-                id_dataset=dataset_id,
-            )
-            db.session.add(dialog_turn_annotation)
+        dialog_turn_annotation = PSDialogTurnAnnotationTherapist(
+            label_a=form.label_a.data,
+            label_b=form.label_b.data,
+            label_c=form.label_c.data,
+            label_d=form.label_d.data,
+            label_e=form.label_e.data,
+            strength_a=form.strength_a.data,
+            strength_b=form.strength_b.data,
+            strength_c=form.strength_c.data,
+            strength_d=form.strength_d.data,
+            strength_e=form.strength_e.data,
+            comment_a=form.comment_a.data,
+            comment_b=form.comment_b.data,
+            comment_c=form.comment_c.data,
+            comment_d=form.comment_d.data,
+            comment_e=form.comment_e.data,
+            comment_summary=form.comment_summary.data,
+            id_user=current_user.id,
+            id_dataset=dataset_id,
+        )
     elif speaker == Speaker.dyad:
-        for dialog_turn_id in dialog_turn_ids:
-            dialog_turn_annotation = PSDialogTurnAnnotationDyad(
-                label_a=form.label_a.data,
-                label_b=form.label_b.data,
-                strength_a=form.strength_a.data,
-                strength_b=form.strength_b.data,
-                comment_a=form.comment_a.data,
-                comment_b=form.comment_b.data,
-                comment_summary=form.comment_summary.data,
-                id_user=current_user.id,
-                id_ps_dialog_turn=dialog_turn_id,
-                id_dataset=dataset_id,
-            )
-            db.session.add(dialog_turn_annotation)
+        dialog_turn_annotation = PSDialogTurnAnnotationDyad(
+            label_a=form.label_a.data,
+            label_b=form.label_b.data,
+            strength_a=form.strength_a.data,
+            strength_b=form.strength_b.data,
+            comment_a=form.comment_a.data,
+            comment_b=form.comment_b.data,
+            comment_summary=form.comment_summary.data,
+            id_user=current_user.id,
+            id_dataset=dataset_id,
+        )
+    for dialog_turn in dialog_turns:
+        dialog_turn_annotation.dialog_turns.append(dialog_turn)
+    db.session.add(dialog_turn_annotation)
 
 
 def create_psy_annotation_forms(
