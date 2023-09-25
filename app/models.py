@@ -63,6 +63,18 @@ annotationclient_dialogturn = db.Table(
 )
 
 
+# association table for many-to-many relationship between PSDialogTurn and PSDialogTurnAnnotationTherapist
+annotationtherapist_dialogturn = db.Table(
+    "annotationtherapist_dialogturn",
+    db.Column("id_dialog_turn", db.Integer, db.ForeignKey("ps_dialog_turn.id")),
+    db.Column(
+        "id_annotation_therapist",
+        db.Integer,
+        db.ForeignKey("ps_dialog_turn_annotation_therapist.id"),
+    ),
+)
+
+
 class User(UserMixin, db.Model):
     """User class for database"""
 
@@ -338,9 +350,6 @@ class PSDialogTurn(db.Model):
     dialog_events = db.relationship(
         "PSDialogEvent", backref="dialog_turn", lazy="dynamic"
     )  # one-to-many relationship with PSDialogEvent class
-    annotations_therapist = db.relationship(
-        "PSDialogTurnAnnotationTherapist", backref="dialog_turn", lazy="dynamic"
-    )  # one-to-many relationship with PSDialogTurnAnnotationTherapist class
     annotations_dyad = db.relationship(
         "PSDialogTurnAnnotationDyad", backref="dialog_turn", lazy="dynamic"
     )  # one-to-many relationship with PSDialogTurnAnnotationDyad class
@@ -449,12 +458,15 @@ class PSDialogTurnAnnotationTherapist(db.Model):
     comment_d = db.Column(db.Text, nullable=True)
     comment_e = db.Column(db.Text, nullable=True)
     comment_summary = db.Column(db.Text, nullable=True)
+    dialog_turns = db.relationship(
+        "PSDialogTurn",
+        secondary=annotationtherapist_dialogturn,
+        backref=db.backref("annotations_therapist", lazy="dynamic"),
+        lazy="dynamic",
+    )  # many-to-many relationship with PSDialogTurn class
     id_user = db.Column(
         db.Integer, db.ForeignKey("user.id")
     )  # id of user (annotator) who created this annotation
-    id_ps_dialog_turn = db.Column(
-        db.Integer, db.ForeignKey("ps_dialog_turn.id")
-    )  # id of dialog turn associated with this annotation
     id_dataset = db.Column(
         db.Integer, db.ForeignKey("dataset.id")
     )  # id of dataset associated with this annotation
