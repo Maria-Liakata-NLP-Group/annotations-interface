@@ -201,9 +201,9 @@ def new_ps_dialog_turn_annotation_client(
         comment_b="test comment b",
         comment_summary="test comment summary",
         author=user_annotator1,
-        dialog_turn=new_ps_dialog_turn,
         dataset=new_ps_dataset,
     )
+    dialog_turn_annotation.dialog_turns.append(new_ps_dialog_turn)
     return dialog_turn_annotation
 
 
