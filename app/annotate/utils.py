@@ -11,7 +11,7 @@ from sqlalchemy import desc
 from app.models import (
     PSAnnotationClient,
     PSAnnotationTherapist,
-    PSDialogTurnAnnotationDyad,
+    PSAnnotationDyad,
 )
 from app import db
 from app.annotate.forms import (
@@ -154,7 +154,7 @@ def fetch_dialog_turn_annotations(dialog_turns: list, speaker: Speaker):
 
     Returns
     -------
-    annotation : PSAnnotationClient or PSAnnotationTherapist or PSDialogTurnAnnotationDyad or None
+    annotation : PSAnnotationClient or PSAnnotationTherapist or PSAnnotationDyad or None
         The annotation with the latest timestamp for the client, therapist or dyad if it exists, otherwise None.
         The "label_*" and "strength_*" attributes are converted to their corresponding Enum values.
     """
@@ -264,7 +264,7 @@ def new_dialog_turn_annotation_to_db(form, speaker, dataset_id, dialog_turns):
             id_dataset=dataset_id,
         )
     elif speaker == Speaker.dyad:
-        dialog_turn_annotation = PSDialogTurnAnnotationDyad(
+        dialog_turn_annotation = PSAnnotationDyad(
             label_a=form.label_a.data,
             label_b=form.label_b.data,
             strength_a=form.strength_a.data,
@@ -291,7 +291,7 @@ def create_psy_annotation_forms(
     ----------
     annotations_client : PSAnnotationClient or None for client annotations
     annotations_therapist : PSAnnotationTherapist or None for therapist annotations
-    annotations_dyad : PSDialogTurnAnnotationDyad or None for dyad annotations
+    annotations_dyad : PSAnnotationDyad or None for dyad annotations
 
     Returns
     -------

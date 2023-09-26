@@ -9,7 +9,7 @@ import pytest
 from app.models import (
     PSAnnotationClient,
     PSAnnotationTherapist,
-    PSDialogTurnAnnotationDyad,
+    PSAnnotationDyad,
 )
 from tests.functional.utils import (
     create_segment_level_annotation_client,
@@ -305,7 +305,7 @@ def test_valid_segment_level_annotation_dyad(test_client):
     assert b"Your annotations have been saved" in response.data
 
     # check that the annotation has been saved to the database
-    annotation = PSDialogTurnAnnotationDyad.query.filter_by(
+    annotation = PSAnnotationDyad.query.filter_by(
         id_dataset=dataset_id,
     ).first()
     assert annotation is not None

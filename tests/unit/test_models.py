@@ -2,7 +2,7 @@ from datetime import datetime, date
 from app.models import (
     PSAnnotationClient,
     PSAnnotationTherapist,
-    PSDialogTurnAnnotationDyad,
+    PSAnnotationDyad,
     User,
     Dataset,
     SMPost,
@@ -269,14 +269,14 @@ def test_new_ps_dialog_turn_annotation_dyad(
     new_ps_dialog_turn_annotation_dyad,
 ):
     """
-    GIVEN a PSDialogTurnAnnotationDyad model
-    WHEN a new PSDialogTurnAnnotationDyad is created and added to the database
+    GIVEN a PSAnnotationDyad model
+    WHEN a new PSAnnotationDyad is created and added to the database
     THEN check its fields are defined correctly
     """
     db_session.add(new_ps_dialog_turn_annotation_dyad)
     db_session.commit()
 
-    annotation = PSDialogTurnAnnotationDyad.query.all()[0]
+    annotation = PSAnnotationDyad.query.all()[0]
     annotator1 = User.query.filter_by(username="annotator1").first()
     dataset = Dataset.query.filter_by(name="Psychotherapy Dataset Test").first()
     assert annotation.label_a == SubLabelsADyad.bond

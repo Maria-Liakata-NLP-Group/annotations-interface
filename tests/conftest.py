@@ -14,7 +14,7 @@ from app.models import (
     DatasetType,
     PSAnnotationClient,
     PSAnnotationTherapist,
-    PSDialogTurnAnnotationDyad,
+    PSAnnotationDyad,
 )
 from app.utils import (
     SubLabelsAClient,
@@ -231,7 +231,7 @@ def new_ps_dialog_turn_annotation_dyad(
     new_ps_dataset, new_ps_dialog_turn, user_annotator1
 ):
     """Fixture to create a new psychotherapy dialog turn annotation for the dyad"""
-    dialog_turn_annotation = PSDialogTurnAnnotationDyad(
+    dialog_turn_annotation = PSAnnotationDyad(
         label_a=SubLabelsADyad.bond,
         label_b=SubLabelsBDyad.other,
         strength_a=LabelStrengthADyad.medium,

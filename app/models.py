@@ -74,14 +74,14 @@ annotationtherapist_dialogturn = db.Table(
     ),
 )
 
-# association table for many-to-many relationship between PSDialogTurn and PSDialogTurnAnnotationDyad
+# association table for many-to-many relationship between PSDialogTurn and PSAnnotationDyad
 annotationsdyad_dialogturn = db.Table(
     "annotationsdyad_dialogturn",
     db.Column("id_dialog_turn", db.Integer, db.ForeignKey("ps_dialog_turn.id")),
     db.Column(
         "id_annotation_dyad",
         db.Integer,
-        db.ForeignKey("ps_dialog_turn_annotation_dyad.id"),
+        db.ForeignKey("ps_annotation_dyad.id"),
     ),
 )
 
@@ -106,8 +106,8 @@ class User(UserMixin, db.Model):
         "PSAnnotationTherapist", backref="author", lazy="dynamic"
     )  # one-to-many relationship with PSAnnotationTherapist class
     annotations_dialog_turn_dyad = db.relationship(
-        "PSDialogTurnAnnotationDyad", backref="author", lazy="dynamic"
-    )  # one-to-many relationship with PSDialogTurnAnnotationDyad class
+        "PSAnnotationDyad", backref="author", lazy="dynamic"
+    )  # one-to-many relationship with PSAnnotationDyad class
     authored_datasets = db.relationship(
         "Dataset",
         backref="author",
@@ -325,8 +325,8 @@ class Dataset(db.Model):
         "PSAnnotationTherapist", backref="dataset", lazy="dynamic"
     )  # one-to-many relationship with PSAnnotationTherapist class
     annotations_dialog_turn_dyad = db.relationship(
-        "PSDialogTurnAnnotationDyad", backref="dataset", lazy="dynamic"
-    )  # one-to-many relationship with PSDialogTurnAnnotationDyad class
+        "PSAnnotationDyad", backref="dataset", lazy="dynamic"
+    )  # one-to-many relationship with PSAnnotationDyad class
 
     def __repr__(self):
         """How to print objects of this class"""
@@ -480,13 +480,13 @@ class PSAnnotationTherapist(db.Model):
     )  # id of dataset associated with this annotation
 
 
-class PSDialogTurnAnnotationDyad(db.Model):
+class PSAnnotationDyad(db.Model):
     """
     Psychotherapy Dialog Turn Annotation class for the Dyad.
     This captures annotations of psychotherapy sessions for the dyad at the 'segment' level.
     """
 
-    __tablename__ = "ps_dialog_turn_annotation_dyad"
+    __tablename__ = "ps_annotation_dyad"
     id = db.Column(db.Integer, primary_key=True)
     timestamp = db.Column(
         db.DateTime, index=True, default=datetime.utcnow
