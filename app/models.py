@@ -51,14 +51,14 @@ dataset_annotator = db.Table(
 )
 
 
-# association table for many-to-many relationship between PSDialogTurn and PSDialogTurnAnnotationClient
+# association table for many-to-many relationship between PSDialogTurn and PSAnnotationClient
 annotationclient_dialogturn = db.Table(
     "annotationclient_dialogturn",
     db.Column("id_dialog_turn", db.Integer, db.ForeignKey("ps_dialog_turn.id")),
     db.Column(
         "id_annotation_client",
         db.Integer,
-        db.ForeignKey("ps_dialog_turn_annotation_client.id"),
+        db.ForeignKey("ps_annotation_client.id"),
     ),
 )
 
@@ -100,8 +100,8 @@ class User(UserMixin, db.Model):
         "SMAnnotation", backref="author", lazy="dynamic"
     )  # one-to-many relationship with SMAnnotation class
     annotations_dialog_turn_client = db.relationship(
-        "PSDialogTurnAnnotationClient", backref="author", lazy="dynamic"
-    )  # one-to-many relationship with PSDialogTurnAnnotationClient class
+        "PSAnnotationClient", backref="author", lazy="dynamic"
+    )  # one-to-many relationship with PSAnnotationClient class
     annotations_dialog_turn_therapist = db.relationship(
         "PSDialogTurnAnnotationTherapist", backref="author", lazy="dynamic"
     )  # one-to-many relationship with PSDialogTurnAnnotationTherapist class
@@ -319,8 +319,8 @@ class Dataset(db.Model):
         "PSDialogEvent", backref="dataset", lazy="dynamic"
     )  # one-to-many relationship with PSDialogEvent class
     annotations_dialog_turn_client = db.relationship(
-        "PSDialogTurnAnnotationClient", backref="dataset", lazy="dynamic"
-    )  # one-to-many relationship with PSDialogTurnAnnotationClient class
+        "PSAnnotationClient", backref="dataset", lazy="dynamic"
+    )  # one-to-many relationship with PSAnnotationClient class
     annotations_dialog_turn_therapist = db.relationship(
         "PSDialogTurnAnnotationTherapist", backref="dataset", lazy="dynamic"
     )  # one-to-many relationship with PSDialogTurnAnnotationTherapist class
@@ -385,13 +385,13 @@ class PSDialogEvent(db.Model):
     )  # id of dataset associated with this dialog event
 
 
-class PSDialogTurnAnnotationClient(db.Model):
+class PSAnnotationClient(db.Model):
     """
     Psychotherapy Dialog Turn Annotation class for the Client.
     This captures annotations of psychotherapy sessions for the client at the 'segment' level.
     """
 
-    __tablename__ = "ps_dialog_turn_annotation_client"
+    __tablename__ = "ps_annotation_client"
     id = db.Column(db.Integer, primary_key=True)
     timestamp = db.Column(
         db.DateTime, index=True, default=datetime.utcnow

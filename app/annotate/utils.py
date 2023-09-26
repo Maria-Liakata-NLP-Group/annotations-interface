@@ -9,7 +9,7 @@ from flask_login import current_user
 from app.utils import Speaker
 from sqlalchemy import desc
 from app.models import (
-    PSDialogTurnAnnotationClient,
+    PSAnnotationClient,
     PSDialogTurnAnnotationTherapist,
     PSDialogTurnAnnotationDyad,
 )
@@ -154,7 +154,7 @@ def fetch_dialog_turn_annotations(dialog_turns: list, speaker: Speaker):
 
     Returns
     -------
-    annotation : PSDialogTurnAnnotationClient or PSDialogTurnAnnotationTherapist or PSDialogTurnAnnotationDyad or None
+    annotation : PSAnnotationClient or PSDialogTurnAnnotationTherapist or PSDialogTurnAnnotationDyad or None
         The annotation with the latest timestamp for the client, therapist or dyad if it exists, otherwise None.
         The "label_*" and "strength_*" attributes are converted to their corresponding Enum values.
     """
@@ -219,7 +219,7 @@ def new_dialog_turn_annotation_to_db(form, speaker, dataset_id, dialog_turns):
         The dialog turns the annotation is for
     """
     if speaker == Speaker.client:
-        dialog_turn_annotation = PSDialogTurnAnnotationClient(
+        dialog_turn_annotation = PSAnnotationClient(
             label_a=form.label_a.data,
             label_b=form.label_b.data,
             label_c=form.label_c.data,
@@ -289,7 +289,7 @@ def create_psy_annotation_forms(
 
     Parameters
     ----------
-    annotations_client : PSDialogTurnAnnotationClient or None for client annotations
+    annotations_client : PSAnnotationClient or None for client annotations
     annotations_therapist : PSDialogTurnAnnotationTherapist or None for therapist annotations
     annotations_dyad : PSDialogTurnAnnotationDyad or None for dyad annotations
 
