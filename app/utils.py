@@ -279,19 +279,29 @@ class Speaker(Enum):
 
 
 # Label names
-class LabelNames(Enum):
-    """Enum for psychotherapy annotation label names"""
+class LabelNamesClient(Enum):
+    """Enum for psychotherapy annotation label names for the client"""
 
-    label_a_client = "(A) Need"
-    label_a_therapist = "(A) Supportive"
-    label_a_dyad = "(A) Alliance/Reciprocity"
-    label_b_dyad = "(B) Tension"
-    label_b_client = "(B) Response of Other"
-    label_b_therapist = "(B) Expressive"
-    label_c_client = "(C) Response of Self"
-    label_c_therapist = "(C) Exploratory"
-    label_d_client = "(D) Emotional experience and regulation"
-    label_d_therapist = "(D) Directive"
-    label_e_client = "(E) Insight"
-    label_e_therapist = "(E) General helpfulness"
-    label_f_client = "(F) Moment of Change"
+    label_a = "(A) Need"
+    label_b = "(B) Response of Other"
+    label_c = "(C) Response of Self"
+    label_d = "(D) Emotional experience and regulation"
+    label_e = "(E) Insight"
+    label_f = "(F) Moment of Change"
+
+
+class LabelNamesTherapist(Enum):
+    """Enum for psychotherapy annotation label names for the therapist"""
+
+    label_a = "(A) Supportive"
+    label_b = "(B) Expressive"
+    label_c = "(C) Exploratory"
+    label_d = "(D) Directive"
+    label_e = "(E) General helpfulness"
+
+
+class LabelNamesDyad(Enum):
+    """Enum for psychotherapy annotation label names for the dyad"""
+
+    label_a = "(A) Alliance/Reciprocity"
+    label_b = "(B) Tension"
