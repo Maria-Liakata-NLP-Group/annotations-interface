@@ -15,6 +15,7 @@ from app.models import (
     PSAnnotationClient,
     PSAnnotationTherapist,
     PSAnnotationDyad,
+    EvidenceClient,
 )
 from app.utils import (
     SubLabelsAClient,
@@ -26,6 +27,7 @@ from app.utils import (
     LabelStrengthAClient,
     LabelStrengthBTherapist,
     LabelStrengthADyad,
+    LabelNamesClient,
 )
 from config import TestConfig
 from app.upload.parsers import read_pickle, psychotherapy_df_to_sql
@@ -243,3 +245,15 @@ def new_ps_dialog_turn_annotation_dyad(
     )
     dialog_turn_annotation.dialog_turns.append(new_ps_dialog_turn)
     return dialog_turn_annotation
+
+
+@pytest.fixture(scope="module")
+def new_evidence_client(new_ps_dialog_turn_annotation_client, new_ps_dialog_event):
+    """Fixture to create a new psychotherapy evidence for the client annotation"""
+
+    evidence = EvidenceClient(
+        dialog_event=new_ps_dialog_event,
+        annotation=new_ps_dialog_turn_annotation_client,
+        label=LabelNamesClient.label_a,
+    )
+    return evidence
