@@ -8,7 +8,7 @@ from bs4 import BeautifulSoup
 import pytest
 from app.models import (
     PSAnnotationClient,
-    PSDialogTurnAnnotationTherapist,
+    PSAnnotationTherapist,
     PSDialogTurnAnnotationDyad,
 )
 from tests.functional.utils import (
@@ -242,7 +242,7 @@ def test_valid_segment_level_annotation_therapist(test_client):
 
     # check that the annotation has been saved to the database
     # and that the labels for the client for this annotation are null
-    annotation = PSDialogTurnAnnotationTherapist.query.filter_by(
+    annotation = PSAnnotationTherapist.query.filter_by(
         id_dataset=dataset_id,
     ).first()
     assert annotation is not None

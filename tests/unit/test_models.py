@@ -1,7 +1,7 @@
 from datetime import datetime, date
 from app.models import (
     PSAnnotationClient,
-    PSDialogTurnAnnotationTherapist,
+    PSAnnotationTherapist,
     PSDialogTurnAnnotationDyad,
     User,
     Dataset,
@@ -241,15 +241,15 @@ def test_new_ps_dialog_turn_annotation_therapist(
     new_ps_dialog_turn_annotation_therapist,
 ):
     """
-    GIVEN a PSDialogTurnAnnotationTherapist model
-    WHEN a new PSDialogTurnAnnotationTherapist is created and added to the database
+    GIVEN a PSAnnotationTherapist model
+    WHEN a new PSAnnotationTherapist is created and added to the database
     THEN check its fields are defined correctly
     """
 
     db_session.add(new_ps_dialog_turn_annotation_therapist)
     db_session.commit()
 
-    annotation = PSDialogTurnAnnotationTherapist.query.all()[0]
+    annotation = PSAnnotationTherapist.query.all()[0]
     annotator1 = User.query.filter_by(username="annotator1").first()
     dataset = Dataset.query.filter_by(name="Psychotherapy Dataset Test").first()
     assert annotation.label_a == SubLabelsATherapist.emotional

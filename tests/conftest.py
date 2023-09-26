@@ -13,7 +13,7 @@ from app.models import (
     PSDialogEvent,
     DatasetType,
     PSAnnotationClient,
-    PSDialogTurnAnnotationTherapist,
+    PSAnnotationTherapist,
     PSDialogTurnAnnotationDyad,
 )
 from app.utils import (
@@ -212,7 +212,7 @@ def new_ps_dialog_turn_annotation_therapist(
     new_ps_dataset, new_ps_dialog_turn, user_annotator1
 ):
     """Fixture to create a new psychotherapy dialog turn annotation for the therapist"""
-    dialog_turn_annotation = PSDialogTurnAnnotationTherapist(
+    dialog_turn_annotation = PSAnnotationTherapist(
         label_a=SubLabelsATherapist.emotional,
         label_b=SubLabelsBTherapist.reframing,
         strength_b=LabelStrengthBTherapist.high,
