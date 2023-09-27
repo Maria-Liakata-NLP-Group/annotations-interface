@@ -164,7 +164,16 @@ def test_valid_segment_level_annotation_client(test_client):
     assert client_form is not None
 
     # submit the annotation for the client
-    data = create_segment_level_annotation_client()
+    (
+        data,
+        events_a,
+        events_b,
+        events_c,
+        events_d,
+        events_e,
+        start_event_f,
+        end_event_f,
+    ) = create_segment_level_annotation_client(soup)
     response = test_client.post(
         url,
         data=data,
@@ -194,19 +203,16 @@ def test_valid_segment_level_annotation_client(test_client):
         label=LabelNamesClient.label_a,
     ).all()
     assert evidence is not None
-    assert len(evidence) == 2
-    assert evidence[0].id_ps_dialog_event == 2
-    assert evidence[1].id_ps_dialog_event == 4
+    ids = [event.id_ps_dialog_event for event in evidence]
+    assert ids == events_a
 
     evidence = EvidenceClient.query.filter_by(
         id_ps_annotation_client=annotation.id,
         label=LabelNamesClient.label_f,
-    ).all()
+    ).all()  # label_f is a special case - Moment of Change
     assert evidence is not None
-    assert len(evidence) == 3
-    assert evidence[0].id_ps_dialog_event == 2
-    assert evidence[1].id_ps_dialog_event == 3
-    assert evidence[2].id_ps_dialog_event == 4
+    ids = [event.id_ps_dialog_event for event in evidence]
+    assert ids == list(range(start_event_f, end_event_f + 1))
 
     # log out
     response = test_client.get("/auth/logout", follow_redirects=True)
@@ -576,7 +582,8 @@ def test_comment_is_compulsory_if_label_is_other(test_client):
     page = 1
     url = url_for("annotate.annotate_ps", dataset_id=dataset_id, page=page)
     # set the label to "Other" and the comment to empty
-    data = create_segment_level_annotation_client()
+    soup = BeautifulSoup(test_client.get(url).data, "html.parser")
+    data = create_segment_level_annotation_client(soup)[0]
     data["label_a_client"] = SubLabelsAClient.other.value
     data["comment_a_client"] = ""
     response = test_client.post(url, data=data, follow_redirects=True)
