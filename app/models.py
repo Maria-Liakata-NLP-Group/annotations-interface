@@ -99,13 +99,13 @@ class User(UserMixin, db.Model):
     annotations_sm = db.relationship(
         "SMAnnotation", backref="author", lazy="dynamic"
     )  # one-to-many relationship with SMAnnotation class
-    annotations_dialog_turn_client = db.relationship(
+    annotations_client = db.relationship(
         "PSAnnotationClient", backref="author", lazy="dynamic"
     )  # one-to-many relationship with PSAnnotationClient class
-    annotations_dialog_turn_therapist = db.relationship(
+    annotations_therapist = db.relationship(
         "PSAnnotationTherapist", backref="author", lazy="dynamic"
     )  # one-to-many relationship with PSAnnotationTherapist class
-    annotations_dialog_turn_dyad = db.relationship(
+    annotations_dyad = db.relationship(
         "PSAnnotationDyad", backref="author", lazy="dynamic"
     )  # one-to-many relationship with PSAnnotationDyad class
     authored_datasets = db.relationship(
@@ -318,13 +318,13 @@ class Dataset(db.Model):
     dialog_events = db.relationship(
         "PSDialogEvent", backref="dataset", lazy="dynamic"
     )  # one-to-many relationship with PSDialogEvent class
-    annotations_dialog_turn_client = db.relationship(
+    annotations_client = db.relationship(
         "PSAnnotationClient", backref="dataset", lazy="dynamic"
     )  # one-to-many relationship with PSAnnotationClient class
-    annotations_dialog_turn_therapist = db.relationship(
+    annotations_therapist = db.relationship(
         "PSAnnotationTherapist", backref="dataset", lazy="dynamic"
     )  # one-to-many relationship with PSAnnotationTherapist class
-    annotations_dialog_turn_dyad = db.relationship(
+    annotations_dyad = db.relationship(
         "PSAnnotationDyad", backref="dataset", lazy="dynamic"
     )  # one-to-many relationship with PSAnnotationDyad class
 

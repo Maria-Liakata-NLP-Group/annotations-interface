@@ -81,7 +81,7 @@ def annotate_ps(dataset_id):
                     new_dialog_turn_annotation_to_db(
                         form_client,
                         speaker,
-                        dataset_id,
+                        dataset,
                         dialog_turns=segments[page - 1],
                     )
                 except:
@@ -102,7 +102,7 @@ def annotate_ps(dataset_id):
                     new_dialog_turn_annotation_to_db(
                         form_therapist,
                         speaker,
-                        dataset_id,
+                        dataset,
                         dialog_turns=segments[page - 1],
                     )
                 except:
@@ -121,7 +121,7 @@ def annotate_ps(dataset_id):
                 # add the annotations to the database session
                 try:
                     new_dialog_turn_annotation_to_db(
-                        form_dyad, speaker, dataset_id, dialog_turns=segments[page - 1]
+                        form_dyad, speaker, dataset, dialog_turns=segments[page - 1]
                     )
                 except:
                     db.session.rollback()

@@ -203,7 +203,7 @@ def fetch_dialog_turn_annotations(dialog_turns: list, speaker: Speaker):
     return annotation
 
 
-def new_dialog_turn_annotation_to_db(form, speaker, dataset_id, dialog_turns):
+def new_dialog_turn_annotation_to_db(form, speaker, dataset, dialog_turns):
     """
     Create a new psychotherapy dialog turn annotation object and add it to the database session.
 
@@ -213,8 +213,8 @@ def new_dialog_turn_annotation_to_db(form, speaker, dataset_id, dialog_turns):
         The form containing the annotation data
     speaker : Speaker
         The speaker the annotation is for (client, therapist or dyad)
-    dataset_id : int
-        The id of the dataset the dialog turns belong to
+    dataset : Dataset
+        The dataset object the annotation is for
     dialog_turns : list of PSDialogTurn objects
         The dialog turns the annotation is for
     """
@@ -239,8 +239,8 @@ def new_dialog_turn_annotation_to_db(form, speaker, dataset_id, dialog_turns):
             comment_e=form.comment_e.data,
             comment_f=form.comment_f.data,
             comment_summary=form.comment_summary.data,
-            id_user=current_user.id,
-            id_dataset=dataset_id,
+            author=current_user,
+            dataset=dataset,
         )
     elif speaker == Speaker.therapist:
         dialog_turn_annotation = PSAnnotationTherapist(
@@ -260,8 +260,8 @@ def new_dialog_turn_annotation_to_db(form, speaker, dataset_id, dialog_turns):
             comment_d=form.comment_d.data,
             comment_e=form.comment_e.data,
             comment_summary=form.comment_summary.data,
-            id_user=current_user.id,
-            id_dataset=dataset_id,
+            author=current_user,
+            dataset=dataset,
         )
     elif speaker == Speaker.dyad:
         dialog_turn_annotation = PSAnnotationDyad(
@@ -272,8 +272,8 @@ def new_dialog_turn_annotation_to_db(form, speaker, dataset_id, dialog_turns):
             comment_a=form.comment_a.data,
             comment_b=form.comment_b.data,
             comment_summary=form.comment_summary.data,
-            id_user=current_user.id,
-            id_dataset=dataset_id,
+            author=current_user,
+            dataset=dataset,
         )
     for dialog_turn in dialog_turns:
         dialog_turn_annotation.dialog_turns.append(dialog_turn)
