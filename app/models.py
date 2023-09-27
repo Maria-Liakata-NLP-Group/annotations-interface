@@ -34,6 +34,7 @@ from app.utils import (
     LabelStrengthEClient,
     LabelStrengthFClient,
     LabelNamesClient,
+    LabelNamesTherapist,
 )
 
 
@@ -519,7 +520,7 @@ class PSAnnotationDyad(db.Model):
 
 
 class EvidenceClient(db.Model):
-    """Table to store the dialog events that are marked as evidence for a particular annotation"""
+    """Table to store the dialog events that are marked as evidence for a particular annotation for the client"""
 
     __tablename__ = "evidence_client"
     id = db.Column(db.Integer, primary_key=True)
@@ -528,3 +529,15 @@ class EvidenceClient(db.Model):
         db.Integer, db.ForeignKey("ps_annotation_client.id")
     )
     label = db.Column(db.Enum(LabelNamesClient), nullable=True, default=None)
+
+
+class EvidenceTherapist(db.Model):
+    """Table to store the dialog events that are marked as evidence for a particular annotation for the therapist"""
+
+    __tablename__ = "evidence_therapist"
+    id = db.Column(db.Integer, primary_key=True)
+    id_ps_dialog_event = db.Column(db.Integer, db.ForeignKey("ps_dialog_event.id"))
+    id_ps_annotation_therapist = db.Column(
+        db.Integer, db.ForeignKey("ps_annotation_therapist.id")
+    )
+    label = db.Column(db.Enum(LabelNamesTherapist), nullable=True, default=None)
