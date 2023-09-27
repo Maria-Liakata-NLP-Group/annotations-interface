@@ -6,12 +6,13 @@ from datetime import datetime
 import itertools
 from flask import url_for
 from flask_login import current_user
-from app.utils import Speaker
+from app.utils import Speaker, LabelNamesClient, LabelNamesTherapist, LabelNamesDyad
 from sqlalchemy import desc
 from app.models import (
     PSAnnotationClient,
     PSAnnotationTherapist,
     PSAnnotationDyad,
+    EvidenceClient,
 )
 from app import db
 from app.annotate.forms import (
@@ -219,7 +220,7 @@ def new_dialog_turn_annotation_to_db(form, speaker, dataset, dialog_turns):
         The dialog turns the annotation is for
     """
     if speaker == Speaker.client:
-        dialog_turn_annotation = PSAnnotationClient(
+        annotation = PSAnnotationClient(
             label_a=form.label_a.data,
             label_b=form.label_b.data,
             label_c=form.label_c.data,
@@ -242,8 +243,12 @@ def new_dialog_turn_annotation_to_db(form, speaker, dataset, dialog_turns):
             author=current_user,
             dataset=dataset,
         )
+        for dialog_turn in dialog_turns:
+            annotation.dialog_turns.append(dialog_turn)
+        db.session.add(annotation)
+        new_client_evidence_events_to_db(form, annotation)
     elif speaker == Speaker.therapist:
-        dialog_turn_annotation = PSAnnotationTherapist(
+        annotation = PSAnnotationTherapist(
             label_a=form.label_a.data,
             label_b=form.label_b.data,
             label_c=form.label_c.data,
@@ -263,8 +268,11 @@ def new_dialog_turn_annotation_to_db(form, speaker, dataset, dialog_turns):
             author=current_user,
             dataset=dataset,
         )
+        for dialog_turn in dialog_turns:
+            annotation.dialog_turns.append(dialog_turn)
+        db.session.add(annotation)
     elif speaker == Speaker.dyad:
-        dialog_turn_annotation = PSAnnotationDyad(
+        annotation = PSAnnotationDyad(
             label_a=form.label_a.data,
             label_b=form.label_b.data,
             strength_a=form.strength_a.data,
@@ -275,9 +283,70 @@ def new_dialog_turn_annotation_to_db(form, speaker, dataset, dialog_turns):
             author=current_user,
             dataset=dataset,
         )
-    for dialog_turn in dialog_turns:
-        dialog_turn_annotation.dialog_turns.append(dialog_turn)
-    db.session.add(dialog_turn_annotation)
+        for dialog_turn in dialog_turns:
+            annotation.dialog_turns.append(dialog_turn)
+        db.session.add(annotation)
+
+
+def new_client_evidence_events_to_db(form, annotation):
+    """
+    Given a new annotation for the client, add the evidence
+    events of the form to the database session.
+    """
+
+    events_a = form.relevant_events_a.data  # these are events IDs
+    events_b = form.relevant_events_b.data
+    events_c = form.relevant_events_c.data
+    events_d = form.relevant_events_d.data
+    events_e = form.relevant_events_e.data
+    start_event_f = form.start_event_f.data
+    end_event_f = form.end_event_f.data
+
+    evidences = []
+    for event in events_a:
+        evidence = EvidenceClient(
+            annotation=annotation,
+            id_ps_dialog_event=event,
+            label=LabelNamesClient.label_a,
+        )
+        evidences.append(evidence)
+    for event in events_b:
+        evidence = EvidenceClient(
+            annotation=annotation,
+            id_ps_dialog_event=event,
+            label=LabelNamesClient.label_b,
+        )
+        evidences.append(evidence)
+    for event in events_c:
+        evidence = EvidenceClient(
+            annotation=annotation,
+            id_ps_dialog_event=event,
+            label=LabelNamesClient.label_c,
+        )
+        evidences.append(evidence)
+    for event in events_d:
+        evidence = EvidenceClient(
+            annotation=annotation,
+            id_ps_dialog_event=event,
+            label=LabelNamesClient.label_d,
+        )
+        evidences.append(evidence)
+    for event in events_e:
+        evidence = EvidenceClient(
+            annotation=annotation,
+            id_ps_dialog_event=event,
+            label=LabelNamesClient.label_e,
+        )
+        evidences.append(evidence)
+    if start_event_f and end_event_f:
+        for event in range(start_event_f, end_event_f + 1):
+            evidence = EvidenceClient(
+                annotation=annotation,
+                id_ps_dialog_event=event,
+                label=LabelNamesClient.label_f,
+            )
+            evidences.append(evidence)
+    db.session.add_all(evidences)
 
 
 def create_psy_annotation_forms(

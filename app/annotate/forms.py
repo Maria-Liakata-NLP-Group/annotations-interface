@@ -85,6 +85,7 @@ def create_select_field_without_choices(label, name):
     return SelectField(
         label=label,
         name=name,
+        coerce=int,
     )
 
 
