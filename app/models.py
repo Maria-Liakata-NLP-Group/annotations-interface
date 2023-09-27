@@ -528,6 +528,3 @@ class EvidenceClient(db.Model):
         db.Integer, db.ForeignKey("ps_annotation_client.id")
     )
     label = db.Column(db.Enum(LabelNamesClient), nullable=True, default=None)
-    note = db.Column(
-        db.String(64), nullable=True
-    )  # to specify if MoC evidence event is start or end
