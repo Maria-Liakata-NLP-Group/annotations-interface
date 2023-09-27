@@ -52,7 +52,10 @@ def create_segment_level_annotation_client():
         "comment_d_client": "test comment D",
         "comment_e_client": "test comment E",
         # TODO: create function that retrieves the event IDs from the database so that they are not hard-coded
-        "relevant_events_a_client": 2,  # note this is the event ID, not the event number (shown in the UI)
+        "relevant_events_a_client": [
+            2,
+            4,
+        ],  # note this is the event ID, not the event number (shown in the UI)
         "relevant_events_b_client": 2,
         "relevant_events_c_client": 2,
         "relevant_events_d_client": 2,

@@ -10,6 +10,7 @@ from app.models import (
     PSAnnotationClient,
     PSAnnotationTherapist,
     PSAnnotationDyad,
+    EvidenceClient,
 )
 from tests.functional.utils import (
     create_segment_level_annotation_client,
@@ -18,7 +19,6 @@ from tests.functional.utils import (
 )
 import re
 from app.utils import (
-    Speaker,
     SubLabelsAClient,
     SubLabelsATherapist,
     SubLabelsADyad,
@@ -34,6 +34,7 @@ from app.utils import (
     LabelStrengthADyad,
     LabelStrengthBDyad,
     LabelStrengthFClient,
+    LabelNamesClient,
 )
 
 
@@ -173,7 +174,6 @@ def test_valid_segment_level_annotation_client(test_client):
     assert b"Your annotations have been saved" in response.data
 
     # check that the annotation has been saved to the database
-    # and that the labels for the therapist for this annotation are null
     annotation = PSAnnotationClient.query.filter_by(
         id_dataset=dataset_id,
     ).first()
@@ -186,6 +186,27 @@ def test_valid_segment_level_annotation_client(test_client):
     assert annotation.strength_f == LabelStrengthFClient.some_improvement
     assert annotation.comment_a == "test comment A"
     assert annotation.comment_summary == "test comment summary client"
+
+    # test that the events submitted as evidence for the different labels
+    # have been saved to the database
+    evidence = EvidenceClient.query.filter_by(
+        id_ps_annotation_client=annotation.id,
+        label=LabelNamesClient.label_a,
+    ).all()
+    assert evidence is not None
+    assert len(evidence) == 2
+    assert evidence[0].id_ps_dialog_event == 2
+    assert evidence[1].id_ps_dialog_event == 4
+
+    evidence = EvidenceClient.query.filter_by(
+        id_ps_annotation_client=annotation.id,
+        label=LabelNamesClient.label_f,
+    ).all()
+    assert evidence is not None
+    assert len(evidence) == 3
+    assert evidence[0].id_ps_dialog_event == 2
+    assert evidence[1].id_ps_dialog_event == 3
+    assert evidence[2].id_ps_dialog_event == 4
 
     # log out
     response = test_client.get("/auth/logout", follow_redirects=True)
