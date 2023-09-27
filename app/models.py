@@ -387,6 +387,9 @@ class PSDialogEvent(db.Model):
     evidence_client = db.relationship(
         "EvidenceClient", backref="dialog_event", lazy="dynamic"
     )  # one-to-many relationship with EvidenceClient class
+    evidence_therapist = db.relationship(
+        "EvidenceTherapist", backref="dialog_event", lazy="dynamic"
+    )  # one-to-many relationship with EvidenceTherapist class
 
 
 class PSAnnotationClient(db.Model):
@@ -485,6 +488,9 @@ class PSAnnotationTherapist(db.Model):
     id_dataset = db.Column(
         db.Integer, db.ForeignKey("dataset.id")
     )  # id of dataset associated with this annotation
+    evidence = db.relationship(
+        "EvidenceTherapist", backref="annotation", lazy="dynamic"
+    )  # one-to-many relationship with EvidenceTherapist class
 
 
 class PSAnnotationDyad(db.Model):

@@ -1,8 +1,8 @@
 """new table to store evidence for therapist annotations
 
-Revision ID: ced71e85b464
+Revision ID: 2cdbb94227e2
 Revises: 691476e11756
-Create Date: 2023-09-27 17:43:13.198004
+Create Date: 2023-09-27 17:56:43.644459
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'ced71e85b464'
+revision = '2cdbb94227e2'
 down_revision = '691476e11756'
 branch_labels = None
 depends_on = None
