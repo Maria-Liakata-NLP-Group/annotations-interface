@@ -14,6 +14,7 @@ from app.models import (
     PSAnnotationDyad,
     EvidenceClient,
     EvidenceTherapist,
+    EvidenceDyad,
 )
 from app import db
 from app.annotate.forms import (
@@ -288,6 +289,7 @@ def new_dialog_turn_annotation_to_db(form, speaker, dataset, dialog_turns):
         for dialog_turn in dialog_turns:
             annotation.dialog_turns.append(dialog_turn)
         db.session.add(annotation)
+        new_dyad_evidence_events_to_db(form, annotation)
 
 
 def new_client_evidence_events_to_db(form, annotation):
@@ -397,6 +399,33 @@ def new_therapist_evidence_events_to_db(form, annotation):
             annotation=annotation,
             id_ps_dialog_event=event,
             label=LabelNamesTherapist.label_e,
+        )
+        evidences.append(evidence)
+    db.session.add_all(evidences)
+
+
+def new_dyad_evidence_events_to_db(form, annotation):
+    """
+    Given a new annotation for the dyad, add the evidence
+    events of the form to the database session.
+    """
+
+    events_a = form.relevant_events_a.data  # these are events IDs
+    events_b = form.relevant_events_b.data
+
+    evidences = []
+    for event in events_a:
+        evidence = EvidenceDyad(
+            annotation=annotation,
+            id_ps_dialog_event=event,
+            label=LabelNamesDyad.label_a,
+        )
+        evidences.append(evidence)
+    for event in events_b:
+        evidence = EvidenceDyad(
+            annotation=annotation,
+            id_ps_dialog_event=event,
+            label=LabelNamesDyad.label_b,
         )
         evidences.append(evidence)
     db.session.add_all(evidences)
