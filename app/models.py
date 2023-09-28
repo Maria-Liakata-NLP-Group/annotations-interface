@@ -35,6 +35,7 @@ from app.utils import (
     LabelStrengthFClient,
     LabelNamesClient,
     LabelNamesTherapist,
+    LabelNamesDyad,
 )
 
 
@@ -390,6 +391,9 @@ class PSDialogEvent(db.Model):
     evidence_therapist = db.relationship(
         "EvidenceTherapist", backref="dialog_event", lazy="dynamic"
     )  # one-to-many relationship with EvidenceTherapist class
+    evidence_dyad = db.relationship(
+        "EvidenceDyad", backref="dialog_event", lazy="dynamic"
+    )  # one-to-many relationship with EvidenceDyad class
 
 
 class PSAnnotationClient(db.Model):
@@ -523,6 +527,9 @@ class PSAnnotationDyad(db.Model):
     id_dataset = db.Column(
         db.Integer, db.ForeignKey("dataset.id")
     )  # id of dataset associated with this annotation
+    evidence = db.relationship(
+        "EvidenceDyad", backref="annotation", lazy="dynamic"
+    )  # one-to-many relationship with EvidenceDyad class
 
 
 class EvidenceClient(db.Model):
@@ -547,3 +554,15 @@ class EvidenceTherapist(db.Model):
         db.Integer, db.ForeignKey("ps_annotation_therapist.id")
     )
     label = db.Column(db.Enum(LabelNamesTherapist), nullable=True, default=None)
+
+
+class EvidenceDyad(db.Model):
+    """Table to store the dialog events that are marked as evidence for a particular annotation for the dyad"""
+
+    __tablename__ = "evidence_dyad"
+    id = db.Column(db.Integer, primary_key=True)
+    id_ps_dialog_event = db.Column(db.Integer, db.ForeignKey("ps_dialog_event.id"))
+    id_ps_annotation_dyad = db.Column(
+        db.Integer, db.ForeignKey("ps_annotation_dyad.id")
+    )
+    label = db.Column(db.Enum(LabelNamesDyad), nullable=True, default=None)
