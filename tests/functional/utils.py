@@ -146,10 +146,22 @@ def create_segment_level_annotation_therapist(soup: BeautifulSoup):
     return data, events_a, events_b, events_c, events_d, events_e
 
 
-def create_segment_level_annotation_dyad():
+def create_segment_level_annotation_dyad(soup: BeautifulSoup):
     """
     Create a dictionary with the data for a segment level annotation for the dyad.
+
+    Parameters
+    ----------
+    soup : BeautifulSoup
+        The BeautifulSoup object containing the form.
+
+    Returns the data dictionary and the IDs for the relevant events submitted as evidence.
     """
+
+    events_a = get_options_from_select_field(soup, "relevant_events_a_dyad")
+    events_b = get_options_from_select_field(soup, "relevant_events_b_dyad")
+    events_a = events_a[:3]
+    events_b = events_b[:3]
 
     data = {
         "label_a_dyad": SubLabelsADyad.tasks_goals.name,
@@ -158,12 +170,12 @@ def create_segment_level_annotation_dyad():
         "strength_b_dyad": LabelStrengthBDyad.medium.name,
         "comment_a_dyad": "test comment A",
         "comment_b_dyad": "test comment B",
-        "relevant_events_a_dyad": 1,  # note this is the event ID, not the event number (shown in the UI)
-        "relevant_events_b_dyad": 1,
+        "relevant_events_a_dyad": events_a,  # note this is the event ID, not the event number (shown in the UI)
+        "relevant_events_b_dyad": events_b,
         "comment_summary_dyad": "test comment summary dyad",
         "submit_form_dyad": "Submit",  # this is the name of the submit button and identifies the form
     }
-    return data
+    return data, events_a, events_b
 
 
 def get_options_from_select_field(soup: BeautifulSoup, id: str):

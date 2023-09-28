@@ -12,6 +12,7 @@ from app.models import (
     PSAnnotationDyad,
     EvidenceClient,
     EvidenceTherapist,
+    EvidenceDyad,
 )
 from tests.functional.utils import (
     create_segment_level_annotation_client,
@@ -37,6 +38,7 @@ from app.utils import (
     LabelStrengthFClient,
     LabelNamesClient,
     LabelNamesTherapist,
+    LabelNamesDyad,
 )
 
 
@@ -340,7 +342,7 @@ def test_valid_segment_level_annotation_dyad(test_client):
     # submit the annotation for the dyad
     page = 1
     url = url_for("annotate.annotate_ps", dataset_id=dataset_id, page=page)
-    data = create_segment_level_annotation_dyad()
+    data, events_a, events_b = create_segment_level_annotation_dyad(soup)
     response = test_client.post(
         url,
         data=data,
@@ -360,6 +362,16 @@ def test_valid_segment_level_annotation_dyad(test_client):
     assert annotation.strength_b == LabelStrengthBDyad.medium
     assert annotation.comment_a == "test comment A"
     assert annotation.comment_summary == "test comment summary dyad"
+
+    # test that the events submitted as evidence for the different labels
+    # have been saved to the database
+    evidence = EvidenceDyad.query.filter_by(
+        id_ps_annotation_dyad=annotation.id,
+        label=LabelNamesDyad.label_a,
+    ).all()
+    assert evidence is not None
+    ids = [event.id_ps_dialog_event for event in evidence]
+    assert ids == events_a
 
     # log out
     response = test_client.get("/auth/logout", follow_redirects=True)
