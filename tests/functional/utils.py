@@ -96,10 +96,28 @@ def create_segment_level_annotation_client(soup: BeautifulSoup):
     )
 
 
-def create_segment_level_annotation_therapist():
+def create_segment_level_annotation_therapist(soup: BeautifulSoup):
     """
     Create a dictionary with the data for a segment level annotation for the therapist.
+
+    Parameters
+    ----------
+    soup : BeautifulSoup
+        The BeautifulSoup object containing the form.
+
+    Returns the data dictionary and the IDs for the relevant events submitted as evidence.
     """
+
+    events_a = get_options_from_select_field(soup, "relevant_events_a_therapist")
+    events_b = get_options_from_select_field(soup, "relevant_events_b_therapist")
+    events_c = get_options_from_select_field(soup, "relevant_events_c_therapist")
+    events_d = get_options_from_select_field(soup, "relevant_events_d_therapist")
+    events_e = get_options_from_select_field(soup, "relevant_events_e_therapist")
+    events_a = events_a[:3]
+    events_b = events_b[:3]
+    events_c = events_c[:3]
+    events_d = events_d[:3]
+    events_e = events_e[:3]
 
     data = {
         "label_a_therapist": SubLabelsATherapist.emotional.name,
@@ -117,15 +135,15 @@ def create_segment_level_annotation_therapist():
         "comment_c_therapist": "test comment C",
         "comment_d_therapist": "test comment D",
         "comment_e_therapist": "test comment E",
-        "relevant_events_a_therapist": 1,  # note this is the event ID, not the event number (shown in the UI)
-        "relevant_events_b_therapist": 1,
-        "relevant_events_c_therapist": 1,
-        "relevant_events_d_therapist": 1,
-        "relevant_events_e_therapist": 1,
+        "relevant_events_a_therapist": events_a,  # note this is the event ID, not the event number (shown in the UI)
+        "relevant_events_b_therapist": events_b,
+        "relevant_events_c_therapist": events_c,
+        "relevant_events_d_therapist": events_d,
+        "relevant_events_e_therapist": events_e,
         "comment_summary_therapist": "test comment summary therapist",
         "submit_form_therapist": "Submit",  # this is the name of the submit button and identifies the form
     }
-    return data
+    return data, events_a, events_b, events_c, events_d, events_e
 
 
 def create_segment_level_annotation_dyad():

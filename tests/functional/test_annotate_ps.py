@@ -11,6 +11,7 @@ from app.models import (
     PSAnnotationTherapist,
     PSAnnotationDyad,
     EvidenceClient,
+    EvidenceTherapist,
 )
 from tests.functional.utils import (
     create_segment_level_annotation_client,
@@ -35,6 +36,7 @@ from app.utils import (
     LabelStrengthBDyad,
     LabelStrengthFClient,
     LabelNamesClient,
+    LabelNamesTherapist,
 )
 
 
@@ -258,7 +260,14 @@ def test_valid_segment_level_annotation_therapist(test_client):
     # submit the annotation for the therapist
     page = 1
     url = url_for("annotate.annotate_ps", dataset_id=dataset_id, page=page)
-    data = create_segment_level_annotation_therapist()
+    (
+        data,
+        events_a,
+        events_b,
+        events_c,
+        events_d,
+        events_e,
+    ) = create_segment_level_annotation_therapist(soup)
     response = test_client.post(
         url,
         data=data,
@@ -268,7 +277,6 @@ def test_valid_segment_level_annotation_therapist(test_client):
     assert b"Your annotations have been saved" in response.data
 
     # check that the annotation has been saved to the database
-    # and that the labels for the client for this annotation are null
     annotation = PSAnnotationTherapist.query.filter_by(
         id_dataset=dataset_id,
     ).first()
@@ -277,6 +285,16 @@ def test_valid_segment_level_annotation_therapist(test_client):
     assert annotation.label_b == SubLabelsBTherapist.reframing
     assert annotation.comment_a == "test comment A"
     assert annotation.comment_summary == "test comment summary therapist"
+
+    # test that the events submitted as evidence for the different labels
+    # have been saved to the database
+    evidence = EvidenceTherapist.query.filter_by(
+        id_ps_annotation_therapist=annotation.id,
+        label=LabelNamesTherapist.label_b,
+    ).all()
+    assert evidence is not None
+    ids = [event.id_ps_dialog_event for event in evidence]
+    assert ids == events_b
 
     # log out
     response = test_client.get("/auth/logout", follow_redirects=True)
