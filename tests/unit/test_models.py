@@ -12,6 +12,7 @@ from app.models import (
     PSDialogEvent,
     EvidenceClient,
     EvidenceTherapist,
+    EvidenceDyad,
 )
 from app.utils import (
     SubLabelsAClient,
@@ -25,6 +26,7 @@ from app.utils import (
     LabelStrengthADyad,
     LabelNamesClient,
     LabelNamesTherapist,
+    LabelNamesDyad,
 )
 import pytest
 from sqlalchemy.exc import IntegrityError
@@ -334,3 +336,24 @@ def test_new_evidence_therapist(
     assert evidence.dialog_event == new_ps_dialog_event
     assert evidence.annotation == new_ps_dialog_turn_annotation_therapist
     assert evidence.label == LabelNamesTherapist.label_b
+
+
+def test_new_evidence_dyad(
+    db_session,
+    new_evidence_dyad,
+    new_ps_dialog_event,
+    new_ps_dialog_turn_annotation_dyad,
+):
+    """
+    GIVEN a EvidenceDyad model
+    WHEN a new EvidenceDyad is created and added to the database
+    THEN check its fields are defined correctly
+    """
+    db_session.add(new_evidence_dyad)
+    db_session.commit()
+
+    evidence = EvidenceDyad.query.first()
+    assert evidence is not None
+    assert evidence.dialog_event == new_ps_dialog_event
+    assert evidence.annotation == new_ps_dialog_turn_annotation_dyad
+    assert evidence.label == LabelNamesDyad.label_a
