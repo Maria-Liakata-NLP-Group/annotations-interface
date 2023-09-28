@@ -13,6 +13,7 @@ from app.models import (
     PSAnnotationTherapist,
     PSAnnotationDyad,
     EvidenceClient,
+    EvidenceTherapist,
 )
 from app import db
 from app.annotate.forms import (
@@ -271,6 +272,7 @@ def new_dialog_turn_annotation_to_db(form, speaker, dataset, dialog_turns):
         for dialog_turn in dialog_turns:
             annotation.dialog_turns.append(dialog_turn)
         db.session.add(annotation)
+        new_therapist_evidence_events_to_db(form, annotation)
     elif speaker == Speaker.dyad:
         annotation = PSAnnotationDyad(
             label_a=form.label_a.data,
@@ -346,6 +348,57 @@ def new_client_evidence_events_to_db(form, annotation):
                 label=LabelNamesClient.label_f,
             )
             evidences.append(evidence)
+    db.session.add_all(evidences)
+
+
+def new_therapist_evidence_events_to_db(form, annotation):
+    """
+    Given a new annotation for the therapist, add the evidence
+    events of the form to the database session.
+    """
+
+    events_a = form.relevant_events_a.data  # these are events IDs
+    events_b = form.relevant_events_b.data
+    events_c = form.relevant_events_c.data
+    events_d = form.relevant_events_d.data
+    events_e = form.relevant_events_e.data
+
+    evidences = []
+    for event in events_a:
+        evidence = EvidenceTherapist(
+            annotation=annotation,
+            id_ps_dialog_event=event,
+            label=LabelNamesTherapist.label_a,
+        )
+        evidences.append(evidence)
+    for event in events_b:
+        evidence = EvidenceTherapist(
+            annotation=annotation,
+            id_ps_dialog_event=event,
+            label=LabelNamesTherapist.label_b,
+        )
+        evidences.append(evidence)
+    for event in events_c:
+        evidence = EvidenceTherapist(
+            annotation=annotation,
+            id_ps_dialog_event=event,
+            label=LabelNamesTherapist.label_c,
+        )
+        evidences.append(evidence)
+    for event in events_d:
+        evidence = EvidenceTherapist(
+            annotation=annotation,
+            id_ps_dialog_event=event,
+            label=LabelNamesTherapist.label_d,
+        )
+        evidences.append(evidence)
+    for event in events_e:
+        evidence = EvidenceTherapist(
+            annotation=annotation,
+            id_ps_dialog_event=event,
+            label=LabelNamesTherapist.label_e,
+        )
+        evidences.append(evidence)
     db.session.add_all(evidences)
 
 
