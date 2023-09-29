@@ -453,7 +453,25 @@ def create_psy_annotation_forms(
 
     if annotations_client:
         # if there are annotations, fill the form with the values
-        form_client = PSAnnotationFormClient(obj=annotations_client)
+        (
+            id_events_a,
+            id_events_b,
+            id_events_c,
+            id_events_d,
+            id_events_e,
+            id_start_event_f,
+            id_end_event_f,
+        ) = fetch_evidence_client(annotations_client)
+        form_client = PSAnnotationFormClient(
+            obj=annotations_client,
+            relevant_events_a=id_events_a,
+            relevant_events_b=id_events_b,
+            relevant_events_c=id_events_c,
+            relevant_events_d=id_events_d,
+            relevant_events_e=id_events_e,
+            start_event_f=id_start_event_f,
+            end_event_f=id_end_event_f,
+        )
     else:
         # if there are no annotations, create an empty form
         form_client = PSAnnotationFormClient()
@@ -537,44 +555,59 @@ def assign_dynamic_choices(form: FlaskForm, page_items: list, speaker: Speaker):
     return form
 
 
-def fetch_evidence_client(form, annotation):
-    if annotation:
-        evidence = annotation.evidence
-        if evidence:
-            events_a = evidence.filter_by(label=LabelNamesClient.label_a).all()
-            events_b = evidence.filter_by(label=LabelNamesClient.label_b).all()
-            events_c = evidence.filter_by(label=LabelNamesClient.label_c).all()
-            events_d = evidence.filter_by(label=LabelNamesClient.label_d).all()
-            events_e = evidence.filter_by(label=LabelNamesClient.label_e).all()
-            events_f = (
-                evidence.filter_by(label=LabelNamesClient.label_f)
-                .order_by("id_ps_dialog_event")
-                .all()
-            )
-            start_event_f = events_f[0].id_ps_dialog_event if events_f else None
-            end_event_f = events_f[-1].id_ps_dialog_event if events_f else None
+def fetch_evidence_client(annotation):
+    """
+    Given a client annotation, fetch the evidence events from the database
+    and return them as a list of event IDs.
 
-            if events_a:
-                form.relevant_events_a.data = [
-                    event.id_ps_dialog_event for event in events_a
-                ]
-            if events_b:
-                form.relevant_events_b.data = [
-                    event.id_ps_dialog_event for event in events_b
-                ]
-            if events_c:
-                form.relevant_events_c.data = [
-                    event.id_ps_dialog_event for event in events_c
-                ]
-            if events_d:
-                form.relevant_events_d.data = [
-                    event.id_ps_dialog_event for event in events_d
-                ]
-            if events_e:
-                form.relevant_events_e.data = [
-                    event.id_ps_dialog_event for event in events_e
-                ]
-            if start_event_f and end_event_f:
-                form.start_event_f.data = start_event_f
-                form.end_event_f.data = end_event_f
-    return form
+    Parameters
+    ----------
+    annotation : PSAnnotationClient
+        The annotation object for the client
+
+    Returns
+    -------
+    Lists of event IDs for the evidence events for each label and the start
+    and end event IDs for label F
+    """
+
+    evidence = annotation.evidence
+
+    label_names = [
+        LabelNamesClient.label_a,
+        LabelNamesClient.label_b,
+        LabelNamesClient.label_c,
+        LabelNamesClient.label_d,
+        LabelNamesClient.label_e,
+    ]
+
+    events = {}
+    for label in label_names:
+        filtered_events = evidence.filter_by(label=label).all()
+        if filtered_events:
+            events[label] = [event.id_ps_dialog_event for event in filtered_events]
+        else:
+            events[label] = []
+
+    ordered_events_f = (
+        evidence.filter_by(label=LabelNamesClient.label_f)
+        .order_by("id_ps_dialog_event")
+        .all()
+    )
+
+    id_start_event_f = (
+        ordered_events_f[0].id_ps_dialog_event if ordered_events_f else None
+    )
+    id_end_event_f = (
+        ordered_events_f[-1].id_ps_dialog_event if ordered_events_f else None
+    )
+
+    return (
+        events[LabelNamesClient.label_a],
+        events[LabelNamesClient.label_b],
+        events[LabelNamesClient.label_c],
+        events[LabelNamesClient.label_d],
+        events[LabelNamesClient.label_e],
+        id_start_event_f,
+        id_end_event_f,
+    )
