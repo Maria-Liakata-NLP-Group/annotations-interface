@@ -476,8 +476,24 @@ def create_psy_annotation_forms(
         # if there are no annotations, create an empty form
         form_client = PSAnnotationFormClient()
     if annotations_therapist:
-        form_therapist = PSAnnotationFormTherapist(obj=annotations_therapist)
+        # if there are annotations, fill the form with the values
+        (
+            id_events_a,
+            id_events_b,
+            id_events_c,
+            id_events_d,
+            id_events_e,
+        ) = fetch_evidence_therapist(annotations_therapist)
+        form_therapist = PSAnnotationFormTherapist(
+            obj=annotations_therapist,
+            relevant_events_a=id_events_a,
+            relevant_events_b=id_events_b,
+            relevant_events_c=id_events_c,
+            relevant_events_d=id_events_d,
+            relevant_events_e=id_events_e,
+        )
     else:
+        # if there are no annotations, create an empty form
         form_therapist = PSAnnotationFormTherapist()
     if annotations_dyad:
         form_dyad = PSAnnotationFormDyad(obj=annotations_dyad)
@@ -610,4 +626,46 @@ def fetch_evidence_client(annotation):
         events[LabelNamesClient.label_e],
         id_start_event_f,
         id_end_event_f,
+    )
+
+
+def fetch_evidence_therapist(annotation):
+    """
+    Given a therapist annotation, fetch the evidence events from the database
+    and return them as a list of event IDs.
+
+    Parameters
+    ----------
+    annotation : PSAnnotationTherapist
+        The annotation object for the therapist
+
+    Returns
+    -------
+    Lists of event IDs for the evidence events for each label
+    """
+
+    evidence = annotation.evidence
+
+    label_names = [
+        LabelNamesTherapist.label_a,
+        LabelNamesTherapist.label_b,
+        LabelNamesTherapist.label_c,
+        LabelNamesTherapist.label_d,
+        LabelNamesTherapist.label_e,
+    ]
+
+    events = {}
+    for label in label_names:
+        filtered_events = evidence.filter_by(label=label).all()
+        if filtered_events:
+            events[label] = [event.id_ps_dialog_event for event in filtered_events]
+        else:
+            events[label] = []
+
+    return (
+        events[LabelNamesTherapist.label_a],
+        events[LabelNamesTherapist.label_b],
+        events[LabelNamesTherapist.label_c],
+        events[LabelNamesTherapist.label_d],
+        events[LabelNamesTherapist.label_e],
     )
