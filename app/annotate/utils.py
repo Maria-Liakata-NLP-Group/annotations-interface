@@ -535,3 +535,46 @@ def assign_dynamic_choices(form: FlaskForm, page_items: list, speaker: Speaker):
         ):
             form[field_name].choices = choices
     return form
+
+
+def fetch_evidence_client(form, annotation):
+    if annotation:
+        evidence = annotation.evidence
+        if evidence:
+            events_a = evidence.filter_by(label=LabelNamesClient.label_a).all()
+            events_b = evidence.filter_by(label=LabelNamesClient.label_b).all()
+            events_c = evidence.filter_by(label=LabelNamesClient.label_c).all()
+            events_d = evidence.filter_by(label=LabelNamesClient.label_d).all()
+            events_e = evidence.filter_by(label=LabelNamesClient.label_e).all()
+            events_f = (
+                evidence.filter_by(label=LabelNamesClient.label_f)
+                .order_by("id_ps_dialog_event")
+                .all()
+            )
+            start_event_f = events_f[0].id_ps_dialog_event if events_f else None
+            end_event_f = events_f[-1].id_ps_dialog_event if events_f else None
+
+            if events_a:
+                form.relevant_events_a.data = [
+                    event.id_ps_dialog_event for event in events_a
+                ]
+            if events_b:
+                form.relevant_events_b.data = [
+                    event.id_ps_dialog_event for event in events_b
+                ]
+            if events_c:
+                form.relevant_events_c.data = [
+                    event.id_ps_dialog_event for event in events_c
+                ]
+            if events_d:
+                form.relevant_events_d.data = [
+                    event.id_ps_dialog_event for event in events_d
+                ]
+            if events_e:
+                form.relevant_events_e.data = [
+                    event.id_ps_dialog_event for event in events_e
+                ]
+            if start_event_f and end_event_f:
+                form.start_event_f.data = start_event_f
+                form.end_event_f.data = end_event_f
+    return form
