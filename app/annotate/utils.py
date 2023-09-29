@@ -496,8 +496,15 @@ def create_psy_annotation_forms(
         # if there are no annotations, create an empty form
         form_therapist = PSAnnotationFormTherapist()
     if annotations_dyad:
-        form_dyad = PSAnnotationFormDyad(obj=annotations_dyad)
+        # if there are annotations, fill the form with the values
+        (id_events_a, id_events_b) = fetch_evidence_dyad(annotations_dyad)
+        form_dyad = PSAnnotationFormDyad(
+            obj=annotations_dyad,
+            relevant_events_a=id_events_a,
+            relevant_events_b=id_events_b,
+        )
     else:
+        # if there are no annotations, create an empty form
         form_dyad = PSAnnotationFormDyad()
     return form_client, form_therapist, form_dyad
 
@@ -668,4 +675,40 @@ def fetch_evidence_therapist(annotation):
         events[LabelNamesTherapist.label_c],
         events[LabelNamesTherapist.label_d],
         events[LabelNamesTherapist.label_e],
+    )
+
+
+def fetch_evidence_dyad(annotation):
+    """
+    Given a dyad annotation, fetch the evidence events from the database
+    and return them as a list of event IDs.
+
+    Parameters
+    ----------
+    annotation : PSAnnotationDyad
+        The annotation object for the dyad
+
+    Returns
+    -------
+    Lists of event IDs for the evidence events for each label
+    """
+
+    evidence = annotation.evidence
+
+    label_names = [
+        LabelNamesDyad.label_a,
+        LabelNamesDyad.label_b,
+    ]
+
+    events = {}
+    for label in label_names:
+        filtered_events = evidence.filter_by(label=label).all()
+        if filtered_events:
+            events[label] = [event.id_ps_dialog_event for event in filtered_events]
+        else:
+            events[label] = []
+
+    return (
+        events[LabelNamesDyad.label_a],
+        events[LabelNamesDyad.label_b],
     )
