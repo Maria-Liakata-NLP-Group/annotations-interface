@@ -633,6 +633,21 @@ def test_retrieve_existing_annotations_dyad(test_client):
         "\r\n "
     ).lstrip() == "test comment summary dyad"
 
+    # check the evidence is pre-populated correctly
+    # label A
+    evidence = (
+        EvidenceDyad.query.filter_by(
+            label=LabelNamesDyad.label_a,
+        )
+        .order_by("id_ps_dialog_event")
+        .all()
+    )
+    select_field = soup.find("select", id="relevant_events_a_dyad")
+    assert select_field is not None
+    selected_options = select_field.find_all("option", selected=True)
+    selected_ids = [int(option.get_text()) for option in selected_options]
+    assert selected_ids == [event.dialog_event.event_n for event in evidence]
+
     # log out
     response = test_client.get("/auth/logout", follow_redirects=True)
     assert response.status_code == 200
