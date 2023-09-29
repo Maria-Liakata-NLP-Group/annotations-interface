@@ -555,6 +555,21 @@ def test_retrieve_existing_annotations_therapist(test_client):
         "\r\n "
     ).lstrip() == "test comment summary therapist"
 
+    # check the evidence is pre-populated correctly
+    # label B
+    evidence = (
+        EvidenceTherapist.query.filter_by(
+            label=LabelNamesTherapist.label_b,
+        )
+        .order_by("id_ps_dialog_event")
+        .all()
+    )  # fetch from DB
+    select_field = soup.find("select", id="relevant_events_b_therapist")
+    assert select_field is not None
+    selected_options = select_field.find_all("option", selected=True)
+    selected_ids = [int(option.get_text()) for option in selected_options]
+    assert selected_ids == [event.dialog_event.event_n for event in evidence]
+
     # log out
     response = test_client.get("/auth/logout", follow_redirects=True)
     assert response.status_code == 200
