@@ -460,6 +460,38 @@ def test_retrieve_existing_annotations_client(test_client):
         == LabelStrengthFClient.some_improvement.value
     )
 
+    # check the evidence is pre-populated correctly
+    # label A
+    evidence = (
+        EvidenceClient.query.filter_by(
+            label=LabelNamesClient.label_a,
+        )
+        .order_by("id_ps_dialog_event")
+        .all()
+    )  # fetch from DB
+    select_field = soup.find("select", id="relevant_events_a_client")
+    assert select_field is not None
+    selected_options = select_field.find_all("option", selected=True)
+    selected_ids = [int(option.get_text()) for option in selected_options]
+    assert selected_ids == [event.dialog_event.event_n for event in evidence]
+
+    # label F - MoC
+    evidence = (
+        EvidenceClient.query.filter_by(
+            label=LabelNamesClient.label_f,
+        )
+        .order_by("id_ps_dialog_event")
+        .all()
+    )  # fetch from DB
+    start_event_f = evidence[0].dialog_event.event_n
+    end_event_f = evidence[-1].dialog_event.event_n
+    select_field = soup.find("select", id="start_event_f_client")
+    assert select_field is not None
+    assert int(select_field.find("option", selected=True).get_text()) == start_event_f
+    select_field = soup.find("select", id="end_event_f_client")
+    assert select_field is not None
+    assert int(select_field.find("option", selected=True).get_text()) == end_event_f
+
     # log out
     response = test_client.get("/auth/logout", follow_redirects=True)
     assert response.status_code == 200
