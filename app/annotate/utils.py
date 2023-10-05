@@ -511,7 +511,9 @@ def create_psy_annotation_forms(
 
 def get_dynamic_choices(page_items: list, speaker: Speaker):
     """
-    Get the dynamic choices for the select multiple field in the annotation form.
+    Get the dynamic choices for the select fields in the annotation form.
+    This is used to populate the select fields with the events for the current page,
+    to be used as evidence for the annotation.
 
     Parameters
     ----------
@@ -524,7 +526,7 @@ def get_dynamic_choices(page_items: list, speaker: Speaker):
     -------
     choices : list of tuples
         A list of tuples containing the event IDs and event numbers, to be used as choices
-        for the select multiple field
+        for the select fields
     """
 
     if speaker == Speaker.client:
@@ -567,7 +569,8 @@ def assign_dynamic_choices(form: FlaskForm, page_items: list, speaker: Speaker):
     """
 
     choices = get_dynamic_choices(page_items, speaker)
-    # find the select multiple field(s) in the form. They all start with "relevant_events_".
+    # find the select multiple field(s) in the form. They all start with "relevant_events_",
+    # "start_event_" or "end_event_"
     for field_name in form.__dict__.keys():
         if (
             field_name.startswith("relevant_events_")
