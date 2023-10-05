@@ -33,7 +33,9 @@ from app.utils import (
     LabelStrengthETherapist,
     LabelStrengthEClient,
     LabelStrengthFClient,
-    Speaker,
+    LabelNamesClient,
+    LabelNamesTherapist,
+    LabelNamesDyad,
 )
 
 
@@ -43,10 +45,46 @@ def load_user(id):
     return User.query.get(int(id))
 
 
+# association table for many-to-many relationship between User and Dataset
 dataset_annotator = db.Table(
     "dataset_annotator",
     db.Column("id_dataset", db.Integer, db.ForeignKey("dataset.id")),
     db.Column("id_annotator", db.Integer, db.ForeignKey("user.id")),
+)
+
+
+# association table for many-to-many relationship between PSDialogTurn and PSAnnotationClient
+annotationclient_dialogturn = db.Table(
+    "annotationclient_dialogturn",
+    db.Column("id_dialog_turn", db.Integer, db.ForeignKey("ps_dialog_turn.id")),
+    db.Column(
+        "id_annotation_client",
+        db.Integer,
+        db.ForeignKey("ps_annotation_client.id"),
+    ),
+)
+
+
+# association table for many-to-many relationship between PSDialogTurn and PSAnnotationTherapist
+annotationtherapist_dialogturn = db.Table(
+    "annotationtherapist_dialogturn",
+    db.Column("id_dialog_turn", db.Integer, db.ForeignKey("ps_dialog_turn.id")),
+    db.Column(
+        "id_annotation_therapist",
+        db.Integer,
+        db.ForeignKey("ps_annotation_therapist.id"),
+    ),
+)
+
+# association table for many-to-many relationship between PSDialogTurn and PSAnnotationDyad
+annotationsdyad_dialogturn = db.Table(
+    "annotationsdyad_dialogturn",
+    db.Column("id_dialog_turn", db.Integer, db.ForeignKey("ps_dialog_turn.id")),
+    db.Column(
+        "id_annotation_dyad",
+        db.Integer,
+        db.ForeignKey("ps_annotation_dyad.id"),
+    ),
 )
 
 
@@ -63,15 +101,15 @@ class User(UserMixin, db.Model):
     annotations_sm = db.relationship(
         "SMAnnotation", backref="author", lazy="dynamic"
     )  # one-to-many relationship with SMAnnotation class
-    annotations_dialog_turn_client = db.relationship(
-        "PSDialogTurnAnnotationClient", backref="author", lazy="dynamic"
-    )  # one-to-many relationship with PSDialogTurnAnnotationClient class
-    annotations_dialog_turn_therapist = db.relationship(
-        "PSDialogTurnAnnotationTherapist", backref="author", lazy="dynamic"
-    )  # one-to-many relationship with PSDialogTurnAnnotationTherapist class
-    annotations_dialog_turn_dyad = db.relationship(
-        "PSDialogTurnAnnotationDyad", backref="author", lazy="dynamic"
-    )  # one-to-many relationship with PSDialogTurnAnnotationDyad class
+    annotations_client = db.relationship(
+        "PSAnnotationClient", backref="author", lazy="dynamic"
+    )  # one-to-many relationship with PSAnnotationClient class
+    annotations_therapist = db.relationship(
+        "PSAnnotationTherapist", backref="author", lazy="dynamic"
+    )  # one-to-many relationship with PSAnnotationTherapist class
+    annotations_dyad = db.relationship(
+        "PSAnnotationDyad", backref="author", lazy="dynamic"
+    )  # one-to-many relationship with PSAnnotationDyad class
     authored_datasets = db.relationship(
         "Dataset",
         backref="author",
@@ -282,15 +320,15 @@ class Dataset(db.Model):
     dialog_events = db.relationship(
         "PSDialogEvent", backref="dataset", lazy="dynamic"
     )  # one-to-many relationship with PSDialogEvent class
-    annotations_dialog_turn_client = db.relationship(
-        "PSDialogTurnAnnotationClient", backref="dataset", lazy="dynamic"
-    )  # one-to-many relationship with PSDialogTurnAnnotationClient class
-    annotations_dialog_turn_therapist = db.relationship(
-        "PSDialogTurnAnnotationTherapist", backref="dataset", lazy="dynamic"
-    )  # one-to-many relationship with PSDialogTurnAnnotationTherapist class
-    annotations_dialog_turn_dyad = db.relationship(
-        "PSDialogTurnAnnotationDyad", backref="dataset", lazy="dynamic"
-    )  # one-to-many relationship with PSDialogTurnAnnotationDyad class
+    annotations_client = db.relationship(
+        "PSAnnotationClient", backref="dataset", lazy="dynamic"
+    )  # one-to-many relationship with PSAnnotationClient class
+    annotations_therapist = db.relationship(
+        "PSAnnotationTherapist", backref="dataset", lazy="dynamic"
+    )  # one-to-many relationship with PSAnnotationTherapist class
+    annotations_dyad = db.relationship(
+        "PSAnnotationDyad", backref="dataset", lazy="dynamic"
+    )  # one-to-many relationship with PSAnnotationDyad class
 
     def __repr__(self):
         """How to print objects of this class"""
@@ -325,15 +363,6 @@ class PSDialogTurn(db.Model):
     dialog_events = db.relationship(
         "PSDialogEvent", backref="dialog_turn", lazy="dynamic"
     )  # one-to-many relationship with PSDialogEvent class
-    annotations_client = db.relationship(
-        "PSDialogTurnAnnotationClient", backref="dialog_turn", lazy="dynamic"
-    )  # one-to-many relationship with PSDialogTurnAnnotationClient class
-    annotations_therapist = db.relationship(
-        "PSDialogTurnAnnotationTherapist", backref="dialog_turn", lazy="dynamic"
-    )  # one-to-many relationship with PSDialogTurnAnnotationTherapist class
-    annotations_dyad = db.relationship(
-        "PSDialogTurnAnnotationDyad", backref="dialog_turn", lazy="dynamic"
-    )  # one-to-many relationship with PSDialogTurnAnnotationDyad class
 
 
 class PSDialogEvent(db.Model):
@@ -356,15 +385,24 @@ class PSDialogEvent(db.Model):
     id_dataset = db.Column(
         db.Integer, db.ForeignKey("dataset.id")
     )  # id of dataset associated with this dialog event
+    evidence_client = db.relationship(
+        "EvidenceClient", backref="dialog_event", lazy="dynamic"
+    )  # one-to-many relationship with EvidenceClient class
+    evidence_therapist = db.relationship(
+        "EvidenceTherapist", backref="dialog_event", lazy="dynamic"
+    )  # one-to-many relationship with EvidenceTherapist class
+    evidence_dyad = db.relationship(
+        "EvidenceDyad", backref="dialog_event", lazy="dynamic"
+    )  # one-to-many relationship with EvidenceDyad class
 
 
-class PSDialogTurnAnnotationClient(db.Model):
+class PSAnnotationClient(db.Model):
     """
     Psychotherapy Dialog Turn Annotation class for the Client.
     This captures annotations of psychotherapy sessions for the client at the 'segment' level.
     """
 
-    __tablename__ = "ps_dialog_turn_annotation_client"
+    __tablename__ = "ps_annotation_client"
     id = db.Column(db.Integer, primary_key=True)
     timestamp = db.Column(
         db.DateTime, index=True, default=datetime.utcnow
@@ -388,24 +426,30 @@ class PSDialogTurnAnnotationClient(db.Model):
     comment_e = db.Column(db.Text, nullable=True)
     comment_f = db.Column(db.Text, nullable=True)
     comment_summary = db.Column(db.Text, nullable=True)
+    dialog_turns = db.relationship(
+        "PSDialogTurn",
+        secondary=annotationclient_dialogturn,
+        backref=db.backref("annotations_client", lazy="dynamic"),
+        lazy="dynamic",
+    )  # many-to-many relationship with PSDialogTurn class
     id_user = db.Column(
         db.Integer, db.ForeignKey("user.id")
     )  # id of user (annotator) who created this annotation
-    id_ps_dialog_turn = db.Column(
-        db.Integer, db.ForeignKey("ps_dialog_turn.id")
-    )  # id of dialog turn associated with this annotation
     id_dataset = db.Column(
         db.Integer, db.ForeignKey("dataset.id")
     )  # id of dataset associated with this annotation
+    evidence = db.relationship(
+        "EvidenceClient", backref="annotation", lazy="dynamic"
+    )  # one-to-many relationship with EvidenceClient class
 
 
-class PSDialogTurnAnnotationTherapist(db.Model):
+class PSAnnotationTherapist(db.Model):
     """
     Psychotherapy Dialog Turn Annotation class for the Therapist.
     This captures annotations of psychotherapy sessions for the therapist at the 'segment' level.
     """
 
-    __tablename__ = "ps_dialog_turn_annotation_therapist"
+    __tablename__ = "ps_annotation_therapist"
     id = db.Column(db.Integer, primary_key=True)
     timestamp = db.Column(
         db.DateTime, index=True, default=datetime.utcnow
@@ -436,24 +480,30 @@ class PSDialogTurnAnnotationTherapist(db.Model):
     comment_d = db.Column(db.Text, nullable=True)
     comment_e = db.Column(db.Text, nullable=True)
     comment_summary = db.Column(db.Text, nullable=True)
+    dialog_turns = db.relationship(
+        "PSDialogTurn",
+        secondary=annotationtherapist_dialogturn,
+        backref=db.backref("annotations_therapist", lazy="dynamic"),
+        lazy="dynamic",
+    )  # many-to-many relationship with PSDialogTurn class
     id_user = db.Column(
         db.Integer, db.ForeignKey("user.id")
     )  # id of user (annotator) who created this annotation
-    id_ps_dialog_turn = db.Column(
-        db.Integer, db.ForeignKey("ps_dialog_turn.id")
-    )  # id of dialog turn associated with this annotation
     id_dataset = db.Column(
         db.Integer, db.ForeignKey("dataset.id")
     )  # id of dataset associated with this annotation
+    evidence = db.relationship(
+        "EvidenceTherapist", backref="annotation", lazy="dynamic"
+    )  # one-to-many relationship with EvidenceTherapist class
 
 
-class PSDialogTurnAnnotationDyad(db.Model):
+class PSAnnotationDyad(db.Model):
     """
     Psychotherapy Dialog Turn Annotation class for the Dyad.
     This captures annotations of psychotherapy sessions for the dyad at the 'segment' level.
     """
 
-    __tablename__ = "ps_dialog_turn_annotation_dyad"
+    __tablename__ = "ps_annotation_dyad"
     id = db.Column(db.Integer, primary_key=True)
     timestamp = db.Column(
         db.DateTime, index=True, default=datetime.utcnow
@@ -465,12 +515,54 @@ class PSDialogTurnAnnotationDyad(db.Model):
     comment_a = db.Column(db.Text, nullable=True)
     comment_b = db.Column(db.Text, nullable=True)
     comment_summary = db.Column(db.Text, nullable=True)
+    dialog_turns = db.relationship(
+        "PSDialogTurn",
+        secondary=annotationsdyad_dialogturn,
+        backref=db.backref("annotations_dyad", lazy="dynamic"),
+        lazy="dynamic",
+    )  # many-to-many relationship with PSDialogTurn class
     id_user = db.Column(
         db.Integer, db.ForeignKey("user.id")
     )  # id of user (annotator) who created this annotation
-    id_ps_dialog_turn = db.Column(
-        db.Integer, db.ForeignKey("ps_dialog_turn.id")
-    )  # id of dialog turn associated with this annotation
     id_dataset = db.Column(
         db.Integer, db.ForeignKey("dataset.id")
     )  # id of dataset associated with this annotation
+    evidence = db.relationship(
+        "EvidenceDyad", backref="annotation", lazy="dynamic"
+    )  # one-to-many relationship with EvidenceDyad class
+
+
+class EvidenceClient(db.Model):
+    """Table to store the dialog events that are marked as evidence for a particular annotation for the client"""
+
+    __tablename__ = "evidence_client"
+    id = db.Column(db.Integer, primary_key=True)
+    id_ps_dialog_event = db.Column(db.Integer, db.ForeignKey("ps_dialog_event.id"))
+    id_ps_annotation_client = db.Column(
+        db.Integer, db.ForeignKey("ps_annotation_client.id")
+    )
+    label = db.Column(db.Enum(LabelNamesClient), nullable=True, default=None)
+
+
+class EvidenceTherapist(db.Model):
+    """Table to store the dialog events that are marked as evidence for a particular annotation for the therapist"""
+
+    __tablename__ = "evidence_therapist"
+    id = db.Column(db.Integer, primary_key=True)
+    id_ps_dialog_event = db.Column(db.Integer, db.ForeignKey("ps_dialog_event.id"))
+    id_ps_annotation_therapist = db.Column(
+        db.Integer, db.ForeignKey("ps_annotation_therapist.id")
+    )
+    label = db.Column(db.Enum(LabelNamesTherapist), nullable=True, default=None)
+
+
+class EvidenceDyad(db.Model):
+    """Table to store the dialog events that are marked as evidence for a particular annotation for the dyad"""
+
+    __tablename__ = "evidence_dyad"
+    id = db.Column(db.Integer, primary_key=True)
+    id_ps_dialog_event = db.Column(db.Integer, db.ForeignKey("ps_dialog_event.id"))
+    id_ps_annotation_dyad = db.Column(
+        db.Integer, db.ForeignKey("ps_annotation_dyad.id")
+    )
+    label = db.Column(db.Enum(LabelNamesDyad), nullable=True, default=None)

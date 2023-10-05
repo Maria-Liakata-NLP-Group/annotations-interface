@@ -12,9 +12,12 @@ from app.models import (
     PSDialogTurn,
     PSDialogEvent,
     DatasetType,
-    PSDialogTurnAnnotationClient,
-    PSDialogTurnAnnotationTherapist,
-    PSDialogTurnAnnotationDyad,
+    PSAnnotationClient,
+    PSAnnotationTherapist,
+    PSAnnotationDyad,
+    EvidenceClient,
+    EvidenceTherapist,
+    EvidenceDyad,
 )
 from app.utils import (
     SubLabelsAClient,
@@ -26,6 +29,9 @@ from app.utils import (
     LabelStrengthAClient,
     LabelStrengthBTherapist,
     LabelStrengthADyad,
+    LabelNamesClient,
+    LabelNamesTherapist,
+    LabelNamesDyad,
 )
 from config import TestConfig
 from app.upload.parsers import read_pickle, psychotherapy_df_to_sql
@@ -193,7 +199,7 @@ def new_ps_dialog_turn_annotation_client(
     new_ps_dataset, new_ps_dialog_turn, user_annotator1
 ):
     """Fixture to create a new psychotherapy dialog turn annotation for the client"""
-    dialog_turn_annotation = PSDialogTurnAnnotationClient(
+    dialog_turn_annotation = PSAnnotationClient(
         label_a=SubLabelsAClient.attachment,
         label_b=SubLabelsBClient.attachment,
         strength_a=LabelStrengthAClient.moderately_adaptive,
@@ -201,9 +207,9 @@ def new_ps_dialog_turn_annotation_client(
         comment_b="test comment b",
         comment_summary="test comment summary",
         author=user_annotator1,
-        dialog_turn=new_ps_dialog_turn,
         dataset=new_ps_dataset,
     )
+    dialog_turn_annotation.dialog_turns.append(new_ps_dialog_turn)
     return dialog_turn_annotation
 
 
@@ -212,7 +218,7 @@ def new_ps_dialog_turn_annotation_therapist(
     new_ps_dataset, new_ps_dialog_turn, user_annotator1
 ):
     """Fixture to create a new psychotherapy dialog turn annotation for the therapist"""
-    dialog_turn_annotation = PSDialogTurnAnnotationTherapist(
+    dialog_turn_annotation = PSAnnotationTherapist(
         label_a=SubLabelsATherapist.emotional,
         label_b=SubLabelsBTherapist.reframing,
         strength_b=LabelStrengthBTherapist.high,
@@ -220,9 +226,9 @@ def new_ps_dialog_turn_annotation_therapist(
         comment_b="test comment b",
         comment_summary="test comment summary",
         author=user_annotator1,
-        dialog_turn=new_ps_dialog_turn,
         dataset=new_ps_dataset,
     )
+    dialog_turn_annotation.dialog_turns.append(new_ps_dialog_turn)
     return dialog_turn_annotation
 
 
@@ -231,7 +237,7 @@ def new_ps_dialog_turn_annotation_dyad(
     new_ps_dataset, new_ps_dialog_turn, user_annotator1
 ):
     """Fixture to create a new psychotherapy dialog turn annotation for the dyad"""
-    dialog_turn_annotation = PSDialogTurnAnnotationDyad(
+    dialog_turn_annotation = PSAnnotationDyad(
         label_a=SubLabelsADyad.bond,
         label_b=SubLabelsBDyad.other,
         strength_a=LabelStrengthADyad.medium,
@@ -239,7 +245,45 @@ def new_ps_dialog_turn_annotation_dyad(
         comment_b="test comment b",
         comment_summary="test comment summary",
         author=user_annotator1,
-        dialog_turn=new_ps_dialog_turn,
         dataset=new_ps_dataset,
     )
+    dialog_turn_annotation.dialog_turns.append(new_ps_dialog_turn)
     return dialog_turn_annotation
+
+
+@pytest.fixture(scope="module")
+def new_evidence_client(new_ps_dialog_turn_annotation_client, new_ps_dialog_event):
+    """Fixture to create a new psychotherapy evidence for the client annotation"""
+
+    evidence = EvidenceClient(
+        dialog_event=new_ps_dialog_event,
+        annotation=new_ps_dialog_turn_annotation_client,
+        label=LabelNamesClient.label_a,
+    )
+    return evidence
+
+
+@pytest.fixture(scope="module")
+def new_evidence_therapist(
+    new_ps_dialog_turn_annotation_therapist, new_ps_dialog_event
+):
+    """Fixture to create a new psychotherapy evidence for the therapist annotation"""
+
+    evidence = EvidenceTherapist(
+        dialog_event=new_ps_dialog_event,
+        annotation=new_ps_dialog_turn_annotation_therapist,
+        label=LabelNamesTherapist.label_b,
+    )
+    return evidence
+
+
+@pytest.fixture(scope="module")
+def new_evidence_dyad(new_ps_dialog_turn_annotation_dyad, new_ps_dialog_event):
+    """Fixture to create a new psychotherapy evidence for the dyad annotation"""
+
+    evidence = EvidenceDyad(
+        dialog_event=new_ps_dialog_event,
+        annotation=new_ps_dialog_turn_annotation_dyad,
+        label=LabelNamesDyad.label_a,
+    )
+    return evidence

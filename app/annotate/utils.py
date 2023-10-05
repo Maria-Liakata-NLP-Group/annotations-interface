@@ -6,12 +6,15 @@ from datetime import datetime
 import itertools
 from flask import url_for
 from flask_login import current_user
-from app.utils import Speaker
+from app.utils import Speaker, LabelNamesClient, LabelNamesTherapist, LabelNamesDyad
 from sqlalchemy import desc
 from app.models import (
-    PSDialogTurnAnnotationClient,
-    PSDialogTurnAnnotationTherapist,
-    PSDialogTurnAnnotationDyad,
+    PSAnnotationClient,
+    PSAnnotationTherapist,
+    PSAnnotationDyad,
+    EvidenceClient,
+    EvidenceTherapist,
+    EvidenceDyad,
 )
 from app import db
 from app.annotate.forms import (
@@ -154,7 +157,7 @@ def fetch_dialog_turn_annotations(dialog_turns: list, speaker: Speaker):
 
     Returns
     -------
-    annotation : PSDialogTurnAnnotationClient or PSDialogTurnAnnotationTherapist or PSDialogTurnAnnotationDyad or None
+    annotation : PSAnnotationClient or PSAnnotationTherapist or PSAnnotationDyad or None
         The annotation with the latest timestamp for the client, therapist or dyad if it exists, otherwise None.
         The "label_*" and "strength_*" attributes are converted to their corresponding Enum values.
     """
@@ -203,10 +206,9 @@ def fetch_dialog_turn_annotations(dialog_turns: list, speaker: Speaker):
     return annotation
 
 
-def new_dialog_turn_annotation_to_db(form, speaker, dataset_id, dialog_turn_ids):
+def new_dialog_turn_annotation_to_db(form, speaker, dataset, dialog_turns):
     """
     Create a new psychotherapy dialog turn annotation object and add it to the database session.
-    Loops through the dialog turn IDs and creates a new annotation for each one.
 
     Parameters
     ----------
@@ -214,77 +216,219 @@ def new_dialog_turn_annotation_to_db(form, speaker, dataset_id, dialog_turn_ids)
         The form containing the annotation data
     speaker : Speaker
         The speaker the annotation is for (client, therapist or dyad)
-    dataset_id : int
-        The id of the dataset the dialog turns belong to
-    dialog_turn_ids : list
-        A list of dialog turn IDs
+    dataset : Dataset
+        The dataset object the annotation is for
+    dialog_turns : list of PSDialogTurn objects
+        The dialog turns the annotation is for
     """
     if speaker == Speaker.client:
-        for dialog_turn_id in dialog_turn_ids:
-            dialog_turn_annotation = PSDialogTurnAnnotationClient(
-                label_a=form.label_a.data,
-                label_b=form.label_b.data,
-                label_c=form.label_c.data,
-                label_d=form.label_d.data,
-                label_e=form.label_e.data,
-                label_f=form.label_f.data,
-                strength_a=form.strength_a.data,
-                strength_b=form.strength_b.data,
-                strength_c=form.strength_c.data,
-                strength_d=form.strength_d.data,
-                strength_e=form.strength_e.data,
-                strength_f=form.strength_f.data,
-                comment_a=form.comment_a.data,
-                comment_b=form.comment_b.data,
-                comment_c=form.comment_c.data,
-                comment_d=form.comment_d.data,
-                comment_e=form.comment_e.data,
-                comment_f=form.comment_f.data,
-                comment_summary=form.comment_summary.data,
-                id_user=current_user.id,
-                id_ps_dialog_turn=dialog_turn_id,
-                id_dataset=dataset_id,
-            )
-            db.session.add(dialog_turn_annotation)
+        annotation = PSAnnotationClient(
+            label_a=form.label_a.data,
+            label_b=form.label_b.data,
+            label_c=form.label_c.data,
+            label_d=form.label_d.data,
+            label_e=form.label_e.data,
+            label_f=form.label_f.data,
+            strength_a=form.strength_a.data,
+            strength_b=form.strength_b.data,
+            strength_c=form.strength_c.data,
+            strength_d=form.strength_d.data,
+            strength_e=form.strength_e.data,
+            strength_f=form.strength_f.data,
+            comment_a=form.comment_a.data,
+            comment_b=form.comment_b.data,
+            comment_c=form.comment_c.data,
+            comment_d=form.comment_d.data,
+            comment_e=form.comment_e.data,
+            comment_f=form.comment_f.data,
+            comment_summary=form.comment_summary.data,
+            author=current_user,
+            dataset=dataset,
+        )
+        for dialog_turn in dialog_turns:
+            annotation.dialog_turns.append(dialog_turn)
+        db.session.add(annotation)
+        new_client_evidence_events_to_db(form, annotation)
     elif speaker == Speaker.therapist:
-        for dialog_turn_id in dialog_turn_ids:
-            dialog_turn_annotation = PSDialogTurnAnnotationTherapist(
-                label_a=form.label_a.data,
-                label_b=form.label_b.data,
-                label_c=form.label_c.data,
-                label_d=form.label_d.data,
-                label_e=form.label_e.data,
-                strength_a=form.strength_a.data,
-                strength_b=form.strength_b.data,
-                strength_c=form.strength_c.data,
-                strength_d=form.strength_d.data,
-                strength_e=form.strength_e.data,
-                comment_a=form.comment_a.data,
-                comment_b=form.comment_b.data,
-                comment_c=form.comment_c.data,
-                comment_d=form.comment_d.data,
-                comment_e=form.comment_e.data,
-                comment_summary=form.comment_summary.data,
-                id_user=current_user.id,
-                id_ps_dialog_turn=dialog_turn_id,
-                id_dataset=dataset_id,
-            )
-            db.session.add(dialog_turn_annotation)
+        annotation = PSAnnotationTherapist(
+            label_a=form.label_a.data,
+            label_b=form.label_b.data,
+            label_c=form.label_c.data,
+            label_d=form.label_d.data,
+            label_e=form.label_e.data,
+            strength_a=form.strength_a.data,
+            strength_b=form.strength_b.data,
+            strength_c=form.strength_c.data,
+            strength_d=form.strength_d.data,
+            strength_e=form.strength_e.data,
+            comment_a=form.comment_a.data,
+            comment_b=form.comment_b.data,
+            comment_c=form.comment_c.data,
+            comment_d=form.comment_d.data,
+            comment_e=form.comment_e.data,
+            comment_summary=form.comment_summary.data,
+            author=current_user,
+            dataset=dataset,
+        )
+        for dialog_turn in dialog_turns:
+            annotation.dialog_turns.append(dialog_turn)
+        db.session.add(annotation)
+        new_therapist_evidence_events_to_db(form, annotation)
     elif speaker == Speaker.dyad:
-        for dialog_turn_id in dialog_turn_ids:
-            dialog_turn_annotation = PSDialogTurnAnnotationDyad(
-                label_a=form.label_a.data,
-                label_b=form.label_b.data,
-                strength_a=form.strength_a.data,
-                strength_b=form.strength_b.data,
-                comment_a=form.comment_a.data,
-                comment_b=form.comment_b.data,
-                comment_summary=form.comment_summary.data,
-                id_user=current_user.id,
-                id_ps_dialog_turn=dialog_turn_id,
-                id_dataset=dataset_id,
+        annotation = PSAnnotationDyad(
+            label_a=form.label_a.data,
+            label_b=form.label_b.data,
+            strength_a=form.strength_a.data,
+            strength_b=form.strength_b.data,
+            comment_a=form.comment_a.data,
+            comment_b=form.comment_b.data,
+            comment_summary=form.comment_summary.data,
+            author=current_user,
+            dataset=dataset,
+        )
+        for dialog_turn in dialog_turns:
+            annotation.dialog_turns.append(dialog_turn)
+        db.session.add(annotation)
+        new_dyad_evidence_events_to_db(form, annotation)
+
+
+def new_client_evidence_events_to_db(form, annotation):
+    """
+    Given a new annotation for the client, add the evidence
+    events of the form to the database session.
+    """
+
+    events_a = form.relevant_events_a.data  # these are events IDs
+    events_b = form.relevant_events_b.data
+    events_c = form.relevant_events_c.data
+    events_d = form.relevant_events_d.data
+    events_e = form.relevant_events_e.data
+    start_event_f = form.start_event_f.data
+    end_event_f = form.end_event_f.data
+
+    evidences = []
+    for event in events_a:
+        evidence = EvidenceClient(
+            annotation=annotation,
+            id_ps_dialog_event=event,
+            label=LabelNamesClient.label_a,
+        )
+        evidences.append(evidence)
+    for event in events_b:
+        evidence = EvidenceClient(
+            annotation=annotation,
+            id_ps_dialog_event=event,
+            label=LabelNamesClient.label_b,
+        )
+        evidences.append(evidence)
+    for event in events_c:
+        evidence = EvidenceClient(
+            annotation=annotation,
+            id_ps_dialog_event=event,
+            label=LabelNamesClient.label_c,
+        )
+        evidences.append(evidence)
+    for event in events_d:
+        evidence = EvidenceClient(
+            annotation=annotation,
+            id_ps_dialog_event=event,
+            label=LabelNamesClient.label_d,
+        )
+        evidences.append(evidence)
+    for event in events_e:
+        evidence = EvidenceClient(
+            annotation=annotation,
+            id_ps_dialog_event=event,
+            label=LabelNamesClient.label_e,
+        )
+        evidences.append(evidence)
+    if start_event_f and end_event_f:
+        for event in range(start_event_f, end_event_f + 1):
+            evidence = EvidenceClient(
+                annotation=annotation,
+                id_ps_dialog_event=event,
+                label=LabelNamesClient.label_f,
             )
-            db.session.add(dialog_turn_annotation)
+            evidences.append(evidence)
+    db.session.add_all(evidences)
+
+
+def new_therapist_evidence_events_to_db(form, annotation):
+    """
+    Given a new annotation for the therapist, add the evidence
+    events of the form to the database session.
+    """
+
+    events_a = form.relevant_events_a.data  # these are events IDs
+    events_b = form.relevant_events_b.data
+    events_c = form.relevant_events_c.data
+    events_d = form.relevant_events_d.data
+    events_e = form.relevant_events_e.data
+
+    evidences = []
+    for event in events_a:
+        evidence = EvidenceTherapist(
+            annotation=annotation,
+            id_ps_dialog_event=event,
+            label=LabelNamesTherapist.label_a,
+        )
+        evidences.append(evidence)
+    for event in events_b:
+        evidence = EvidenceTherapist(
+            annotation=annotation,
+            id_ps_dialog_event=event,
+            label=LabelNamesTherapist.label_b,
+        )
+        evidences.append(evidence)
+    for event in events_c:
+        evidence = EvidenceTherapist(
+            annotation=annotation,
+            id_ps_dialog_event=event,
+            label=LabelNamesTherapist.label_c,
+        )
+        evidences.append(evidence)
+    for event in events_d:
+        evidence = EvidenceTherapist(
+            annotation=annotation,
+            id_ps_dialog_event=event,
+            label=LabelNamesTherapist.label_d,
+        )
+        evidences.append(evidence)
+    for event in events_e:
+        evidence = EvidenceTherapist(
+            annotation=annotation,
+            id_ps_dialog_event=event,
+            label=LabelNamesTherapist.label_e,
+        )
+        evidences.append(evidence)
+    db.session.add_all(evidences)
+
+
+def new_dyad_evidence_events_to_db(form, annotation):
+    """
+    Given a new annotation for the dyad, add the evidence
+    events of the form to the database session.
+    """
+
+    events_a = form.relevant_events_a.data  # these are events IDs
+    events_b = form.relevant_events_b.data
+
+    evidences = []
+    for event in events_a:
+        evidence = EvidenceDyad(
+            annotation=annotation,
+            id_ps_dialog_event=event,
+            label=LabelNamesDyad.label_a,
+        )
+        evidences.append(evidence)
+    for event in events_b:
+        evidence = EvidenceDyad(
+            annotation=annotation,
+            id_ps_dialog_event=event,
+            label=LabelNamesDyad.label_b,
+        )
+        evidences.append(evidence)
+    db.session.add_all(evidences)
 
 
 def create_psy_annotation_forms(
@@ -296,9 +440,9 @@ def create_psy_annotation_forms(
 
     Parameters
     ----------
-    annotations_client : PSDialogTurnAnnotationClient or None for client annotations
-    annotations_therapist : PSDialogTurnAnnotationTherapist or None for therapist annotations
-    annotations_dyad : PSDialogTurnAnnotationDyad or None for dyad annotations
+    annotations_client : PSAnnotationClient or None for client annotations
+    annotations_therapist : PSAnnotationTherapist or None for therapist annotations
+    annotations_dyad : PSAnnotationDyad or None for dyad annotations
 
     Returns
     -------
@@ -309,24 +453,67 @@ def create_psy_annotation_forms(
 
     if annotations_client:
         # if there are annotations, fill the form with the values
-        form_client = PSAnnotationFormClient(obj=annotations_client)
+        (
+            id_events_a,
+            id_events_b,
+            id_events_c,
+            id_events_d,
+            id_events_e,
+            id_start_event_f,
+            id_end_event_f,
+        ) = fetch_evidence_client(annotations_client)
+        form_client = PSAnnotationFormClient(
+            obj=annotations_client,
+            relevant_events_a=id_events_a,
+            relevant_events_b=id_events_b,
+            relevant_events_c=id_events_c,
+            relevant_events_d=id_events_d,
+            relevant_events_e=id_events_e,
+            start_event_f=id_start_event_f,
+            end_event_f=id_end_event_f,
+        )
     else:
         # if there are no annotations, create an empty form
         form_client = PSAnnotationFormClient()
     if annotations_therapist:
-        form_therapist = PSAnnotationFormTherapist(obj=annotations_therapist)
+        # if there are annotations, fill the form with the values
+        (
+            id_events_a,
+            id_events_b,
+            id_events_c,
+            id_events_d,
+            id_events_e,
+        ) = fetch_evidence_therapist(annotations_therapist)
+        form_therapist = PSAnnotationFormTherapist(
+            obj=annotations_therapist,
+            relevant_events_a=id_events_a,
+            relevant_events_b=id_events_b,
+            relevant_events_c=id_events_c,
+            relevant_events_d=id_events_d,
+            relevant_events_e=id_events_e,
+        )
     else:
+        # if there are no annotations, create an empty form
         form_therapist = PSAnnotationFormTherapist()
     if annotations_dyad:
-        form_dyad = PSAnnotationFormDyad(obj=annotations_dyad)
+        # if there are annotations, fill the form with the values
+        (id_events_a, id_events_b) = fetch_evidence_dyad(annotations_dyad)
+        form_dyad = PSAnnotationFormDyad(
+            obj=annotations_dyad,
+            relevant_events_a=id_events_a,
+            relevant_events_b=id_events_b,
+        )
     else:
+        # if there are no annotations, create an empty form
         form_dyad = PSAnnotationFormDyad()
     return form_client, form_therapist, form_dyad
 
 
 def get_dynamic_choices(page_items: list, speaker: Speaker):
     """
-    Get the dynamic choices for the select multiple field in the annotation form.
+    Get the dynamic choices for the select fields in the annotation form.
+    This is used to populate the select fields with the events for the current page,
+    to be used as evidence for the annotation.
 
     Parameters
     ----------
@@ -339,7 +526,7 @@ def get_dynamic_choices(page_items: list, speaker: Speaker):
     -------
     choices : list of tuples
         A list of tuples containing the event IDs and event numbers, to be used as choices
-        for the select multiple field
+        for the select fields
     """
 
     if speaker == Speaker.client:
@@ -382,7 +569,8 @@ def assign_dynamic_choices(form: FlaskForm, page_items: list, speaker: Speaker):
     """
 
     choices = get_dynamic_choices(page_items, speaker)
-    # find the select multiple field(s) in the form. They all start with "relevant_events_".
+    # find the select multiple field(s) in the form. They all start with "relevant_events_",
+    # "start_event_" or "end_event_"
     for field_name in form.__dict__.keys():
         if (
             field_name.startswith("relevant_events_")
@@ -391,3 +579,139 @@ def assign_dynamic_choices(form: FlaskForm, page_items: list, speaker: Speaker):
         ):
             form[field_name].choices = choices
     return form
+
+
+def fetch_evidence_client(annotation):
+    """
+    Given a client annotation, fetch the evidence events from the database
+    and return them as a list of event IDs.
+
+    Parameters
+    ----------
+    annotation : PSAnnotationClient
+        The annotation object for the client
+
+    Returns
+    -------
+    Lists of event IDs for the evidence events for each label and the start
+    and end event IDs for label F
+    """
+
+    evidence = annotation.evidence
+
+    label_names = [
+        LabelNamesClient.label_a,
+        LabelNamesClient.label_b,
+        LabelNamesClient.label_c,
+        LabelNamesClient.label_d,
+        LabelNamesClient.label_e,
+    ]
+
+    events = {}
+    for label in label_names:
+        filtered_events = evidence.filter_by(label=label).all()
+        if filtered_events:
+            events[label] = [event.id_ps_dialog_event for event in filtered_events]
+        else:
+            events[label] = []
+
+    ordered_events_f = (
+        evidence.filter_by(label=LabelNamesClient.label_f)
+        .order_by("id_ps_dialog_event")
+        .all()
+    )
+
+    id_start_event_f = (
+        ordered_events_f[0].id_ps_dialog_event if ordered_events_f else None
+    )
+    id_end_event_f = (
+        ordered_events_f[-1].id_ps_dialog_event if ordered_events_f else None
+    )
+
+    return (
+        events[LabelNamesClient.label_a],
+        events[LabelNamesClient.label_b],
+        events[LabelNamesClient.label_c],
+        events[LabelNamesClient.label_d],
+        events[LabelNamesClient.label_e],
+        id_start_event_f,
+        id_end_event_f,
+    )
+
+
+def fetch_evidence_therapist(annotation):
+    """
+    Given a therapist annotation, fetch the evidence events from the database
+    and return them as a list of event IDs.
+
+    Parameters
+    ----------
+    annotation : PSAnnotationTherapist
+        The annotation object for the therapist
+
+    Returns
+    -------
+    Lists of event IDs for the evidence events for each label
+    """
+
+    evidence = annotation.evidence
+
+    label_names = [
+        LabelNamesTherapist.label_a,
+        LabelNamesTherapist.label_b,
+        LabelNamesTherapist.label_c,
+        LabelNamesTherapist.label_d,
+        LabelNamesTherapist.label_e,
+    ]
+
+    events = {}
+    for label in label_names:
+        filtered_events = evidence.filter_by(label=label).all()
+        if filtered_events:
+            events[label] = [event.id_ps_dialog_event for event in filtered_events]
+        else:
+            events[label] = []
+
+    return (
+        events[LabelNamesTherapist.label_a],
+        events[LabelNamesTherapist.label_b],
+        events[LabelNamesTherapist.label_c],
+        events[LabelNamesTherapist.label_d],
+        events[LabelNamesTherapist.label_e],
+    )
+
+
+def fetch_evidence_dyad(annotation):
+    """
+    Given a dyad annotation, fetch the evidence events from the database
+    and return them as a list of event IDs.
+
+    Parameters
+    ----------
+    annotation : PSAnnotationDyad
+        The annotation object for the dyad
+
+    Returns
+    -------
+    Lists of event IDs for the evidence events for each label
+    """
+
+    evidence = annotation.evidence
+
+    label_names = [
+        LabelNamesDyad.label_a,
+        LabelNamesDyad.label_b,
+    ]
+
+    events = {}
+    for label in label_names:
+        filtered_events = evidence.filter_by(label=label).all()
+        if filtered_events:
+            events[label] = [event.id_ps_dialog_event for event in filtered_events]
+        else:
+            events[label] = []
+
+    return (
+        events[LabelNamesDyad.label_a],
+        events[LabelNamesDyad.label_b],
+    )

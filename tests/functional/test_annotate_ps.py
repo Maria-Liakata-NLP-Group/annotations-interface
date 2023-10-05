@@ -7,9 +7,12 @@ from flask import url_for
 from bs4 import BeautifulSoup
 import pytest
 from app.models import (
-    PSDialogTurnAnnotationClient,
-    PSDialogTurnAnnotationTherapist,
-    PSDialogTurnAnnotationDyad,
+    PSAnnotationClient,
+    PSAnnotationTherapist,
+    PSAnnotationDyad,
+    EvidenceClient,
+    EvidenceTherapist,
+    EvidenceDyad,
 )
 from tests.functional.utils import (
     create_segment_level_annotation_client,
@@ -18,7 +21,6 @@ from tests.functional.utils import (
 )
 import re
 from app.utils import (
-    Speaker,
     SubLabelsAClient,
     SubLabelsATherapist,
     SubLabelsADyad,
@@ -34,6 +36,9 @@ from app.utils import (
     LabelStrengthADyad,
     LabelStrengthBDyad,
     LabelStrengthFClient,
+    LabelNamesClient,
+    LabelNamesTherapist,
+    LabelNamesDyad,
 )
 
 
@@ -163,7 +168,16 @@ def test_valid_segment_level_annotation_client(test_client):
     assert client_form is not None
 
     # submit the annotation for the client
-    data = create_segment_level_annotation_client()
+    (
+        data,
+        events_a,
+        events_b,
+        events_c,
+        events_d,
+        events_e,
+        start_event_f,
+        end_event_f,
+    ) = create_segment_level_annotation_client(soup)
     response = test_client.post(
         url,
         data=data,
@@ -173,8 +187,7 @@ def test_valid_segment_level_annotation_client(test_client):
     assert b"Your annotations have been saved" in response.data
 
     # check that the annotation has been saved to the database
-    # and that the labels for the therapist for this annotation are null
-    annotation = PSDialogTurnAnnotationClient.query.filter_by(
+    annotation = PSAnnotationClient.query.filter_by(
         id_dataset=dataset_id,
     ).first()
     assert annotation is not None
@@ -186,6 +199,24 @@ def test_valid_segment_level_annotation_client(test_client):
     assert annotation.strength_f == LabelStrengthFClient.some_improvement
     assert annotation.comment_a == "test comment A"
     assert annotation.comment_summary == "test comment summary client"
+
+    # test that the events submitted as evidence for the different labels
+    # have been saved to the database
+    evidence = EvidenceClient.query.filter_by(
+        id_ps_annotation_client=annotation.id,
+        label=LabelNamesClient.label_a,
+    ).all()
+    assert evidence is not None
+    ids = [event.id_ps_dialog_event for event in evidence]
+    assert ids == events_a
+
+    evidence = EvidenceClient.query.filter_by(
+        id_ps_annotation_client=annotation.id,
+        label=LabelNamesClient.label_f,
+    ).all()  # label_f is a special case - Moment of Change
+    assert evidence is not None
+    ids = [event.id_ps_dialog_event for event in evidence]
+    assert ids == list(range(start_event_f, end_event_f + 1))
 
     # log out
     response = test_client.get("/auth/logout", follow_redirects=True)
@@ -231,7 +262,14 @@ def test_valid_segment_level_annotation_therapist(test_client):
     # submit the annotation for the therapist
     page = 1
     url = url_for("annotate.annotate_ps", dataset_id=dataset_id, page=page)
-    data = create_segment_level_annotation_therapist()
+    (
+        data,
+        events_a,
+        events_b,
+        events_c,
+        events_d,
+        events_e,
+    ) = create_segment_level_annotation_therapist(soup)
     response = test_client.post(
         url,
         data=data,
@@ -241,8 +279,7 @@ def test_valid_segment_level_annotation_therapist(test_client):
     assert b"Your annotations have been saved" in response.data
 
     # check that the annotation has been saved to the database
-    # and that the labels for the client for this annotation are null
-    annotation = PSDialogTurnAnnotationTherapist.query.filter_by(
+    annotation = PSAnnotationTherapist.query.filter_by(
         id_dataset=dataset_id,
     ).first()
     assert annotation is not None
@@ -250,6 +287,16 @@ def test_valid_segment_level_annotation_therapist(test_client):
     assert annotation.label_b == SubLabelsBTherapist.reframing
     assert annotation.comment_a == "test comment A"
     assert annotation.comment_summary == "test comment summary therapist"
+
+    # test that the events submitted as evidence for the different labels
+    # have been saved to the database
+    evidence = EvidenceTherapist.query.filter_by(
+        id_ps_annotation_therapist=annotation.id,
+        label=LabelNamesTherapist.label_b,
+    ).all()
+    assert evidence is not None
+    ids = [event.id_ps_dialog_event for event in evidence]
+    assert ids == events_b
 
     # log out
     response = test_client.get("/auth/logout", follow_redirects=True)
@@ -295,7 +342,7 @@ def test_valid_segment_level_annotation_dyad(test_client):
     # submit the annotation for the dyad
     page = 1
     url = url_for("annotate.annotate_ps", dataset_id=dataset_id, page=page)
-    data = create_segment_level_annotation_dyad()
+    data, events_a, events_b = create_segment_level_annotation_dyad(soup)
     response = test_client.post(
         url,
         data=data,
@@ -305,7 +352,7 @@ def test_valid_segment_level_annotation_dyad(test_client):
     assert b"Your annotations have been saved" in response.data
 
     # check that the annotation has been saved to the database
-    annotation = PSDialogTurnAnnotationDyad.query.filter_by(
+    annotation = PSAnnotationDyad.query.filter_by(
         id_dataset=dataset_id,
     ).first()
     assert annotation is not None
@@ -315,6 +362,16 @@ def test_valid_segment_level_annotation_dyad(test_client):
     assert annotation.strength_b == LabelStrengthBDyad.medium
     assert annotation.comment_a == "test comment A"
     assert annotation.comment_summary == "test comment summary dyad"
+
+    # test that the events submitted as evidence for the different labels
+    # have been saved to the database
+    evidence = EvidenceDyad.query.filter_by(
+        id_ps_annotation_dyad=annotation.id,
+        label=LabelNamesDyad.label_a,
+    ).all()
+    assert evidence is not None
+    ids = [event.id_ps_dialog_event for event in evidence]
+    assert ids == events_a
 
     # log out
     response = test_client.get("/auth/logout", follow_redirects=True)
@@ -403,6 +460,38 @@ def test_retrieve_existing_annotations_client(test_client):
         == LabelStrengthFClient.some_improvement.value
     )
 
+    # check the evidence is pre-populated correctly
+    # label A
+    evidence = (
+        EvidenceClient.query.filter_by(
+            label=LabelNamesClient.label_a,
+        )
+        .order_by("id_ps_dialog_event")
+        .all()
+    )  # fetch from DB
+    select_field = soup.find("select", id="relevant_events_a_client")
+    assert select_field is not None
+    selected_options = select_field.find_all("option", selected=True)
+    selected_ids = [int(option.get_text()) for option in selected_options]
+    assert selected_ids == [event.dialog_event.event_n for event in evidence]
+
+    # label F - MoC
+    evidence = (
+        EvidenceClient.query.filter_by(
+            label=LabelNamesClient.label_f,
+        )
+        .order_by("id_ps_dialog_event")
+        .all()
+    )  # fetch from DB
+    start_event_f = evidence[0].dialog_event.event_n
+    end_event_f = evidence[-1].dialog_event.event_n
+    select_field = soup.find("select", id="start_event_f_client")
+    assert select_field is not None
+    assert int(select_field.find("option", selected=True).get_text()) == start_event_f
+    select_field = soup.find("select", id="end_event_f_client")
+    assert select_field is not None
+    assert int(select_field.find("option", selected=True).get_text()) == end_event_f
+
     # log out
     response = test_client.get("/auth/logout", follow_redirects=True)
     assert response.status_code == 200
@@ -465,6 +554,21 @@ def test_retrieve_existing_annotations_therapist(test_client):
     assert (comment_field.get_text()).strip(
         "\r\n "
     ).lstrip() == "test comment summary therapist"
+
+    # check the evidence is pre-populated correctly
+    # label B
+    evidence = (
+        EvidenceTherapist.query.filter_by(
+            label=LabelNamesTherapist.label_b,
+        )
+        .order_by("id_ps_dialog_event")
+        .all()
+    )  # fetch from DB
+    select_field = soup.find("select", id="relevant_events_b_therapist")
+    assert select_field is not None
+    selected_options = select_field.find_all("option", selected=True)
+    selected_ids = [int(option.get_text()) for option in selected_options]
+    assert selected_ids == [event.dialog_event.event_n for event in evidence]
 
     # log out
     response = test_client.get("/auth/logout", follow_redirects=True)
@@ -529,6 +633,21 @@ def test_retrieve_existing_annotations_dyad(test_client):
         "\r\n "
     ).lstrip() == "test comment summary dyad"
 
+    # check the evidence is pre-populated correctly
+    # label A
+    evidence = (
+        EvidenceDyad.query.filter_by(
+            label=LabelNamesDyad.label_a,
+        )
+        .order_by("id_ps_dialog_event")
+        .all()
+    )
+    select_field = soup.find("select", id="relevant_events_a_dyad")
+    assert select_field is not None
+    selected_options = select_field.find_all("option", selected=True)
+    selected_ids = [int(option.get_text()) for option in selected_options]
+    assert selected_ids == [event.dialog_event.event_n for event in evidence]
+
     # log out
     response = test_client.get("/auth/logout", follow_redirects=True)
     assert response.status_code == 200
@@ -555,7 +674,8 @@ def test_comment_is_compulsory_if_label_is_other(test_client):
     page = 1
     url = url_for("annotate.annotate_ps", dataset_id=dataset_id, page=page)
     # set the label to "Other" and the comment to empty
-    data = create_segment_level_annotation_client()
+    soup = BeautifulSoup(test_client.get(url).data, "html.parser")
+    data = create_segment_level_annotation_client(soup)[0]
     data["label_a_client"] = SubLabelsAClient.other.value
     data["comment_a_client"] = ""
     response = test_client.post(url, data=data, follow_redirects=True)

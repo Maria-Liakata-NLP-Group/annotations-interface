@@ -1,8 +1,8 @@
 from datetime import datetime, date
 from app.models import (
-    PSDialogTurnAnnotationClient,
-    PSDialogTurnAnnotationTherapist,
-    PSDialogTurnAnnotationDyad,
+    PSAnnotationClient,
+    PSAnnotationTherapist,
+    PSAnnotationDyad,
     User,
     Dataset,
     SMPost,
@@ -10,6 +10,9 @@ from app.models import (
     SMReply,
     PSDialogTurn,
     PSDialogEvent,
+    EvidenceClient,
+    EvidenceTherapist,
+    EvidenceDyad,
 )
 from app.utils import (
     SubLabelsAClient,
@@ -21,6 +24,9 @@ from app.utils import (
     LabelStrengthAClient,
     LabelStrengthBTherapist,
     LabelStrengthADyad,
+    LabelNamesClient,
+    LabelNamesTherapist,
+    LabelNamesDyad,
 )
 import pytest
 from sqlalchemy.exc import IntegrityError
@@ -214,14 +220,14 @@ def test_new_ps_dialog_turn_annotation_client(
     new_ps_dialog_turn_annotation_client,
 ):
     """
-    GIVEN a PSDialogTurnAnnotationClient model
-    WHEN a new PSDialogTurnAnnotationClient is created and added to the database
+    GIVEN a PSAnnotationClient model
+    WHEN a new PSAnnotationClient is created and added to the database
     THEN check its fields are defined correctly
     """
     db_session.add(new_ps_dialog_turn_annotation_client)
     db_session.commit()
 
-    annotation = PSDialogTurnAnnotationClient.query.all()[0]
+    annotation = PSAnnotationClient.query.all()[0]
     annotator1 = User.query.filter_by(username="annotator1").first()
     dataset = Dataset.query.filter_by(name="Psychotherapy Dataset Test").first()
     assert annotation.label_a == SubLabelsAClient.attachment
@@ -230,7 +236,7 @@ def test_new_ps_dialog_turn_annotation_client(
     assert annotation.comment_a == "test comment a"
     assert annotation.comment_b == "test comment b"
     assert annotation.comment_summary == "test comment summary"
-    assert annotation.dialog_turn == new_ps_dialog_turn
+    assert annotation.dialog_turns.first() == new_ps_dialog_turn
     assert annotation.author == annotator1
     assert annotation.dataset == dataset
 
@@ -241,15 +247,15 @@ def test_new_ps_dialog_turn_annotation_therapist(
     new_ps_dialog_turn_annotation_therapist,
 ):
     """
-    GIVEN a PSDialogTurnAnnotationTherapist model
-    WHEN a new PSDialogTurnAnnotationTherapist is created and added to the database
+    GIVEN a PSAnnotationTherapist model
+    WHEN a new PSAnnotationTherapist is created and added to the database
     THEN check its fields are defined correctly
     """
 
     db_session.add(new_ps_dialog_turn_annotation_therapist)
     db_session.commit()
 
-    annotation = PSDialogTurnAnnotationTherapist.query.all()[0]
+    annotation = PSAnnotationTherapist.query.all()[0]
     annotator1 = User.query.filter_by(username="annotator1").first()
     dataset = Dataset.query.filter_by(name="Psychotherapy Dataset Test").first()
     assert annotation.label_a == SubLabelsATherapist.emotional
@@ -258,7 +264,7 @@ def test_new_ps_dialog_turn_annotation_therapist(
     assert annotation.comment_a == "test comment a"
     assert annotation.comment_b == "test comment b"
     assert annotation.comment_summary == "test comment summary"
-    assert annotation.dialog_turn == new_ps_dialog_turn
+    assert annotation.dialog_turns.first() == new_ps_dialog_turn
     assert annotation.author == annotator1
     assert annotation.dataset == dataset
 
@@ -269,14 +275,14 @@ def test_new_ps_dialog_turn_annotation_dyad(
     new_ps_dialog_turn_annotation_dyad,
 ):
     """
-    GIVEN a PSDialogTurnAnnotationDyad model
-    WHEN a new PSDialogTurnAnnotationDyad is created and added to the database
+    GIVEN a PSAnnotationDyad model
+    WHEN a new PSAnnotationDyad is created and added to the database
     THEN check its fields are defined correctly
     """
     db_session.add(new_ps_dialog_turn_annotation_dyad)
     db_session.commit()
 
-    annotation = PSDialogTurnAnnotationDyad.query.all()[0]
+    annotation = PSAnnotationDyad.query.all()[0]
     annotator1 = User.query.filter_by(username="annotator1").first()
     dataset = Dataset.query.filter_by(name="Psychotherapy Dataset Test").first()
     assert annotation.label_a == SubLabelsADyad.bond
@@ -285,6 +291,69 @@ def test_new_ps_dialog_turn_annotation_dyad(
     assert annotation.comment_a == "test comment a"
     assert annotation.comment_b == "test comment b"
     assert annotation.comment_summary == "test comment summary"
-    assert annotation.dialog_turn == new_ps_dialog_turn
+    assert annotation.dialog_turns.first() == new_ps_dialog_turn
     assert annotation.author == annotator1
     assert annotation.dataset == dataset
+
+
+def test_new_evidence_client(
+    db_session,
+    new_evidence_client,
+    new_ps_dialog_event,
+    new_ps_dialog_turn_annotation_client,
+):
+    """
+    GIVEN a EvidenceClient model
+    WHEN a new EvidenceClient is created and added to the database
+    THEN check its fields are defined correctly
+    """
+    db_session.add(new_evidence_client)
+    db_session.commit()
+
+    evidence = EvidenceClient.query.first()
+    assert evidence is not None
+    assert evidence.dialog_event == new_ps_dialog_event
+    assert evidence.annotation == new_ps_dialog_turn_annotation_client
+    assert evidence.label == LabelNamesClient.label_a
+
+
+def test_new_evidence_therapist(
+    db_session,
+    new_evidence_therapist,
+    new_ps_dialog_event,
+    new_ps_dialog_turn_annotation_therapist,
+):
+    """
+    GIVEN a EvidenceTherapist model
+    WHEN a new EvidenceTherapist is created and added to the database
+    THEN check its fields are defined correctly
+    """
+    db_session.add(new_evidence_therapist)
+    db_session.commit()
+
+    evidence = EvidenceTherapist.query.first()
+    assert evidence is not None
+    assert evidence.dialog_event == new_ps_dialog_event
+    assert evidence.annotation == new_ps_dialog_turn_annotation_therapist
+    assert evidence.label == LabelNamesTherapist.label_b
+
+
+def test_new_evidence_dyad(
+    db_session,
+    new_evidence_dyad,
+    new_ps_dialog_event,
+    new_ps_dialog_turn_annotation_dyad,
+):
+    """
+    GIVEN a EvidenceDyad model
+    WHEN a new EvidenceDyad is created and added to the database
+    THEN check its fields are defined correctly
+    """
+    db_session.add(new_evidence_dyad)
+    db_session.commit()
+
+    evidence = EvidenceDyad.query.first()
+    assert evidence is not None
+    assert evidence.dialog_event == new_ps_dialog_event
+    assert evidence.annotation == new_ps_dialog_turn_annotation_dyad
+    assert evidence.label == LabelNamesDyad.label_a

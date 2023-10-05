@@ -9,6 +9,7 @@ from app.models import (
     Permission,
     PSDialogTurn,
     PSDialogEvent,
+    PSAnnotationClient,
 )
 
 app = create_app()
@@ -28,6 +29,7 @@ def make_shell_context():
         "Permission": Permission,
         "PSDialogTurn": PSDialogTurn,
         "PSDialogEvent": PSDialogEvent,
+        "PSAnnotationClient": PSAnnotationClient,
     }
 
 

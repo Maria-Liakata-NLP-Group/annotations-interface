@@ -11,7 +11,6 @@ from app.annotate.utils import (
     fetch_dialog_turn_annotations,
     new_dialog_turn_annotation_to_db,
     create_psy_annotation_forms,
-    get_dynamic_choices,
     assign_dynamic_choices,
 )
 
@@ -49,8 +48,6 @@ def annotate_ps(dataset_id):
             segment[0].timestamp for segment in segments
         ]  # the starting times of each segment
         start_time = start_times[page - 1]  # get the starting time of the current page
-        # get the IDs of the dialog turns in the current page
-        dialog_turn_ids = [dialog_turn.id for dialog_turn in segments[page - 1]]
         # fetch the annotations for the current page
         annotations_client = fetch_dialog_turn_annotations(
             dialog_turns=segments[page - 1], speaker=Speaker.client
@@ -81,7 +78,10 @@ def annotate_ps(dataset_id):
                 # add the annotations to the database session
                 try:
                     new_dialog_turn_annotation_to_db(
-                        form_client, speaker, dataset_id, dialog_turn_ids
+                        form_client,
+                        speaker,
+                        dataset,
+                        dialog_turns=segments[page - 1],
                     )
                 except:
                     db.session.rollback()
@@ -99,7 +99,10 @@ def annotate_ps(dataset_id):
                 # add the annotations to the database session
                 try:
                     new_dialog_turn_annotation_to_db(
-                        form_therapist, speaker, dataset_id, dialog_turn_ids
+                        form_therapist,
+                        speaker,
+                        dataset,
+                        dialog_turns=segments[page - 1],
                     )
                 except:
                     db.session.rollback()
@@ -117,7 +120,7 @@ def annotate_ps(dataset_id):
                 # add the annotations to the database session
                 try:
                     new_dialog_turn_annotation_to_db(
-                        form_dyad, speaker, dataset_id, dialog_turn_ids
+                        form_dyad, speaker, dataset, dialog_turns=segments[page - 1]
                     )
                 except:
                     db.session.rollback()

@@ -11,7 +11,9 @@ from wtforms.validators import (
 )
 
 from app.utils import (
-    LabelNames,
+    LabelNamesClient,
+    LabelNamesTherapist,
+    LabelNamesDyad,
     SubLabelsAClient,
     SubLabelsATherapist,
     SubLabelsADyad,
@@ -83,6 +85,7 @@ def create_select_field_without_choices(label, name):
     return SelectField(
         label=label,
         name=name,
+        coerce=int,
     )
 
 
@@ -127,32 +130,32 @@ class PSAnnotationFormClient(FlaskForm):
     """Segment level annotation form of psychotherapy datasets for the client"""
 
     label_a = create_select_field(
-        label=LabelNames.label_a_client.value,
+        label=LabelNamesClient.label_a.value,
         choices=SubLabelsAClient,
         name="label_a_client",
     )
     label_b = create_select_field(
-        label=LabelNames.label_b_client.value,
+        label=LabelNamesClient.label_b.value,
         choices=SubLabelsBClient,
         name="label_b_client",
     )
     label_c = create_select_field(
-        label=LabelNames.label_c_client.value,
+        label=LabelNamesClient.label_c.value,
         choices=SubLabelsCClient,
         name="label_c_client",
     )
     label_d = create_select_field(
-        label=LabelNames.label_d_client.value,
+        label=LabelNamesClient.label_d.value,
         choices=SubLabelsDClient,
         name="label_d_client",
     )
     label_e = create_select_field(
-        label=LabelNames.label_e_client.value,
+        label=LabelNamesClient.label_e.value,
         choices=SubLabelsEClient,
         name="label_e_client",
     )
     label_f = create_select_field(
-        label=LabelNames.label_f_client.value,
+        label=LabelNamesClient.label_f.value,
         choices=SubLabelsFClient,
         name="label_f_client",
         default=SubLabelsFClient.no_change.name,
@@ -229,27 +232,27 @@ class PSAnnotationFormTherapist(FlaskForm):
     """Segment level annotation form of psychotherapy datasets for the therapist"""
 
     label_a = create_select_field(
-        label=LabelNames.label_a_therapist.value,
+        label=LabelNamesTherapist.label_a.value,
         choices=SubLabelsATherapist,
         name="label_a_therapist",
     )
     label_b = create_select_field(
-        label=LabelNames.label_b_therapist.value,
+        label=LabelNamesTherapist.label_b.value,
         choices=SubLabelsBTherapist,
         name="label_b_therapist",
     )
     label_c = create_select_field(
-        label=LabelNames.label_c_therapist.value,
+        label=LabelNamesTherapist.label_c.value,
         choices=SubLabelsCTherapist,
         name="label_c_therapist",
     )
     label_d = create_select_field(
-        label=LabelNames.label_d_therapist.value,
+        label=LabelNamesTherapist.label_d.value,
         choices=SubLabelsDTherapist,
         name="label_d_therapist",
     )
     label_e = create_select_field(
-        label=LabelNames.label_e_therapist.value,
+        label=LabelNamesTherapist.label_e.value,
         choices=SubLabelsETherapist,
         name="label_e_therapist",
     )
@@ -312,10 +315,10 @@ class PSAnnotationFormDyad(FlaskForm):
     """Segment level annotation form of psychotherapy datasets for the dyad"""
 
     label_a = create_select_field(
-        label=LabelNames.label_a_dyad.value, choices=SubLabelsADyad, name="label_a_dyad"
+        label=LabelNamesDyad.label_a.value, choices=SubLabelsADyad, name="label_a_dyad"
     )
     label_b = create_select_field(
-        label=LabelNames.label_b_dyad.value, choices=SubLabelsBDyad, name="label_b_dyad"
+        label=LabelNamesDyad.label_b.value, choices=SubLabelsBDyad, name="label_b_dyad"
     )
     strength_a = create_select_field(
         label="Strength", choices=LabelStrengthADyad, name="strength_a_dyad"
