@@ -7,6 +7,9 @@ RUN useradd annotations-interface
 # set working directory
 WORKDIR /home/annotations-interface
 
+# create a folder called "data" to store the user uploads
+RUN mkdir data
+
 # copy requirements to working directory and install them
 COPY requirements.txt requirements.txt
 RUN pip3 install -r requirements.txt
