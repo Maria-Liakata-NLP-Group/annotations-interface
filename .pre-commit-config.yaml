@@ -18,4 +18,4 @@ repos:
     rev: v2.6.0 # Use the sha or tag you want to point at
     hooks:
       - id: prettier
-        types_or: [html, yaml, markdown, json]
+        types_or: [html, yaml, markdown, json, css, javascript]

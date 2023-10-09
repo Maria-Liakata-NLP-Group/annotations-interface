@@ -24,7 +24,7 @@
   margin-top: 5px;
 }
 .form-inline {
-  display: none;  /* Hide the forms initially */
+  display: none; /* Hide the forms initially */
 }
 #client_label_a_add {
   display: none; /* Hide the additional label form groups initially */
