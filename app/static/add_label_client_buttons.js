@@ -8,4 +8,12 @@ $(document).ready(function () {
       $(this).addClass("active");
     }
   });
+  $("#btn_client_label_b_add").click(function () {
+    $("#client_label_b_add").toggle();
+    if ($(this).hasClass("active")) {
+      $(this).removeClass("active");
+    } else {
+      $(this).addClass("active");
+    }
+  });
 });

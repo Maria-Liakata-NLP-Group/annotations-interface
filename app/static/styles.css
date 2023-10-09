@@ -14,7 +14,8 @@
   border: 2px solid black;
   color: #fff;
 }
-#btn_client_label_a_add.active {
+#btn_client_label_a_add.active,
+#btn_client_label_b_add.active {
   border: 2px solid black;
 }
 /* Custom styles for the client, therapist and dyad forms */
@@ -26,6 +27,7 @@
 .form-inline {
   display: none; /* Hide the forms initially */
 }
-#client_label_a_add {
+#client_label_a_add,
+#client_label_b_add {
   display: none; /* Hide the additional label form groups initially */
 }
