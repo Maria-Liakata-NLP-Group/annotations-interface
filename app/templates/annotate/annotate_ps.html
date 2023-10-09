@@ -99,80 +99,8 @@ app_content %} {% block head%} {{ super() }}
       </button>
     </div>
 
-    <!-- Form 1 -->
-    <!-- The action attribute specifies the URL where the form data should be sent when submitted -->
-    <!-- Setting action="", the form is submitted to the current URL -->
-    <form
-      action=""
-      class="form-inline"
-      method="post"
-      role="form"
-      class="collapse"
-      id="form_client"
-    >
-      {{ form_client.hidden_tag() }}
-      <!-- Hidden CSRF token -->
-
-      {% if annotations_client %}
-      <p></p>
-      <div class="alert alert-warning" role="alert">
-        Annotations for the client for some or all speech turns on this page
-        have already been submitted. Showing the most recent annotations,
-        submitted at {{ annotations_client.timestamp.strftime("%d-%B-%Y
-        %H:%M:%S") }} UTC.
-      </div>
-      {% endif %}
-
-      <div class="form-group">
-        {{ wtf.form_field(form_client.label_a) }} {{
-        wtf.form_field(form_client.strength_a) }} {{
-        wtf.form_field(form_client.relevant_events_a) }} {{
-        wtf.form_field(form_client.comment_a) }}
-      </div>
-      <p></p>
-      <div class="form-group">
-        {{ wtf.form_field(form_client.label_b) }} {{
-        wtf.form_field(form_client.strength_b) }} {{
-        wtf.form_field(form_client.relevant_events_b) }} {{
-        wtf.form_field(form_client.comment_b) }}
-      </div>
-      <p></p>
-      <div class="form-group">
-        {{ wtf.form_field(form_client.label_c) }} {{
-        wtf.form_field(form_client.strength_c) }} {{
-        wtf.form_field(form_client.relevant_events_c) }} {{
-        wtf.form_field(form_client.comment_c) }}
-      </div>
-      <p></p>
-      <div class="form-group">
-        {{ wtf.form_field(form_client.label_d) }} {{
-        wtf.form_field(form_client.strength_d) }} {{
-        wtf.form_field(form_client.relevant_events_d) }} {{
-        wtf.form_field(form_client.comment_d) }}
-      </div>
-      <p></p>
-      <div class="form-group">
-        {{ wtf.form_field(form_client.label_e) }} {{
-        wtf.form_field(form_client.strength_e) }} {{
-        wtf.form_field(form_client.relevant_events_e) }} {{
-        wtf.form_field(form_client.comment_e) }}
-      </div>
-      <p></p>
-      <div class="form-group">
-        {{ wtf.form_field(form_client.label_f) }} {{
-        wtf.form_field(form_client.strength_f) }} {{
-        wtf.form_field(form_client.start_event_f) }} {{
-        wtf.form_field(form_client.end_event_f) }} {{
-        wtf.form_field(form_client.comment_f) }}
-      </div>
-      <div style="text-align: center">
-        {{ wtf.form_field(form_client.comment_summary) }}
-      </div>
-      <p></p>
-      <p>
-        <input type="submit" name="submit_form_client" value="Submit" />
-      </p>
-    </form>
+    <!-- Client form -->
+    {% include "annotate/client_form.html" %}
 
     <!-- Form 2 -->
     <form
