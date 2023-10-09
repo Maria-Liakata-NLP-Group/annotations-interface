@@ -102,71 +102,8 @@ app_content %} {% block head%} {{ super() }}
     <!-- Client form -->
     {% include "annotate/client_form.html" %}
 
-    <!-- Form 2 -->
-    <form
-      action=""
-      class="form-inline"
-      method="post"
-      role="form"
-      class="collapse"
-      id="form_therapist"
-    >
-      {{ form_therapist.hidden_tag() }}
-      <!-- Hidden CSRF token -->
-
-      {% if annotations_therapist %}
-      <p></p>
-      <div class="alert alert-warning" role="alert">
-        Annotations for the therapist for some or all speech turns on this page
-        have already been submitted. Showing the most recent annotations,
-        submitted at {{ annotations_therapist.timestamp.strftime("%d-%B-%Y
-        %H:%M:%S") }} UTC.
-      </div>
-      {% endif %}
-
-      <div class="form-group">
-        {{ wtf.form_field(form_therapist.label_a) }} {{
-        wtf.form_field(form_therapist.strength_a) }} {{
-        wtf.form_field(form_therapist.relevant_events_a) }} {{
-        wtf.form_field(form_therapist.comment_a) }}
-      </div>
-      <p></p>
-      <div class="form-group">
-        {{ wtf.form_field(form_therapist.label_b) }} {{
-        wtf.form_field(form_therapist.strength_b) }} {{
-        wtf.form_field(form_therapist.relevant_events_b) }} {{
-        wtf.form_field(form_therapist.comment_b) }}
-      </div>
-      <p></p>
-      <div class="form-group">
-        {{ wtf.form_field(form_therapist.label_c) }} {{
-        wtf.form_field(form_therapist.strength_c) }} {{
-        wtf.form_field(form_therapist.relevant_events_c) }} {{
-        wtf.form_field(form_therapist.comment_c) }}
-      </div>
-      <p></p>
-      <div class="form-group">
-        {{ wtf.form_field(form_therapist.label_d) }} {{
-        wtf.form_field(form_therapist.strength_d) }} {{
-        wtf.form_field(form_therapist.relevant_events_d) }} {{
-        wtf.form_field(form_therapist.comment_d) }}
-      </div>
-      <p></p>
-      <div class="form-group">
-        {{ wtf.form_field(form_therapist.label_e) }} {{
-        wtf.form_field(form_therapist.strength_e) }} {{
-        wtf.form_field(form_therapist.relevant_events_e) }} {{
-        wtf.form_field(form_therapist.comment_e) }}
-      </div>
-      <p></p>
-      <div style="text-align: center">
-        {{ wtf.form_field(form_therapist.comment_summary) }}
-      </div>
-      <p></p>
-      <p>
-        <input type="submit" name="submit_form_therapist" value="Submit" />
-      </p>
-    </form>
+    <!-- Therapist form -->
+    {% include "annotate/therapist_form.html" %}
 
     <!-- Form 3 -->
     <form
