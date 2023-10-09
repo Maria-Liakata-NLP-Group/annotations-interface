@@ -28,6 +28,7 @@
   display: none; /* Hide the forms initially */
 }
 #client_label_a_add,
-#client_label_b_add {
+#client_label_b_add,
+#client_label_c_add {
   display: none; /* Hide the additional label form groups initially */
 }

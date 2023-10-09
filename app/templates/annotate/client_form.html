@@ -21,6 +21,8 @@
   </div>
   {% endif %}
 
+  <!-- Label A -->
+
   <div class="form-group">
     {{ wtf.form_field(form_client.label_a) }} {{
     wtf.form_field(form_client.strength_a) }} {{
@@ -45,6 +47,8 @@
     wtf.form_field(form_client.comment_a) }}
   </div>
   <p></p>
+
+  <!-- Label B -->
 
   <div class="form-group">
     {{ wtf.form_field(form_client.label_b) }} {{
@@ -71,6 +75,8 @@
   </div>
   <p></p>
 
+  <!-- Label C -->
+
   <div class="form-group">
     {{ wtf.form_field(form_client.label_c) }} {{
     wtf.form_field(form_client.strength_c) }} {{
@@ -78,6 +84,24 @@
     wtf.form_field(form_client.comment_c) }}
   </div>
   <p></p>
+
+  <!-- Button to toggle an additional form group for label C -->
+  <button
+    type="button"
+    class="btn btn-secondary mx-2"
+    id="btn_client_label_c_add"
+    data-target="#client_label_c_add"
+  >
+    Add another
+  </button>
+  <div class="form-group collapse" id="client_label_c_add">
+    {{ wtf.form_field(form_client.label_c) }} {{
+    wtf.form_field(form_client.strength_c) }} {{
+    wtf.form_field(form_client.relevant_events_c) }} {{
+    wtf.form_field(form_client.comment_c) }}
+  </div>
+  <p></p>
+
   <div class="form-group">
     {{ wtf.form_field(form_client.label_d) }} {{
     wtf.form_field(form_client.strength_d) }} {{
