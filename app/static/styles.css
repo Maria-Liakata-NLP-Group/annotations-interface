@@ -14,11 +14,18 @@
   border: 2px solid black;
   color: #fff;
 }
+#btn_client_label_a_add.active {
+  border: 2px solid black;
+}
+/* Custom styles for the client, therapist and dyad forms */
 .form-group {
   margin-left: 20px;
   margin-right: 20px;
   margin-top: 5px;
 }
 .form-inline {
-  display: none;  /* Hide the form initially */
+  display: none;  /* Hide the forms initially */
+}
+#client_label_a_add {
+  display: none; /* Hide the additional label form groups initially */
 }

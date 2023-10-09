@@ -1,4 +1,4 @@
-// Function to show/hide client and therapist annotation forms at segment level
+// Function to show/hide client, therapist and dyad annotation forms at segment level
 $(document).ready(function () {
 $("#btn_client").on("click", function () {
     if ($(this).hasClass("active")) {
