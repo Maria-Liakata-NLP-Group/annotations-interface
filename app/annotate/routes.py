@@ -1,6 +1,7 @@
 from app.annotate import bp
 from app import db
 from flask import render_template, request, url_for, current_app, abort, flash, redirect
+from flask.views import View
 from flask_login import login_required
 from app.models import Dataset
 from app.utils import Speaker
@@ -152,6 +153,63 @@ def annotate_ps(dataset_id):
     except IndexError:
         # if there are no dialog turns in the dataset, return the template without any events
         return render_template("annotate/annotate_ps.html", dataset_name=dataset.name)
+
+
+# rewrite the view function above as a reusable class-based view
+class AnnotatePsy(View):
+    def __init__(self, speaker, dataset_id):
+        self.speaker = speaker
+        self.dataset = Dataset.query.get_or_404(dataset_id)
+        self.template = f"annotate/{speaker.name}.html"
+
+    def get_items_for_this_page(self, page, segments):
+        start_times = [segment[0].timestamp for segment in segments]
+        start_time = start_times[page - 1]  # get the starting time of the current page
+        events = get_events_from_segments(segments)
+        (
+            page_items,
+            next_url,
+            prev_url,
+            first_url,
+            last_url,
+            total_pages,
+        ) = get_page_items(
+            page, events, self.dataset.id
+        )  # get the events for the current page and the urls for the pager
+        return (
+            page_items,
+            next_url,
+            prev_url,
+            first_url,
+            last_url,
+            total_pages,
+            start_time,
+        )
+
+    def create_form(self, dialog_turns, page_items):
+        annotations = fetch_dialog_turn_annotations(
+            dialog_turns=dialog_turns, speaker=self.speaker
+        )
+        form = create_psy_annotation_forms(annotations)
+        form = assign_dynamic_choices(form, page_items, self.speaker)
+        return form
+
+    def dispatch_request(self, dataset_id):
+        app_config = current_app.config
+        segments = split_dialog_turns(
+            self.dataset.dialog_turns.order_by("timestamp").all(),
+            time_interval=app_config["PS_MINS_PER_PAGE"] * 60,
+        )  # split the dialog turns into segments of a given time interval (specified in the app config)
+        page = request.args.get("page", 1, type=int)  # default page is 1
+        (
+            page_items,
+            next_url,
+            prev_url,
+            first_url,
+            last_url,
+            total_pages,
+            start_time,
+        ) = self.get_items_for_this_page(page, segments)
 
 
 @bp.route("/annotate_social_media/<int:dataset_id>")
