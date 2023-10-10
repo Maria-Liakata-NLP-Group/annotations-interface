@@ -157,12 +157,20 @@ def annotate_ps(dataset_id):
 
 # rewrite the view function above as a reusable class-based view
 class AnnotatePsy(View):
-    def __init__(self, speaker, dataset_id):
-        self.speaker = speaker
-        self.dataset = Dataset.query.get_or_404(dataset_id)
-        self.template = f"annotate/{speaker.name}.html"
+    def __init__(self, dataset_id, speaker="client"):
+        """Initialize the class with the speaker, dataset and template"""
+        try:
+            self.speaker = Speaker(speaker)
+        except ValueError:
+            print("Invalid speaker")
+            abort(500)
+        else:
+            self.speaker = speaker
+            self.dataset = Dataset.query.get_or_404(dataset_id)
+            self.template = f"annotate/{speaker.name}.html"
 
     def get_items_for_this_page(self, page, segments):
+        """Get the events and urls for the pager for the current page"""
         start_times = [segment[0].timestamp for segment in segments]
         start_time = start_times[page - 1]  # get the starting time of the current page
         events = get_events_from_segments(segments)
@@ -187,20 +195,20 @@ class AnnotatePsy(View):
         )
 
     def create_form(self, dialog_turns, page_items):
-        annotations = fetch_dialog_turn_annotations(
-            dialog_turns=dialog_turns, speaker=self.speaker
-        )
+        """Create the form and fetch the annotations for the current page"""
+        annotations = fetch_dialog_turn_annotations(dialog_turns, self.speaker)
         form = create_psy_annotation_form(annotations, self.speaker)
         form = assign_dynamic_choices(form, page_items, self.speaker)
-        return form
+        return form, annotations
 
-    def dispatch_request(self, dataset_id):
+    def dispatch_request(self):
         app_config = current_app.config
         segments = split_dialog_turns(
             self.dataset.dialog_turns.order_by("timestamp").all(),
             time_interval=app_config["PS_MINS_PER_PAGE"] * 60,
         )  # split the dialog turns into segments of a given time interval (specified in the app config)
         page = request.args.get("page", 1, type=int)  # default page is 1
+        dialog_turns = segments[page - 1]
         (
             page_items,
             next_url,
@@ -210,6 +218,48 @@ class AnnotatePsy(View):
             total_pages,
             start_time,
         ) = self.get_items_for_this_page(page, segments)
+        form, annotations = self.create_form(dialog_turns, page_items)
+        if form.validate_on_submit():
+            try:
+                new_dialog_turn_annotation_to_db(
+                    form, self.speaker, self.dataset, dialog_turns
+                )
+            except Exception as e:
+                print(e)
+                db.session.rollback()
+                abort(500)
+            else:
+                db.session.commit()
+                flash("Your annotations have been saved.", "success")
+                return redirect(
+                    url_for(
+                        "annotate.annotate_psy",
+                        dataset_id=self.dataset.id,
+                        speaker=self.speaker.name,
+                        page=page,
+                    )
+                )
+        return render_template(
+            self.template,
+            dataset_name=self.dataset.name,
+            page_items=page_items,
+            next_url=next_url,
+            prev_url=prev_url,
+            first_url=first_url,
+            last_url=last_url,
+            start_time=start_time,
+            page=page,
+            total_pages=total_pages,
+            annotations=annotations,
+            form=form,
+        )
+
+
+bp.add_url_rule(
+    "/annotate_psychotherapy/<int:dataset_id>/<string:speaker>",
+    view_func=AnnotatePsy.as_view("annotate_psy"),
+    methods=["GET", "POST"],
+)
 
 
 @bp.route("/annotate_social_media/<int:dataset_id>")
