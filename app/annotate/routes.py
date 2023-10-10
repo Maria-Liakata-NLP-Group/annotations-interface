@@ -11,7 +11,7 @@ from app.annotate.utils import (
     get_page_items,
     fetch_dialog_turn_annotations,
     new_dialog_turn_annotation_to_db,
-    create_psy_annotation_forms,
+    create_psy_annotation_form,
     assign_dynamic_choices,
 )
 
@@ -60,7 +60,7 @@ def annotate_ps(dataset_id):
             dialog_turns=segments[page - 1], speaker=Speaker.dyad
         )
         # create the forms
-        [form_client, form_therapist, form_dyad] = create_psy_annotation_forms(
+        [form_client, form_therapist, form_dyad] = create_psy_annotation_form(
             annotations_client,
             annotations_therapist,
             annotations_dyad,
@@ -190,7 +190,7 @@ class AnnotatePsy(View):
         annotations = fetch_dialog_turn_annotations(
             dialog_turns=dialog_turns, speaker=self.speaker
         )
-        form = create_psy_annotation_forms(annotations)
+        form = create_psy_annotation_form(annotations, self.speaker)
         form = assign_dynamic_choices(form, page_items, self.speaker)
         return form
 
