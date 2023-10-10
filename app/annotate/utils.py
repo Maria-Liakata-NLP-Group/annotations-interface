@@ -1,7 +1,7 @@
 """
 Miscellaneous utility functions for the annotate blueprint
 """
-from flask_wtf import FlaskForm
+from typing import Union
 from datetime import datetime
 import itertools
 from flask import url_for
@@ -15,6 +15,7 @@ from app.models import (
     EvidenceClient,
     EvidenceTherapist,
     EvidenceDyad,
+    Dataset,
 )
 from app import db
 from app.annotate.forms import (
@@ -24,7 +25,7 @@ from app.annotate.forms import (
 )
 
 
-def split_dialog_turns(dialog_turns, time_interval=300):
+def split_dialog_turns(dialog_turns: list, time_interval: int = 300) -> list:
     """
     Split a list of dialog turns into time segments, identified by the timestamp.
     The dialog turns must be sorted by timestamp in ascending order.
@@ -59,7 +60,7 @@ def split_dialog_turns(dialog_turns, time_interval=300):
     return segments
 
 
-def get_events_from_segments(segments):
+def get_events_from_segments(segments: list) -> list:
     """
     Get the events corresponding to each segment of dialog turns.
     The events are sorted by event number in ascending order (i.e. in time order).
@@ -87,7 +88,7 @@ def get_events_from_segments(segments):
     return events
 
 
-def get_page_items(page, events, dataset_id):
+def get_page_items(page: int, events: list, dataset_id: int):
     """
     Get the events for the current page and the urls for the pager.
 
@@ -143,7 +144,9 @@ def get_page_items(page, events, dataset_id):
     return page_items, next_url, prev_url, first_url, last_url, total_pages
 
 
-def fetch_dialog_turn_annotations(dialog_turns: list, speaker: Speaker):
+def fetch_dialog_turn_annotations(
+    dialog_turns: list, speaker: Speaker
+) -> Union[None, PSAnnotationClient, PSAnnotationTherapist, PSAnnotationDyad]:
     """
     Fetch the annotations for the dialog turns from the database and
     only return the annotation with the latest timestamp.
@@ -206,7 +209,12 @@ def fetch_dialog_turn_annotations(dialog_turns: list, speaker: Speaker):
     return annotation
 
 
-def new_dialog_turn_annotation_to_db(form, speaker, dataset, dialog_turns):
+def new_dialog_turn_annotation_to_db(
+    form: Union[PSAnnotationClient, PSAnnotationFormTherapist, PSAnnotationFormDyad],
+    speaker: Speaker,
+    dataset: Dataset,
+    dialog_turns: list,
+):
     """
     Create a new psychotherapy dialog turn annotation object and add it to the database session.
 
@@ -292,7 +300,9 @@ def new_dialog_turn_annotation_to_db(form, speaker, dataset, dialog_turns):
         new_dyad_evidence_events_to_db(form, annotation)
 
 
-def new_client_evidence_events_to_db(form, annotation):
+def new_client_evidence_events_to_db(
+    form: PSAnnotationFormClient, annotation: PSAnnotationClient
+):
     """
     Given a new annotation for the client, add the evidence
     events of the form to the database session.
@@ -353,7 +363,9 @@ def new_client_evidence_events_to_db(form, annotation):
     db.session.add_all(evidences)
 
 
-def new_therapist_evidence_events_to_db(form, annotation):
+def new_therapist_evidence_events_to_db(
+    form: PSAnnotationFormTherapist, annotation: PSAnnotationTherapist
+):
     """
     Given a new annotation for the therapist, add the evidence
     events of the form to the database session.
@@ -404,7 +416,9 @@ def new_therapist_evidence_events_to_db(form, annotation):
     db.session.add_all(evidences)
 
 
-def new_dyad_evidence_events_to_db(form, annotation):
+def new_dyad_evidence_events_to_db(
+    form: PSAnnotationFormDyad, annotation: PSAnnotationDyad
+):
     """
     Given a new annotation for the dyad, add the evidence
     events of the form to the database session.
@@ -431,7 +445,12 @@ def new_dyad_evidence_events_to_db(form, annotation):
     db.session.add_all(evidences)
 
 
-def create_psy_annotation_form(annotations, speaker: Speaker):
+def create_psy_annotation_form(
+    annotations: Union[
+        PSAnnotationClient, PSAnnotationTherapist, PSAnnotationDyad, None
+    ],
+    speaker: Speaker,
+) -> Union[PSAnnotationFormClient, PSAnnotationFormTherapist, PSAnnotationFormDyad]:
     """
     Create the annotation form for the psychotherapy dialog turns,
     either pre-populated with previous annotation values or empty.
@@ -510,7 +529,7 @@ def create_psy_annotation_form(annotations, speaker: Speaker):
     return form
 
 
-def get_dynamic_choices(page_items: list, speaker: Speaker):
+def get_dynamic_choices(page_items: list, speaker: Speaker) -> list:
     """
     Get the dynamic choices for the select fields in the annotation form.
     This is used to populate the select fields with the events for the current page,
@@ -549,7 +568,13 @@ def get_dynamic_choices(page_items: list, speaker: Speaker):
     return choices
 
 
-def assign_dynamic_choices(form: FlaskForm, page_items: list, speaker: Speaker):
+def assign_dynamic_choices(
+    form: Union[
+        PSAnnotationFormClient, PSAnnotationFormTherapist, PSAnnotationFormDyad
+    ],
+    page_items: list,
+    speaker: Speaker,
+) -> Union[PSAnnotationFormClient, PSAnnotationFormTherapist, PSAnnotationFormDyad]:
     """
     Assign the dynamic choices to the select fields or select multiple fields in the annotation form.
 
@@ -582,7 +607,7 @@ def assign_dynamic_choices(form: FlaskForm, page_items: list, speaker: Speaker):
     return form
 
 
-def fetch_evidence_client(annotation):
+def fetch_evidence_client(annotation: PSAnnotationClient):
     """
     Given a client annotation, fetch the evidence events from the database
     and return them as a list of event IDs.
@@ -640,7 +665,7 @@ def fetch_evidence_client(annotation):
     )
 
 
-def fetch_evidence_therapist(annotation):
+def fetch_evidence_therapist(annotation: PSAnnotationTherapist):
     """
     Given a therapist annotation, fetch the evidence events from the database
     and return them as a list of event IDs.
@@ -682,7 +707,7 @@ def fetch_evidence_therapist(annotation):
     )
 
 
-def fetch_evidence_dyad(annotation):
+def fetch_evidence_dyad(annotation: PSAnnotationDyad):
     """
     Given a dyad annotation, fetch the evidence events from the database
     and return them as a list of event IDs.
