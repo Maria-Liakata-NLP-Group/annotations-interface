@@ -1,5 +1,4 @@
-{% extends "base.html" %} {% import "bootstrap/wtf.html" as wtf %} {% block
-app_content %} {% block head%} {{ super() }}
+{% extends "base.html" %} {% block app_content %} {% block head%} {{ super() }}
 <!-- Reference custom CSS file for button rendering -->
 <link
   rel="stylesheet"
@@ -11,17 +10,16 @@ app_content %} {% block head%} {{ super() }}
 <body>
   <div class="container" style="padding-bottom: 30px">
     <!-- flash a message if any of the forms has an error -->
-    {% for form in [form_client, form_therapist, form_dyad] %} {% if form.errors
-    %}
+    {% if form.errors%}
     <div class="alert alert-danger" role="alert">
       There were errors in the annotations form. Please correct them and try
       again.
     </div>
-    {% endif %} {% endfor %}
+    {% endif %}
     <h1>
       Annotating psychotherapy session: <strong>{{ dataset_name }}</strong>
     </h1>
-    <h2>Page {{ page }} of {{ total_pages }}</h2>
+    <h2>Page {{ request.args.get('page') }} of {{ total_pages }}</h2>
     <p>Time since start of session: {{ start_time.strftime("%H:%M:%S") }}</p>
     <ul class="list-group">
       {% for item in page_items %} {% if item.event_speaker == 'Therapist' %}
@@ -68,14 +66,13 @@ app_content %} {% block head%} {{ super() }}
 
     <h3>Annotate this page:</h3>
 
-    <!-- Buttons to toggle annotation forms at the segment level -->
+    <!-- Buttons to navigate to the client, therapist or dyad views -->
     <div class="d-flex justify-content-center">
       <button
         type="button"
         class="btn btn-primary mx-2"
         id="btn_client"
-        data-toggle="collapse"
-        data-target="#form_client"
+        url="{{ url_for('annotate.annotate_psy', speaker='client', dataset_id=dataset_id, page=request.args.get('page')) }}"
       >
         Client
       </button>
@@ -83,8 +80,7 @@ app_content %} {% block head%} {{ super() }}
         type="button"
         class="btn btn-primary mx-2"
         id="btn_therapist"
-        data-toggle="collapse"
-        data-target="#form_therapist"
+        url="{{ url_for('annotate.annotate_psy', dataset_id=dataset_id, speaker='therapist', page=request.args.get('page')) }}"
       >
         Therapist
       </button>
@@ -92,21 +88,11 @@ app_content %} {% block head%} {{ super() }}
         type="button"
         class="btn btn-primary mx-2"
         id="btn_dyad"
-        data-toggle="collapse"
-        data-target="#form_dyad"
+        url="{{ url_for('annotate.annotate_psy', dataset_id=dataset_id, speaker='dyad', page=request.args.get('page')) }}"
       >
         Dyad
       </button>
     </div>
-
-    <!-- Client form -->
-    {% include "annotate/client_form.html" %}
-
-    <!-- Therapist form -->
-    {% include "annotate/therapist_form.html" %}
-
-    <!-- Dyad form -->
-    {% include "annotate/dyad_form.html" %}
   </div>
 </body>
 {% endblock %}

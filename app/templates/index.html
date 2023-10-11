@@ -11,7 +11,7 @@
           {% if dataset.type.value == "Psychotherapy Session" %}
           <h2 class="card-title">
             <a
-              href="{{ url_for('annotate.annotate_ps', dataset_id=dataset.id) }}"
+              href="{{ url_for('annotate.annotate_psy', dataset_id=dataset.id) }}"
               >{{ dataset.name }}</a
             >
           </h2>

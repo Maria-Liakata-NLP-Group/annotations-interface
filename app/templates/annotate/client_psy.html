@@ -1,4 +1,5 @@
-{% include "annotate/annotate_ps.html" %}
+{% include "annotate/annotate_ps.html" %} {% import "bootstrap/wtf.html" as wtf
+%}
 
 <!-- Client form -->
 <!-- The action attribute specifies the URL where the form data should be sent when submitted -->
@@ -11,7 +12,7 @@
   class="collapse"
   id="form_client"
 >
-  {{ form_client.hidden_tag() }}
+  {{ form.hidden_tag() }}
   <!-- Hidden CSRF token -->
 
   {% if annotations_client %}
@@ -26,10 +27,9 @@
   <!-- Label A -->
 
   <div class="form-group">
-    {{ wtf.form_field(form_client.label_a) }} {{
-    wtf.form_field(form_client.strength_a) }} {{
-    wtf.form_field(form_client.relevant_events_a) }} {{
-    wtf.form_field(form_client.comment_a) }}
+    {{ wtf.form_field(form.label_a) }} {{ wtf.form_field(form.strength_a) }} {{
+    wtf.form_field(form.relevant_events_a) }} {{ wtf.form_field(form.comment_a)
+    }}
   </div>
   <p></p>
 
@@ -43,20 +43,18 @@
     Add another
   </button>
   <div class="form-group collapse" id="client_label_a_add">
-    {{ wtf.form_field(form_client.label_a) }} {{
-    wtf.form_field(form_client.strength_a) }} {{
-    wtf.form_field(form_client.relevant_events_a) }} {{
-    wtf.form_field(form_client.comment_a) }}
+    {{ wtf.form_field(form.label_a) }} {{ wtf.form_field(form.strength_a) }} {{
+    wtf.form_field(form.relevant_events_a) }} {{ wtf.form_field(form.comment_a)
+    }}
   </div>
   <p></p>
 
   <!-- Label B -->
 
   <div class="form-group">
-    {{ wtf.form_field(form_client.label_b) }} {{
-    wtf.form_field(form_client.strength_b) }} {{
-    wtf.form_field(form_client.relevant_events_b) }} {{
-    wtf.form_field(form_client.comment_b) }}
+    {{ wtf.form_field(form.label_b) }} {{ wtf.form_field(form.strength_b) }} {{
+    wtf.form_field(form.relevant_events_b) }} {{ wtf.form_field(form.comment_b)
+    }}
   </div>
   <p></p>
 
@@ -70,20 +68,18 @@
     Add another
   </button>
   <div class="form-group collapse" id="client_label_b_add">
-    {{ wtf.form_field(form_client.label_b) }} {{
-    wtf.form_field(form_client.strength_b) }} {{
-    wtf.form_field(form_client.relevant_events_b) }} {{
-    wtf.form_field(form_client.comment_b) }}
+    {{ wtf.form_field(form.label_b) }} {{ wtf.form_field(form.strength_b) }} {{
+    wtf.form_field(form.relevant_events_b) }} {{ wtf.form_field(form.comment_b)
+    }}
   </div>
   <p></p>
 
   <!-- Label C -->
 
   <div class="form-group">
-    {{ wtf.form_field(form_client.label_c) }} {{
-    wtf.form_field(form_client.strength_c) }} {{
-    wtf.form_field(form_client.relevant_events_c) }} {{
-    wtf.form_field(form_client.comment_c) }}
+    {{ wtf.form_field(form.label_c) }} {{ wtf.form_field(form.strength_c) }} {{
+    wtf.form_field(form.relevant_events_c) }} {{ wtf.form_field(form.comment_c)
+    }}
   </div>
   <p></p>
 
@@ -97,36 +93,31 @@
     Add another
   </button>
   <div class="form-group collapse" id="client_label_c_add">
-    {{ wtf.form_field(form_client.label_c) }} {{
-    wtf.form_field(form_client.strength_c) }} {{
-    wtf.form_field(form_client.relevant_events_c) }} {{
-    wtf.form_field(form_client.comment_c) }}
+    {{ wtf.form_field(form.label_c) }} {{ wtf.form_field(form.strength_c) }} {{
+    wtf.form_field(form.relevant_events_c) }} {{ wtf.form_field(form.comment_c)
+    }}
   </div>
   <p></p>
 
   <div class="form-group">
-    {{ wtf.form_field(form_client.label_d) }} {{
-    wtf.form_field(form_client.strength_d) }} {{
-    wtf.form_field(form_client.relevant_events_d) }} {{
-    wtf.form_field(form_client.comment_d) }}
+    {{ wtf.form_field(form.label_d) }} {{ wtf.form_field(form.strength_d) }} {{
+    wtf.form_field(form.relevant_events_d) }} {{ wtf.form_field(form.comment_d)
+    }}
   </div>
   <p></p>
   <div class="form-group">
-    {{ wtf.form_field(form_client.label_e) }} {{
-    wtf.form_field(form_client.strength_e) }} {{
-    wtf.form_field(form_client.relevant_events_e) }} {{
-    wtf.form_field(form_client.comment_e) }}
+    {{ wtf.form_field(form.label_e) }} {{ wtf.form_field(form.strength_e) }} {{
+    wtf.form_field(form.relevant_events_e) }} {{ wtf.form_field(form.comment_e)
+    }}
   </div>
   <p></p>
   <div class="form-group">
-    {{ wtf.form_field(form_client.label_f) }} {{
-    wtf.form_field(form_client.strength_f) }} {{
-    wtf.form_field(form_client.start_event_f) }} {{
-    wtf.form_field(form_client.end_event_f) }} {{
-    wtf.form_field(form_client.comment_f) }}
+    {{ wtf.form_field(form.label_f) }} {{ wtf.form_field(form.strength_f) }} {{
+    wtf.form_field(form.start_event_f) }} {{ wtf.form_field(form.end_event_f) }}
+    {{ wtf.form_field(form.comment_f) }}
   </div>
   <div style="text-align: center">
-    {{ wtf.form_field(form_client.comment_summary) }}
+    {{ wtf.form_field(form.comment_summary) }}
   </div>
   <p></p>
   <p>
