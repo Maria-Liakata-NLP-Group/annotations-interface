@@ -431,82 +431,83 @@ def new_dyad_evidence_events_to_db(form, annotation):
     db.session.add_all(evidences)
 
 
-def create_psy_annotation_forms(
-    annotations_client, annotations_therapist, annotations_dyad
-):
+def create_psy_annotation_form(annotations, speaker: Speaker):
     """
-    Create the annotation forms for the psychotherapy dialog turns,
+    Create the annotation form for the psychotherapy dialog turns,
     either pre-populated with previous annotation values or empty.
 
     Parameters
     ----------
-    annotations_client : PSAnnotationClient or None for client annotations
-    annotations_therapist : PSAnnotationTherapist or None for therapist annotations
-    annotations_dyad : PSAnnotationDyad or None for dyad annotations
+    annotations : PSAnnotationClient or PSAnnotationTherapist or PSAnnotationDyad or None
+        The annotations object for the client, therapist or dyad if it exists, otherwise None
+    speaker : Speaker
+        The speaker the annotation is for (client, therapist or dyad)
 
     Returns
     -------
-    form_client : PSAnnotationFormClient (pre-populated with previous annotation values or empty)
-    form_therapist : PSAnnotationFormTherapist (pre-populated with previous annotation values or empty)
-    form_dyad : PSAnnotationFormDyad (pre-populated with previous annotation values or empty)
+    form : PSAnnotationFormClient or PSAnnotationFormTherapist or PSAnnotationFormDyad
+        The annotation form, either pre-populated with previous annotation values or empty (if there are no annotations)
     """
 
-    if annotations_client:
-        # if there are annotations, fill the form with the values
-        (
-            id_events_a,
-            id_events_b,
-            id_events_c,
-            id_events_d,
-            id_events_e,
-            id_start_event_f,
-            id_end_event_f,
-        ) = fetch_evidence_client(annotations_client)
-        form_client = PSAnnotationFormClient(
-            obj=annotations_client,
-            relevant_events_a=id_events_a,
-            relevant_events_b=id_events_b,
-            relevant_events_c=id_events_c,
-            relevant_events_d=id_events_d,
-            relevant_events_e=id_events_e,
-            start_event_f=id_start_event_f,
-            end_event_f=id_end_event_f,
-        )
-    else:
-        # if there are no annotations, create an empty form
-        form_client = PSAnnotationFormClient()
-    if annotations_therapist:
-        # if there are annotations, fill the form with the values
-        (
-            id_events_a,
-            id_events_b,
-            id_events_c,
-            id_events_d,
-            id_events_e,
-        ) = fetch_evidence_therapist(annotations_therapist)
-        form_therapist = PSAnnotationFormTherapist(
-            obj=annotations_therapist,
-            relevant_events_a=id_events_a,
-            relevant_events_b=id_events_b,
-            relevant_events_c=id_events_c,
-            relevant_events_d=id_events_d,
-            relevant_events_e=id_events_e,
-        )
-    else:
-        # if there are no annotations, create an empty form
-        form_therapist = PSAnnotationFormTherapist()
-    if annotations_dyad:
-        # if there are annotations, fill the form with the values
-        (id_events_a, id_events_b) = fetch_evidence_dyad(annotations_dyad)
-        form_dyad = PSAnnotationFormDyad(
-            obj=annotations_dyad,
-            relevant_events_a=id_events_a,
-            relevant_events_b=id_events_b,
-        )
-    else:
-        # if there are no annotations, create an empty form
-        form_dyad = PSAnnotationFormDyad()
-    return form_client, form_therapist, form_dyad
+    if speaker == Speaker.client:
+        if annotations:
+            # if there are annotations, fill the form with the values
+            (
+                id_events_a,
+                id_events_b,
+                id_events_c,
+                id_events_d,
+                id_events_e,
+                id_start_event_f,
+                id_end_event_f,
+            ) = fetch_evidence_client(annotations)
+            form = PSAnnotationFormClient(
+                obj=annotations,
+                relevant_events_a=id_events_a,
+                relevant_events_b=id_events_b,
+                relevant_events_c=id_events_c,
+                relevant_events_d=id_events_d,
+                relevant_events_e=id_events_e,
+                start_event_f=id_start_event_f,
+                end_event_f=id_end_event_f,
+            )
+        else:
+            # if there are no annotations, create an empty form
+            form = PSAnnotationFormClient()
+    elif speaker == Speaker.therapist:
+        if annotations:
+            # if there are annotations, fill the form with the values
+            (
+                id_events_a,
+                id_events_b,
+                id_events_c,
+                id_events_d,
+                id_events_e,
+            ) = fetch_evidence_therapist(annotations)
+            form = PSAnnotationFormTherapist(
+                obj=annotations,
+                relevant_events_a=id_events_a,
+                relevant_events_b=id_events_b,
+                relevant_events_c=id_events_c,
+                relevant_events_d=id_events_d,
+                relevant_events_e=id_events_e,
+            )
+        else:
+            # if there are no annotations, create an empty form
+            form = PSAnnotationFormTherapist()
+    elif speaker == Speaker.dyad:
+        if annotations:
+            # if there are annotations, fill the form with the values
+            (id_events_a, id_events_b) = fetch_evidence_dyad(annotations)
+            form = PSAnnotationFormDyad(
+                obj=annotations,
+                relevant_events_a=id_events_a,
+                relevant_events_b=id_events_b,
+            )
+        else:
+            # if there are no annotations, create an empty form
+            form = PSAnnotationFormDyad()
+    return form
 
 
 def get_dynamic_choices(page_items: list, speaker: Speaker):
