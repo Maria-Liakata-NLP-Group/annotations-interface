@@ -72,7 +72,7 @@
         type="button"
         class="btn btn-primary mx-2"
         id="btn_client"
-        url="{{ url_for('annotate.annotate_psy', speaker='client', dataset_id=dataset_id, page=request.args.get('page')) }}"
+        form-url="{{ url_for('annotate.annotate_psy', speaker='client', dataset_id=dataset_id, page=request.args.get('page')) }}"
       >
         Client
       </button>
@@ -80,7 +80,7 @@
         type="button"
         class="btn btn-primary mx-2"
         id="btn_therapist"
-        url="{{ url_for('annotate.annotate_psy', dataset_id=dataset_id, speaker='therapist', page=request.args.get('page')) }}"
+        form-url="{{ url_for('annotate.annotate_psy', dataset_id=dataset_id, speaker='therapist', page=request.args.get('page')) }}"
       >
         Therapist
       </button>
@@ -88,7 +88,7 @@
         type="button"
         class="btn btn-primary mx-2"
         id="btn_dyad"
-        url="{{ url_for('annotate.annotate_psy', dataset_id=dataset_id, speaker='dyad', page=request.args.get('page')) }}"
+        form-url="{{ url_for('annotate.annotate_psy', dataset_id=dataset_id, speaker='dyad', page=request.args.get('page')) }}"
       >
         Dyad
       </button>
