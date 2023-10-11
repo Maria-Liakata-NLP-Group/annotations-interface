@@ -25,18 +25,17 @@ class AnnotatePsy(View):
     methods = ["GET", "POST"]
     decorators = [login_required]
 
-    def __init__(self, dataset_id, speaker="client"):
-        """Initialize the class with the speaker, dataset and template"""
+    def __init__(self):
+        """Initialize the class with the speaker and template"""
         try:
+            speaker = request.args.get("speaker", "client", type=str)
             self.speaker = Speaker(speaker)
         except ValueError:
             enum_names = [speaker.name for speaker in Speaker]
             print("Invalid speaker name. Valid names are: ", enum_names)
             abort(500)
         else:
-            self.speaker = speaker
-            self.dataset = Dataset.query.get_or_404(dataset_id)
-            self.template = f"annotate/{speaker.name}_psy.html"
+            self.template = f"annotate/{self.speaker.name}_psy.html"
 
     def get_items_for_this_page(self, page, segments):
         """Get the events and urls for the pager for the current page"""
@@ -51,7 +50,10 @@ class AnnotatePsy(View):
             last_url,
             total_pages,
         ) = get_page_items(
-            page, events, self.dataset.id
+            page,
+            events,
+            self.dataset.id,
+            self.speaker,
         )  # get the events for the current page and the urls for the pager
         return (
             page_items,
@@ -70,7 +72,8 @@ class AnnotatePsy(View):
         form = assign_dynamic_choices(form, page_items, self.speaker)
         return form, annotations
 
-    def dispatch_request(self):
+    def dispatch_request(self, dataset_id):
+        self.dataset = Dataset.query.get_or_404(dataset_id)  # fetch the dataset
         app_config = current_app.config
         segments = split_dialog_turns(
             self.dataset.dialog_turns.order_by("timestamp").all(),
@@ -125,7 +128,7 @@ class AnnotatePsy(View):
 
 
 bp.add_url_rule(
-    "/annotate_psychotherapy/<int:dataset_id>/<string:speaker>",
+    "/annotate_psychotherapy/<int:dataset_id>",
     view_func=AnnotatePsy.as_view("annotate_psy"),
 )
 

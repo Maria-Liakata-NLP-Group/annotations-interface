@@ -88,7 +88,7 @@ def get_events_from_segments(segments: list) -> list:
     return events
 
 
-def get_page_items(page: int, events: list, dataset_id: int):
+def get_page_items(page: int, events: list, dataset_id: int, speaker: Speaker):
     """
     Get the events for the current page and the urls for the pager.
 
@@ -124,22 +124,37 @@ def get_page_items(page: int, events: list, dataset_id: int):
     is_last = page == total_pages  # check if the current page is the last page
     # create the urls for the pager
     if has_prev:
-        prev_url = url_for("annotate.annotate_ps", dataset_id=dataset_id, page=page - 1)
+        prev_url = url_for(
+            "annotate.annotate_psy",
+            dataset_id=dataset_id,
+            speaker=speaker.name,
+            page=page - 1,
+        )
     else:
         prev_url = None
     if has_next:
-        next_url = url_for("annotate.annotate_ps", dataset_id=dataset_id, page=page + 1)
+        next_url = url_for(
+            "annotate.annotate_psy",
+            dataset_id=dataset_id,
+            speaker=speaker.name,
+            page=page + 1,
+        )
     else:
         next_url = None
     if is_first:
         first_url = None
     else:
-        first_url = url_for("annotate.annotate_ps", dataset_id=dataset_id, page=1)
+        first_url = url_for(
+            "annotate.annotate_psy", dataset_id=dataset_id, speaker=speaker.name, page=1
+        )
     if is_last:
         last_url = None
     else:
         last_url = url_for(
-            "annotate.annotate_ps", dataset_id=dataset_id, page=total_pages
+            "annotate.annotate_psy",
+            dataset_id=dataset_id,
+            speaker=speaker.name,
+            page=total_pages,
         )
     return page_items, next_url, prev_url, first_url, last_url, total_pages
 
