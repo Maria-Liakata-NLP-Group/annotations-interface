@@ -1,4 +1,5 @@
-{% include "annotate/annotate_ps.html" %}
+{% include "annotate/annotate_ps.html" %} {% import "bootstrap/wtf.html" as wtf
+%}
 
 <!-- Form dyad -->
 <form
@@ -9,7 +10,7 @@
   class="collapse"
   id="form_dyad"
 >
-  {{ form_dyad.hidden_tag() }}
+  {{ form.hidden_tag() }}
   <!-- Hidden CSRF token -->
 
   {% if annotations_dyad %}
@@ -22,21 +23,19 @@
   {% endif %}
 
   <div class="form-group">
-    {{ wtf.form_field(form_dyad.label_a) }} {{
-    wtf.form_field(form_dyad.strength_a) }} {{
-    wtf.form_field(form_dyad.relevant_events_a) }} {{
-    wtf.form_field(form_dyad.comment_a) }}
+    {{ wtf.form_field(form.label_a) }} {{ wtf.form_field(form.strength_a) }} {{
+    wtf.form_field(form.relevant_events_a) }} {{ wtf.form_field(form.comment_a)
+    }}
   </div>
   <p></p>
   <div class="form-group">
-    {{ wtf.form_field(form_dyad.label_b) }} {{
-    wtf.form_field(form_dyad.strength_b) }} {{
-    wtf.form_field(form_dyad.relevant_events_b) }} {{
-    wtf.form_field(form_dyad.comment_b) }}
+    {{ wtf.form_field(form.label_b) }} {{ wtf.form_field(form.strength_b) }} {{
+    wtf.form_field(form.relevant_events_b) }} {{ wtf.form_field(form.comment_b)
+    }}
   </div>
   <p></p>
   <div style="text-align: center">
-    {{ wtf.form_field(form_dyad.comment_summary) }}
+    {{ wtf.form_field(form.comment_summary) }}
   </div>
   <p></p>
   <p>

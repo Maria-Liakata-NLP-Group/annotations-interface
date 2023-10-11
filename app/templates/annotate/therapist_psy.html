@@ -1,4 +1,5 @@
-{% include "annotate/annotate_ps.html" %}
+{% include "annotate/annotate_ps.html" %} {% import "bootstrap/wtf.html" as wtf
+%}
 
 <!-- Therapist form -->
 <form
@@ -9,7 +10,7 @@
   class="collapse"
   id="form_therapist"
 >
-  {{ form_therapist.hidden_tag() }}
+  {{ form.hidden_tag() }}
   <!-- Hidden CSRF token -->
 
   {% if annotations_therapist %}
@@ -22,42 +23,37 @@
   {% endif %}
 
   <div class="form-group">
-    {{ wtf.form_field(form_therapist.label_a) }} {{
-    wtf.form_field(form_therapist.strength_a) }} {{
-    wtf.form_field(form_therapist.relevant_events_a) }} {{
-    wtf.form_field(form_therapist.comment_a) }}
+    {{ wtf.form_field(form.label_a) }} {{ wtf.form_field(form.strength_a) }} {{
+    wtf.form_field(form.relevant_events_a) }} {{ wtf.form_field(form.comment_a)
+    }}
   </div>
   <p></p>
   <div class="form-group">
-    {{ wtf.form_field(form_therapist.label_b) }} {{
-    wtf.form_field(form_therapist.strength_b) }} {{
-    wtf.form_field(form_therapist.relevant_events_b) }} {{
-    wtf.form_field(form_therapist.comment_b) }}
+    {{ wtf.form_field(form.label_b) }} {{ wtf.form_field(form.strength_b) }} {{
+    wtf.form_field(form.relevant_events_b) }} {{ wtf.form_field(form.comment_b)
+    }}
   </div>
   <p></p>
   <div class="form-group">
-    {{ wtf.form_field(form_therapist.label_c) }} {{
-    wtf.form_field(form_therapist.strength_c) }} {{
-    wtf.form_field(form_therapist.relevant_events_c) }} {{
-    wtf.form_field(form_therapist.comment_c) }}
+    {{ wtf.form_field(form.label_c) }} {{ wtf.form_field(form.strength_c) }} {{
+    wtf.form_field(form.relevant_events_c) }} {{ wtf.form_field(form.comment_c)
+    }}
   </div>
   <p></p>
   <div class="form-group">
-    {{ wtf.form_field(form_therapist.label_d) }} {{
-    wtf.form_field(form_therapist.strength_d) }} {{
-    wtf.form_field(form_therapist.relevant_events_d) }} {{
-    wtf.form_field(form_therapist.comment_d) }}
+    {{ wtf.form_field(form.label_d) }} {{ wtf.form_field(form.strength_d) }} {{
+    wtf.form_field(form.relevant_events_d) }} {{ wtf.form_field(form.comment_d)
+    }}
   </div>
   <p></p>
   <div class="form-group">
-    {{ wtf.form_field(form_therapist.label_e) }} {{
-    wtf.form_field(form_therapist.strength_e) }} {{
-    wtf.form_field(form_therapist.relevant_events_e) }} {{
-    wtf.form_field(form_therapist.comment_e) }}
+    {{ wtf.form_field(form.label_e) }} {{ wtf.form_field(form.strength_e) }} {{
+    wtf.form_field(form.relevant_events_e) }} {{ wtf.form_field(form.comment_e)
+    }}
   </div>
   <p></p>
   <div style="text-align: center">
-    {{ wtf.form_field(form_therapist.comment_summary) }}
+    {{ wtf.form_field(form.comment_summary) }}
   </div>
   <p></p>
   <p>
