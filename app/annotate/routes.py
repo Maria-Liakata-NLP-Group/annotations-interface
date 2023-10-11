@@ -167,7 +167,7 @@ class AnnotatePsy(View):
         else:
             self.speaker = speaker
             self.dataset = Dataset.query.get_or_404(dataset_id)
-            self.template = f"annotate/{speaker.name}.html"
+            self.template = f"annotate/{speaker.name}_psy.html"
 
     def get_items_for_this_page(self, page, segments):
         """Get the events and urls for the pager for the current page"""
