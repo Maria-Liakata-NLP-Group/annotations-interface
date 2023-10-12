@@ -1,7 +1,7 @@
 """
 Miscellaneous utility functions for the annotate blueprint
 """
-from flask_wtf import FlaskForm
+from typing import Union
 from datetime import datetime
 import itertools
 from flask import url_for
@@ -15,6 +15,7 @@ from app.models import (
     EvidenceClient,
     EvidenceTherapist,
     EvidenceDyad,
+    Dataset,
 )
 from app import db
 from app.annotate.forms import (
@@ -24,7 +25,7 @@ from app.annotate.forms import (
 )
 
 
-def split_dialog_turns(dialog_turns, time_interval=300):
+def split_dialog_turns(dialog_turns: list, time_interval: int = 300) -> list:
     """
     Split a list of dialog turns into time segments, identified by the timestamp.
     The dialog turns must be sorted by timestamp in ascending order.
@@ -59,7 +60,7 @@ def split_dialog_turns(dialog_turns, time_interval=300):
     return segments
 
 
-def get_events_from_segments(segments):
+def get_events_from_segments(segments: list) -> list:
     """
     Get the events corresponding to each segment of dialog turns.
     The events are sorted by event number in ascending order (i.e. in time order).
@@ -87,7 +88,7 @@ def get_events_from_segments(segments):
     return events
 
 
-def get_page_items(page, events, dataset_id):
+def get_page_items(page: int, events: list, dataset_id: int):
     """
     Get the events for the current page and the urls for the pager.
 
@@ -143,7 +144,9 @@ def get_page_items(page, events, dataset_id):
     return page_items, next_url, prev_url, first_url, last_url, total_pages
 
 
-def fetch_dialog_turn_annotations(dialog_turns: list, speaker: Speaker):
+def fetch_dialog_turn_annotations(
+    dialog_turns: list, speaker: Speaker
+) -> Union[None, PSAnnotationClient, PSAnnotationTherapist, PSAnnotationDyad]:
     """
     Fetch the annotations for the dialog turns from the database and
     only return the annotation with the latest timestamp.
@@ -206,7 +209,12 @@ def fetch_dialog_turn_annotations(dialog_turns: list, speaker: Speaker):
     return annotation
 
 
-def new_dialog_turn_annotation_to_db(form, speaker, dataset, dialog_turns):
+def new_dialog_turn_annotation_to_db(
+    form: Union[PSAnnotationClient, PSAnnotationFormTherapist, PSAnnotationFormDyad],
+    speaker: Speaker,
+    dataset: Dataset,
+    dialog_turns: list,
+):
     """
     Create a new psychotherapy dialog turn annotation object and add it to the database session.
 
@@ -292,7 +300,9 @@ def new_dialog_turn_annotation_to_db(form, speaker, dataset, dialog_turns):
         new_dyad_evidence_events_to_db(form, annotation)
 
 
-def new_client_evidence_events_to_db(form, annotation):
+def new_client_evidence_events_to_db(
+    form: PSAnnotationFormClient, annotation: PSAnnotationClient
+):
     """
     Given a new annotation for the client, add the evidence
     events of the form to the database session.
@@ -353,7 +363,9 @@ def new_client_evidence_events_to_db(form, annotation):
     db.session.add_all(evidences)
 
 
-def new_therapist_evidence_events_to_db(form, annotation):
+def new_therapist_evidence_events_to_db(
+    form: PSAnnotationFormTherapist, annotation: PSAnnotationTherapist
+):
     """
     Given a new annotation for the therapist, add the evidence
     events of the form to the database session.
@@ -404,7 +416,9 @@ def new_therapist_evidence_events_to_db(form, annotation):
     db.session.add_all(evidences)
 
 
-def new_dyad_evidence_events_to_db(form, annotation):
+def new_dyad_evidence_events_to_db(
+    form: PSAnnotationFormDyad, annotation: PSAnnotationDyad
+):
     """
     Given a new annotation for the dyad, add the evidence
     events of the form to the database session.
@@ -431,85 +445,91 @@ def new_dyad_evidence_events_to_db(form, annotation):
     db.session.add_all(evidences)
 
 
-def create_psy_annotation_forms(
-    annotations_client, annotations_therapist, annotations_dyad
-):
+def create_psy_annotation_form(
+    annotations: Union[
+        PSAnnotationClient, PSAnnotationTherapist, PSAnnotationDyad, None
+    ],
+    speaker: Speaker,
+) -> Union[PSAnnotationFormClient, PSAnnotationFormTherapist, PSAnnotationFormDyad]:
     """
-    Create the annotation forms for the psychotherapy dialog turns,
+    Create the annotation form for the psychotherapy dialog turns,
     either pre-populated with previous annotation values or empty.
 
     Parameters
     ----------
-    annotations_client : PSAnnotationClient or None for client annotations
-    annotations_therapist : PSAnnotationTherapist or None for therapist annotations
-    annotations_dyad : PSAnnotationDyad or None for dyad annotations
+    annotations : PSAnnotationClient or PSAnnotationTherapist or PSAnnotationDyad or None
+        The annotations object for the client, therapist or dyad if it exists, otherwise None
+    speaker : Speaker
+        The speaker the annotation is for (client, therapist or dyad)
 
     Returns
     -------
-    form_client : PSAnnotationFormClient (pre-populated with previous annotation values or empty)
-    form_therapist : PSAnnotationFormTherapist (pre-populated with previous annotation values or empty)
-    form_dyad : PSAnnotationFormDyad (pre-populated with previous annotation values or empty)
+    form : PSAnnotationFormClient or PSAnnotationFormTherapist or PSAnnotationFormDyad
+        The annotation form, either pre-populated with previous annotation values or empty (if there are no annotations)
     """
 
-    if annotations_client:
-        # if there are annotations, fill the form with the values
-        (
-            id_events_a,
-            id_events_b,
-            id_events_c,
-            id_events_d,
-            id_events_e,
-            id_start_event_f,
-            id_end_event_f,
-        ) = fetch_evidence_client(annotations_client)
-        form_client = PSAnnotationFormClient(
-            obj=annotations_client,
-            relevant_events_a=id_events_a,
-            relevant_events_b=id_events_b,
-            relevant_events_c=id_events_c,
-            relevant_events_d=id_events_d,
-            relevant_events_e=id_events_e,
-            start_event_f=id_start_event_f,
-            end_event_f=id_end_event_f,
-        )
-    else:
-        # if there are no annotations, create an empty form
-        form_client = PSAnnotationFormClient()
-    if annotations_therapist:
-        # if there are annotations, fill the form with the values
-        (
-            id_events_a,
-            id_events_b,
-            id_events_c,
-            id_events_d,
-            id_events_e,
-        ) = fetch_evidence_therapist(annotations_therapist)
-        form_therapist = PSAnnotationFormTherapist(
-            obj=annotations_therapist,
-            relevant_events_a=id_events_a,
-            relevant_events_b=id_events_b,
-            relevant_events_c=id_events_c,
-            relevant_events_d=id_events_d,
-            relevant_events_e=id_events_e,
-        )
-    else:
-        # if there are no annotations, create an empty form
-        form_therapist = PSAnnotationFormTherapist()
-    if annotations_dyad:
-        # if there are annotations, fill the form with the values
-        (id_events_a, id_events_b) = fetch_evidence_dyad(annotations_dyad)
-        form_dyad = PSAnnotationFormDyad(
-            obj=annotations_dyad,
-            relevant_events_a=id_events_a,
-            relevant_events_b=id_events_b,
-        )
-    else:
-        # if there are no annotations, create an empty form
-        form_dyad = PSAnnotationFormDyad()
-    return form_client, form_therapist, form_dyad
+    if speaker == Speaker.client:
+        if annotations:
+            # if there are annotations, fill the form with the values
+            (
+                id_events_a,
+                id_events_b,
+                id_events_c,
+                id_events_d,
+                id_events_e,
+                id_start_event_f,
+                id_end_event_f,
+            ) = fetch_evidence_client(annotations)
+            form = PSAnnotationFormClient(
+                obj=annotations,
+                relevant_events_a=id_events_a,
+                relevant_events_b=id_events_b,
+                relevant_events_c=id_events_c,
+                relevant_events_d=id_events_d,
+                relevant_events_e=id_events_e,
+                start_event_f=id_start_event_f,
+                end_event_f=id_end_event_f,
+            )
+        else:
+            # if there are no annotations, create an empty form
+            form = PSAnnotationFormClient()
+    elif speaker == Speaker.therapist:
+        if annotations:
+            # if there are annotations, fill the form with the values
+            (
+                id_events_a,
+                id_events_b,
+                id_events_c,
+                id_events_d,
+                id_events_e,
+            ) = fetch_evidence_therapist(annotations)
+            form = PSAnnotationFormTherapist(
+                obj=annotations,
+                relevant_events_a=id_events_a,
+                relevant_events_b=id_events_b,
+                relevant_events_c=id_events_c,
+                relevant_events_d=id_events_d,
+                relevant_events_e=id_events_e,
+            )
+        else:
+            # if there are no annotations, create an empty form
+            form = PSAnnotationFormTherapist()
+    elif speaker == Speaker.dyad:
+        if annotations:
+            # if there are annotations, fill the form with the values
+            (id_events_a, id_events_b) = fetch_evidence_dyad(annotations)
+            form = PSAnnotationFormDyad(
+                obj=annotations,
+                relevant_events_a=id_events_a,
+                relevant_events_b=id_events_b,
+            )
+        else:
+            # if there are no annotations, create an empty form
+            form = PSAnnotationFormDyad()
+    return form
 
 
-def get_dynamic_choices(page_items: list, speaker: Speaker):
+def get_dynamic_choices(page_items: list, speaker: Speaker) -> list:
     """
     Get the dynamic choices for the select fields in the annotation form.
     This is used to populate the select fields with the events for the current page,
@@ -548,7 +568,13 @@ def get_dynamic_choices(page_items: list, speaker: Speaker):
     return choices
 
 
-def assign_dynamic_choices(form: FlaskForm, page_items: list, speaker: Speaker):
+def assign_dynamic_choices(
+    form: Union[
+        PSAnnotationFormClient, PSAnnotationFormTherapist, PSAnnotationFormDyad
+    ],
+    page_items: list,
+    speaker: Speaker,
+) -> Union[PSAnnotationFormClient, PSAnnotationFormTherapist, PSAnnotationFormDyad]:
     """
     Assign the dynamic choices to the select fields or select multiple fields in the annotation form.
 
@@ -581,7 +607,7 @@ def assign_dynamic_choices(form: FlaskForm, page_items: list, speaker: Speaker):
     return form
 
 
-def fetch_evidence_client(annotation):
+def fetch_evidence_client(annotation: PSAnnotationClient):
     """
     Given a client annotation, fetch the evidence events from the database
     and return them as a list of event IDs.
@@ -639,7 +665,7 @@ def fetch_evidence_client(annotation):
     )
 
 
-def fetch_evidence_therapist(annotation):
+def fetch_evidence_therapist(annotation: PSAnnotationTherapist):
     """
     Given a therapist annotation, fetch the evidence events from the database
     and return them as a list of event IDs.
@@ -681,7 +707,7 @@ def fetch_evidence_therapist(annotation):
     )
 
 
-def fetch_evidence_dyad(annotation):
+def fetch_evidence_dyad(annotation: PSAnnotationDyad):
     """
     Given a dyad annotation, fetch the evidence events from the database
     and return them as a list of event IDs.
