@@ -21,9 +21,11 @@ class AnnotatePSView(View):
     decorators = [login_required]
 
     def __init__(self, template):
+        """Initialize the view with the specified template"""
         self.template = template
 
-    def get_items_for_this_page(self, page, segments, dataset_id):
+    def get_items_for_this_page(self, page, segments):
+        """Get the items for the current page"""
         start_times = [segment[0].timestamp for segment in segments]
         start_time = start_times[page - 1]  # get the starting time of the current page
         events = get_events_from_segments(segments)
@@ -34,7 +36,7 @@ class AnnotatePSView(View):
             first_url,
             last_url,
             total_pages,
-        ) = get_page_items(page, events, dataset_id)
+        ) = get_page_items(page, events, self.dataset.id)
         return (
             page_items,
             next_url,
@@ -46,19 +48,20 @@ class AnnotatePSView(View):
         )
 
     def create_form(self, dialog_turns, page_items, speaker):
+        """Create the annotations form for the specified speaker"""
         annotations = fetch_dialog_turn_annotations(dialog_turns, speaker)
         form = create_psy_annotation_form(annotations, speaker)
         form = assign_dynamic_choices(form, page_items, speaker)
         return form, annotations
 
     def dispatch_request(self, dataset_id):
-        dataset = Dataset.query.get_or_404(dataset_id)
+        self.dataset = Dataset.query.get_or_404(dataset_id)
         app_config = current_app.config
         segments = split_dialog_turns(
-            dataset.dialog_turns.order_by("timestamp").all(),
+            self.dataset.dialog_turns.order_by("timestamp").all(),
             time_interval=app_config["PS_MINS_PER_PAGE"] * 60,
         )
-        page = request.args.get("page", 1, type=int)
+        page = request.args.get("page", 1, type=int)  # get the page number from the url
         dialog_turns = segments[page - 1]
         (
             page_items,
@@ -68,7 +71,7 @@ class AnnotatePSView(View):
             last_url,
             total_pages,
             start_time,
-        ) = self.get_items_for_this_page(page, segments, dataset_id)
+        ) = self.get_items_for_this_page(page, segments)
         form_client, annotations_client = self.create_form(
             dialog_turns, page_items, Speaker.client
         )
@@ -84,7 +87,7 @@ class AnnotatePSView(View):
                     new_dialog_turn_annotation_to_db(
                         form_client,
                         Speaker.client,
-                        dataset,
+                        self.dataset,
                         dialog_turns=segments[page - 1],
                     )
                 except Exception as e:
@@ -94,7 +97,9 @@ class AnnotatePSView(View):
                 db.session.commit()
                 flash("Your annotations have been saved.", "success")
                 return redirect(
-                    url_for("annotate.annotate_ps", dataset_id=dataset_id, page=page)
+                    url_for(
+                        "annotate.annotate_ps", dataset_id=self.dataset.id, page=page
+                    )
                 )
         elif "submit_form_therapist" in request.form:
             if form_therapist.validate_on_submit():
@@ -102,7 +107,7 @@ class AnnotatePSView(View):
                     new_dialog_turn_annotation_to_db(
                         form_therapist,
                         Speaker.therapist,
-                        dataset,
+                        self.dataset,
                         dialog_turns=segments[page - 1],
                     )
                 except Exception as e:
@@ -112,7 +117,9 @@ class AnnotatePSView(View):
                 db.session.commit()
                 flash("Your annotations have been saved.", "success")
                 return redirect(
-                    url_for("annotate.annotate_ps", dataset_id=dataset_id, page=page)
+                    url_for(
+                        "annotate.annotate_ps", dataset_id=self.dataset.id, page=page
+                    )
                 )
         elif "submit_form_dyad" in request.form:
             if form_dyad.validate_on_submit():
@@ -120,7 +127,7 @@ class AnnotatePSView(View):
                     new_dialog_turn_annotation_to_db(
                         form_dyad,
                         Speaker.dyad,
-                        dataset,
+                        self.dataset,
                         dialog_turns=segments[page - 1],
                     )
                 except Exception as e:
@@ -130,11 +137,13 @@ class AnnotatePSView(View):
                 db.session.commit()
                 flash("Your annotations have been saved.", "success")
                 return redirect(
-                    url_for("annotate.annotate_ps", dataset_id=dataset_id, page=page)
+                    url_for(
+                        "annotate.annotate_ps", dataset_id=self.dataset.id, page=page
+                    )
                 )
         return render_template(
             self.template,
-            dataset_name=dataset.name,
+            dataset_name=self.dataset.name,
             page_items=page_items,
             next_url=next_url,
             prev_url=prev_url,
