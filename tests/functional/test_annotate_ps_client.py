@@ -22,7 +22,6 @@ from app.utils import (
 import pytest
 
 
-@pytest.mark.order(after="tests/functional/test_annotate_ps.py::test_valid_login")
 def test_default_values_for_label_f_client(test_client):
     """
     GIVEN a Flask application configured for testing and a dataset with psychotherapy dialog turns
@@ -69,7 +68,7 @@ def test_default_values_for_label_f_client(test_client):
     assert response.status_code == 200
 
 
-@pytest.mark.order(after="test_default_values_for_label_f_client")
+@pytest.mark.dependency()
 def test_valid_segment_level_annotation_client(test_client):
     """
     GIVEN a Flask application configured for testing and a dataset with psychotherapy dialog turns
