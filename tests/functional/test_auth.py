@@ -1,8 +1,10 @@
 """
 Functional tests for the authentication (`auth`) blueprint.
 """
+import pytest
 
 
+@pytest.mark.order(5)
 def test_login_page(test_client):
     """
     GIVEN a Flask application configured for testing

@@ -4,10 +4,11 @@ Psychotherapy session dataset upload page.
 """
 from app.models import User, Dataset, PSDialogTurn, PSDialogEvent
 from bs4 import BeautifulSoup
-from datetime import datetime
 import os
+import pytest
 
 
+@pytest.mark.order(7)
 def test_upload_psychotherapy_login_required(test_client):
     """
     GIVEN a Flask application configured for testing

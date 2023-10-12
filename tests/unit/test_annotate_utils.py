@@ -63,6 +63,7 @@ def create_dialog_turns():
     return dialog_turns
 
 
+@pytest.mark.order(3)
 @pytest.mark.dependency()
 def test_split_dialog_turns():
     """Test the split_dialog_turns() function."""

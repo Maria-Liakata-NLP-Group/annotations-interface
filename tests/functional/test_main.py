@@ -1,8 +1,10 @@
 """
 Functional tests for the main (`main`) blueprint.
 """
+import pytest
 
 
+@pytest.mark.order(4)
 def test_home_page(test_client):
     """
     GIVEN a Flask application configured for testing
