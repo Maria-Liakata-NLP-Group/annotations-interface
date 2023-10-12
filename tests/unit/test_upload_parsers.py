@@ -7,6 +7,7 @@ from datetime import datetime
 import pytest
 
 
+@pytest.mark.order(2)
 def test_sm_dict_to_sql(flask_app, db_session, insert_datasets):
     """
     Test the sm_dict_to_sql function,

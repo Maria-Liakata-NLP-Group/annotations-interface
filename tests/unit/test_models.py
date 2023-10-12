@@ -32,6 +32,7 @@ import pytest
 from sqlalchemy.exc import IntegrityError
 
 
+@pytest.mark.order(1)
 def test_new_user(db_session, user_admin1):
     """
     GIVEN a User model
@@ -47,7 +48,6 @@ def test_new_user(db_session, user_admin1):
     assert user.check_password("admin1password")
 
 
-@pytest.mark.order(after="test_new_user")
 def test_unique_username(db_session):
     """
     GIVEN a User model
@@ -63,7 +63,6 @@ def test_unique_username(db_session):
     db_session.rollback()
 
 
-@pytest.mark.order(after="test_new_user")
 def test_unique_email(db_session):
     """
     GIVEN a User model

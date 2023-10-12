@@ -13,6 +13,7 @@ import re
 from app.utils import SubLabelsAClient
 
 
+@pytest.mark.order(8)
 @pytest.mark.dependency(
     depends=["tests/unit/test_upload_parsers.py::test_psychotherapy_df_to_sql"],
     scope="session",

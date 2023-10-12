@@ -19,8 +19,13 @@ from app.utils import (
 )
 
 
+@pytest.mark.order(10)
 @pytest.mark.dependency()
-def test_valid_segment_level_annotation_therapist(test_client):
+@pytest.mark.dependency(
+    depends=["tests/unit/test_upload_parsers.py::test_psychotherapy_df_to_sql"],
+    scope="session",
+)
+def test_valid_segment_level_annotation_therapist(test_client, insert_ps_dialog_turns):
     """
     GIVEN a Flask application configured for testing and a dataset with psychotherapy dialog turns
     WHEN the '/annotate_psychotherapy' page is requested (POST) with a valid annotation for the therapist at the segment level

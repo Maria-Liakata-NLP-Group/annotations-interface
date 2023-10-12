@@ -5,8 +5,10 @@ Social media dataset upload page.
 from app.models import User, Dataset, SMPost, SMReply
 from bs4 import BeautifulSoup
 import os
+import pytest
 
 
+@pytest.mark.order(6)
 def test_upload_sm_login_required(test_client):
     """
     GIVEN a Flask application configured for testing

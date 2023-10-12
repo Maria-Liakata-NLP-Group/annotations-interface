@@ -22,7 +22,12 @@ from app.utils import (
 import pytest
 
 
-def test_default_values_for_label_f_client(test_client):
+@pytest.mark.order(9)
+@pytest.mark.dependency(
+    depends=["tests/unit/test_upload_parsers.py::test_psychotherapy_df_to_sql"],
+    scope="session",
+)
+def test_default_values_for_label_f_client(test_client, insert_ps_dialog_turns):
     """
     GIVEN a Flask application configured for testing and a dataset with psychotherapy dialog turns
     WHEN the '/annotate_psychotherapy' page is requested (GET) without any existing annotations
