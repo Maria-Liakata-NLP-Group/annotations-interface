@@ -1,7 +1,7 @@
 """
 Functional tests for the annotate blueprint.
 Psychotherapy session dataset annotation page.
-Tests specific for client annotations.
+Tests specific to the client role.
 """
 from flask_login import current_user
 from flask import url_for
