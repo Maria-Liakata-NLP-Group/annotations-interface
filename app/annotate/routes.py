@@ -17,14 +17,16 @@ from flask.views import View
 
 
 class AnnotatePSView(View):
+    """Class-based view for the annotations page for psychotherapy datasets"""
+
     methods = ["GET", "POST"]
     decorators = [login_required]
 
-    def __init__(self, template):
+    def __init__(self, template: str):
         """Initialize the view with the specified template"""
         self.template = template
 
-    def get_items_for_this_page(self, page, segments):
+    def get_items_for_this_page(self, page: int, segments: list):
         """Get the items for the current page"""
         start_times = [segment[0].timestamp for segment in segments]
         start_time = start_times[page - 1]  # get the starting time of the current page
@@ -47,22 +49,24 @@ class AnnotatePSView(View):
             start_time,
         )
 
-    def create_form(self, dialog_turns, page_items, speaker):
+    def create_form(self, dialog_turns: list, page_items: list, speaker: Speaker):
         """Create the annotations form for the specified speaker"""
         annotations = fetch_dialog_turn_annotations(dialog_turns, speaker)
         form = create_psy_annotation_form(annotations, speaker)
         form = assign_dynamic_choices(form, page_items, speaker)
         return form, annotations
 
-    def dispatch_request(self, dataset_id):
+    def dispatch_request(self, dataset_id: int):
+        """This method is the equivalent of the view function"""
         self.dataset = Dataset.query.get_or_404(dataset_id)
         app_config = current_app.config
         segments = split_dialog_turns(
             self.dataset.dialog_turns.order_by("timestamp").all(),
             time_interval=app_config["PS_MINS_PER_PAGE"] * 60,
-        )
-        page = request.args.get("page", 1, type=int)  # get the page number from the url
-        dialog_turns = segments[page - 1]
+        )  # split the dialog turns into segments
+        page = request.args.get(
+            "page", 1, type=int
+        )  # get the page number from the url (default is 1)
         (
             page_items,
             next_url,
@@ -72,6 +76,7 @@ class AnnotatePSView(View):
             total_pages,
             start_time,
         ) = self.get_items_for_this_page(page, segments)
+        dialog_turns = segments[page - 1]  # get the dialog turns for the current page
         form_client, annotations_client = self.create_form(
             dialog_turns, page_items, Speaker.client
         )
@@ -82,6 +87,7 @@ class AnnotatePSView(View):
             dialog_turns, page_items, Speaker.dyad
         )
         if "submit_form_client" in request.form:
+            # if the client form is submitted
             if form_client.validate_on_submit():
                 try:
                     new_dialog_turn_annotation_to_db(
@@ -102,6 +108,7 @@ class AnnotatePSView(View):
                     )
                 )
         elif "submit_form_therapist" in request.form:
+            # if the therapist form is submitted
             if form_therapist.validate_on_submit():
                 try:
                     new_dialog_turn_annotation_to_db(
@@ -122,6 +129,7 @@ class AnnotatePSView(View):
                     )
                 )
         elif "submit_form_dyad" in request.form:
+            # if the dyad form is submitted
             if form_dyad.validate_on_submit():
                 try:
                     new_dialog_turn_annotation_to_db(
