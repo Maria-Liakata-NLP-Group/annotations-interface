@@ -305,3 +305,27 @@ class LabelNamesDyad(Enum):
 
     label_a = "(A) Alliance/Reciprocity"
     label_b = "(B) Tension"
+
+
+class ClientCategoryManager:
+    """Manager for client categories"""
+
+    def add_category(self, category: str):
+        """Add a new category to the database"""
+        pass
+
+
+class ClientLabelManager:
+    """Manager for client labels"""
+
+    def add_label(self, label: str, category: str):
+        """Add a new label to the database"""
+        pass
+
+
+class ClientSubLabelManager:
+    """Manager for client sublabels"""
+
+    def add_sublabel(self, sublabel: str, label: str):
+        """Add a new sublabel to the database"""
+        pass

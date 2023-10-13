@@ -566,3 +566,32 @@ class EvidenceDyad(db.Model):
         db.Integer, db.ForeignKey("ps_annotation_dyad.id")
     )
     label = db.Column(db.Enum(LabelNamesDyad), nullable=True, default=None)
+
+
+class ClientCategory(db.Model):
+    __tablename__ = "client_category"
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(64), index=True, unique=True)
+    labels = db.relationship(
+        "ClientLabel", backref="category", lazy="dynamic"
+    )  # one-to-many relationship with ClientLabel class
+
+
+class ClientLabel(db.Model):
+    __tablename__ = "client_label"
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(64), index=True, unique=True)
+    id_category = db.Column(db.Integer, db.ForeignKey("client_category.id"))
+    sublabels = db.relationship(
+        "ClientSubLabel", backref="label", lazy="dynamic"
+    )  # one-to-many relationship with ClientSubLabel class
+
+
+class ClientSubLabel(db.Model):
+    __tablename__ = "client_sublabel"
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(64), index=True, unique=True)
+    id_label = db.Column(db.Integer, db.ForeignKey("client_label.id"))
