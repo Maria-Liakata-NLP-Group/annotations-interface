@@ -1,0 +1,66 @@
+{
+  "Wish": {
+    "To be liked, understood, supported and close": [
+      "To be liked",
+      "To be understood",
+      "To be cared for",
+      "To be helped",
+      "Not to be responsible",
+      "To be close",
+      "To be open",
+      "To be opened up to",
+      "To be like others"
+    ],
+    "To be distant and to oppose others": [
+      "To be distant",
+      "To be independent",
+      "To manage by myself",
+      "To oppose others",
+      "To be dominant or to control others"
+    ],
+    "To avoid conflict": [
+      "To avoid conflict",
+      "To compromise",
+      "To be flexible"
+    ],
+    "To be hurt": ["To be hurt by others", "To hurt myself", "To be punished"],
+    "To accept others": [
+      "To accept others",
+      "To respect others",
+      "To understand others"
+    ],
+    "To have security": [
+      "To have security",
+      "To have stability",
+      "Not to be hurt",
+      "To trust others"
+    ],
+    "To be accepted": ["To be accepted", "To be appreciated/respected"],
+    "To better myself and to be my own self": [
+      "To better myself",
+      "To achieve",
+      "To be good",
+      "To help others",
+      "To be my own self",
+      "To know what is right for me",
+      "To have self-esteem",
+      "To be unique",
+      "To be happy",
+      "To be excited",
+      "To have interest",
+      "To feel sexual"
+    ],
+    "No wish is expressed": [],
+    "Other": []
+  },
+  "Response of Other": {
+    "Other like, understanding, supporting and close": [
+      "Like/love me",
+      "Are understanding"
+    ],
+    "Other dislike, not understanding, unhelpful and distant": [
+      "Dislike me",
+      "Are not understanding"
+    ]
+  }
+}
