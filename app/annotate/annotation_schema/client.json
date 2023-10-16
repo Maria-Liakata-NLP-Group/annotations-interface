@@ -56,11 +56,81 @@
   "Response of Other": {
     "Other like, understanding, supporting and close": [
       "Like/love me",
-      "Are understanding"
+      "Are understanding",
+      "Are helpful",
+      "Are open",
+      "Are close/warm"
     ],
     "Other dislike, not understanding, unhelpful and distant": [
       "Dislike me",
-      "Are not understanding"
-    ]
+      "Are not understanding",
+      "Are unhelpful",
+      "Are distant/cold"
+    ],
+    "Are dependent and controlling": [
+      "Dependent on me",
+      "Are controlling",
+      "Strict",
+      "Oppose me"
+    ],
+    "Accepts me": ["Accepts me", "Respect me", "Gives me independence"],
+    "Rejecting": ["Don't accept me", "Don't respect me", "Don't trust me"],
+    "Other has bad qualities": [
+      "Bad",
+      "Not trustworthy",
+      "Limited",
+      "Upset/anxious/angry",
+      "Hurt",
+      "Devaluation"
+    ],
+    "Other has good qualities": [
+      "Good",
+      "Trustful",
+      "Strong/smart/interesting",
+      "Happy/funny",
+      "Idealization"
+    ],
+    "No response of other is expressed": [],
+    "Other": []
+  },
+  "Response of Self": {
+    "Feel close, liked and accepted": [
+      "Feel liked/loved/comfortable/understood",
+      "Like the other, feel open, close to the other",
+      "Helped by the other",
+      "Feel accepted/respected"
+    ],
+    "Feel distant and rejected": [
+      "Feel unloved, not understood",
+      "Indifferent",
+      "Disappointed",
+      "Feel rejected",
+      "Hurt"
+    ],
+    "Accept the other": [
+      "Accept/understand the other/compassionate towards the other",
+      "Helping the other"
+    ],
+    "Flight, over-compliance": [
+      "Avoidance/escape",
+      "Helpless, give up, hopeless",
+      "Depressed",
+      "Anxious, guilty, ashamed",
+      "Self criticism/self hate"
+    ],
+    "Fight and over compensatory": [
+      "Blames, demanding",
+      "Aggressive, hurt other",
+      "Oppose others",
+      "Over compensatory",
+      "Perfectionistic"
+    ],
+    "Feel agency, self-acceptance and esteem": [
+      "Self-acceptance/compassion",
+      "Experience agency/self-controlled",
+      "Self-confident/esteem"
+    ],
+    "No response of self is expressed": [],
+    "Other": []
   }
 }
