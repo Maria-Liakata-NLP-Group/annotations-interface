@@ -568,36 +568,20 @@ class EvidenceDyad(db.Model):
     label = db.Column(db.Enum(LabelNamesDyad), nullable=True, default=None)
 
 
-class ClientLabelA(db.Model):
-    """Table to store the first level of annotation labels for the client"""
+class ClientLabel(db.Model):
+    """Self-referencing table to store the labels for the client annotations"""
 
-    __tablename__ = "client_label_a"
-
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(64), index=True, unique=True)
-    label_b = db.relationship(
-        "ClientLabelB", backref="label_a", lazy="dynamic"
-    )  # one-to-many relationship with ClientLabelB class
-
-
-class ClientLabelB(db.Model):
-    """Table to store the second level of annotation labels for the client"""
-
-    __tablename__ = "client_label_b"
+    __tablename__ = "client_label"
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(64), index=True, unique=True)
-    id_client_label_a = db.Column(db.Integer, db.ForeignKey("client_label_a.id"))
-    label_c = db.relationship(
-        "ClientLabelC", backref="label_b", lazy="dynamic"
-    )  # one-to-many relationship with ClientLabelC class
+    label = db.Column(db.String(64), index=True, nullable=False)
+    parent_id = db.Column(db.Integer, db.ForeignKey("client_label.id"), default=None)
+    children = db.relationship(
+        "ClientLabel", backref=db.backref("parent", remote_side=[id]), lazy="dynamic"
+    )
+    # create unique constraint on label within a parent
+    __table_args__ = (db.UniqueConstraint("label", "parent_id"),)
 
-
-class ClientLabelC(db.Model):
-    """Table to store the third level of annotation labels for the client"""
-
-    __tablename__ = "client_label_c"
-
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(64), index=True, unique=True)
-    id_client_label_b = db.Column(db.Integer, db.ForeignKey("client_label_b.id"))
+    def __repr__(self):
+        """How to print objects of this class"""
+        return "<ClientLabel {}>".format(self.label[:10])
