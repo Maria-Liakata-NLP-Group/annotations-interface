@@ -570,40 +570,44 @@ class EvidenceDyad(db.Model):
     label = db.Column(db.Enum(LabelNamesDyad), nullable=True, default=None)
 
 
-class ClientLabel(db.Model):
-    """Self-referencing table to store the labels for the client annotations"""
+class ClientAnnotationSchema(db.Model):
+    """Self-referencing table to store the client annotation schema"""
 
-    __tablename__ = "client_label"
+    __tablename__ = "client_annotation_schema"
 
     id = db.Column(db.Integer, primary_key=True)
     label = db.Column(db.String(64), index=True, nullable=False)
-    parent_id = db.Column(db.Integer, db.ForeignKey("client_label.id"), default=None)
+    parent_id = db.Column(
+        db.Integer, db.ForeignKey("client_annotation_schema.id"), default=None
+    )
     children = db.relationship(
-        "ClientLabel", backref=db.backref("parent", remote_side=[id]), lazy="dynamic"
+        "ClientAnnotationSchema",
+        backref=db.backref("parent", remote_side=[id]),
+        lazy="dynamic",
     )
     # create unique constraint on label within a parent
     __table_args__ = (db.UniqueConstraint("label", "parent_id"),)
 
     def __repr__(self):
         """How to print objects of this class"""
-        return "<ClientLabel {}>".format(self.label[:10])
+        return "<ClientAnnotationSchema {}>".format(self.label[:10])
 
 
-class TherapistLabel(db.Model):
-    """Self-referencing table to store the labels for the therapist annotations"""
-
-    pass
-
-
-class DyadLabel(db.Model):
-    """Self-referencing table to store the labels for the dyad annotations"""
+class TherapistAnnotationSchema(db.Model):
+    """Self-referencing table to store the therapist annotation schema"""
 
     pass
 
 
-class LabelManager:
+class DyadAnnotationSchema(db.Model):
+    """Self-referencing table to store the dyad annotation schema"""
+
+    pass
+
+
+class AnnotationSchemaManager:
     def __init__(self):
-        """Initialize the label manager specifying the JSON files containing the annotation schema"""
+        """Initialize the manager specifying the JSON files containing the annotation schema"""
         self.filename_client = "app/annotate/annotation_schema/client.json"
         self.filename_therapist = "app/annotate/annotation_schema/therapist.json"
         self.filename_dyad = "app/annotate/annotation_schema/dyad.json"
@@ -615,32 +619,37 @@ class LabelManager:
         return data
 
     def add_labels(
-        self, label_model: Union[ClientLabel, TherapistLabel, DyadLabel], filename: str
+        self,
+        annotation_schema_model: Union[
+            ClientAnnotationSchema, TherapistAnnotationSchema, DyadAnnotationSchema
+        ],
+        filename: str,
     ):
         """
         Add annotation labels to the database.
 
         Parameters
         ----------
-        label_model : ClientLabel or TherapistLabel or DyadLabel
-            The label model class for the client, therapist or dyad
+        annotation_schema_model : ClientAnnotationSchema or TherapistAnnotationSchema or DyadAnnotationSchema
+            The annotation schema model class for the client, therapist or dyad
         filename : str
             The path to the JSON file containing the annotation schema
         """
         schema = self.read_json(filename)  # read the annotation schema
 
-        def add_labels_recursive(label_data: dict, parent=None, labels=[]):
-            """Recursively add labels to the database"""
+        def add_labels_recursive(label_data: dict, parent_label=None, labels=[]):
+            """Recursively add labels to the database session"""
 
             for label_name, children in label_data.items():
-                label = label_model(name=label_name, parent=parent)
+                label = annotation_schema_model(label=label_name, parent=parent_label)
                 labels.append(label)
                 if isinstance(children, dict):
-                    add_labels_recursive(children, parent=label, labels=labels)
+                    add_labels_recursive(children, parent_label=label, labels=labels)
                 elif isinstance(children, list) and len(children) > 0:
                     for child in children:
-                        label = label_model(name=child, parent=label)
+                        label = annotation_schema_model(label=child, parent=label)
                         labels.append(label)
+            db.session.add_all(labels)
 
         try:
             add_labels_recursive(schema)
@@ -654,7 +663,7 @@ class LabelManager:
 
     def add_labels_client(self):
         """Add annotation labels for the client to the database"""
-        return self.add_labels(ClientLabel, self.filename_client)
+        return self.add_labels(ClientAnnotationSchema, self.filename_client)
 
     def add_labels_therapist(self):
         """Add annotation labels for the therapist to the database"""
