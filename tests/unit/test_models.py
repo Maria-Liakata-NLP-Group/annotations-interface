@@ -13,6 +13,9 @@ from app.models import (
     EvidenceClient,
     EvidenceTherapist,
     EvidenceDyad,
+    ClientAnnotationSchema,
+    TherapistAnnotationSchema,
+    DyadAnnotationSchema,
 )
 from app.utils import (
     SubLabelsAClient,
@@ -356,3 +359,84 @@ def test_new_evidence_dyad(
     assert evidence.dialog_event == new_ps_dialog_event
     assert evidence.annotation == new_ps_dialog_turn_annotation_dyad
     assert evidence.label == LabelNamesDyad.label_a
+
+
+def test_new_client_annotation_schema(db_session):
+    """
+    GIVEN a ClientAnnotationSchema model
+    WHEN a new ClientAnnotationSchema is created and added to the database
+    THEN check its fields are defined correctly
+    """
+
+    label_a = ClientAnnotationSchema(label="parent label")
+    label_b = ClientAnnotationSchema(label="child label", parent=label_a)
+    db_session.add_all([label_a, label_b])
+    db_session.commit()
+
+    label_a = ClientAnnotationSchema.query.filter_by(label="parent label").first()
+    label_b = ClientAnnotationSchema.query.filter_by(label="child label").first()
+    assert label_a.parent is None
+    assert label_a.children[0] is label_b
+    assert label_b.parent is label_a
+    assert label_b.children.all() == []
+
+    with pytest.raises(IntegrityError, match="UNIQUE constraint failed"):
+        """Test that a label with the same name and parent cannot be added twice"""
+        label_c = ClientAnnotationSchema(label="child label", parent=label_a)
+        db_session.add(label_c)
+        db_session.commit()
+    db_session.rollback()
+
+
+def test_new_therapist_annotation_schema(db_session):
+    """
+    GIVEN a TherapistAnnotationSchema model
+    WHEN a new TherapistAnnotationSchema is created and added to the database
+    THEN check its fields are defined correctly
+    """
+
+    label_a = TherapistAnnotationSchema(label="parent label")
+    label_b = TherapistAnnotationSchema(label="child label", parent=label_a)
+    db_session.add_all([label_a, label_b])
+    db_session.commit()
+
+    label_a = TherapistAnnotationSchema.query.filter_by(label="parent label").first()
+    label_b = TherapistAnnotationSchema.query.filter_by(label="child label").first()
+    assert label_a.parent is None
+    assert label_a.children[0] is label_b
+    assert label_b.parent is label_a
+    assert label_b.children.all() == []
+
+    with pytest.raises(IntegrityError, match="UNIQUE constraint failed"):
+        """Test that a label with the same name and parent cannot be added twice"""
+        label_c = TherapistAnnotationSchema(label="child label", parent=label_a)
+        db_session.add(label_c)
+        db_session.commit()
+    db_session.rollback()
+
+
+def test_new_dyad_annotation_schema(db_session):
+    """
+    GIVEN a DyadAnnotationSchema model
+    WHEN a new DyadAnnotationSchema is created and added to the database
+    THEN check its fields are defined correctly
+    """
+
+    label_a = DyadAnnotationSchema(label="parent label")
+    label_b = DyadAnnotationSchema(label="child label", parent=label_a)
+    db_session.add_all([label_a, label_b])
+    db_session.commit()
+
+    label_a = DyadAnnotationSchema.query.filter_by(label="parent label").first()
+    label_b = DyadAnnotationSchema.query.filter_by(label="child label").first()
+    assert label_a.parent is None
+    assert label_a.children[0] is label_b
+    assert label_b.parent is label_a
+    assert label_b.children.all() == []
+
+    with pytest.raises(IntegrityError, match="UNIQUE constraint failed"):
+        """Test that a label with the same name and parent cannot be added twice"""
+        label_c = DyadAnnotationSchema(label="child label", parent=label_a)
+        db_session.add(label_c)
+        db_session.commit()
+    db_session.rollback()
