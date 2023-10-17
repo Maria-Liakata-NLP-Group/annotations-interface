@@ -619,7 +619,23 @@ class TherapistAnnotationSchema(db.Model):
 class DyadAnnotationSchema(db.Model):
     """Self-referencing table to store the dyad annotation schema"""
 
-    pass
+    __tablename__ = "dyad_annotation_schema"
+    id = db.Column(db.Integer, primary_key=True)
+    label = db.Column(db.String(64), index=True, nullable=False)
+    parent_id = db.Column(
+        db.Integer, db.ForeignKey("dyad_annotation_schema.id"), default=None
+    )
+    children = db.relationship(
+        "DyadAnnotationSchema",
+        backref=db.backref("parent", remote_side=[id]),
+        lazy="dynamic",
+    )
+    # create unique constraint on label within a parent
+    __table_args__ = (db.UniqueConstraint("label", "parent_id"),)
+
+    def __repr__(self):
+        """How to print objects of this class"""
+        return "<DyadAnnotationSchema {}>".format(self.label[:10])
 
 
 class AnnotationSchemaManager:
