@@ -1,5 +1,7 @@
 from app import db, login
 from datetime import datetime, date
+import json
+from typing import Union
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin, AnonymousUserMixin
 from flask import current_app
@@ -585,3 +587,81 @@ class ClientLabel(db.Model):
     def __repr__(self):
         """How to print objects of this class"""
         return "<ClientLabel {}>".format(self.label[:10])
+
+
+class TherapistLabel(db.Model):
+    """Self-referencing table to store the labels for the therapist annotations"""
+
+    pass
+
+
+class DyadLabel(db.Model):
+    """Self-referencing table to store the labels for the dyad annotations"""
+
+    pass
+
+
+class LabelManager:
+    def __init__(self):
+        """Initialize the label manager specifying the JSON files containing the annotation schema"""
+        self.filename_client = "app/annotate/annotation_schema/client.json"
+        self.filename_therapist = "app/annotate/annotation_schema/therapist.json"
+        self.filename_dyad = "app/annotate/annotation_schema/dyad.json"
+
+    def read_json(self, filename: str):
+        """Read the JSON file"""
+        with open(filename, "r") as f:
+            data = json.load(f)
+        return data
+
+    def add_labels(
+        self, label_model: Union[ClientLabel, TherapistLabel, DyadLabel], filename: str
+    ):
+        """
+        Add annotation labels to the database.
+
+        Parameters
+        ----------
+        label_model : ClientLabel or TherapistLabel or DyadLabel
+            The label model class for the client, therapist or dyad
+        filename : str
+            The path to the JSON file containing the annotation schema
+        """
+        schema = self.read_json(filename)  # read the annotation schema
+
+        def add_labels_recursive(label_data: dict, parent=None, labels=[]):
+            """Recursively add labels to the database"""
+
+            for label_name, children in label_data.items():
+                label = label_model(name=label_name, parent=parent)
+                labels.append(label)
+                if isinstance(children, dict):
+                    add_labels_recursive(children, parent=label, labels=labels)
+                elif isinstance(children, list) and len(children) > 0:
+                    for child in children:
+                        label = label_model(name=child, parent=label)
+                        labels.append(label)
+
+        try:
+            add_labels_recursive(schema)
+            db.session.commit()
+        except Exception as e:
+            print(e)
+            db.session.rollback()
+            raise e
+
+        return None
+
+    def add_labels_client(self):
+        """Add annotation labels for the client to the database"""
+        return self.add_labels(ClientLabel, self.filename_client)
+
+    def add_labels_therapist(self):
+        """Add annotation labels for the therapist to the database"""
+        print("Work in progress")
+        return None
+
+    def add_labels_dyad(self):
+        """Add annotation labels for the dyad to the database"""
+        print("Work in progress")
+        return None
