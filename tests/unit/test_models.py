@@ -459,14 +459,16 @@ def test_new_dyad_annotation_schema(db_session):
 
 
 def test_annotation_schema_manager(db_session):
+    """Test the AnnotationSchemaManager class"""
+
     filename = "tests/data/annotations_schema/annotations_schema.json"
     manager = AnnotationSchemaManager()
     manager.filename_client = filename
     manager.add_labels_client()
 
+    # verify that there are 14 labels in total
     labels = ClientAnnotationSchema.query.all()
-    # verify that there are 10 labels in total
-    assert len(labels) == 10
+    assert len(labels) == 14
     # verify that there are only 2 labels with no parent
     assert len([label for label in labels if label.parent is None]) == 2
 
@@ -481,3 +483,17 @@ def test_annotation_schema_manager(db_session):
     # verify that the parent of "labelC4" is "labelB3"
     label_c4 = ClientAnnotationSchema.query.filter_by(label="labelC4").first()
     assert label_c4.parent.label == "labelB3"
+
+    # verify that "labelC5" has two children, that its parent is
+    # "labelB5" and that a child of "labelA2" is "labelB5"
+    label_c5 = ClientAnnotationSchema.query.filter_by(label="labelC5").first()
+    assert len(label_c5.children.all()) == 2
+    assert label_c5.parent.label == "labelB5"
+    label_b5 = ClientAnnotationSchema.query.filter_by(label="labelB5").first()
+    label_a2 = ClientAnnotationSchema.query.filter_by(label="labelA2").first()
+    assert label_b5 in label_a2.children.all()
+
+    # remove the labels from the database
+    for label in labels:
+        db_session.delete(label)
+    db_session.commit()

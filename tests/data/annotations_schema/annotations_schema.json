@@ -5,6 +5,9 @@
   },
   "labelA2": {
     "labelB3": ["labelC3", "labelC4"],
-    "labelB4": []
+    "labelB4": [],
+    "labelB5": {
+      "labelC5": ["labelD1", "labelD2"]
+    }
   }
 }
