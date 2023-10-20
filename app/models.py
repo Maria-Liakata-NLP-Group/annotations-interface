@@ -680,8 +680,9 @@ class AnnotationSchemaManager:
                     add_labels_recursive(children, parent_label=label, labels=labels)
                 elif isinstance(children, list) and len(children) > 0:
                     for child in children:
-                        label = annotation_schema_model(label=child, parent=label)
-                        labels.append(label)
+                        labels.append(
+                            annotation_schema_model(label=child, parent=label)
+                        )
             db.session.add_all(labels)
 
         try:
