@@ -695,6 +695,30 @@ class AnnotationSchemaManager:
 
         return None
 
+    def remove_labels(
+        self,
+        annotation_schema_model: Union[
+            ClientAnnotationSchema, TherapistAnnotationSchema, DyadAnnotationSchema
+        ],
+    ):
+        """
+        Remove all annotation labels for the client, therapist or dyad from the database.
+
+        Parameters
+        ----------
+        annotation_schema_model : ClientAnnotationSchema or TherapistAnnotationSchema or DyadAnnotationSchema
+            The annotation schema model class for the client, therapist or dyad
+        """
+        try:
+            annotation_schema_model.query.delete()
+            db.session.commit()
+        except Exception as e:
+            print(e)
+            db.session.rollback()
+            raise e
+
+        return None
+
     def add_labels_client(self):
         """Add annotation labels for the client to the database"""
         return self.add_labels(ClientAnnotationSchema, self.filename_client)
@@ -706,5 +730,19 @@ class AnnotationSchemaManager:
 
     def add_labels_dyad(self):
         """Add annotation labels for the dyad to the database"""
+        print("Work in progress")
+        return None
+
+    def remove_labels_client(self):
+        """Remove all annotation labels for the client from the database"""
+        return self.remove_labels(ClientAnnotationSchema)
+
+    def remove_labels_therapist(self):
+        """Remove all annotation labels for the therapist from the database"""
+        print("Work in progress")
+        return None
+
+    def remove_labels_dyad(self):
+        """Remove all annotation labels for the dyad from the database"""
         print("Work in progress")
         return None

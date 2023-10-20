@@ -494,6 +494,6 @@ def test_annotation_schema_manager(db_session):
     assert label_b5 in label_a2.children.all()
 
     # remove the labels from the database
-    for label in labels:
-        db_session.delete(label)
-    db_session.commit()
+    manager.remove_labels_client()
+    labels = ClientAnnotationSchema.query.all()
+    assert len(labels) == 0
