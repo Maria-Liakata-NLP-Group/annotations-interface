@@ -16,6 +16,7 @@ from app.models import (
     ClientAnnotationSchema,
     TherapistAnnotationSchema,
     DyadAnnotationSchema,
+    AnnotationSchemaManager,
 )
 from app.utils import (
     SubLabelsAClient,
@@ -387,6 +388,11 @@ def test_new_client_annotation_schema(db_session):
         db_session.commit()
     db_session.rollback()
 
+    # delete the labels from the database
+    db_session.delete(label_a)
+    db_session.delete(label_b)
+    db_session.commit()
+
 
 def test_new_therapist_annotation_schema(db_session):
     """
@@ -414,6 +420,11 @@ def test_new_therapist_annotation_schema(db_session):
         db_session.commit()
     db_session.rollback()
 
+    # delete the labels from the database
+    db_session.delete(label_a)
+    db_session.delete(label_b)
+    db_session.commit()
+
 
 def test_new_dyad_annotation_schema(db_session):
     """
@@ -440,3 +451,33 @@ def test_new_dyad_annotation_schema(db_session):
         db_session.add(label_c)
         db_session.commit()
     db_session.rollback()
+
+    # delete the labels from the database
+    db_session.delete(label_a)
+    db_session.delete(label_b)
+    db_session.commit()
+
+
+def test_annotation_schema_manager(db_session):
+    filename = "tests/data/annotations_schema/annotations_schema.json"
+    manager = AnnotationSchemaManager()
+    manager.filename_client = filename
+    manager.add_labels_client()
+
+    labels = ClientAnnotationSchema.query.all()
+    # verify that there are 10 labels in total
+    assert len(labels) == 10
+    # verify that there are only 2 labels with no parent
+    assert len([label for label in labels if label.parent is None]) == 2
+
+    # verify that "labelA1" has 2 children
+    label_a1 = ClientAnnotationSchema.query.filter_by(label="labelA1").first()
+    assert len(label_a1.children.all()) == 2
+
+    # verify that "labelB2" has no children
+    label_b2 = ClientAnnotationSchema.query.filter_by(label="labelB2").first()
+    assert len(label_b2.children.all()) == 0
+
+    # verify that the parent of "labelC4" is "labelB3"
+    label_c4 = ClientAnnotationSchema.query.filter_by(label="labelC4").first()
+    assert label_c4.parent.label == "labelB3"

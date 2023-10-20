@@ -1,0 +1,10 @@
+{
+  "labelA1": {
+    "labelB1": ["labelC1", "labelC2"],
+    "labelB2": []
+  },
+  "labelA2": {
+    "labelB3": ["labelC3", "labelC4"],
+    "labelB4": []
+  }
+}
