@@ -90,6 +90,22 @@ annotationsdyad_dialogturn = db.Table(
 )
 
 
+# association table for many-to-many relationship between ClientAnnotationSchema and PSAnnotationClient
+annotationclient_annotationschema = db.Table(
+    "annotationclient_annotationschema",
+    db.Column(
+        "id_ps_annotation_client",
+        db.Integer,
+        db.ForeignKey("ps_annotation_client.id"),
+    ),
+    db.Column(
+        "id_client_annotation_schema",
+        db.Integer,
+        db.ForeignKey("client_annotation_schema.id"),
+    ),
+)
+
+
 class User(UserMixin, db.Model):
     """User class for database"""
 
@@ -443,6 +459,13 @@ class PSAnnotationClient(db.Model):
     evidence = db.relationship(
         "EvidenceClient", backref="annotation", lazy="dynamic"
     )  # one-to-many relationship with EvidenceClient class
+    # many-to-many relationship with ClientAnnotationSchema class
+    annotation_labels = db.relationship(
+        "ClientAnnotationSchema",
+        secondary=annotationclient_annotationschema,
+        backref=db.backref("annotations", lazy="dynamic"),
+        lazy="dynamic",
+    )
 
 
 class PSAnnotationTherapist(db.Model):
