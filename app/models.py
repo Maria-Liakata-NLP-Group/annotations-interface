@@ -106,6 +106,22 @@ annotationclient_annotationschema = db.Table(
 )
 
 
+# association table for many-to-many relationship between TherapistAnnotationSchema and PSAnnotationTherapist
+annotationtherapist_annotationschema = db.Table(
+    "annotationtherapist_annotationschema",
+    db.Column(
+        "id_ps_annotation_therapist",
+        db.Integer,
+        db.ForeignKey("ps_annotation_therapist.id"),
+    ),
+    db.Column(
+        "id_therapist_annotation_schema",
+        db.Integer,
+        db.ForeignKey("therapist_annotation_schema.id"),
+    ),
+)
+
+
 class User(UserMixin, db.Model):
     """User class for database"""
 
@@ -520,6 +536,13 @@ class PSAnnotationTherapist(db.Model):
     evidence = db.relationship(
         "EvidenceTherapist", backref="annotation", lazy="dynamic"
     )  # one-to-many relationship with EvidenceTherapist class
+    # many-to-many relationship with TherapistAnnotationSchema class
+    annotation_labels = db.relationship(
+        "TherapistAnnotationSchema",
+        secondary=annotationtherapist_annotationschema,
+        backref=db.backref("annotations", lazy="dynamic"),
+        lazy="dynamic",
+    )
 
 
 class PSAnnotationDyad(db.Model):
