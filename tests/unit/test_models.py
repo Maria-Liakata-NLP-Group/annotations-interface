@@ -220,14 +220,14 @@ def test_new_ps_dialog_event(db_session, new_ps_dialog_event):
 def test_new_ps_dialog_turn_annotation_client(
     db_session,
     new_ps_dialog_turn,
-    new_ps_dialog_turn_annotation_client,
+    new_ps_annotation_client,
 ):
     """
     GIVEN a PSAnnotationClient model
     WHEN a new PSAnnotationClient is created and added to the database
     THEN check its fields are defined correctly
     """
-    db_session.add(new_ps_dialog_turn_annotation_client)
+    db_session.add(new_ps_annotation_client)
     db_session.commit()
 
     annotation = PSAnnotationClient.query.all()[0]
@@ -247,7 +247,7 @@ def test_new_ps_dialog_turn_annotation_client(
 def test_new_ps_dialog_turn_annotation_therapist(
     db_session,
     new_ps_dialog_turn,
-    new_ps_dialog_turn_annotation_therapist,
+    new_ps_annotation_therapist,
 ):
     """
     GIVEN a PSAnnotationTherapist model
@@ -255,7 +255,7 @@ def test_new_ps_dialog_turn_annotation_therapist(
     THEN check its fields are defined correctly
     """
 
-    db_session.add(new_ps_dialog_turn_annotation_therapist)
+    db_session.add(new_ps_annotation_therapist)
     db_session.commit()
 
     annotation = PSAnnotationTherapist.query.all()[0]
@@ -275,14 +275,14 @@ def test_new_ps_dialog_turn_annotation_therapist(
 def test_new_ps_dialog_turn_annotation_dyad(
     db_session,
     new_ps_dialog_turn,
-    new_ps_dialog_turn_annotation_dyad,
+    new_ps_annotation_dyad,
 ):
     """
     GIVEN a PSAnnotationDyad model
     WHEN a new PSAnnotationDyad is created and added to the database
     THEN check its fields are defined correctly
     """
-    db_session.add(new_ps_dialog_turn_annotation_dyad)
+    db_session.add(new_ps_annotation_dyad)
     db_session.commit()
 
     annotation = PSAnnotationDyad.query.all()[0]
@@ -303,7 +303,7 @@ def test_new_evidence_client(
     db_session,
     new_evidence_client,
     new_ps_dialog_event,
-    new_ps_dialog_turn_annotation_client,
+    new_ps_annotation_client,
 ):
     """
     GIVEN a EvidenceClient model
@@ -316,7 +316,7 @@ def test_new_evidence_client(
     evidence = EvidenceClient.query.first()
     assert evidence is not None
     assert evidence.dialog_event == new_ps_dialog_event
-    assert evidence.annotation == new_ps_dialog_turn_annotation_client
+    assert evidence.annotation == new_ps_annotation_client
     assert evidence.label == LabelNamesClient.label_a
 
 
@@ -324,7 +324,7 @@ def test_new_evidence_therapist(
     db_session,
     new_evidence_therapist,
     new_ps_dialog_event,
-    new_ps_dialog_turn_annotation_therapist,
+    new_ps_annotation_therapist,
 ):
     """
     GIVEN a EvidenceTherapist model
@@ -337,7 +337,7 @@ def test_new_evidence_therapist(
     evidence = EvidenceTherapist.query.first()
     assert evidence is not None
     assert evidence.dialog_event == new_ps_dialog_event
-    assert evidence.annotation == new_ps_dialog_turn_annotation_therapist
+    assert evidence.annotation == new_ps_annotation_therapist
     assert evidence.label == LabelNamesTherapist.label_b
 
 
@@ -345,7 +345,7 @@ def test_new_evidence_dyad(
     db_session,
     new_evidence_dyad,
     new_ps_dialog_event,
-    new_ps_dialog_turn_annotation_dyad,
+    new_ps_annotation_dyad,
 ):
     """
     GIVEN a EvidenceDyad model
@@ -358,11 +358,11 @@ def test_new_evidence_dyad(
     evidence = EvidenceDyad.query.first()
     assert evidence is not None
     assert evidence.dialog_event == new_ps_dialog_event
-    assert evidence.annotation == new_ps_dialog_turn_annotation_dyad
+    assert evidence.annotation == new_ps_annotation_dyad
     assert evidence.label == LabelNamesDyad.label_a
 
 
-def test_new_client_annotation_schema(db_session, new_ps_dialog_turn_annotation_client):
+def test_new_client_annotation_schema(db_session, new_ps_annotation_client):
     """
     GIVEN a ClientAnnotationSchema model
     WHEN a new ClientAnnotationSchema is created and added to the database
@@ -370,12 +370,12 @@ def test_new_client_annotation_schema(db_session, new_ps_dialog_turn_annotation_
     """
 
     label_a = ClientAnnotationSchema(
-        label="parent label", annotations=[new_ps_dialog_turn_annotation_client]
+        label="parent label", annotations=[new_ps_annotation_client]
     )
     label_b = ClientAnnotationSchema(
         label="child label",
         parent=label_a,
-        annotations=[new_ps_dialog_turn_annotation_client],
+        annotations=[new_ps_annotation_client],
     )
     db_session.add_all([label_a, label_b])
     db_session.commit()
@@ -388,7 +388,7 @@ def test_new_client_annotation_schema(db_session, new_ps_dialog_turn_annotation_
     assert label_b.children.all() == []
 
     # verify that the annotations are correctly linked to the labels
-    labels = new_ps_dialog_turn_annotation_client.annotation_labels.all()
+    labels = new_ps_annotation_client.annotation_labels.all()
     assert len(labels) == 2
 
     with pytest.raises(IntegrityError, match="UNIQUE constraint failed"):

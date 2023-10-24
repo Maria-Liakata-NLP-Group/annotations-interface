@@ -195,9 +195,7 @@ def new_ps_dialog_event(new_ps_dataset, new_ps_dialog_turn):
 
 
 @pytest.fixture(scope="module")
-def new_ps_dialog_turn_annotation_client(
-    new_ps_dataset, new_ps_dialog_turn, user_annotator1
-):
+def new_ps_annotation_client(new_ps_dataset, new_ps_dialog_turn, user_annotator1):
     """Fixture to create a new psychotherapy dialog turn annotation for the client"""
     dialog_turn_annotation = PSAnnotationClient(
         label_a=SubLabelsAClient.attachment,
@@ -214,9 +212,7 @@ def new_ps_dialog_turn_annotation_client(
 
 
 @pytest.fixture(scope="module")
-def new_ps_dialog_turn_annotation_therapist(
-    new_ps_dataset, new_ps_dialog_turn, user_annotator1
-):
+def new_ps_annotation_therapist(new_ps_dataset, new_ps_dialog_turn, user_annotator1):
     """Fixture to create a new psychotherapy dialog turn annotation for the therapist"""
     dialog_turn_annotation = PSAnnotationTherapist(
         label_a=SubLabelsATherapist.emotional,
@@ -233,9 +229,7 @@ def new_ps_dialog_turn_annotation_therapist(
 
 
 @pytest.fixture(scope="module")
-def new_ps_dialog_turn_annotation_dyad(
-    new_ps_dataset, new_ps_dialog_turn, user_annotator1
-):
+def new_ps_annotation_dyad(new_ps_dataset, new_ps_dialog_turn, user_annotator1):
     """Fixture to create a new psychotherapy dialog turn annotation for the dyad"""
     dialog_turn_annotation = PSAnnotationDyad(
         label_a=SubLabelsADyad.bond,
@@ -252,38 +246,36 @@ def new_ps_dialog_turn_annotation_dyad(
 
 
 @pytest.fixture(scope="module")
-def new_evidence_client(new_ps_dialog_turn_annotation_client, new_ps_dialog_event):
+def new_evidence_client(new_ps_annotation_client, new_ps_dialog_event):
     """Fixture to create a new psychotherapy evidence for the client annotation"""
 
     evidence = EvidenceClient(
         dialog_event=new_ps_dialog_event,
-        annotation=new_ps_dialog_turn_annotation_client,
+        annotation=new_ps_annotation_client,
         label=LabelNamesClient.label_a,
     )
     return evidence
 
 
 @pytest.fixture(scope="module")
-def new_evidence_therapist(
-    new_ps_dialog_turn_annotation_therapist, new_ps_dialog_event
-):
+def new_evidence_therapist(new_ps_annotation_therapist, new_ps_dialog_event):
     """Fixture to create a new psychotherapy evidence for the therapist annotation"""
 
     evidence = EvidenceTherapist(
         dialog_event=new_ps_dialog_event,
-        annotation=new_ps_dialog_turn_annotation_therapist,
+        annotation=new_ps_annotation_therapist,
         label=LabelNamesTherapist.label_b,
     )
     return evidence
 
 
 @pytest.fixture(scope="module")
-def new_evidence_dyad(new_ps_dialog_turn_annotation_dyad, new_ps_dialog_event):
+def new_evidence_dyad(new_ps_annotation_dyad, new_ps_dialog_event):
     """Fixture to create a new psychotherapy evidence for the dyad annotation"""
 
     evidence = EvidenceDyad(
         dialog_event=new_ps_dialog_event,
-        annotation=new_ps_dialog_turn_annotation_dyad,
+        annotation=new_ps_annotation_dyad,
         label=LabelNamesDyad.label_a,
     )
     return evidence
