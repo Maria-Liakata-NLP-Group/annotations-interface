@@ -740,15 +740,20 @@ class AnnotationSchemaManager:
         schema = self.read_json(filename)  # read the annotation schema
 
         def add_labels_recursive(label_data: dict, parent_label=None, labels=[]):
-            """Recursively add labels to the database session"""
+            """
+            Recursively add labels to the database session.
+            Note the labels are stripped of leading and trailing whitespace and capitalized.
+            """
 
             for label_name, children in label_data.items():
+                label_name = label_name.strip().capitalize()
                 label = annotation_schema_model(label=label_name, parent=parent_label)
                 labels.append(label)
                 if isinstance(children, dict):
                     add_labels_recursive(children, parent_label=label, labels=labels)
                 elif isinstance(children, list) and len(children) > 0:
                     for child in children:
+                        child = child.strip().capitalize()
                         labels.append(
                             annotation_schema_model(label=child, parent=label)
                         )

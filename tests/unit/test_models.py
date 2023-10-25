@@ -499,24 +499,36 @@ def test_annotation_schema_manager(db_session):
     assert len([label for label in labels if label.parent is None]) == 2
 
     # verify that "labelA1" has 2 children
-    label_a1 = ClientAnnotationSchema.query.filter_by(label="labelA1").first()
+    label_a1 = ClientAnnotationSchema.query.filter_by(
+        label="labelA1".capitalize()
+    ).first()
     assert len(label_a1.children.all()) == 2
 
     # verify that "labelB2" has no children
-    label_b2 = ClientAnnotationSchema.query.filter_by(label="labelB2").first()
+    label_b2 = ClientAnnotationSchema.query.filter_by(
+        label="labelB2".capitalize()
+    ).first()
     assert len(label_b2.children.all()) == 0
 
     # verify that the parent of "labelC4" is "labelB3"
-    label_c4 = ClientAnnotationSchema.query.filter_by(label="labelC4").first()
-    assert label_c4.parent.label == "labelB3"
+    label_c4 = ClientAnnotationSchema.query.filter_by(
+        label="labelC4".capitalize()
+    ).first()
+    assert label_c4.parent.label == "labelB3".capitalize()
 
     # verify that "labelC5" has two children, that its parent is
     # "labelB5" and that a child of "labelA2" is "labelB5"
-    label_c5 = ClientAnnotationSchema.query.filter_by(label="labelC5").first()
+    label_c5 = ClientAnnotationSchema.query.filter_by(
+        label="labelC5".capitalize()
+    ).first()
     assert len(label_c5.children.all()) == 2
-    assert label_c5.parent.label == "labelB5"
-    label_b5 = ClientAnnotationSchema.query.filter_by(label="labelB5").first()
-    label_a2 = ClientAnnotationSchema.query.filter_by(label="labelA2").first()
+    assert label_c5.parent.label == "labelB5".capitalize()
+    label_b5 = ClientAnnotationSchema.query.filter_by(
+        label="labelB5".capitalize()
+    ).first()
+    label_a2 = ClientAnnotationSchema.query.filter_by(
+        label="labelA2".capitalize()
+    ).first()
     assert label_b5 in label_a2.children.all()
 
     # remove the labels from the database
