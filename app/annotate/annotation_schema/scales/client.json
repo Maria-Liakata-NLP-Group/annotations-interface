@@ -1,0 +1,84 @@
+{
+  "Wish": {
+    "Level": [
+      "1. Not present",
+      "2. Somewhat present",
+      "3. Moderately present",
+      "4. Very present",
+      "5. Highly present"
+    ],
+    "Adaptivity": [
+      "1. Highly mal-adaptive",
+      "2. Very mal-adaptive",
+      "3. Moderately adaptive/mal-adaptive",
+      "4. Very adaptive",
+      "5. Highly adaptive"
+    ]
+  },
+  "Response of other": {
+    "Level": [
+      "1. Not present",
+      "2. Somewhat present",
+      "3. Moderately present",
+      "4. Very present",
+      "5. Highly present"
+    ],
+    "Adaptivity": [
+      "1. Highly mal-adaptive",
+      "2. Very mal-adaptive",
+      "3. Moderately adaptive/mal-adaptive",
+      "4. Very adaptive",
+      "5. Highly adaptive"
+    ]
+  },
+  "Response of self": {
+    "Level": [
+      "1. Not present",
+      "2. Somewhat present",
+      "3. Moderately present",
+      "4. Very present",
+      "5. Highly present"
+    ],
+    "Adaptivity": [
+      "1. Highly mal-adaptive",
+      "2. Very mal-adaptive",
+      "3. Moderately adaptive/mal-adaptive",
+      "4. Very adaptive",
+      "5. Highly adaptive"
+    ]
+  },
+  "Emotional experiencing and regulation": {
+    "Arousal level": [
+      "1. Very low",
+      "2. Low",
+      "3. Moderate",
+      "4. High",
+      "5. Very high"
+    ],
+    "Adaptivity": [
+      "1. Highly mal-adaptive",
+      "2. Very mal-adaptive",
+      "3. Moderately adaptive/mal-adaptive",
+      "4. Very adaptive",
+      "5. Highly adaptive"
+    ]
+  },
+  "Insight": {
+    "Recognition": [
+      "1. No recognition",
+      "2. Low recognition",
+      "3. Moderate recognition",
+      "4. Good recognition",
+      "5. Excellent recognition"
+    ]
+  },
+  "Moment of Change": {
+    "Deterioration": [
+      "1. Significant deterioration",
+      "2. Some deterioration",
+      "3. Moderate change",
+      "4. Some improvement",
+      "5. Significant improvement"
+    ]
+  }
+}
