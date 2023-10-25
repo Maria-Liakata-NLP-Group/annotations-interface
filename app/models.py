@@ -654,6 +654,11 @@ class ClientAnnotationSchema(db.Model):
         backref=db.backref("parent", remote_side=[id]),
         lazy="dynamic",
     )
+    scales = db.relationship(
+        "ClientAnnotationSchemaScale",
+        backref="label",
+        lazy="dynamic",
+    )  # one-to-many relationship with ClientAnnotationSchemaScale class
     # create unique constraint on label within a parent
     __table_args__ = (db.UniqueConstraint("label", "parent_id"),)
 
@@ -820,3 +825,24 @@ class AnnotationSchemaManager:
         """Remove all annotation labels for the dyad from the database"""
         print("Work in progress")
         return None
+
+
+class ClientAnnotationSchemaScale(db.Model):
+    """Table to store the scales for the client annotation schema"""
+
+    __tablename__ = "client_annotation_schema_scale"
+
+    id = db.Column(db.Integer, primary_key=True)
+    scale_title = db.Column(db.String(64), index=True, nullable=False)
+    scale_level = db.Column(db.String(64), index=True, nullable=False)
+    id_client_annotation_schema = db.Column(
+        db.Integer, db.ForeignKey("client_annotation_schema.id")
+    )
+    # create unique constraint on scale_title and id_client_annotation_schema
+    __table_args__ = (
+        db.UniqueConstraint("scale_title", "id_client_annotation_schema"),
+    )
+
+    def __repr__(self):
+        """How to print objects of this class"""
+        return "<ClientAnnotationSchemaScale {}>".format(self.scale_title[:10])
