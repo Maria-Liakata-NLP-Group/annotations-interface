@@ -132,5 +132,19 @@
     ],
     "No response of self is expressed": [],
     "Other": []
-  }
+  },
+  "Emotional experiencing and regulation": [
+    "Calm/laid back",
+    "Angry",
+    "Sad/depressed",
+    "Content/happy/joy",
+    "Anxious/tense",
+    "Vigorous/energetic",
+    "Ashamed",
+    "Guilty",
+    "Surprised",
+    "Disgusted",
+    "Self-compassionate"
+  ],
+  "Moment of Change": ["Switch", "Escalation", "No change"]
 }
