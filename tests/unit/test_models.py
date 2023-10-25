@@ -404,15 +404,19 @@ def test_new_client_annotation_schema(db_session, new_ps_annotation_client):
     db_session.commit()
 
 
-def test_new_therapist_annotation_schema(db_session):
+def test_new_therapist_annotation_schema(db_session, new_ps_annotation_therapist):
     """
     GIVEN a TherapistAnnotationSchema model
     WHEN a new TherapistAnnotationSchema is created and added to the database
     THEN check its fields are defined correctly
     """
 
-    label_a = TherapistAnnotationSchema(label="parent label")
-    label_b = TherapistAnnotationSchema(label="child label", parent=label_a)
+    label_a = TherapistAnnotationSchema(
+        label="parent label", annotations=[new_ps_annotation_therapist]
+    )
+    label_b = TherapistAnnotationSchema(
+        label="child label", parent=label_a, annotations=[new_ps_annotation_therapist]
+    )
     db_session.add_all([label_a, label_b])
     db_session.commit()
 
@@ -422,6 +426,10 @@ def test_new_therapist_annotation_schema(db_session):
     assert label_a.children[0] is label_b
     assert label_b.parent is label_a
     assert label_b.children.all() == []
+
+    # verify that the annotations are correctly linked to the labels
+    labels = new_ps_annotation_therapist.annotation_labels.all()
+    assert len(labels) == 2
 
     with pytest.raises(IntegrityError, match="UNIQUE constraint failed"):
         """Test that a label with the same name and parent cannot be added twice"""
