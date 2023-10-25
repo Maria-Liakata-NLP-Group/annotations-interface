@@ -712,6 +712,27 @@ class DyadAnnotationSchema(db.Model):
         return "<DyadAnnotationSchema {}>".format(self.label[:10])
 
 
+class ClientAnnotationSchemaScale(db.Model):
+    """Table to store the scales for the client annotation schema"""
+
+    __tablename__ = "client_annotation_schema_scale"
+
+    id = db.Column(db.Integer, primary_key=True)
+    scale_title = db.Column(db.String(64), index=True, nullable=False)
+    scale_level = db.Column(db.String(64), index=True, nullable=False)
+    id_client_annotation_schema = db.Column(
+        db.Integer, db.ForeignKey("client_annotation_schema.id")
+    )
+    # create unique constraint on scale_title and id_client_annotation_schema
+    __table_args__ = (
+        db.UniqueConstraint("scale_title", "id_client_annotation_schema"),
+    )
+
+    def __repr__(self):
+        """How to print objects of this class"""
+        return "<ClientAnnotationSchemaScale {}>".format(self.scale_title[:10])
+
+
 class AnnotationSchemaManager:
     def __init__(self):
         """Initialize the manager specifying the JSON files containing the annotation schema"""
@@ -827,22 +848,22 @@ class AnnotationSchemaManager:
         return None
 
 
-class ClientAnnotationSchemaScale(db.Model):
-    """Table to store the scales for the client annotation schema"""
+class AnnotationSchemaScaleManager:
+    def __init__(self) -> None:
+        """Initialize the manager specifying the JSON files containing the annotation schema scales"""
+        self.filename_client = "app/annotate/annotation_schema/scales/client.json"
+        self.filename_therapist = "app/annotate/annotation_schema/scales/therapist.json"
+        self.filename_dyad = "app/annotate/annotation_schema/scales/dyad.json"
 
-    __tablename__ = "client_annotation_schema_scale"
+    def _read_json(self, filename: str):
+        """Read the JSON file"""
+        with open(filename, "r") as f:
+            data = json.load(f)
+        return data
 
-    id = db.Column(db.Integer, primary_key=True)
-    scale_title = db.Column(db.String(64), index=True, nullable=False)
-    scale_level = db.Column(db.String(64), index=True, nullable=False)
-    id_client_annotation_schema = db.Column(
-        db.Integer, db.ForeignKey("client_annotation_schema.id")
-    )
-    # create unique constraint on scale_title and id_client_annotation_schema
-    __table_args__ = (
-        db.UniqueConstraint("scale_title", "id_client_annotation_schema"),
-    )
-
-    def __repr__(self):
-        """How to print objects of this class"""
-        return "<ClientAnnotationSchemaScale {}>".format(self.scale_title[:10])
+    def _add_scales(
+        self,
+        annotation_schema_scale_model: ClientAnnotationSchemaScale,
+        filename: str,
+    ):
+        pass
