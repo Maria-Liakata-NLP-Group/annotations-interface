@@ -714,13 +714,13 @@ class AnnotationSchemaManager:
         self.filename_therapist = "app/annotate/annotation_schema/therapist.json"
         self.filename_dyad = "app/annotate/annotation_schema/dyad.json"
 
-    def read_json(self, filename: str):
+    def _read_json(self, filename: str):
         """Read the JSON file"""
         with open(filename, "r") as f:
             data = json.load(f)
         return data
 
-    def add_labels(
+    def _add_labels(
         self,
         annotation_schema_model: Union[
             ClientAnnotationSchema, TherapistAnnotationSchema, DyadAnnotationSchema
@@ -737,7 +737,7 @@ class AnnotationSchemaManager:
         filename : str
             The path to the JSON file containing the annotation schema
         """
-        schema = self.read_json(filename)  # read the annotation schema
+        schema = self._read_json(filename)  # read the annotation schema
 
         def add_labels_recursive(label_data: dict, parent_label=None, labels=[]):
             """
@@ -769,7 +769,7 @@ class AnnotationSchemaManager:
 
         return None
 
-    def remove_labels(
+    def _remove_labels(
         self,
         annotation_schema_model: Union[
             ClientAnnotationSchema, TherapistAnnotationSchema, DyadAnnotationSchema
@@ -795,7 +795,7 @@ class AnnotationSchemaManager:
 
     def add_labels_client(self):
         """Add annotation labels for the client to the database"""
-        return self.add_labels(ClientAnnotationSchema, self.filename_client)
+        return self._add_labels(ClientAnnotationSchema, self.filename_client)
 
     def add_labels_therapist(self):
         """Add annotation labels for the therapist to the database"""
@@ -809,7 +809,7 @@ class AnnotationSchemaManager:
 
     def remove_labels_client(self):
         """Remove all annotation labels for the client from the database"""
-        return self.remove_labels(ClientAnnotationSchema)
+        return self._remove_labels(ClientAnnotationSchema)
 
     def remove_labels_therapist(self):
         """Remove all annotation labels for the therapist from the database"""
