@@ -9,5 +9,6 @@
     "labelB5": {
       "labelC5": ["labelD1", "labelD2"]
     }
-  }
+  },
+  "labelA3": ["labelB6", "labelB7"]
 }

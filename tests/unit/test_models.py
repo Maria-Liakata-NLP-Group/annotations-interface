@@ -492,11 +492,11 @@ def test_annotation_schema_manager(db_session):
     manager.filename_client = filename
     manager.add_labels_client()
 
-    # verify that there are 14 labels in total
+    # verify that there are 17 labels in total
     labels = ClientAnnotationSchema.query.all()
-    assert len(labels) == 14
-    # verify that there are only 2 labels with no parent
-    assert len([label for label in labels if label.parent is None]) == 2
+    assert len(labels) == 17
+    # verify that there are only 3 labels with no parent
+    assert len([label for label in labels if label.parent is None]) == 3
 
     # verify that "labelA1" has 2 children
     label_a1 = ClientAnnotationSchema.query.filter_by(
@@ -530,6 +530,13 @@ def test_annotation_schema_manager(db_session):
         label="labelA2".capitalize()
     ).first()
     assert label_b5 in label_a2.children.all()
+
+    # verify that "labelA3" has two children and no parent
+    label_a3 = ClientAnnotationSchema.query.filter_by(
+        label="labelA3".capitalize()
+    ).first()
+    assert len(label_a3.children.all()) == 2
+    assert label_a3.parent is None
 
     # remove the labels from the database
     manager.remove_labels_client()
