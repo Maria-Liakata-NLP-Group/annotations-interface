@@ -122,6 +122,22 @@ annotationtherapist_annotationschema = db.Table(
 )
 
 
+# association table for many-to-many relationship between DyadAnnotationSchema and PSAnnotationDyad
+annotationdyad_annotationschema = db.Table(
+    "annotationdyad_annotationschema",
+    db.Column(
+        "id_ps_annotation_dyad",
+        db.Integer,
+        db.ForeignKey("ps_annotation_dyad.id"),
+    ),
+    db.Column(
+        "id_dyad_annotation_schema",
+        db.Integer,
+        db.ForeignKey("dyad_annotation_schema.id"),
+    ),
+)
+
+
 class User(UserMixin, db.Model):
     """User class for database"""
 
@@ -578,6 +594,13 @@ class PSAnnotationDyad(db.Model):
     evidence = db.relationship(
         "EvidenceDyad", backref="annotation", lazy="dynamic"
     )  # one-to-many relationship with EvidenceDyad class
+    # many-to-many relationship with DyadAnnotationSchema class
+    annotation_labels = db.relationship(
+        "DyadAnnotationSchema",
+        secondary=annotationdyad_annotationschema,
+        backref=db.backref("annotations", lazy="dynamic"),
+        lazy="dynamic",
+    )
 
 
 class EvidenceClient(db.Model):
