@@ -710,6 +710,11 @@ class DyadAnnotationSchema(db.Model):
         backref=db.backref("parent", remote_side=[id]),
         lazy="dynamic",
     )
+    scales = db.relationship(
+        "DyadAnnotationSchemaScale",
+        backref="label",
+        lazy="dynamic",
+    )  # one-to-many relationship with DyadAnnotationSchemaScale class
     # create unique constraint on label within a parent
     __table_args__ = (db.UniqueConstraint("label", "parent_id"),)
 
@@ -758,6 +763,25 @@ class TherapistAnnotationSchemaScale(db.Model):
     def __repr__(self):
         """How to print objects of this class"""
         return "<TherapistAnnotationSchemaScale {}>".format(self.scale_title[:10])
+
+
+class DyadAnnotationSchemaScale(db.Model):
+    """Table to store the scales for the dyad annotation schema"""
+
+    __tablename__ = "dyad_annotation_schema_scale"
+
+    id = db.Column(db.Integer, primary_key=True)
+    scale_title = db.Column(db.String(64), index=True, nullable=False)
+    scale_level = db.Column(db.String(64), index=True, nullable=False)
+    id_dyad_annotation_schema = db.Column(
+        db.Integer, db.ForeignKey("dyad_annotation_schema.id")
+    )
+    # create unique constraint on scale_title and id_dyad_annotation_schema
+    __table_args__ = (db.UniqueConstraint("scale_title", "id_dyad_annotation_schema"),)
+
+    def __repr__(self):
+        """How to print objects of this class"""
+        return "<DyadAnnotationSchemaScale {}>".format(self.scale_title[:10])
 
 
 class AnnotationSchemaManager:
