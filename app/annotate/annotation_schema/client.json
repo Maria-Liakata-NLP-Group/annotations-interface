@@ -144,7 +144,9 @@
     "Guilty",
     "Surprised",
     "Disgusted",
-    "Self-compassionate"
+    "Self-compassionate",
+    "Other"
   ],
+  "Insight": [],
   "Moment of Change": ["Switch", "Escalation", "No change"]
 }
