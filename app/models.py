@@ -914,7 +914,96 @@ class AnnotationSchemaScaleManager:
 
     def _add_scales(
         self,
-        annotation_schema_scale_model: ClientAnnotationSchemaScale,
+        annotation_schema_scale_model: Union[
+            ClientAnnotationSchemaScale,
+            TherapistAnnotationSchemaScale,
+            DyadAnnotationSchemaScale,
+        ],
+        annotation_schema_model: Union[
+            ClientAnnotationSchema,
+            TherapistAnnotationSchema,
+            DyadAnnotationSchema,
+        ],
         filename: str,
     ):
-        pass
+        """
+        Add annotation schema scales to the database.
+
+        Parameters
+        ----------
+        annotation_schema_scale_model : ClientAnnotationSchemaScale or TherapistAnnotationSchemaScale or DyadAnnotationSchemaScale
+            The annotation schema scale model class for the client, therapist or dyad
+        annotation_schema_model : ClientAnnotationSchema or TherapistAnnotationSchema or DyadAnnotationSchema
+            The annotation schema model class for the client, therapist or dyad
+        filename : str
+            The path to the JSON file containing the annotation schema scales
+        """
+        scales = self._read_json(filename)
+        keys = list(scales.keys())
+
+        try:
+            for key in keys:
+                label = annotation_schema_model.query.filter_by(label=key).first()
+                if label is not None:
+                    for scale_title, scale_level in scales[key].items():
+                        scale_title = scale_title.strip().capitalize()
+                        scale_level = scale_level.strip().capitalize()
+                        scale = annotation_schema_scale_model(
+                            scale_title=scale_title,
+                            scale_level=scale_level,
+                            label=label,
+                        )
+                        db.session.add(scale)
+                else:
+                    print(
+                        f"Annotation label {key} not found in {annotation_schema_model.__tablename__} table"
+                    )
+            db.session.commit()
+        except Exception as e:
+            print(e)
+            db.session.rollback()
+            raise e
+
+        return None
+
+    def _remove_scales(
+        self,
+        annotation_schema_scale_model: Union[
+            ClientAnnotationSchemaScale,
+            TherapistAnnotationSchemaScale,
+            DyadAnnotationSchemaScale,
+        ],
+    ):
+        """
+        Remove all annotation schema scales for the client, therapist or dyad from the database.
+
+        Parameters
+        ----------
+        annotation_schema_scale_model : ClientAnnotationSchemaScale or TherapistAnnotationSchemaScale or DyadAnnotationSchemaScale
+            The annotation schema scale model class for the client, therapist or dyad
+        """
+        try:
+            annotation_schema_scale_model.query.delete()
+            db.session.commit()
+        except Exception as e:
+            print(e)
+            db.session.rollback()
+            raise e
+
+        return None
+
+    def add_scales_client(self):
+        """Add annotation schema scales for the client to the database"""
+        return self._add_scales(
+            ClientAnnotationSchemaScale, ClientAnnotationSchema, self.filename_client
+        )
+
+    def add_scales_therapist(self):
+        """Add annotation schema scales for the therapist to the database"""
+        print("Work in progress")
+        return None
+
+    def add_scales_dyad(self):
+        """Add annotation schema scales for the dyad to the database"""
+        print("Work in progress")
+        return None
