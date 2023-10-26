@@ -16,7 +16,7 @@ from app.models import (
     ClientAnnotationSchema,
     TherapistAnnotationSchema,
     DyadAnnotationSchema,
-    AnnotationSchemaManager,
+    ClientAnnotationSchemaScale,
 )
 from app.utils import (
     SubLabelsAClient,
@@ -539,3 +539,48 @@ def test_annotation_schema_manager(new_client_annotation_schema):
     manager.remove_labels_client()
     labels = ClientAnnotationSchema.query.all()
     assert len(labels) == 0
+
+
+def test_new_client_annotation_schema_scale(db_session, new_client_annotation_schema):
+    """
+    GIVEN a ClientAnnotationSchemaScale model
+    WHEN a new ClientAnnotationSchemaScale is created and added to the database
+    THEN check its fields are defined correctly
+    """
+
+    manager = new_client_annotation_schema
+    labels = ClientAnnotationSchema.query.all()
+
+    # find an annotation label with no parent
+    label = [label for label in labels if label.parent is None][0]
+
+    # create a scale for the label
+    scale = ClientAnnotationSchemaScale(
+        scale_title="scale title",
+        scale_level="scale level",
+        label=label,
+    )
+    db_session.add(scale)
+    db_session.commit()
+
+    # verify that the scale is correctly added to the database
+    scale = ClientAnnotationSchemaScale.query.first()
+    assert scale.scale_title == "scale title"
+    assert scale.scale_level == "scale level"
+    assert scale.label == label
+
+    # verify that adding a new scale with the same title and label raises an exception
+    with pytest.raises(IntegrityError, match="UNIQUE constraint failed"):
+        scale = ClientAnnotationSchemaScale(
+            scale_title="scale title",
+            scale_level="another scale level",
+            label=label,
+        )
+        db_session.add(scale)
+        db_session.commit()
+    db_session.rollback()
+
+    # remove the annotation labels and scales from the database
+    ClientAnnotationSchemaScale.query.delete()
+    manager.remove_labels_client()
+    db_session.commit()

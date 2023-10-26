@@ -282,7 +282,7 @@ def new_evidence_dyad(new_ps_annotation_dyad, new_ps_dialog_event):
     return evidence
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope="function")
 def new_client_annotation_schema():
     """Fixture to create a new client annotation schema"""
 
