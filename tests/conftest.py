@@ -286,7 +286,7 @@ def new_evidence_dyad(new_ps_annotation_dyad, new_ps_dialog_event):
 def new_client_annotation_schema():
     """Fixture to create a new client annotation schema"""
 
-    filename = "tests/data/annotations_schema/annotations_schema.json"
+    filename = "tests/data/annotations_schema/client.json"
     manager = AnnotationSchemaManager()
     manager.filename_client = filename
     manager.add_labels_client()
