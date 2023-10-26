@@ -1,0 +1,14 @@
+{
+  "labelA1": {
+    "scale1": ["one", "two", "three"],
+    "scale2": ["one", "two", "three"]
+  },
+  "labelA2": {
+    "scale1": ["one", "two"],
+    "scale2": ["one", "two"]
+  },
+  "non-existent-label": {
+    "scale1": ["one", "two"],
+    "scale2": ["one", "two"]
+  }
+}
