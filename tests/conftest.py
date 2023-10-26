@@ -18,6 +18,7 @@ from app.models import (
     EvidenceClient,
     EvidenceTherapist,
     EvidenceDyad,
+    AnnotationSchemaManager,
 )
 from app.utils import (
     SubLabelsAClient,
@@ -279,3 +280,15 @@ def new_evidence_dyad(new_ps_annotation_dyad, new_ps_dialog_event):
         label=LabelNamesDyad.label_a,
     )
     return evidence
+
+
+@pytest.fixture(scope="module")
+def new_client_annotation_schema():
+    """Fixture to create a new client annotation schema"""
+
+    filename = "tests/data/annotations_schema/annotations_schema.json"
+    manager = AnnotationSchemaManager()
+    manager.filename_client = filename
+    manager.add_labels_client()
+
+    return manager

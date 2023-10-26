@@ -484,13 +484,10 @@ def test_new_dyad_annotation_schema(db_session, new_ps_annotation_dyad):
     db_session.commit()
 
 
-def test_annotation_schema_manager(db_session):
+def test_annotation_schema_manager(new_client_annotation_schema):
     """Test the AnnotationSchemaManager class"""
 
-    filename = "tests/data/annotations_schema/annotations_schema.json"
-    manager = AnnotationSchemaManager()
-    manager.filename_client = filename
-    manager.add_labels_client()
+    manager = new_client_annotation_schema
 
     # verify that there are 17 labels in total
     labels = ClientAnnotationSchema.query.all()
