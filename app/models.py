@@ -5,6 +5,7 @@ from typing import Union
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin, AnonymousUserMixin
 from flask import current_app
+import warnings
 from app.utils import (
     SMAnnotationType,
     DatasetType,
@@ -955,7 +956,7 @@ class AnnotationSchemaScaleManager:
                         )
                         db.session.add(scale)
                 else:
-                    print(
+                    warnings.warn(
                         f"Annotation label {key} not found in {annotation_schema_model.__tablename__} table"
                     )
             db.session.commit()
