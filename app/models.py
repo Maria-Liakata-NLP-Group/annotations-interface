@@ -910,13 +910,13 @@ class AnnotationSchemaManager:
 class AnnotationSchemaScaleManager:
     def __init__(self) -> None:
         """Initialize the manager specifying the JSON files containing the annotation schema scales"""
-        self.filename_client = os.join.path(
+        self.filename_client = os.path.join(
             current_app.config["ANNOTATION_SCHEMA_SCALES_PATH"], "client.json"
         )
-        self.filename_therapist = os.join.path(
+        self.filename_therapist = os.path.join(
             current_app.config["ANNOTATION_SCHEMA_SCALES_PATH"], "therapist.json"
         )
-        self.filename_dyad = os.join.path(
+        self.filename_dyad = os.path.join(
             current_app.config["ANNOTATION_SCHEMA_SCALES_PATH"], "dyad.json"
         )
 
@@ -959,15 +959,14 @@ class AnnotationSchemaScaleManager:
             for key in keys:
                 label = annotation_schema_model.query.filter_by(label=key).first()
                 if label is not None:
-                    for scale_title, scale_level in scales[key].items():
-                        scale_title = scale_title.strip().capitalize()
-                        scale_level = scale_level.strip().capitalize()
-                        scale = annotation_schema_scale_model(
-                            scale_title=scale_title,
-                            scale_level=scale_level,
-                            label=label,
-                        )
-                        db.session.add(scale)
+                    for scale_title, scale_levels in scales[key].items():
+                        for scale_level in scale_levels:
+                            scale = annotation_schema_scale_model(
+                                scale_title=scale_title.strip().capitalize(),
+                                scale_level=scale_level.strip().capitalize(),
+                                label=label,
+                            )
+                            db.session.add(scale)
                 else:
                     warnings.warn(
                         f"Annotation label {key} not found in {annotation_schema_model.__tablename__} table"
