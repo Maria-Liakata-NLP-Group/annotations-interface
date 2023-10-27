@@ -736,9 +736,11 @@ class ClientAnnotationSchemaScale(db.Model):
     id_client_annotation_schema = db.Column(
         db.Integer, db.ForeignKey("client_annotation_schema.id")
     )
-    # create unique constraint on scale_title and id_client_annotation_schema
+    # create unique constraint on scale_title, scale_level and id_client_annotation_schema
     __table_args__ = (
-        db.UniqueConstraint("scale_title", "id_client_annotation_schema"),
+        db.UniqueConstraint(
+            "scale_title", "scale_level", "id_client_annotation_schema"
+        ),
     )
 
     def __repr__(self):
@@ -757,9 +759,11 @@ class TherapistAnnotationSchemaScale(db.Model):
     id_therapist_annotation_schema = db.Column(
         db.Integer, db.ForeignKey("therapist_annotation_schema.id")
     )
-    # create unique constraint on scale_title and id_therapist_annotation_schema
+    # create unique constraint on scale_title, scale_level and id_therapist_annotation_schema
     __table_args__ = (
-        db.UniqueConstraint("scale_title", "id_therapist_annotation_schema"),
+        db.UniqueConstraint(
+            "scale_title", "scale_level", "id_therapist_annotation_schema"
+        ),
     )
 
     def __repr__(self):
@@ -778,8 +782,10 @@ class DyadAnnotationSchemaScale(db.Model):
     id_dyad_annotation_schema = db.Column(
         db.Integer, db.ForeignKey("dyad_annotation_schema.id")
     )
-    # create unique constraint on scale_title and id_dyad_annotation_schema
-    __table_args__ = (db.UniqueConstraint("scale_title", "id_dyad_annotation_schema"),)
+    # create unique constraint on scale_title, scale_level and id_dyad_annotation_schema
+    __table_args__ = (
+        db.UniqueConstraint("scale_title", "scale_level", "id_dyad_annotation_schema"),
+    )
 
     def __repr__(self):
         """How to print objects of this class"""
