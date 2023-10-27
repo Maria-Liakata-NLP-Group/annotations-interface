@@ -963,7 +963,9 @@ class AnnotationSchemaScaleManager:
 
         try:
             for key in keys:
-                label = annotation_schema_model.query.filter_by(label=key).first()
+                label = annotation_schema_model.query.filter_by(
+                    label=key.strip().capitalize()
+                ).first()
                 if label is not None:
                     for scale_title, scale_levels in scales[key].items():
                         for scale_level in scale_levels:
@@ -975,7 +977,7 @@ class AnnotationSchemaScaleManager:
                             db.session.add(scale)
                 else:
                     warnings.warn(
-                        f"Annotation label {key} not found in {annotation_schema_model.__tablename__} table"
+                        f"Annotation label {key.strip().capitalize()} not found in {annotation_schema_model.__tablename__} table"
                     )
             db.session.commit()
         except Exception as e:
