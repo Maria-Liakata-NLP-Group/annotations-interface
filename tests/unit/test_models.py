@@ -17,6 +17,8 @@ from app.models import (
     TherapistAnnotationSchema,
     DyadAnnotationSchema,
     ClientAnnotationSchemaScale,
+    AnnotationSchemaManager,
+    AnnotationSchemaScaleManager,
 )
 from app.utils import (
     SubLabelsAClient,
@@ -484,10 +486,11 @@ def test_new_dyad_annotation_schema(db_session, new_ps_annotation_dyad):
     db_session.commit()
 
 
-def test_annotation_schema_manager(new_client_annotation_schema):
+def test_annotation_schema_manager():
     """Test the AnnotationSchemaManager class"""
 
-    manager = new_client_annotation_schema
+    manager = AnnotationSchemaManager()
+    manager.add_labels_client()
 
     # verify that there are 17 labels in total
     labels = ClientAnnotationSchema.query.all()
@@ -541,14 +544,15 @@ def test_annotation_schema_manager(new_client_annotation_schema):
     assert len(labels) == 0
 
 
-def test_new_client_annotation_schema_scale(db_session, new_client_annotation_schema):
+def test_new_client_annotation_schema_scale(db_session):
     """
     GIVEN a ClientAnnotationSchemaScale model
     WHEN a new ClientAnnotationSchemaScale is created and added to the database
     THEN check its fields are defined correctly
     """
 
-    manager = new_client_annotation_schema
+    manager = AnnotationSchemaManager()
+    manager.add_labels_client()
     labels = ClientAnnotationSchema.query.all()
 
     # find an annotation label with no parent
