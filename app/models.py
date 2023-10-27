@@ -6,6 +6,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin, AnonymousUserMixin
 from flask import current_app
 import warnings
+import os
 from app.utils import (
     SMAnnotationType,
     DatasetType,
@@ -788,9 +789,15 @@ class DyadAnnotationSchemaScale(db.Model):
 class AnnotationSchemaManager:
     def __init__(self):
         """Initialize the manager specifying the JSON files containing the annotation schema"""
-        self.filename_client = "app/annotate/annotation_schema/client.json"
-        self.filename_therapist = "app/annotate/annotation_schema/therapist.json"
-        self.filename_dyad = "app/annotate/annotation_schema/dyad.json"
+        self.filename_client = os.path.join(
+            current_app.config["ANNOTATION_SCHEMA_PATH"], "client.json"
+        )
+        self.filename_therapist = os.path.join(
+            current_app.config["ANNOTATION_SCHEMA_PATH"], "therapist.json"
+        )
+        self.filename_dyad = os.path.join(
+            current_app.config["ANNOTATION_SCHEMA_PATH"], "dyad.json"
+        )
 
     def _read_json(self, filename: str):
         """Read the JSON file"""
@@ -903,9 +910,15 @@ class AnnotationSchemaManager:
 class AnnotationSchemaScaleManager:
     def __init__(self) -> None:
         """Initialize the manager specifying the JSON files containing the annotation schema scales"""
-        self.filename_client = "app/annotate/annotation_schema/scales/client.json"
-        self.filename_therapist = "app/annotate/annotation_schema/scales/therapist.json"
-        self.filename_dyad = "app/annotate/annotation_schema/scales/dyad.json"
+        self.filename_client = os.join.path(
+            current_app.config["ANNOTATION_SCHEMA_SCALES_PATH"], "client.json"
+        )
+        self.filename_therapist = os.join.path(
+            current_app.config["ANNOTATION_SCHEMA_SCALES_PATH"], "therapist.json"
+        )
+        self.filename_dyad = os.join.path(
+            current_app.config["ANNOTATION_SCHEMA_SCALES_PATH"], "dyad.json"
+        )
 
     def _read_json(self, filename: str):
         """Read the JSON file"""

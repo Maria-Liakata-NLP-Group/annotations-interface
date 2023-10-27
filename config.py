@@ -20,6 +20,12 @@ class BaseConfig(object):
     UPLOAD_FOLDER = os.path.join(basedir, "data")  # folder for uploaded files
     APP_ADMIN = os.environ.get("APP_ADMIN")  # admin email(s), specified in .flaskenv
     PS_MINS_PER_PAGE = 5  # number of minutes per page in psychotherapy timeline
+    ANNOTATION_SCHEMA_PATH = os.path.join(
+        basedir, "app", "annotate", "annotation_schema"
+    )  # used by the annotation schema manager class
+    ANNOTATION_SCHEMA_SCALES_PATH = os.path.join(
+        basedir, "app", "annotate", "annotation_schema", "scales"
+    )  # used by the annotation schema scales manager class
     if APP_ADMIN:
         # convert string to list if APP_ADMIN environment variable is set
         APP_ADMIN = get_app_admin(APP_ADMIN)
@@ -38,3 +44,9 @@ class TestConfig(BaseConfig):
     PS_DATASET_PATH = os.path.join(
         basedir, "tests", "data", "psychotherapy_example_lorem.pickle"
     )
+    ANNOTATION_SCHEMA_PATH = os.path.join(
+        basedir, "tests", "data", "annotation_schema"
+    )  # used by the annotation schema manager class
+    ANNOTATION_SCHEMA_SCALES_PATH = os.path.join(
+        basedir, "tests", "data", "annotation_schema", "scales"
+    )  # used by the annotation schema scales manager class
