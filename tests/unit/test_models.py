@@ -569,11 +569,11 @@ def test_new_client_annotation_schema_scale(db_session, new_client_annotation_sc
     assert scale.scale_level == "scale level"
     assert scale.label == label
 
-    # verify that adding a new scale with the same title and label raises an exception
+    # verify that adding a new scale with the same title, level and label raises an exception
     with pytest.raises(IntegrityError, match="UNIQUE constraint failed"):
         scale = ClientAnnotationSchemaScale(
             scale_title="scale title",
-            scale_level="another scale level",
+            scale_level="scale level",
             label=label,
         )
         db_session.add(scale)
