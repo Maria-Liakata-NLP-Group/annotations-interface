@@ -486,7 +486,7 @@ def test_new_dyad_annotation_schema(db_session, new_ps_annotation_dyad):
     db_session.commit()
 
 
-def test_annotation_schema_manager():
+def test_annotation_schema_manager(db_session):
     """Test the AnnotationSchemaManager class"""
 
     manager = AnnotationSchemaManager()
@@ -586,5 +586,29 @@ def test_new_client_annotation_schema_scale(db_session):
 
     # remove the annotation labels and scales from the database
     ClientAnnotationSchemaScale.query.delete()
-    manager.remove_labels_client()
     db_session.commit()
+    manager.remove_labels_client()
+    labels = ClientAnnotationSchema.query.all()
+    assert len(labels) == 0
+
+
+def test_annotation_schema_scale_manager(db_session):
+    """Test the AnnotationSchemaScaleManager class"""
+
+    # close the session and re-open it to avoid SQLAlchemy warnings
+    db_session.close()
+    db_session.remove()
+    db_session = db_session()
+
+    schema_manager = AnnotationSchemaManager()
+    schema_manager.add_labels_client()
+    scales_manager = AnnotationSchemaScaleManager()
+    # verify that a warning is raised if scales are added to a non-existent label
+    # ("non-existent-label" in the JSON file)
+    with pytest.warns(UserWarning, match="non-existent-label".strip().capitalize()):
+        scales_manager.add_scales_client()
+
+    # verify that the unique scale titles are "scale1" and "scale2"
+    scales = ClientAnnotationSchemaScale.query.all()
+    scale_titles = [scale.scale_title for scale in scales]
+    assert set(scale_titles) == {"scale1".capitalize(), "scale2".capitalize()}
