@@ -1028,3 +1028,17 @@ class AnnotationSchemaScaleManager:
         """Add annotation schema scales for the dyad to the database"""
         print("Work in progress")
         return None
+
+    def remove_scales_client(self):
+        """Remove all annotation schema scales for the client from the database"""
+        return self._remove_scales(ClientAnnotationSchemaScale)
+
+    def remove_scales_therapist(self):
+        """Remove all annotation schema scales for the therapist from the database"""
+        print("Work in progress")
+        return None
+
+    def remove_scales_dyad(self):
+        """Remove all annotation schema scales for the dyad from the database"""
+        print("Work in progress")
+        return None
