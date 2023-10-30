@@ -612,3 +612,35 @@ def test_annotation_schema_scale_manager(db_session):
     scales = ClientAnnotationSchemaScale.query.all()
     scale_titles = [scale.scale_title for scale in scales]
     assert set(scale_titles) == {"scale1".capitalize(), "scale2".capitalize()}
+
+    # verify that the scales are correctly linked to the labels
+    # "labelA1" has two scale titles: "scale1" and "scale2"
+    label_a1 = ClientAnnotationSchema.query.filter_by(
+        label="labelA1".capitalize()
+    ).first()
+    scale_titles = [scale.scale_title for scale in label_a1.scales.all()]
+    assert scale_titles.sort() == ["scale1".capitalize(), "scale2".capitalize()].sort()
+    # "labelA2" has also got two scale titles: "scale1" and "scale2"
+    label_a2 = ClientAnnotationSchema.query.filter_by(
+        label="labelA2".capitalize()
+    ).first()
+    scale_titles = [scale.scale_title for scale in label_a2.scales.all()]
+    assert scale_titles.sort() == ["scale1".capitalize(), "scale2".capitalize()].sort()
+
+    # verify that "scale1" of "labelA1" has three levels: "one", "two" and "three"
+    scale1_label_a1 = ClientAnnotationSchemaScale.query.filter_by(
+        scale_title="scale1".capitalize(), label=label_a1
+    ).all()
+    levels = [scale.scale_level for scale in scale1_label_a1]
+    assert (
+        levels.sort()
+        == ["one".capitalize(), "two".capitalize(), "three".capitalize()].sort()
+    )
+
+    # remove scales and labels from the database
+    scales_manager.remove_scales_client()
+    schema_manager.remove_labels_client()
+    scales = ClientAnnotationSchemaScale.query.all()
+    assert len(scales) == 0
+    labels = ClientAnnotationSchema.query.all()
+    assert len(labels) == 0
