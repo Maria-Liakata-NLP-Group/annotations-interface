@@ -890,12 +890,12 @@ class AnnotationSchemaManager:
 
     def add_labels_therapist(self):
         """Add annotation labels for the therapist to the database"""
-        print("Work in progress")
+        print("Therapist: Work in progress")
         return None
 
     def add_labels_dyad(self):
         """Add annotation labels for the dyad to the database"""
-        print("Work in progress")
+        print("Dyad: Work in progress")
         return None
 
     def remove_labels_client(self):
@@ -904,12 +904,12 @@ class AnnotationSchemaManager:
 
     def remove_labels_therapist(self):
         """Remove all annotation labels for the therapist from the database"""
-        print("Work in progress")
+        print("Therapist: Work in progress")
         return None
 
     def remove_labels_dyad(self):
         """Remove all annotation labels for the dyad from the database"""
-        print("Work in progress")
+        print("Dyad: Work in progress")
         return None
 
 
@@ -1021,12 +1021,12 @@ class AnnotationSchemaScaleManager:
 
     def add_scales_therapist(self):
         """Add annotation schema scales for the therapist to the database"""
-        print("Work in progress")
+        print("Therapist: Work in progress")
         return None
 
     def add_scales_dyad(self):
         """Add annotation schema scales for the dyad to the database"""
-        print("Work in progress")
+        print("Dyad: Work in progress")
         return None
 
     def remove_scales_client(self):
@@ -1035,10 +1035,10 @@ class AnnotationSchemaScaleManager:
 
     def remove_scales_therapist(self):
         """Remove all annotation schema scales for the therapist from the database"""
-        print("Work in progress")
+        print("Therapist: Work in progress")
         return None
 
     def remove_scales_dyad(self):
         """Remove all annotation schema scales for the dyad from the database"""
-        print("Work in progress")
+        print("Dyad: Work in progress")
         return None

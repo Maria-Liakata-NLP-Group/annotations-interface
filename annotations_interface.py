@@ -10,6 +10,8 @@ from app.models import (
     PSDialogTurn,
     PSDialogEvent,
     PSAnnotationClient,
+    AnnotationSchemaManager,
+    AnnotationSchemaScaleManager,
 )
 
 app = create_app()
@@ -39,3 +41,28 @@ def clear_db():
     db.drop_all()
     db.create_all()
     Role.insert_roles()
+
+
+@app.cli.command()
+def create_annotation_schema():
+    """Create the annotation schema for the client, therapist and dyad"""
+    schema_manager = AnnotationSchemaManager()
+    scale_manager = AnnotationSchemaScaleManager()
+
+    # remove any existing schema first
+    schema_manager.remove_labels_client()
+    schema_manager.remove_labels_therapist()
+    schema_manager.remove_labels_dyad()
+
+    scale_manager.remove_scales_client()
+    scale_manager.remove_scales_therapist()
+    scale_manager.remove_scales_dyad()
+
+    # create the schema
+    schema_manager.add_labels_client()
+    schema_manager.add_labels_therapist()
+    schema_manager.add_labels_dyad()
+
+    scale_manager.add_scales_client()
+    scale_manager.add_scales_therapist()
+    scale_manager.add_scales_dyad()
