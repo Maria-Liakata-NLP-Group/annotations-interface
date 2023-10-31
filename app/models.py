@@ -459,37 +459,19 @@ class PSAnnotationClient(db.Model):
     timestamp = db.Column(
         db.DateTime, index=True, default=datetime.utcnow
     )  # when annotation was created
-    label_a = db.Column(db.Enum(SubLabelsAClient), nullable=True, default=None)
-    label_b = db.Column(db.Enum(SubLabelsBClient), nullable=True, default=None)
-    label_c = db.Column(db.Enum(SubLabelsCClient), nullable=True, default=None)
-    label_d = db.Column(db.Enum(SubLabelsDClient), nullable=True, default=None)
-    label_e = db.Column(db.Enum(SubLabelsEClient), nullable=True, default=None)
-    label_f = db.Column(db.Enum(SubLabelsFClient), nullable=True, default=None)
-    strength_a = db.Column(db.Enum(LabelStrengthAClient), nullable=True, default=None)
-    strength_b = db.Column(db.Enum(LabelStrengthBClient), nullable=True, default=None)
-    strength_c = db.Column(db.Enum(LabelStrengthCClient), nullable=True, default=None)
-    strength_d = db.Column(db.Enum(LabelStrengthDClient), nullable=True, default=None)
-    strength_e = db.Column(db.Enum(LabelStrengthEClient), nullable=True, default=None)
-    strength_f = db.Column(db.Enum(LabelStrengthFClient), nullable=True, default=None)
-    comment_a = db.Column(db.Text, nullable=True)
-    comment_b = db.Column(db.Text, nullable=True)
-    comment_c = db.Column(db.Text, nullable=True)
-    comment_d = db.Column(db.Text, nullable=True)
-    comment_e = db.Column(db.Text, nullable=True)
-    comment_f = db.Column(db.Text, nullable=True)
     comment_summary = db.Column(db.Text, nullable=True)
-    dialog_turns = db.relationship(
-        "PSDialogTurn",
-        secondary=annotationclient_dialogturn,
-        backref=db.backref("annotations_client", lazy="dynamic"),
-        lazy="dynamic",
-    )  # many-to-many relationship with PSDialogTurn class
     id_user = db.Column(
         db.Integer, db.ForeignKey("user.id")
     )  # id of user (annotator) who created this annotation
     id_dataset = db.Column(
         db.Integer, db.ForeignKey("dataset.id")
     )  # id of dataset associated with this annotation
+    dialog_turns = db.relationship(
+        "PSDialogTurn",
+        secondary=annotationclient_dialogturn,
+        backref=db.backref("annotations_client", lazy="dynamic"),
+        lazy="dynamic",
+    )  # many-to-many relationship with PSDialogTurn class
     evidence = db.relationship(
         "EvidenceClient", backref="annotation", lazy="dynamic"
     )  # one-to-many relationship with EvidenceClient class
