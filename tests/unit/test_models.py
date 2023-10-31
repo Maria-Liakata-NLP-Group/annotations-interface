@@ -51,6 +51,7 @@ def test_new_user(db_session, user_admin1):
     assert user.check_password("admin1password")
 
 
+@pytest.mark.order(after="test_new_user")
 def test_unique_username(db_session):
     """
     GIVEN a User model
@@ -66,6 +67,7 @@ def test_unique_username(db_session):
     db_session.rollback()
 
 
+@pytest.mark.order(after="test_unique_username")
 def test_unique_email(db_session):
     """
     GIVEN a User model
@@ -80,6 +82,7 @@ def test_unique_email(db_session):
     db_session.rollback()
 
 
+@pytest.mark.order(after="test_roles")
 def test_new_dataset(db_session, new_sm_dataset):
     """
     GIVEN a Dataset model
@@ -99,6 +102,7 @@ def test_new_dataset(db_session, new_sm_dataset):
     assert dataset.annotators[1] is annotator1
 
 
+@pytest.mark.order(after="test_new_dataset")
 def test_new_sm_post(db_session, new_sm_post):
     """
     GIVEN a SMPost model
@@ -117,6 +121,7 @@ def test_new_sm_post(db_session, new_sm_post):
     assert sm_post.id_dataset is sm_dataset.id
 
 
+@pytest.mark.order(after="test_new_sm_reply")
 def test_new_sm_annotation(db_session, new_sm_annotation):
     """
     GIVEN a SMAnnotation model
@@ -135,6 +140,7 @@ def test_new_sm_annotation(db_session, new_sm_annotation):
     assert sm_annotation.id_sm_post is sm_post.id
 
 
+@pytest.mark.order(after="test_new_sm_post")
 def test_new_sm_reply(db_session, new_sm_reply):
     """
     GIVEN a SMReply model
@@ -153,6 +159,7 @@ def test_new_sm_reply(db_session, new_sm_reply):
     assert sm_reply.id_dataset is sm_dataset.id
 
 
+@pytest.mark.order(after="test_unique_email")
 def test_roles(db_session):
     """
     GIVEN a Role model
@@ -178,6 +185,7 @@ def test_roles(db_session):
     )
 
 
+@pytest.mark.order(after="test_new_sm_annotation")
 def test_new_ps_dialog_turn(db_session, new_ps_dialog_turn):
     """
     GIVEN a PSDialogTurn model
@@ -196,6 +204,7 @@ def test_new_ps_dialog_turn(db_session, new_ps_dialog_turn):
     assert ps_dialog_turn.id_dataset is ps_dataset.id
 
 
+@pytest.mark.order(after="test_new_ps_dialog_turn")
 def test_new_ps_dialog_event(db_session, new_ps_dialog_event):
     """
     GIVEN a PSDialogEvent model
@@ -216,6 +225,7 @@ def test_new_ps_dialog_event(db_session, new_ps_dialog_event):
     assert ps_dialog_event.id_dataset is ps_dataset.id
 
 
+@pytest.mark.order(after="test_annotation_schema_scale_manager")
 def test_new_ps_dialog_turn_annotation_client(
     db_session,
     new_ps_dialog_turn,
@@ -233,11 +243,12 @@ def test_new_ps_dialog_turn_annotation_client(
     annotator1 = User.query.filter_by(username="annotator1").first()
     dataset = Dataset.query.filter_by(name="Psychotherapy Dataset Test").first()
     assert annotation.comment_summary == "test comment summary"
-    assert annotation.dialog_turns.first() == new_ps_dialog_turn
+    assert annotation.dialog_turns.first().id == new_ps_dialog_turn.id
     assert annotation.author == annotator1
     assert annotation.dataset == dataset
 
 
+@pytest.mark.order(after="test_new_ps_dialog_turn_annotation_client")
 def test_new_ps_dialog_turn_annotation_therapist(
     db_session,
     new_ps_dialog_turn,
@@ -266,6 +277,7 @@ def test_new_ps_dialog_turn_annotation_therapist(
     assert annotation.dataset == dataset
 
 
+@pytest.mark.order(after="test_new_ps_dialog_turn_annotation_therapist")
 def test_new_ps_dialog_turn_annotation_dyad(
     db_session,
     new_ps_dialog_turn,
@@ -293,6 +305,7 @@ def test_new_ps_dialog_turn_annotation_dyad(
     assert annotation.dataset == dataset
 
 
+@pytest.mark.order(after="test_new_ps_dialog_turn_annotation_dyad")
 def test_new_evidence_client(
     db_session,
     new_evidence_client,
@@ -314,6 +327,7 @@ def test_new_evidence_client(
     assert evidence.label == LabelNamesClient.label_a
 
 
+@pytest.mark.order(after="test_new_evidence_client")
 def test_new_evidence_therapist(
     db_session,
     new_evidence_therapist,
@@ -335,6 +349,7 @@ def test_new_evidence_therapist(
     assert evidence.label == LabelNamesTherapist.label_b
 
 
+@pytest.mark.order(after="test_new_evidence_therapist")
 def test_new_evidence_dyad(
     db_session,
     new_evidence_dyad,
@@ -356,6 +371,7 @@ def test_new_evidence_dyad(
     assert evidence.label == LabelNamesDyad.label_a
 
 
+@pytest.mark.order(after="test_new_ps_dialog_event")
 def test_new_client_annotation_schema(db_session, new_ps_annotation_client):
     """
     GIVEN a ClientAnnotationSchema model
@@ -398,6 +414,7 @@ def test_new_client_annotation_schema(db_session, new_ps_annotation_client):
     db_session.commit()
 
 
+@pytest.mark.order(after="test_new_client_annotation_schema")
 def test_new_therapist_annotation_schema(db_session, new_ps_annotation_therapist):
     """
     GIVEN a TherapistAnnotationSchema model
@@ -438,6 +455,7 @@ def test_new_therapist_annotation_schema(db_session, new_ps_annotation_therapist
     db_session.commit()
 
 
+@pytest.mark.order(after="test_new_therapist_annotation_schema")
 def test_new_dyad_annotation_schema(db_session, new_ps_annotation_dyad):
     """
     GIVEN a DyadAnnotationSchema model
@@ -478,6 +496,7 @@ def test_new_dyad_annotation_schema(db_session, new_ps_annotation_dyad):
     db_session.commit()
 
 
+@pytest.mark.order(after="test_new_client_annotation_schema_scale")
 def test_annotation_schema_manager(db_session):
     """Test the AnnotationSchemaManager class"""
 
@@ -536,6 +555,7 @@ def test_annotation_schema_manager(db_session):
     assert len(labels) == 0
 
 
+@pytest.mark.order(after="test_new_therapist_annotation_schema")
 def test_new_client_annotation_schema_scale(db_session):
     """
     GIVEN a ClientAnnotationSchemaScale model
@@ -584,13 +604,9 @@ def test_new_client_annotation_schema_scale(db_session):
     assert len(labels) == 0
 
 
+@pytest.mark.order(after="test_annotation_schema_manager")
 def test_annotation_schema_scale_manager(db_session):
     """Test the AnnotationSchemaScaleManager class"""
-
-    # close the session and re-open it to avoid SQLAlchemy warnings
-    db_session.close()
-    db_session.remove()
-    db_session = db_session()
 
     schema_manager = AnnotationSchemaManager()
     schema_manager.add_labels_client()
