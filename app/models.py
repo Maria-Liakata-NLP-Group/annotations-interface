@@ -1019,8 +1019,11 @@ class AnnotationSchemaScaleManager:
 
     def add_scales_therapist(self):
         """Add annotation schema scales for the therapist to the database"""
-        print("Therapist: Work in progress")
-        return None
+        return self._add_scales(
+            TherapistAnnotationSchemaScale,
+            TherapistAnnotationSchema,
+            self.filename_therapist,
+        )
 
     def add_scales_dyad(self):
         """Add annotation schema scales for the dyad to the database"""
@@ -1033,8 +1036,7 @@ class AnnotationSchemaScaleManager:
 
     def remove_scales_therapist(self):
         """Remove all annotation schema scales for the therapist from the database"""
-        print("Therapist: Work in progress")
-        return None
+        return self._remove_scales(TherapistAnnotationSchemaScale)
 
     def remove_scales_dyad(self):
         """Remove all annotation schema scales for the dyad from the database"""
