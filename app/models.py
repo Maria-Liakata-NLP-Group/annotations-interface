@@ -894,8 +894,7 @@ class AnnotationSchemaManager:
 
     def add_labels_dyad(self):
         """Add annotation labels for the dyad to the database"""
-        print("Dyad: Work in progress")
-        return None
+        return self._add_labels(DyadAnnotationSchema, self.filename_dyad)
 
     def remove_labels_client(self):
         """Remove all annotation labels for the client from the database"""
@@ -907,8 +906,7 @@ class AnnotationSchemaManager:
 
     def remove_labels_dyad(self):
         """Remove all annotation labels for the dyad from the database"""
-        print("Dyad: Work in progress")
-        return None
+        return self._remove_labels(DyadAnnotationSchema)
 
 
 class AnnotationSchemaScaleManager:
