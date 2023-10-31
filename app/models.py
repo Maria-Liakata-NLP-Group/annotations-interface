@@ -479,19 +479,23 @@ class PSAnnotationClient(db.Model):
     evidence = db.relationship(
         "EvidenceClient", backref="annotation", lazy="dynamic"
     )  # one-to-many relationship with EvidenceClient class
-    # many-to-many relationship with ClientAnnotationSchema class
     annotation_labels = db.relationship(
         "ClientAnnotationSchema",
         secondary=annotationclient_annotationschema,
         backref=db.backref("annotations", lazy="dynamic"),
         lazy="dynamic",
-    )
+    )  # many-to-many relationship with ClientAnnotationSchema class
     annotation_scales = db.relationship(
         "ClientAnnotationSchemaScale",
         secondary=annotationclient_annotationschemascale,
         backref=db.backref("annotations", lazy="dynamic"),
         lazy="dynamic",
-    )
+    )  # many-to-many relationship with ClientAnnotationSchemaScale class
+    annotation_comments = db.relationship(
+        "ClientAnnotationComment",
+        backref="annotation",
+        lazy="dynamic",
+    )  # one-to-many relationship with ClientAnnotationComment class
 
 
 class PSAnnotationTherapist(db.Model):
@@ -653,6 +657,11 @@ class ClientAnnotationSchema(db.Model):
         backref="label",
         lazy="dynamic",
     )  # one-to-many relationship with ClientAnnotationSchemaScale class
+    comments = db.relationship(
+        "ClientAnnotationComment",
+        backref="label",
+        lazy="dynamic",
+    )  # one-to-many relationship with ClientAnnotationComment class
     # create unique constraint on label within a parent
     __table_args__ = (db.UniqueConstraint("label", "parent_id"),)
 
@@ -782,6 +791,25 @@ class DyadAnnotationSchemaScale(db.Model):
     def __repr__(self):
         """How to print objects of this class"""
         return "<DyadAnnotationSchemaScale {}>".format(self.scale_title[:10])
+
+
+class ClientAnnotationComment(db.Model):
+    """Table to store the comments for the client annotation schema"""
+
+    __tablename__ = "client_annotation_comment"
+
+    id = db.Column(db.Integer, primary_key=True)
+    comment = db.Column(db.Text, nullable=True)
+    id_client_annotation_schema = db.Column(
+        db.Integer, db.ForeignKey("client_annotation_schema.id")
+    )
+    id_ps_annotation_client = db.Column(
+        db.Integer, db.ForeignKey("ps_annotation_client.id")
+    )
+
+    def __repr__(self):
+        """How to print objects of this class"""
+        return "<ClientAnnotationComment {}>".format(self.comment[:10])
 
 
 class AnnotationSchemaManager:
