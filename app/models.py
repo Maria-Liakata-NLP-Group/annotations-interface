@@ -1025,8 +1025,9 @@ class AnnotationSchemaScaleManager:
 
     def add_scales_dyad(self):
         """Add annotation schema scales for the dyad to the database"""
-        print("Dyad: Work in progress")
-        return None
+        return self._add_scales(
+            DyadAnnotationSchemaScale, DyadAnnotationSchema, self.filename_dyad
+        )
 
     def remove_scales_client(self):
         """Remove all annotation schema scales for the client from the database"""
@@ -1038,5 +1039,4 @@ class AnnotationSchemaScaleManager:
 
     def remove_scales_dyad(self):
         """Remove all annotation schema scales for the dyad from the database"""
-        print("Dyad: Work in progress")
-        return None
+        return self._remove_scales(DyadAnnotationSchemaScale)
