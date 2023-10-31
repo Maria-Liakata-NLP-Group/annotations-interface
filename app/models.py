@@ -895,7 +895,9 @@ class AnnotationSchemaManager:
             The annotation schema model class for the client, therapist or dyad
         """
         try:
-            annotation_schema_model.query.delete()
+            labels = annotation_schema_model.query.all()
+            for label in labels:
+                db.session.delete(label)
             db.session.commit()
         except Exception as e:
             print(e)
@@ -1020,7 +1022,9 @@ class AnnotationSchemaScaleManager:
             The annotation schema scale model class for the client, therapist or dyad
         """
         try:
-            annotation_schema_scale_model.query.delete()
+            scales = annotation_schema_scale_model.query.all()
+            for scale in scales:
+                db.session.delete(scale)
             db.session.commit()
         except Exception as e:
             print(e)
