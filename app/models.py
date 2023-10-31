@@ -890,8 +890,7 @@ class AnnotationSchemaManager:
 
     def add_labels_therapist(self):
         """Add annotation labels for the therapist to the database"""
-        print("Therapist: Work in progress")
-        return None
+        return self._add_labels(TherapistAnnotationSchema, self.filename_therapist)
 
     def add_labels_dyad(self):
         """Add annotation labels for the dyad to the database"""
@@ -904,8 +903,7 @@ class AnnotationSchemaManager:
 
     def remove_labels_therapist(self):
         """Remove all annotation labels for the therapist from the database"""
-        print("Therapist: Work in progress")
-        return None
+        return self._remove_labels(TherapistAnnotationSchema)
 
     def remove_labels_dyad(self):
         """Remove all annotation labels for the dyad from the database"""
