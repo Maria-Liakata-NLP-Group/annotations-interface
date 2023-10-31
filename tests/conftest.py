@@ -198,11 +198,6 @@ def new_ps_dialog_event(new_ps_dataset, new_ps_dialog_turn):
 def new_ps_annotation_client(new_ps_dataset, new_ps_dialog_turn, user_annotator1):
     """Fixture to create a new psychotherapy dialog turn annotation for the client"""
     dialog_turn_annotation = PSAnnotationClient(
-        label_a=SubLabelsAClient.attachment,
-        label_b=SubLabelsBClient.attachment,
-        strength_a=LabelStrengthAClient.moderately_adaptive,
-        comment_a="test comment a",
-        comment_b="test comment b",
         comment_summary="test comment summary",
         author=user_annotator1,
         dataset=new_ps_dataset,
