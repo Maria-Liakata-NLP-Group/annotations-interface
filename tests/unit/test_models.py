@@ -21,13 +21,10 @@ from app.models import (
     AnnotationSchemaScaleManager,
 )
 from app.utils import (
-    SubLabelsAClient,
     SubLabelsATherapist,
     SubLabelsADyad,
-    SubLabelsBClient,
     SubLabelsBTherapist,
     SubLabelsBDyad,
-    LabelStrengthAClient,
     LabelStrengthBTherapist,
     LabelStrengthADyad,
     LabelNamesClient,
