@@ -140,6 +140,22 @@ annotationdyad_annotationschema = db.Table(
 )
 
 
+# association table for many-to-many relationship between PSAnnotationClient and ClientAnnotationSchemaScale
+annotationclient_annotationschemascale = db.Table(
+    "annotationclient_annotationschemascale",
+    db.Column(
+        "id_ps_annotation_client",
+        db.Integer,
+        db.ForeignKey("ps_annotation_client.id"),
+    ),
+    db.Column(
+        "id_client_annotation_schema_scale",
+        db.Integer,
+        db.ForeignKey("client_annotation_schema_scale.id"),
+    ),
+)
+
+
 class User(UserMixin, db.Model):
     """User class for database"""
 
@@ -479,6 +495,12 @@ class PSAnnotationClient(db.Model):
     annotation_labels = db.relationship(
         "ClientAnnotationSchema",
         secondary=annotationclient_annotationschema,
+        backref=db.backref("annotations", lazy="dynamic"),
+        lazy="dynamic",
+    )
+    annotation_scales = db.relationship(
+        "ClientAnnotationSchemaScale",
+        secondary=annotationclient_annotationschemascale,
         backref=db.backref("annotations", lazy="dynamic"),
         lazy="dynamic",
     )
