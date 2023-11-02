@@ -226,7 +226,7 @@ def test_new_ps_dialog_event(db_session, new_ps_dialog_event):
 
 
 @pytest.mark.order(after="test_annotation_schema_scale_manager")
-def test_new_ps_dialog_turn_annotation_client(
+def test_new_ps_annotation_client(
     db_session,
     new_ps_dialog_turn,
     new_ps_annotation_client,
@@ -248,8 +248,8 @@ def test_new_ps_dialog_turn_annotation_client(
     assert annotation.dataset == dataset
 
 
-@pytest.mark.order(after="test_new_ps_dialog_turn_annotation_client")
-def test_new_ps_dialog_turn_annotation_therapist(
+@pytest.mark.order(after="test_new_ps_annotation_client")
+def test_new_ps_annotation_therapist(
     db_session,
     new_ps_dialog_turn,
     new_ps_annotation_therapist,
@@ -277,8 +277,8 @@ def test_new_ps_dialog_turn_annotation_therapist(
     assert annotation.dataset == dataset
 
 
-@pytest.mark.order(after="test_new_ps_dialog_turn_annotation_therapist")
-def test_new_ps_dialog_turn_annotation_dyad(
+@pytest.mark.order(after="test_new_ps_annotation_therapist")
+def test_new_ps_annotation_dyad(
     db_session,
     new_ps_dialog_turn,
     new_ps_annotation_dyad,
@@ -305,7 +305,7 @@ def test_new_ps_dialog_turn_annotation_dyad(
     assert annotation.dataset == dataset
 
 
-@pytest.mark.order(after="test_new_ps_dialog_turn_annotation_dyad")
+@pytest.mark.order(after="test_new_ps_annotation_dyad")
 def test_new_evidence_client(
     db_session,
     new_evidence_client,
