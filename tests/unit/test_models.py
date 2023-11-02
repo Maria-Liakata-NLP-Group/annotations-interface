@@ -230,6 +230,7 @@ def test_new_ps_annotation_client(
     db_session,
     new_ps_dialog_turn,
     new_ps_annotation_client,
+    new_ps_annotation_schema_client,
 ):
     """
     GIVEN a PSAnnotationClient model
@@ -246,6 +247,11 @@ def test_new_ps_annotation_client(
     assert annotation.dialog_turns.first().id == new_ps_dialog_turn.id
     assert annotation.author == annotator1
     assert annotation.dataset == dataset
+    label, scale = new_ps_annotation_schema_client
+    new_ps_annotation_client.annotation_labels.append(label)
+    new_ps_annotation_client.annotation_scales.append(scale)
+    assert label.annotations.first() == new_ps_annotation_client
+    assert scale.annotations.first() == new_ps_annotation_client
 
 
 @pytest.mark.order(after="test_new_ps_annotation_client")

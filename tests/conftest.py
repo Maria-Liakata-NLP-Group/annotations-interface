@@ -1,5 +1,6 @@
 import pytest
 from datetime import datetime, date
+import warnings
 
 from app import create_app, db
 from app.models import (
@@ -18,6 +19,10 @@ from app.models import (
     EvidenceClient,
     EvidenceTherapist,
     EvidenceDyad,
+    AnnotationSchemaManager,
+    AnnotationSchemaScaleManager,
+    ClientAnnotationSchema,
+    ClientAnnotationSchemaScale,
 )
 from app.utils import (
     SubLabelsAClient,
@@ -274,3 +279,25 @@ def new_evidence_dyad(new_ps_annotation_dyad, new_ps_dialog_event):
         label=LabelNamesDyad.label_a,
     )
     return evidence
+
+
+@pytest.fixture(scope="module")
+def new_ps_annotation_schema_client():
+    """Fixture to create a new psychotherapy annotation schema + scales"""
+    schema_manager = AnnotationSchemaManager()
+    schema_manager.add_labels_client()
+    scales_manager = AnnotationSchemaScaleManager()
+    with warnings.catch_warnings():
+        warnings.filterwarnings("ignore", category=UserWarning)
+        scales_manager.add_scales_client()  # ignore UserWarning about non-existent label (this is deliberate)
+    # find a label with no child labels
+    label = ClientAnnotationSchema.query.filter_by(children=None).first()
+    # find the uppermost parent of the label
+    parent = label
+    while parent.parent is not None:
+        parent = parent.parent
+    # find a scale associated with the parent label
+    scale = ClientAnnotationSchemaScale.query.filter_by(
+        id_client_annotation_schema=parent.id
+    ).first()
+    return label, scale
