@@ -400,6 +400,65 @@ def test_new_client_annotation_schema_scale(db_session):
     assert len(labels) == 0
 
 
+@pytest.mark.order(after="test_new_client_annotation_schema_scale")
+def test_annotation_schema_manager(db_session):
+    """Test the AnnotationSchemaManager class"""
+
+    manager = AnnotationSchemaManager()
+    manager.add_labels_client()
+
+    # verify that there are 17 labels in total
+    labels = ClientAnnotationSchema.query.all()
+    assert len(labels) == 17
+    # verify that there are only 3 labels with no parent
+    assert len([label for label in labels if label.parent is None]) == 3
+
+    # verify that "labelA1" has 2 children
+    label_a1 = ClientAnnotationSchema.query.filter_by(
+        label="labelA1".capitalize()
+    ).first()
+    assert len(label_a1.children.all()) == 2
+
+    # verify that "labelB2" has no children
+    label_b2 = ClientAnnotationSchema.query.filter_by(
+        label="labelB2".capitalize()
+    ).first()
+    assert len(label_b2.children.all()) == 0
+
+    # verify that the parent of "labelC4" is "labelB3"
+    label_c4 = ClientAnnotationSchema.query.filter_by(
+        label="labelC4".capitalize()
+    ).first()
+    assert label_c4.parent.label == "labelB3".capitalize()
+
+    # verify that "labelC5" has two children, that its parent is
+    # "labelB5" and that a child of "labelA2" is "labelB5"
+    label_c5 = ClientAnnotationSchema.query.filter_by(
+        label="labelC5".capitalize()
+    ).first()
+    assert len(label_c5.children.all()) == 2
+    assert label_c5.parent.label == "labelB5".capitalize()
+    label_b5 = ClientAnnotationSchema.query.filter_by(
+        label="labelB5".capitalize()
+    ).first()
+    label_a2 = ClientAnnotationSchema.query.filter_by(
+        label="labelA2".capitalize()
+    ).first()
+    assert label_b5 in label_a2.children.all()
+
+    # verify that "labelA3" has two children and no parent
+    label_a3 = ClientAnnotationSchema.query.filter_by(
+        label="labelA3".capitalize()
+    ).first()
+    assert len(label_a3.children.all()) == 2
+    assert label_a3.parent is None
+
+    # remove the labels from the database
+    manager.remove_labels_client()
+    labels = ClientAnnotationSchema.query.all()
+    assert len(labels) == 0
+
+
 @pytest.mark.order(after="test_annotation_schema_scale_manager")
 def test_new_ps_annotation_client(
     db_session,
@@ -550,65 +609,6 @@ def test_new_evidence_dyad(
     assert evidence.dialog_event == new_ps_dialog_event
     assert evidence.annotation == new_ps_annotation_dyad
     assert evidence.label == LabelNamesDyad.label_a
-
-
-@pytest.mark.order(after="test_new_client_annotation_schema_scale")
-def test_annotation_schema_manager(db_session):
-    """Test the AnnotationSchemaManager class"""
-
-    manager = AnnotationSchemaManager()
-    manager.add_labels_client()
-
-    # verify that there are 17 labels in total
-    labels = ClientAnnotationSchema.query.all()
-    assert len(labels) == 17
-    # verify that there are only 3 labels with no parent
-    assert len([label for label in labels if label.parent is None]) == 3
-
-    # verify that "labelA1" has 2 children
-    label_a1 = ClientAnnotationSchema.query.filter_by(
-        label="labelA1".capitalize()
-    ).first()
-    assert len(label_a1.children.all()) == 2
-
-    # verify that "labelB2" has no children
-    label_b2 = ClientAnnotationSchema.query.filter_by(
-        label="labelB2".capitalize()
-    ).first()
-    assert len(label_b2.children.all()) == 0
-
-    # verify that the parent of "labelC4" is "labelB3"
-    label_c4 = ClientAnnotationSchema.query.filter_by(
-        label="labelC4".capitalize()
-    ).first()
-    assert label_c4.parent.label == "labelB3".capitalize()
-
-    # verify that "labelC5" has two children, that its parent is
-    # "labelB5" and that a child of "labelA2" is "labelB5"
-    label_c5 = ClientAnnotationSchema.query.filter_by(
-        label="labelC5".capitalize()
-    ).first()
-    assert len(label_c5.children.all()) == 2
-    assert label_c5.parent.label == "labelB5".capitalize()
-    label_b5 = ClientAnnotationSchema.query.filter_by(
-        label="labelB5".capitalize()
-    ).first()
-    label_a2 = ClientAnnotationSchema.query.filter_by(
-        label="labelA2".capitalize()
-    ).first()
-    assert label_b5 in label_a2.children.all()
-
-    # verify that "labelA3" has two children and no parent
-    label_a3 = ClientAnnotationSchema.query.filter_by(
-        label="labelA3".capitalize()
-    ).first()
-    assert len(label_a3.children.all()) == 2
-    assert label_a3.parent is None
-
-    # remove the labels from the database
-    manager.remove_labels_client()
-    labels = ClientAnnotationSchema.query.all()
-    assert len(labels) == 0
 
 
 @pytest.mark.order(after="test_annotation_schema_manager")
