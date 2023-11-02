@@ -459,6 +459,56 @@ def test_annotation_schema_manager(db_session):
     assert len(labels) == 0
 
 
+@pytest.mark.order(after="test_annotation_schema_manager")
+def test_annotation_schema_scale_manager(db_session):
+    """Test the AnnotationSchemaScaleManager class"""
+
+    schema_manager = AnnotationSchemaManager()
+    schema_manager.add_labels_client()
+    scales_manager = AnnotationSchemaScaleManager()
+    # verify that a warning is raised if scales are added to a non-existent label
+    # ("non-existent-label" in the JSON file)
+    with pytest.warns(UserWarning, match="non-existent-label".strip().capitalize()):
+        scales_manager.add_scales_client()
+
+    # verify that the unique scale titles are "scale1" and "scale2"
+    scales = ClientAnnotationSchemaScale.query.all()
+    scale_titles = [scale.scale_title for scale in scales]
+    assert set(scale_titles) == {"scale1".capitalize(), "scale2".capitalize()}
+
+    # verify that the scales are correctly linked to the labels
+    # "labelA1" has two scale titles: "scale1" and "scale2"
+    label_a1 = ClientAnnotationSchema.query.filter_by(
+        label="labelA1".capitalize()
+    ).first()
+    scale_titles = [scale.scale_title for scale in label_a1.scales.all()]
+    assert scale_titles.sort() == ["scale1".capitalize(), "scale2".capitalize()].sort()
+    # "labelA2" has also got two scale titles: "scale1" and "scale2"
+    label_a2 = ClientAnnotationSchema.query.filter_by(
+        label="labelA2".capitalize()
+    ).first()
+    scale_titles = [scale.scale_title for scale in label_a2.scales.all()]
+    assert scale_titles.sort() == ["scale1".capitalize(), "scale2".capitalize()].sort()
+
+    # verify that "scale1" of "labelA1" has three levels: "one", "two" and "three"
+    scale1_label_a1 = ClientAnnotationSchemaScale.query.filter_by(
+        scale_title="scale1".capitalize(), label=label_a1
+    ).all()
+    levels = [scale.scale_level for scale in scale1_label_a1]
+    assert (
+        levels.sort()
+        == ["one".capitalize(), "two".capitalize(), "three".capitalize()].sort()
+    )
+
+    # remove scales and labels from the database
+    scales_manager.remove_scales_client()
+    schema_manager.remove_labels_client()
+    scales = ClientAnnotationSchemaScale.query.all()
+    assert len(scales) == 0
+    labels = ClientAnnotationSchema.query.all()
+    assert len(labels) == 0
+
+
 @pytest.mark.order(after="test_annotation_schema_scale_manager")
 def test_new_ps_annotation_client(
     db_session,
@@ -609,56 +659,6 @@ def test_new_evidence_dyad(
     assert evidence.dialog_event == new_ps_dialog_event
     assert evidence.annotation == new_ps_annotation_dyad
     assert evidence.label == LabelNamesDyad.label_a
-
-
-@pytest.mark.order(after="test_annotation_schema_manager")
-def test_annotation_schema_scale_manager(db_session):
-    """Test the AnnotationSchemaScaleManager class"""
-
-    schema_manager = AnnotationSchemaManager()
-    schema_manager.add_labels_client()
-    scales_manager = AnnotationSchemaScaleManager()
-    # verify that a warning is raised if scales are added to a non-existent label
-    # ("non-existent-label" in the JSON file)
-    with pytest.warns(UserWarning, match="non-existent-label".strip().capitalize()):
-        scales_manager.add_scales_client()
-
-    # verify that the unique scale titles are "scale1" and "scale2"
-    scales = ClientAnnotationSchemaScale.query.all()
-    scale_titles = [scale.scale_title for scale in scales]
-    assert set(scale_titles) == {"scale1".capitalize(), "scale2".capitalize()}
-
-    # verify that the scales are correctly linked to the labels
-    # "labelA1" has two scale titles: "scale1" and "scale2"
-    label_a1 = ClientAnnotationSchema.query.filter_by(
-        label="labelA1".capitalize()
-    ).first()
-    scale_titles = [scale.scale_title for scale in label_a1.scales.all()]
-    assert scale_titles.sort() == ["scale1".capitalize(), "scale2".capitalize()].sort()
-    # "labelA2" has also got two scale titles: "scale1" and "scale2"
-    label_a2 = ClientAnnotationSchema.query.filter_by(
-        label="labelA2".capitalize()
-    ).first()
-    scale_titles = [scale.scale_title for scale in label_a2.scales.all()]
-    assert scale_titles.sort() == ["scale1".capitalize(), "scale2".capitalize()].sort()
-
-    # verify that "scale1" of "labelA1" has three levels: "one", "two" and "three"
-    scale1_label_a1 = ClientAnnotationSchemaScale.query.filter_by(
-        scale_title="scale1".capitalize(), label=label_a1
-    ).all()
-    levels = [scale.scale_level for scale in scale1_label_a1]
-    assert (
-        levels.sort()
-        == ["one".capitalize(), "two".capitalize(), "three".capitalize()].sort()
-    )
-
-    # remove scales and labels from the database
-    scales_manager.remove_scales_client()
-    schema_manager.remove_labels_client()
-    scales = ClientAnnotationSchemaScale.query.all()
-    assert len(scales) == 0
-    labels = ClientAnnotationSchema.query.all()
-    assert len(labels) == 0
 
 
 @pytest.mark.order(after="test_new_evidence_dyad")
