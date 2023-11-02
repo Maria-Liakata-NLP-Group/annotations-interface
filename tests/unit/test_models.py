@@ -310,6 +310,47 @@ def test_new_therapist_annotation_schema(db_session, new_ps_annotation_therapist
     db_session.commit()
 
 
+@pytest.mark.order(after="test_new_therapist_annotation_schema")
+def test_new_dyad_annotation_schema(db_session, new_ps_annotation_dyad):
+    """
+    GIVEN a DyadAnnotationSchema model
+    WHEN a new DyadAnnotationSchema is created and added to the database
+    THEN check its fields are defined correctly
+    """
+
+    label_a = DyadAnnotationSchema(
+        label="parent label", annotations=[new_ps_annotation_dyad]
+    )
+    label_b = DyadAnnotationSchema(
+        label="child label", parent=label_a, annotations=[new_ps_annotation_dyad]
+    )
+    db_session.add_all([label_a, label_b])
+    db_session.commit()
+
+    label_a = DyadAnnotationSchema.query.filter_by(label="parent label").first()
+    label_b = DyadAnnotationSchema.query.filter_by(label="child label").first()
+    assert label_a.parent is None
+    assert label_a.children[0] is label_b
+    assert label_b.parent is label_a
+    assert label_b.children.all() == []
+
+    # verify that the annotations are correctly linked to the labels
+    labels = new_ps_annotation_dyad.annotation_labels.all()
+    assert len(labels) == 2
+
+    with pytest.raises(IntegrityError, match="UNIQUE constraint failed"):
+        """Test that a label with the same name and parent cannot be added twice"""
+        label_c = DyadAnnotationSchema(label="child label", parent=label_a)
+        db_session.add(label_c)
+        db_session.commit()
+    db_session.rollback()
+
+    # delete the labels from the database
+    db_session.delete(label_a)
+    db_session.delete(label_b)
+    db_session.commit()
+
+
 @pytest.mark.order(after="test_annotation_schema_scale_manager")
 def test_new_ps_annotation_client(
     db_session,
@@ -460,47 +501,6 @@ def test_new_evidence_dyad(
     assert evidence.dialog_event == new_ps_dialog_event
     assert evidence.annotation == new_ps_annotation_dyad
     assert evidence.label == LabelNamesDyad.label_a
-
-
-@pytest.mark.order(after="test_new_therapist_annotation_schema")
-def test_new_dyad_annotation_schema(db_session, new_ps_annotation_dyad):
-    """
-    GIVEN a DyadAnnotationSchema model
-    WHEN a new DyadAnnotationSchema is created and added to the database
-    THEN check its fields are defined correctly
-    """
-
-    label_a = DyadAnnotationSchema(
-        label="parent label", annotations=[new_ps_annotation_dyad]
-    )
-    label_b = DyadAnnotationSchema(
-        label="child label", parent=label_a, annotations=[new_ps_annotation_dyad]
-    )
-    db_session.add_all([label_a, label_b])
-    db_session.commit()
-
-    label_a = DyadAnnotationSchema.query.filter_by(label="parent label").first()
-    label_b = DyadAnnotationSchema.query.filter_by(label="child label").first()
-    assert label_a.parent is None
-    assert label_a.children[0] is label_b
-    assert label_b.parent is label_a
-    assert label_b.children.all() == []
-
-    # verify that the annotations are correctly linked to the labels
-    labels = new_ps_annotation_dyad.annotation_labels.all()
-    assert len(labels) == 2
-
-    with pytest.raises(IntegrityError, match="UNIQUE constraint failed"):
-        """Test that a label with the same name and parent cannot be added twice"""
-        label_c = DyadAnnotationSchema(label="child label", parent=label_a)
-        db_session.add(label_c)
-        db_session.commit()
-    db_session.rollback()
-
-    # delete the labels from the database
-    db_session.delete(label_a)
-    db_session.delete(label_b)
-    db_session.commit()
 
 
 @pytest.mark.order(after="test_new_client_annotation_schema_scale")
