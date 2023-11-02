@@ -19,6 +19,7 @@ from app.models import (
     ClientAnnotationSchemaScale,
     AnnotationSchemaManager,
     AnnotationSchemaScaleManager,
+    ClientAnnotationComment,
 )
 from app.utils import (
     SubLabelsATherapist,
@@ -658,3 +659,26 @@ def test_annotation_schema_scale_manager(db_session):
     assert len(scales) == 0
     labels = ClientAnnotationSchema.query.all()
     assert len(labels) == 0
+
+
+@pytest.mark.order(after="test_new_evidence_dyad")
+def test_new_ps_annotation_comment_client(
+    db_session,
+    new_ps_annotation_comment_client,
+    new_ps_annotation_client,
+    new_ps_annotation_schema_client,
+):
+    """
+    GIVEN a ClientAnnotationComment model
+    WHEN a new ClientAnnotationComment is created and added to the database
+    THEN check its fields are defined correctly
+    """
+    annotation_comment = new_ps_annotation_comment_client
+    db_session.add(annotation_comment)
+    db_session.commit()
+
+    annotation_comment = ClientAnnotationComment.query.first()
+    assert annotation_comment is not None
+    assert annotation_comment.comment == "test comment"
+    assert annotation_comment.annotation == new_ps_annotation_client
+    assert annotation_comment.label == new_ps_annotation_schema_client[0]
