@@ -148,25 +148,6 @@ def test_new_sm_post(db_session, new_sm_post):
     assert sm_post.id_dataset is sm_dataset.id
 
 
-@pytest.mark.order(after="test_new_sm_reply")
-def test_new_sm_annotation(db_session, new_sm_annotation):
-    """
-    GIVEN a SMAnnotation model
-    WHEN a new SMAnnotation is created and added to the database
-    THEN check its fields are defined correctly
-    """
-    db_session.add(new_sm_annotation)
-    db_session.commit()
-    sm_annotation = SMAnnotation.query.filter_by(body="test annotation").first()
-    admin1 = User.query.filter_by(username="admin1").first()
-    sm_post = SMPost.query.filter_by(question="test post").first()
-    assert sm_annotation.body == "test annotation"
-    assert sm_annotation.author is admin1
-    assert sm_annotation.post is sm_post
-    assert sm_annotation.id_user is admin1.id
-    assert sm_annotation.id_sm_post is sm_post.id
-
-
 @pytest.mark.order(after="test_new_sm_post")
 def test_new_sm_reply(db_session, new_sm_reply):
     """
@@ -184,6 +165,25 @@ def test_new_sm_reply(db_session, new_sm_reply):
     assert sm_reply.dataset is sm_dataset
     assert sm_reply.id_sm_post is sm_post.id
     assert sm_reply.id_dataset is sm_dataset.id
+
+
+@pytest.mark.order(after="test_new_sm_reply")
+def test_new_sm_annotation(db_session, new_sm_annotation):
+    """
+    GIVEN a SMAnnotation model
+    WHEN a new SMAnnotation is created and added to the database
+    THEN check its fields are defined correctly
+    """
+    db_session.add(new_sm_annotation)
+    db_session.commit()
+    sm_annotation = SMAnnotation.query.filter_by(body="test annotation").first()
+    admin1 = User.query.filter_by(username="admin1").first()
+    sm_post = SMPost.query.filter_by(question="test post").first()
+    assert sm_annotation.body == "test annotation"
+    assert sm_annotation.author is admin1
+    assert sm_annotation.post is sm_post
+    assert sm_annotation.id_user is admin1.id
+    assert sm_annotation.id_sm_post is sm_post.id
 
 
 @pytest.mark.order(after="test_new_sm_annotation")
