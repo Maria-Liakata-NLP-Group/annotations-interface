@@ -26,13 +26,10 @@ from app.models import (
     ClientAnnotationComment,
 )
 from app.utils import (
-    SubLabelsAClient,
     SubLabelsATherapist,
-    SubLabelsBClient,
     SubLabelsBTherapist,
     SubLabelsADyad,
     SubLabelsBDyad,
-    LabelStrengthAClient,
     LabelStrengthBTherapist,
     LabelStrengthADyad,
     LabelNamesClient,
