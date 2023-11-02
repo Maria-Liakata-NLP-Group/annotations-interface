@@ -83,6 +83,32 @@ def test_unique_email(db_session):
     db_session.rollback()
 
 
+@pytest.mark.order(after="test_unique_email")
+def test_roles(db_session):
+    """
+    GIVEN a Role model
+    WHEN a new Role is created and added to the database
+    THEN check the name field is defined correctly and the role has the correct permissions
+    """
+    # Role names are defined in app/models.py,
+    # and are added to the database configured for testing in conftest.py
+    from app.models import Role, Permission
+
+    annotator = Role.query.filter_by(name="Annotator").first()
+    admin = Role.query.filter_by(name="Administrator").first()
+
+    assert annotator is not None
+    assert admin is not None
+    assert annotator.has_permission(Permission.READ) and annotator.has_permission(
+        Permission.WRITE
+    )
+    assert (
+        admin.has_permission(Permission.READ)
+        and admin.has_permission(Permission.WRITE)
+        and admin.has_permission(Permission.ADMIN)
+    )
+
+
 @pytest.mark.order(after="test_roles")
 def test_new_dataset(db_session, new_sm_dataset):
     """
@@ -158,32 +184,6 @@ def test_new_sm_reply(db_session, new_sm_reply):
     assert sm_reply.dataset is sm_dataset
     assert sm_reply.id_sm_post is sm_post.id
     assert sm_reply.id_dataset is sm_dataset.id
-
-
-@pytest.mark.order(after="test_unique_email")
-def test_roles(db_session):
-    """
-    GIVEN a Role model
-    WHEN a new Role is created and added to the database
-    THEN check the name field is defined correctly and the role has the correct permissions
-    """
-    # Role names are defined in app/models.py,
-    # and are added to the database configured for testing in conftest.py
-    from app.models import Role, Permission
-
-    annotator = Role.query.filter_by(name="Annotator").first()
-    admin = Role.query.filter_by(name="Administrator").first()
-
-    assert annotator is not None
-    assert admin is not None
-    assert annotator.has_permission(Permission.READ) and annotator.has_permission(
-        Permission.WRITE
-    )
-    assert (
-        admin.has_permission(Permission.READ)
-        and admin.has_permission(Permission.WRITE)
-        and admin.has_permission(Permission.ADMIN)
-    )
 
 
 @pytest.mark.order(after="test_new_sm_annotation")
