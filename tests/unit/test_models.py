@@ -351,7 +351,7 @@ def test_new_dyad_annotation_schema(db_session, new_ps_annotation_dyad):
     db_session.commit()
 
 
-@pytest.mark.order(after="test_new_therapist_annotation_schema")
+@pytest.mark.order(after="test_new_dyad_annotation_schema")
 def test_new_client_annotation_schema_scale(db_session):
     """
     GIVEN a ClientAnnotationSchemaScale model
