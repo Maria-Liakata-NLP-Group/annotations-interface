@@ -4,10 +4,11 @@ Miscellaneous utility functions for the annotate blueprint
 from typing import Union
 from datetime import datetime
 import itertools
-from flask import url_for
+from flask import url_for, abort
 from flask_login import current_user
 from app.utils import Speaker, LabelNamesClient, LabelNamesTherapist, LabelNamesDyad
 from sqlalchemy import desc
+import warnings
 from app.models import (
     PSAnnotationClient,
     PSAnnotationTherapist,
@@ -16,6 +17,9 @@ from app.models import (
     EvidenceTherapist,
     EvidenceDyad,
     Dataset,
+    ClientAnnotationSchema,
+    TherapistAnnotationSchema,
+    DyadAnnotationSchema,
 )
 from app import db
 from app.annotate.forms import (
@@ -741,3 +745,57 @@ def fetch_evidence_dyad(annotation: PSAnnotationDyad):
         events[LabelNamesDyad.label_a],
         events[LabelNamesDyad.label_b],
     )
+
+
+def get_annotation_label_children(
+    label: Union[int, str],
+    annotation_schema_model: Union[
+        ClientAnnotationSchema, TherapistAnnotationSchema, DyadAnnotationSchema
+    ],
+    parent: str = None,
+) -> list:
+    """
+    Given an annotation label, query the database to find its child labels
+    so that they can be used as choices for the annotation form select fields.
+
+    Parameters
+    ----------
+    label : int or str
+        The annotation label ID or name
+    annotation_schema_model : ClientAnnotationSchema or TherapistAnnotationSchema or DyadAnnotationSchema
+        The annotation schema model for the client, therapist or dyad
+    parent : str
+        The parent label name, used when a label name is passed as the "label" parameter
+
+    Returns
+    -------
+    choices : list
+        A list of of tuples containing the child label IDs and names, to be used as choices
+        for the select fields in the annotation form
+    """
+    if type(label) == int:
+        label = annotation_schema_model.query.get_or_404(label)
+        children = label.children
+    elif type(label) == str:
+        label = label.strip().capitalize()
+        labels = annotation_schema_model.query.filter_by(label=label).all()
+        if not labels:
+            abort(404)  # if the label does not exist, abort with 404
+        elif parent:
+            parent = parent.strip().capitalize()
+            labels = [
+                label
+                for label in labels
+                if label.parent and label.parent.label == parent
+            ]
+            if not labels:
+                abort(404)
+        if len(labels) > 1:
+            warnings.warn(
+                f"Multiple labels with the name '{label}' exist. "
+                f"Using the first one with ID {labels[0].id}."
+            )
+        label = labels[0]
+        children = label.children
+    choices = [(label.id, label.label) for label in children]
+    return choices
