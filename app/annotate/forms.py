@@ -75,18 +75,26 @@ def create_select_field(label, choices, name, default=None):
     )
 
 
-def create_select_field_without_choices(label, name):
+def create_select_field_without_choices(label, name, data_required=False):
     """
     Create a select field with the given label and name, but without choices.
     This is used for select fields with dynamic choice values.
-    The data required validator is not used, the field is optional.
+    Set 'data_required' to True if the field is required.
     """
 
-    return SelectField(
-        label=label,
-        name=name,
-        coerce=int,
-    )
+    if data_required:
+        return SelectField(
+            label=label,
+            validators=[DataRequired()],
+            name=name,
+            coerce=int,
+        )
+    else:
+        return SelectField(
+            label=label,
+            name=name,
+            coerce=int,
+        )
 
 
 def create_select_multiple_field_without_choices(label, name):
