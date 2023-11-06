@@ -88,12 +88,14 @@ def create_select_field_without_choices(label, name, data_required=False):
             validators=[DataRequired()],
             name=name,
             coerce=int,
+            default=None,
         )
     else:
         return SelectField(
             label=label,
             name=name,
             coerce=int,
+            default=None,
         )
 
 
