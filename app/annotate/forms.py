@@ -136,6 +136,76 @@ def create_text_area_field(
     )
 
 
+class PSAnnotationForm(FlaskForm):
+    """Generic segment level annotation form of psychotherapy datasets"""
+
+    def __init__(self):
+        self.label_prefix = "label_"  # the prefix of the label fields
+        self.sub_label_prefix = "sub_label_"  # the prefix of the sublabel fields
+        self.additional_suffix = "_add"  # the suffix of the additional label fields
+        self.scale_prefix = "scale_"  # the prefix of the scale fields
+        self.comment_prefix = "comment_"  # the prefix of the comment fields
+        self.entity_suffix = (
+            "_who"  # this tags the entity of the label, e.g. client, therapist, dyad
+        )
+
+    def _find_last_label_field(self):
+        """Find the last label field in the form"""
+
+        # check the existing label fields
+        attributes = self.__dict__.keys()
+        label_fields = [
+            attribute
+            for attribute in attributes
+            if attribute.startswith(self.label_prefix)
+            and not attribute.endswith(self.additional_suffix)
+        ]
+        # the label fields are names "label_a", "label_b", etc.
+        # find the last label field
+        label_fields.sort()
+        last_label_field = label_fields[-1]
+        return last_label_field
+
+    def _create_new_label_field(self, new_letter, suffix, data_required=True):
+        new_label_field = self.label_prefix + new_letter
+        setattr(
+            self,
+            new_label_field,
+            create_select_field_without_choices(
+                label="(" + new_letter.upper() + ")",
+                name=new_label_field + suffix,
+                data_required=data_required,
+            ),
+        )
+
+    def _create_new_sub_label_field(
+        self, new_letter, suffix, num_sub_labels, data_required=True
+    ):
+        new_sub_label_field = self.sub_label_prefix + new_letter
+        for i in range(1, num_sub_labels + 1):
+            setattr(
+                self,
+                new_sub_label_field + "_" + str(i),
+                create_select_field_without_choices(
+                    label=None,
+                    name=new_sub_label_field + "_" + str(i) + suffix,
+                    data_required=data_required,
+                ),
+            )
+
+    def create_new_fields_group(
+        self, name, num_sub_labels, label_scales, additional=False
+    ):
+        last_label_field = self._find_last_label_field()
+        # add the next letter of the alphabet to the last label field
+        new_letter = chr(ord(last_label_field[-1]) + 1)
+
+        # add the new label field to the form
+        self._create_new_label_field(new_letter, suffix=self.entity_suffix)
+
+        # add the new sublabel fields to the form
+
+
 class PSAnnotationFormClient(FlaskForm):
     """Segment level annotation form of psychotherapy datasets for the client"""
 
