@@ -139,78 +139,37 @@ def create_text_area_field(
 class PSAnnotationFormClient(FlaskForm):
     """Segment level annotation form of psychotherapy datasets for the client"""
 
-    # Label A
-    label_a_name = "Wish"  # this is the name of the label as it appears in the database
-    label_a = create_select_field_without_choices(
-        label="(A)", name="label_a_client", data_required=True
-    )  # this is the main label A
-    label_a_1 = create_select_field_without_choices(
-        label=None, name="label_a_1_client", data_required=True
-    )  # this is a sub-label of label A
-    label_a_add = create_select_field_without_choices(
-        label="(A)", name="label_a_add_client", data_required=False
-    )  # this is an additional label A
-    label_a_1_add = create_select_field_without_choices(
-        label=None, name="label_a_1_add_client", data_required=False
-    )  # this is a sub-label of additional label A
-
-    # Label B
-    label_b_name = "Response of Other"  # this is the name of the label as it appears in the database
-    label_b = create_select_field_without_choices(
-        label="(B)", name="label_b_client", data_required=True
-    )  # this is the main label B
-    label_b_1 = create_select_field_without_choices(
-        label=None, name="label_b_1_client", data_required=True
-    )  # this is a sub-label of label_b
-    label_b_add = create_select_field_without_choices(
-        label="(B)", name="label_b_add_client", data_required=False
-    )  # this is an additional label B
-    label_b_1_add = create_select_field_without_choices(
-        label=None, name="label_b_1_add_client", data_required=False
-    )  # this is a sub-label of additional label B
-
-    # Label C
-    label_c_name = "Response of Self"  # this is the name of the label as it appears in the database
-    label_c = create_select_field_without_choices(
-        label="(C)", name="label_c_client", data_required=True
-    )  # this is the main label C
-    label_c_1 = create_select_field_without_choices(
-        label=None, name="label_c_1_client", data_required=True
-    )  # this is a sub-label of label_c
-    label_c_add = create_select_field_without_choices(
-        label="(C)", name="label_c_add_client", data_required=False
-    )  # this is an additional label C
-    label_c_1_add = create_select_field_without_choices(
-        label=None, name="label_c_1_add_client", data_required=False
-    )  # this is a sub-label of additional label C
-
-    # Label D
-    label_d_name = "Emotional experiencing and regulation"  # this is the name of the label as it appears in the database
-    label_d = create_select_field_without_choices(
-        label="(D)", name="label_d_client", data_required=True
+    label_a = create_select_field(
+        label=LabelNamesClient.label_a.value,
+        choices=SubLabelsAClient,
+        name="label_a_client",
     )
-    label_d_add = create_select_field_without_choices(
-        label=None, name="label_d_add_client", data_required=False
-    )  # this is an additional label D
-
-    # Label E
-    label_e_name = "Insight"
-    label_e = create_select_field_without_choices(
-        label="(E)", name="label_e_client", data_required=True
-    )  # this is the main label E
-    label_e_add = create_select_field_without_choices(
-        label="(E)", name="label_e_add_client", data_required=False
-    )  # this is an additional label E
-
-    # Label F
-    label_f_name = "Moment of Change"
-    label_f = create_select_field_without_choices(
-        label="(F)", name="label_f_client", data_required=True
-    )  # this is the main label F
-    label_f_add = create_select_field_without_choices(
-        label="(F)", name="label_f_add_client", data_required=False
-    )  # this is an additional label F
-
+    label_b = create_select_field(
+        label=LabelNamesClient.label_b.value,
+        choices=SubLabelsBClient,
+        name="label_b_client",
+    )
+    label_c = create_select_field(
+        label=LabelNamesClient.label_c.value,
+        choices=SubLabelsCClient,
+        name="label_c_client",
+    )
+    label_d = create_select_field(
+        label=LabelNamesClient.label_d.value,
+        choices=SubLabelsDClient,
+        name="label_d_client",
+    )
+    label_e = create_select_field(
+        label=LabelNamesClient.label_e.value,
+        choices=SubLabelsEClient,
+        name="label_e_client",
+    )
+    label_f = create_select_field(
+        label=LabelNamesClient.label_f.value,
+        choices=SubLabelsFClient,
+        name="label_f_client",
+        default=SubLabelsFClient.no_change.name,
+    )
     strength_a = create_select_field(
         label="Strength", choices=LabelStrengthAClient, name="strength_a_client"
     )
