@@ -131,3 +131,10 @@ def test_find_annotation_parent_label_depth():
     assert find_annotation_parent_label_depth("labelA1", ClientAnnotationSchema) == 2
     assert find_annotation_parent_label_depth("labelA2", ClientAnnotationSchema) == 3
     assert find_annotation_parent_label_depth("labelA3", ClientAnnotationSchema) == 1
+
+
+def test_ps_annotation_form():
+    """Test the PSAnnotationForm class."""
+
+    form = PSAnnotationForm()
+    assert form._find_last_letter() == "a"
