@@ -140,6 +140,7 @@ class PSAnnotationForm(FlaskForm):
     """Generic segment level annotation form of psychotherapy datasets"""
 
     def __init__(self):
+        self.name_prefix = "name_"  # the prefix of the field group names
         self.label_prefix = "label_"  # the prefix of the label fields
         self.sub_label_prefix = "sub_label_"  # the prefix of the sublabel fields
         self.additional_suffix = "_add"  # the suffix of the additional label fields
@@ -149,24 +150,31 @@ class PSAnnotationForm(FlaskForm):
             "_who"  # this tags the entity of the label, e.g. client, therapist, dyad
         )
 
-    def _find_last_label_field(self):
-        """Find the last label field in the form"""
+    def _find_last_letter(self):
+        """Find the last letter of the alphabet that is used in the field group names"""
 
-        # check the existing label fields
+        # check the existing names of the field groups
         attributes = self.__dict__.keys()
-        label_fields = [
+        names = [
             attribute
             for attribute in attributes
-            if attribute.startswith(self.label_prefix)
-            and not attribute.endswith(self.additional_suffix)
+            if attribute.startswith(self.name_prefix)
         ]
-        # the label fields are names "label_a", "label_b", etc.
-        # find the last label field
-        label_fields.sort()
-        last_label_field = label_fields[-1]
-        return last_label_field
+        # the field groups are named "name_a", "name_b", "name_c", etc.
+        # find the last letter of the alphabet that is used in the field group names
+        names.sort()
+        last_name = names[-1]
+        return last_name[-1]
+
+    def _create_new_name(self, new_letter, name):
+        """Create the new name for the field group"""
+
+        new_name = self.name_prefix + new_letter
+        setattr(self, new_name, name)
 
     def _create_new_label_field(self, new_letter, suffix, data_required=True):
+        """Create the new label field"""
+
         new_label_field = self.label_prefix + new_letter
         setattr(
             self,
@@ -178,9 +186,11 @@ class PSAnnotationForm(FlaskForm):
             ),
         )
 
-    def _create_new_sub_label_field(
+    def _create_new_sub_label_fields(
         self, new_letter, suffix, num_sub_labels, data_required=True
     ):
+        """Create the new sub label fields"""
+
         new_sub_label_field = self.sub_label_prefix + new_letter
         for i in range(1, num_sub_labels + 1):
             setattr(
@@ -196,14 +206,34 @@ class PSAnnotationForm(FlaskForm):
     def create_new_fields_group(
         self, name, num_sub_labels, label_scales, additional=False
     ):
-        last_label_field = self._find_last_label_field()
-        # add the next letter of the alphabet to the last label field
-        new_letter = chr(ord(last_label_field[-1]) + 1)
+        """
+        Create a new group of fields for the given name and number of sub labels.
+        The new fields are added to the annotation form.
 
-        # add the new label field to the form
+        Parameters
+        ----------
+        name : str
+            The name of the field group. This should be the name of a parent label (i.e.
+            a label that has child labels but no parent label) in the database (e.g. "Wish"
+            or "Moment of Change" for the client).
+        num_sub_labels : int
+            The number of sub labels of the parent label. This depends on the depth of the
+            annotation schema for the given parent label.
+        """
+        last_letter = self._find_last_letter()
+        # add the next letter of the alphabet to the last label field
+        new_letter = chr(ord(last_letter[-1]) + 1)
+
+        # create the new name for the field group
+        self._create_new_name(new_letter, name)
+
+        # create the new label field
         self._create_new_label_field(new_letter, suffix=self.entity_suffix)
 
-        # add the new sublabel fields to the form
+        # create the new sub label fields
+        self._create_new_sub_label_fields(
+            new_letter, suffix=self.entity_suffix, num_sub_labels=num_sub_labels
+        )
 
 
 class PSAnnotationFormClient(FlaskForm):
