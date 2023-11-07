@@ -140,13 +140,13 @@ class PSAnnotationForm(FlaskForm):
     """Generic segment level annotation form of psychotherapy datasets"""
 
     def __init__(self):
-        self.name_prefix = "name_"  # the prefix of the field group names
-        self.label_prefix = "label_"  # the prefix of the label fields
-        self.sub_label_prefix = "sub_label_"  # the prefix of the sublabel fields
-        self.additional_suffix = "_add"  # the suffix of the additional label fields
-        self.scale_prefix = "scale_"  # the prefix of the scale fields
-        self.comment_prefix = "comment_"  # the prefix of the comment fields
-        self.entity_suffix = (
+        self.prefix_name = "name_"  # the prefix of the field group names
+        self.prefix_label = "label_"  # the prefix of the label fields
+        self.prefix_sub_label = "sub_label_"  # the prefix of the sublabel fields
+        self.suffix_additional = "_add"  # the suffix of the additional label fields
+        self.prefix_scale = "scale_"  # the prefix of the scale fields
+        self.prefix_comment = "comment_"  # the prefix of the comment fields
+        self.suffix_entity = (
             "_who"  # this tags the entity of the label, e.g. client, therapist, dyad
         )
 
@@ -158,10 +158,12 @@ class PSAnnotationForm(FlaskForm):
         names = [
             attribute
             for attribute in attributes
-            if attribute.startswith(self.name_prefix)
+            if attribute.startswith(self.prefix_name)
         ]
         # the field groups are named "name_a", "name_b", "name_c", etc.
         # find the last letter of the alphabet that is used in the field group names
+        if not names:
+            return "a"
         names.sort()
         last_name = names[-1]
         return last_name[-1]
@@ -169,13 +171,13 @@ class PSAnnotationForm(FlaskForm):
     def _create_new_name(self, new_letter, name):
         """Create the new name for the field group"""
 
-        new_name = self.name_prefix + new_letter
+        new_name = self.prefix_name + new_letter
         setattr(self, new_name, name)
 
     def _create_new_label_field(self, new_letter, suffix, data_required=True):
         """Create the new label field"""
 
-        new_label_field = self.label_prefix + new_letter
+        new_label_field = self.prefix_label + new_letter
         setattr(
             self,
             new_label_field,
@@ -191,7 +193,7 @@ class PSAnnotationForm(FlaskForm):
     ):
         """Create the new sub label fields"""
 
-        new_sub_label_field = self.sub_label_prefix + new_letter
+        new_sub_label_field = self.prefix_sub_label + new_letter
         for i in range(1, num_sub_labels + 1):
             setattr(
                 self,
@@ -228,11 +230,11 @@ class PSAnnotationForm(FlaskForm):
         self._create_new_name(new_letter, name)
 
         # create the new label field
-        self._create_new_label_field(new_letter, suffix=self.entity_suffix)
+        self._create_new_label_field(new_letter, suffix=self.suffix_entity)
 
         # create the new sub label fields
         self._create_new_sub_label_fields(
-            new_letter, suffix=self.entity_suffix, num_sub_labels=num_sub_labels
+            new_letter, suffix=self.suffix_entity, num_sub_labels=num_sub_labels
         )
 
 
