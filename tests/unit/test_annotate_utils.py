@@ -2,8 +2,13 @@
 Unit tests for the utilities module in the annotate blueprint.
 """
 from datetime import time
-from app.models import PSDialogTurn, PSDialogEvent
-from app.annotate.utils import split_dialog_turns, get_events_from_segments
+from app.models import PSDialogTurn, PSDialogEvent, ClientAnnotationSchema
+from app.annotate.utils import (
+    split_dialog_turns,
+    get_events_from_segments,
+    get_annotation_label_children,
+)
+from app.annotate.forms import PSAnnotationForm
 import pytest
 
 
@@ -88,3 +93,31 @@ def test_get_events_from_segments(insert_ps_dialog_turns):
     # check that that all events in a given segment are instances of the PSDialogEvent class
     for segment in events:
         assert all(isinstance(event, PSDialogEvent) for event in segment)
+
+
+def test_get_annotation_label_children(new_ps_annotation_schema_client):
+    """Test the get_annotation_label_children() function."""
+
+    # check "tests/data/annotation_schema/client.json"
+    label = "labelB1"
+    parent_label = "labelA1"
+    child_label_names = ["labelC1", "labelC2"]
+    child_labels = get_annotation_label_children(
+        label, ClientAnnotationSchema, parent_label
+    )
+    # extract the names of the child labels (list of tuples where name is second element)
+    child_label_names_extracted = [child_label[1] for child_label in child_labels]
+    # sort the lists to make sure they are in the same order, and apply strip() and capitalize()
+    child_label_names = sorted(
+        [
+            child_label_name.strip().capitalize()
+            for child_label_name in child_label_names
+        ]
+    )
+    child_label_names_extracted = sorted(
+        [
+            child_label_name.strip().capitalize()
+            for child_label_name in child_label_names_extracted
+        ]
+    )
+    assert child_label_names == child_label_names_extracted
