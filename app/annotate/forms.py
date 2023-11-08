@@ -139,6 +139,10 @@ def create_text_area_field(
 class PSAnnotationForm(FlaskForm):
     """Generic segment level annotation form of psychotherapy datasets"""
 
+    # TODO: finish writing this class when there is time. The purpose of this class is
+    # to create the annotation forms dynamically, based on the annotation schema on the
+    # database, without hard-coding the fields in the form.
+
     def __init__(self):
         self.prefix_name = "name_"  # the prefix of the field group names
         self.prefix_label = "label_"  # the prefix of the label fields
