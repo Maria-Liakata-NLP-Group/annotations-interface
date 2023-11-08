@@ -206,8 +206,30 @@ class PSAnnotationForm(FlaskForm):
                 ),
             )
 
+    def _create_new_scale_fields(
+        self, new_letter, suffix, label_scales, data_required=True
+    ):
+        """Create the new scale fields"""
+
+        new_scale_field = self.prefix_scale + new_letter
+        for i, scale in enumerate(label_scales):
+            setattr(
+                self,
+                new_scale_field + "_" + str(i + 1),
+                create_select_field_without_choices(
+                    label=scale,
+                    name=new_scale_field + "_" + str(i + 1) + suffix,
+                    data_required=data_required,
+                ),
+            )
+
     def create_new_fields_group(
-        self, name, num_sub_labels, label_scales=None, additional=False
+        self,
+        name,
+        num_sub_labels,
+        label_scales,
+        label_scales_required=True,
+        additional=False,
     ):
         """
         Create a new group of fields for the given name and number of sub labels.
@@ -234,6 +256,14 @@ class PSAnnotationForm(FlaskForm):
         # create the new sub label fields
         self._create_new_sub_label_fields(
             next_letter, suffix=self.suffix_entity, num_sub_labels=num_sub_labels
+        )
+
+        # create the new scale fields
+        self._create_new_scale_fields(
+            next_letter,
+            suffix=self.suffix_entity,
+            label_scales=label_scales,
+            data_required=label_scales_required,
         )
 
 
