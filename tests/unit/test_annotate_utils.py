@@ -137,4 +137,12 @@ def test_ps_annotation_form():
     """Test the PSAnnotationForm class."""
 
     form = PSAnnotationForm()
-    assert form._find_last_letter() == "a"
+
+    # test the _find_next_letter() method
+    assert form._find_next_letter() == "a"
+
+    # test the create_new_fields_group() method
+    parent_label = "labelA1"
+    num_sub_labels = 2
+    form.create_new_fields_group(parent_label, num_sub_labels)
+    assert "name_a" in form.__dict__.keys()
