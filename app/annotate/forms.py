@@ -150,8 +150,8 @@ class PSAnnotationForm(FlaskForm):
             "_who"  # this tags the entity of the label, e.g. client, therapist, dyad
         )
 
-    def _find_last_letter(self):
-        """Find the last letter of the alphabet that is used in the field group names"""
+    def _find_next_letter(self):
+        """Return the next letter of the alphabet to be used in the field group names"""
 
         # check the existing names of the field groups
         attributes = self.__dict__.keys()
@@ -166,7 +166,8 @@ class PSAnnotationForm(FlaskForm):
             return "a"
         names.sort()
         last_name = names[-1]
-        return last_name[-1]
+        last_letter = last_name[-1]
+        return chr(ord(last_letter + 1))
 
     def _create_new_name(self, new_letter, name):
         """Create the new name for the field group"""
@@ -206,7 +207,7 @@ class PSAnnotationForm(FlaskForm):
             )
 
     def create_new_fields_group(
-        self, name, num_sub_labels, label_scales, additional=False
+        self, name, num_sub_labels, label_scales=None, additional=False
     ):
         """
         Create a new group of fields for the given name and number of sub labels.
@@ -222,19 +223,17 @@ class PSAnnotationForm(FlaskForm):
             The number of sub labels of the parent label. This depends on the depth of the
             annotation schema for the given parent label.
         """
-        last_letter = self._find_last_letter()
-        # add the next letter of the alphabet to the last label field
-        new_letter = chr(ord(last_letter[-1]) + 1)
+        next_letter = self._find_next_letter()
 
         # create the new name for the field group
-        self._create_new_name(new_letter, name)
+        self._create_new_name(next_letter, name)
 
         # create the new label field
-        self._create_new_label_field(new_letter, suffix=self.suffix_entity)
+        self._create_new_label_field(next_letter, suffix=self.suffix_entity)
 
         # create the new sub label fields
         self._create_new_sub_label_fields(
-            new_letter, suffix=self.suffix_entity, num_sub_labels=num_sub_labels
+            next_letter, suffix=self.suffix_entity, num_sub_labels=num_sub_labels
         )
 
 
