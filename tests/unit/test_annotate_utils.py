@@ -145,4 +145,16 @@ def test_ps_annotation_form():
     parent_label = "labelA1"
     num_sub_labels = 2
     form.create_new_fields_group(parent_label, num_sub_labels)
+    # check that the new group name was created
     assert "name_a" in form.__dict__.keys()
+    assert form.name_a == "labelA1"
+    # check that the label was created
+    assert "label_a" in form.__dict__.keys()
+    assert form.label_a.name == "label_a_who"  # this is the HTML name
+    # check that two sub-labels were created
+    sub_labels = [
+        attribute for attribute in form.__dict__.keys() if "sub_label_" in attribute
+    ]
+    assert sub_labels == ["sub_label_a_1", "sub_label_a_2"]
+    assert form.sub_label_a_1.name == "sub_label_a_1_who"  # this is the HTML name
+    assert form.sub_label_a_2.name == "sub_label_a_2_who"  # this is the HTML name
