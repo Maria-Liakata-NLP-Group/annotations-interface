@@ -182,11 +182,40 @@ class PSAnnotationForm(FlaskForm):
 class PSAnnotationFormClient(FlaskForm):
     """Segment level annotation form of psychotherapy datasets for the client"""
 
-    label_a = create_select_field(
-        label=LabelNamesClient.label_a.value,
-        choices=SubLabelsAClient,
+    # Label A
+    # -------
+    name_a = "Wish"
+    label_a = create_select_field_without_choices(
+        label="(A)",
         name="label_a_client",
+        data_required=True,
     )
+    sub_label_a_1 = create_select_field_without_choices(
+        label=None,
+        name="sub_label_a_1_client",
+        data_required=True,
+    )
+    sub_label_a_2 = create_select_field_without_choices(
+        label=None,
+        name="sub_label_a_2_client",
+        data_required=True,
+    )
+    scale_a_1 = create_select_multiple_field_without_choices(
+        label="Level",
+        name="scale_a_1_client",
+        data_required=True,
+    )
+    scale_a_2 = create_select_multiple_field_without_choices(
+        label="Adaptivity",
+        name="scale_a_2_client",
+        data_required=True,
+    )
+    comment_a_client = create_text_area_field(
+        label="Comment",
+        name="comment_a_client",
+        required_if="sub_label_a_1_client",
+    )
+
     label_b = create_select_field(
         label=LabelNamesClient.label_b.value,
         choices=SubLabelsBClient,
@@ -213,9 +242,6 @@ class PSAnnotationFormClient(FlaskForm):
         name="label_f_client",
         default=SubLabelsFClient.no_change.name,
     )
-    strength_a = create_select_field(
-        label="Strength", choices=LabelStrengthAClient, name="strength_a_client"
-    )
     strength_b = create_select_field(
         label="Strength", choices=LabelStrengthBClient, name="strength_b_client"
     )
@@ -234,9 +260,6 @@ class PSAnnotationFormClient(FlaskForm):
         name="strength_f_client",
         default=LabelStrengthFClient.no_change.name,
     )
-    comment_a = create_text_area_field(
-        label="Comment", name="comment_a_client", required_if="label_a"
-    )  # Note that HTML "name" is unique and is used in the tests to identify the field
     comment_b = create_text_area_field(
         label="Comment", name="comment_b_client", required_if="label_b"
     )
@@ -250,9 +273,6 @@ class PSAnnotationFormClient(FlaskForm):
         label="Comment", name="comment_e_client", required_if="label_e"
     )
     comment_f = create_text_area_field(label="Comment", name="comment_f_client")
-    relevant_events_a = create_select_multiple_field_without_choices(
-        label="Evidence", name="relevant_events_a_client"
-    )
     relevant_events_b = create_select_multiple_field_without_choices(
         label="Evidence", name="relevant_events_b_client"
     )
