@@ -195,11 +195,6 @@ class PSAnnotationFormClient(FlaskForm):
         name="sub_label_a_1_client",
         data_required=True,
     )
-    sub_label_a_2 = create_select_field_without_choices(
-        label=None,
-        name="sub_label_a_2_client",
-        data_required=True,
-    )
     scale_a_1 = create_select_field_without_choices(
         label="Level",
         name="scale_a_1_client",
@@ -218,7 +213,7 @@ class PSAnnotationFormClient(FlaskForm):
     comment_a = create_text_area_field(
         label="Comment",
         name="comment_a_client",
-        required_if="sub_label_a_1",
+        required_if="label_a",
     )
 
     # Label A - additional
@@ -230,10 +225,6 @@ class PSAnnotationFormClient(FlaskForm):
     sub_label_a_1_add = create_select_field_without_choices(
         label=None,
         name="sub_label_a_1_client_add",
-    )
-    sub_label_a_2_add = create_select_field_without_choices(
-        label=None,
-        name="sub_label_a_2_client_add",
     )
     scale_a_1_add = create_select_field_without_choices(
         label="Level",
@@ -250,7 +241,7 @@ class PSAnnotationFormClient(FlaskForm):
     comment_a_client_add = create_text_area_field(
         label="Comment",
         name="comment_a_client_add",
-        required_if="sub_label_a_1_add",
+        required_if="label_a_add",
     )
 
     # Label B
@@ -264,11 +255,6 @@ class PSAnnotationFormClient(FlaskForm):
     sub_label_b_1 = create_select_field_without_choices(
         label=None,
         name="sub_label_b_1_client",
-        data_required=True,
-    )
-    sub_label_b_2 = create_select_field_without_choices(
-        label=None,
-        name="sub_label_b_2_client",
         data_required=True,
     )
     scale_b_1 = create_select_field_without_choices(
@@ -289,7 +275,7 @@ class PSAnnotationFormClient(FlaskForm):
     comment_b = create_text_area_field(
         label="Comment",
         name="comment_b_client",
-        required_if="sub_label_b_1",
+        required_if="label_b",
     )
 
     # Label B - additional
@@ -301,10 +287,6 @@ class PSAnnotationFormClient(FlaskForm):
     sub_label_b_1_add = create_select_field_without_choices(
         label=None,
         name="sub_label_b_1_client_add",
-    )
-    sub_label_b_2_add = create_select_field_without_choices(
-        label=None,
-        name="sub_label_b_2_client_add",
     )
     scale_b_1_add = create_select_field_without_choices(
         label="Level",
@@ -321,7 +303,7 @@ class PSAnnotationFormClient(FlaskForm):
     comment_b_client_add = create_text_area_field(
         label="Comment",
         name="comment_b_client_add",
-        required_if="sub_label_b_1_add",
+        required_if="label_b_add",
     )
 
     # Label C
@@ -335,11 +317,6 @@ class PSAnnotationFormClient(FlaskForm):
     sub_label_c_1 = create_select_field_without_choices(
         label=None,
         name="sub_label_c_1_client",
-        data_required=True,
-    )
-    sub_label_c_2 = create_select_field_without_choices(
-        label=None,
-        name="sub_label_c_2_client",
         data_required=True,
     )
     scale_c_1 = create_select_field_without_choices(
@@ -360,7 +337,7 @@ class PSAnnotationFormClient(FlaskForm):
     comment_c = create_text_area_field(
         label="Comment",
         name="comment_c_client",
-        required_if="sub_label_c_1",
+        required_if="label_c",
     )
 
     # Label C - additional
@@ -372,10 +349,6 @@ class PSAnnotationFormClient(FlaskForm):
     sub_label_c_1_add = create_select_field_without_choices(
         label=None,
         name="sub_label_c_1_client_add",
-    )
-    sub_label_c_2_add = create_select_field_without_choices(
-        label=None,
-        name="sub_label_c_2_client_add",
     )
     scale_c_1_add = create_select_field_without_choices(
         label="Level",
@@ -392,7 +365,7 @@ class PSAnnotationFormClient(FlaskForm):
     comment_c_client_add = create_text_area_field(
         label="Comment",
         name="comment_c_client_add",
-        required_if="sub_label_c_1_add",
+        required_if="label_c_add",
     )
 
     # Label D
@@ -401,11 +374,6 @@ class PSAnnotationFormClient(FlaskForm):
     label_d = create_select_field_without_choices(
         label="(D)",
         name="label_d_client",
-        data_required=True,
-    )
-    sub_label_d_1 = create_select_field_without_choices(
-        label=None,
-        name="sub_label_d_1_client",
         data_required=True,
     )
     scale_d_1 = create_select_field_without_choices(
@@ -426,7 +394,7 @@ class PSAnnotationFormClient(FlaskForm):
     comment_d = create_text_area_field(
         label="Comment",
         name="comment_d_client",
-        required_if="sub_label_d_1",
+        required_if="label_d",
     )
 
     # Label D - additional
@@ -434,10 +402,6 @@ class PSAnnotationFormClient(FlaskForm):
     label_d_add = create_select_field_without_choices(
         label="(D)",
         name="label_d_client_add",
-    )
-    sub_label_d_1_add = create_select_field_without_choices(
-        label=None,
-        name="sub_label_d_1_client_add",
     )
     scale_d_1_add = create_select_field_without_choices(
         label="Arousal level",
@@ -454,17 +418,12 @@ class PSAnnotationFormClient(FlaskForm):
     comment_d_client_add = create_text_area_field(
         label="Comment",
         name="comment_d_client_add",
-        required_if="sub_label_d_1_add",
+        required_if="label_d_add",
     )
 
     # Label E
     # -------
     name_e = "Insight"
-    label_e = create_select_field_without_choices(
-        label="(E)",
-        name="label_e_client",
-        data_required=True,
-    )
     scale_e_1 = create_select_field_without_choices(
         label="Recognition",
         name="scale_e_1_client",
@@ -482,10 +441,6 @@ class PSAnnotationFormClient(FlaskForm):
 
     # Label E - additional
     # --------------------
-    label_e_add = create_select_field_without_choices(
-        label="(E)",
-        name="label_e_client_add",
-    )
     scale_e_1_add = create_select_field_without_choices(
         label="Recognition",
         name="scale_e_1_client_add",
