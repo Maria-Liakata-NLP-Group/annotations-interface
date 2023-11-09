@@ -457,19 +457,53 @@ class PSAnnotationFormClient(FlaskForm):
         required_if="sub_label_d_1_add",
     )
 
-    label_e = create_select_field(
-        label=LabelNamesClient.label_e.value,
-        choices=SubLabelsEClient,
+    # Label E
+    # -------
+    name_e = "Insight"
+    label_e = create_select_field_without_choices(
+        label="(E)",
         name="label_e_client",
+        data_required=True,
     )
+    scale_e_1 = create_select_field_without_choices(
+        label="Recognition",
+        name="scale_e_1_client",
+        data_required=True,
+    )
+    evidence_e_1 = create_select_multiple_field_without_choices(
+        label="Evidence",
+        name="evidence_e_1_client",
+        data_required=True,
+    )
+    comment_e_1 = create_text_area_field(
+        label="Comment",
+        name="comment_e_1_client",
+    )
+
+    # Label E - additional
+    # --------------------
+    label_e_add = create_select_field_without_choices(
+        label="(E)",
+        name="label_e_client_add",
+    )
+    scale_e_1_add = create_select_field_without_choices(
+        label="Recognition",
+        name="scale_e_1_client_add",
+    )
+    evidence_e_1_add = create_select_multiple_field_without_choices(
+        label="Evidence",
+        name="evidence_e_1_client_add",
+    )
+    comment_e_1_client_add = create_text_area_field(
+        label="Comment",
+        name="comment_e_1_client_add",
+    )
+
     label_f = create_select_field(
         label=LabelNamesClient.label_f.value,
         choices=SubLabelsFClient,
         name="label_f_client",
         default=SubLabelsFClient.no_change.name,
-    )
-    strength_e = create_select_field(
-        label="Strength", choices=LabelStrengthEClient, name="strength_e_client"
     )
     strength_f = create_select_field(
         label="Strength",
@@ -477,13 +511,7 @@ class PSAnnotationFormClient(FlaskForm):
         name="strength_f_client",
         default=LabelStrengthFClient.no_change.name,
     )
-    comment_e = create_text_area_field(
-        label="Comment", name="comment_e_client", required_if="label_e"
-    )
     comment_f = create_text_area_field(label="Comment", name="comment_f_client")
-    relevant_events_e = create_select_multiple_field_without_choices(
-        label="Evidence", name="relevant_events_e_client"
-    )
     start_event_f = create_select_field_without_choices(
         label="Start", name="start_event_f_client"
     )
