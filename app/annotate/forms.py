@@ -395,11 +395,68 @@ class PSAnnotationFormClient(FlaskForm):
         required_if="sub_label_c_1_add",
     )
 
-    label_d = create_select_field(
-        label=LabelNamesClient.label_d.value,
-        choices=SubLabelsDClient,
+    # Label D
+    # -------
+    name_d = "Emotional experiencing and regulation"
+    label_d = create_select_field_without_choices(
+        label="(D)",
         name="label_d_client",
+        data_required=True,
     )
+    sub_label_d_1 = create_select_field_without_choices(
+        label=None,
+        name="sub_label_d_1_client",
+        data_required=True,
+    )
+    scale_d_1 = create_select_field_without_choices(
+        label="Arousal level",
+        name="scale_d_1_client",
+        data_required=True,
+    )
+    scale_d_2 = create_select_field_without_choices(
+        label="Adaptivity",
+        name="scale_d_2_client",
+        data_required=True,
+    )
+    evidence_d = create_select_multiple_field_without_choices(
+        label="Evidence",
+        name="evidence_d_client",
+        data_required=True,
+    )
+    comment_d = create_text_area_field(
+        label="Comment",
+        name="comment_d_client",
+        required_if="sub_label_d_1",
+    )
+
+    # Label D - additional
+    # --------------------
+    label_d_add = create_select_field_without_choices(
+        label="(D)",
+        name="label_d_client_add",
+    )
+    sub_label_d_1_add = create_select_field_without_choices(
+        label=None,
+        name="sub_label_d_1_client_add",
+    )
+    scale_d_1_add = create_select_field_without_choices(
+        label="Arousal level",
+        name="scale_d_1_client_add",
+    )
+    scale_d_2_add = create_select_field_without_choices(
+        label="Adaptivity",
+        name="scale_d_2_client_add",
+    )
+    evidence_d_add = create_select_multiple_field_without_choices(
+        label="Evidence",
+        name="evidence_d_client_add",
+    )
+    comment_d_client_add = create_text_area_field(
+        label="Comment",
+        name="comment_d_client_add",
+        required_if="sub_label_d_1_add",
+    )
+
     label_e = create_select_field(
         label=LabelNamesClient.label_e.value,
         choices=SubLabelsEClient,
@@ -411,9 +468,6 @@ class PSAnnotationFormClient(FlaskForm):
         name="label_f_client",
         default=SubLabelsFClient.no_change.name,
     )
-    strength_d = create_select_field(
-        label="Strength", choices=LabelStrengthDClient, name="strength_d_client"
-    )
     strength_e = create_select_field(
         label="Strength", choices=LabelStrengthEClient, name="strength_e_client"
     )
@@ -423,16 +477,10 @@ class PSAnnotationFormClient(FlaskForm):
         name="strength_f_client",
         default=LabelStrengthFClient.no_change.name,
     )
-    comment_d = create_text_area_field(
-        label="Comment", name="comment_d_client", required_if="label_d"
-    )
     comment_e = create_text_area_field(
         label="Comment", name="comment_e_client", required_if="label_e"
     )
     comment_f = create_text_area_field(label="Comment", name="comment_f_client")
-    relevant_events_d = create_select_multiple_field_without_choices(
-        label="Evidence", name="relevant_events_d_client"
-    )
     relevant_events_e = create_select_multiple_field_without_choices(
         label="Evidence", name="relevant_events_e_client"
     )
