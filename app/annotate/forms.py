@@ -414,14 +414,14 @@ class PSAnnotationFormClient(FlaskForm):
         name="scale_e_1_client",
         data_required=True,
     )
-    evidence_e_1 = create_select_multiple_field_without_choices(
+    evidence_e = create_select_multiple_field_without_choices(
         label="Evidence",
-        name="evidence_e_1_client",
+        name="evidence_e_client",
         data_required=True,
     )
-    comment_e_1 = create_text_area_field(
+    comment_e = create_text_area_field(
         label="Comment",
-        name="comment_e_1_client",
+        name="comment_e_client",
     )
 
     # Label E - additional
@@ -430,13 +430,13 @@ class PSAnnotationFormClient(FlaskForm):
         label="Recognition",
         name="scale_e_1_client_add",
     )
-    evidence_e_1_add = create_select_multiple_field_without_choices(
+    evidence_e_add = create_select_multiple_field_without_choices(
         label="Evidence",
-        name="evidence_e_1_client_add",
+        name="evidence_e_client_add",
     )
-    comment_e_1_add = create_text_area_field(
+    comment_e_add = create_text_area_field(
         label="Comment",
-        name="comment_e_1_client_add",
+        name="comment_e_client_add",
     )
 
     # Label F
