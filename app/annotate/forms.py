@@ -9,38 +9,23 @@ from app.annotate.forms_utils import (
     create_select_multiple_field_without_choices,
     create_text_area_field,
 )
-
-
 from app.utils import (
-    LabelNamesClient,
     LabelNamesTherapist,
     LabelNamesDyad,
-    SubLabelsAClient,
     SubLabelsATherapist,
     SubLabelsADyad,
-    SubLabelsBClient,
     SubLabelsBTherapist,
     SubLabelsBDyad,
-    SubLabelsCClient,
     SubLabelsCTherapist,
-    SubLabelsDClient,
     SubLabelsDTherapist,
-    SubLabelsEClient,
     SubLabelsETherapist,
-    SubLabelsFClient,
-    LabelStrengthAClient,
     LabelStrengthATherapist,
     LabelStrengthADyad,
-    LabelStrengthBClient,
     LabelStrengthBTherapist,
     LabelStrengthBDyad,
-    LabelStrengthCClient,
     LabelStrengthCTherapist,
-    LabelStrengthDClient,
     LabelStrengthDTherapist,
-    LabelStrengthEClient,
     LabelStrengthETherapist,
-    LabelStrengthFClient,
 )
 
 
