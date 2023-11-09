@@ -454,25 +454,33 @@ class PSAnnotationFormClient(FlaskForm):
         name="comment_e_1_client_add",
     )
 
-    label_f = create_select_field(
-        label=LabelNamesClient.label_f.value,
-        choices=SubLabelsFClient,
+    # Label F
+    # -------
+    name_f = "Moment of Change"
+    label_f = create_select_field_without_choices(
+        label="(F)",
         name="label_f_client",
-        default=SubLabelsFClient.no_change.name,
+        data_required=True,
     )
-    strength_f = create_select_field(
-        label="Strength",
-        choices=LabelStrengthFClient,
-        name="strength_f_client",
-        default=LabelStrengthFClient.no_change.name,
+    scale_f_1 = create_select_field_without_choices(
+        label="Deterioration",
+        name="scale_f_1_client",
     )
-    comment_f = create_text_area_field(label="Comment", name="comment_f_client")
     start_event_f = create_select_field_without_choices(
-        label="Start", name="start_event_f_client"
+        label="Start",
+        name="start_event_f_client",
     )
     end_event_f = create_select_field_without_choices(
-        label="End", name="end_event_f_client"
+        label="End",
+        name="end_event_f_client",
     )
+    comment_f = create_text_area_field(
+        label="Comment",
+        name="comment_f_client",
+    )
+
+    # Summary comment
+    # ---------------
     comment_summary = create_text_area_field(
         label="Summary Comment",
         name="comment_summary_client",
