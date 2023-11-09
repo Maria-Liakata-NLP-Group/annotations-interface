@@ -216,6 +216,33 @@ class PSAnnotationFormClient(FlaskForm):
         required_if="sub_label_a_1_client",
     )
 
+    # Label A - additional
+    # --------------------
+    label_a_add = create_select_field_without_choices(
+        label="(A)",
+        name="label_a_client_add",
+    )
+    sub_label_a_1_add = create_select_field_without_choices(
+        label=None,
+        name="sub_label_a_1_client_add",
+    )
+    sub_label_a_2_add = create_select_field_without_choices(
+        label=None,
+        name="sub_label_a_2_client_add",
+    )
+    scale_a_1_add = create_select_multiple_field_without_choices(
+        label="Level",
+        name="scale_a_1_client_add",
+    )
+    scale_a_2_add = create_select_multiple_field_without_choices(
+        label="Adaptivity",
+        name="scale_a_2_client_add",
+    )
+    comment_a_client_add = create_text_area_field(
+        label="Comment",
+        name="comment_a_client_add",
+        required_if="sub_label_a_1_client_add",
+    )
     label_b = create_select_field(
         label=LabelNamesClient.label_b.value,
         choices=SubLabelsBClient,
