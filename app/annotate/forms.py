@@ -223,7 +223,7 @@ class PSAnnotationFormClient(FlaskForm):
         label="Evidence",
         name="evidence_a_client_add",
     )
-    comment_a_client_add = create_text_area_field(
+    comment_a_add = create_text_area_field(
         label="Comment",
         name="comment_a_client_add",
         required_if="label_a_add",
@@ -285,7 +285,7 @@ class PSAnnotationFormClient(FlaskForm):
         label="Evidence",
         name="evidence_b_client_add",
     )
-    comment_b_client_add = create_text_area_field(
+    comment_b_add = create_text_area_field(
         label="Comment",
         name="comment_b_client_add",
         required_if="label_b_add",
@@ -347,7 +347,7 @@ class PSAnnotationFormClient(FlaskForm):
         label="Evidence",
         name="evidence_c_client_add",
     )
-    comment_c_client_add = create_text_area_field(
+    comment_c_add = create_text_area_field(
         label="Comment",
         name="comment_c_client_add",
         required_if="label_c_add",
@@ -400,7 +400,7 @@ class PSAnnotationFormClient(FlaskForm):
         label="Evidence",
         name="evidence_d_client_add",
     )
-    comment_d_client_add = create_text_area_field(
+    comment_d_add = create_text_area_field(
         label="Comment",
         name="comment_d_client_add",
         required_if="label_d_add",
@@ -434,7 +434,7 @@ class PSAnnotationFormClient(FlaskForm):
         label="Evidence",
         name="evidence_e_1_client_add",
     )
-    comment_e_1_client_add = create_text_area_field(
+    comment_e_1_add = create_text_area_field(
         label="Comment",
         name="comment_e_1_client_add",
     )
