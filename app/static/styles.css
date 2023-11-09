@@ -15,7 +15,10 @@
   color: #fff;
 }
 #btn_client_label_a_add.active,
-#btn_client_label_b_add.active {
+#btn_client_label_b_add.active,
+#btn_client_label_c_add.active,
+#btn_client_label_d_add.active,
+#btn_client_label_e_add.active {
   border: 2px solid black;
 }
 /* Custom styles for the client, therapist and dyad forms */
@@ -29,6 +32,8 @@
 }
 #client_label_a_add,
 #client_label_b_add,
-#client_label_c_add {
+#client_label_c_add,
+#client_label_d_add,
+#client_label_e_add {
   display: none; /* Hide the additional label form groups initially */
 }

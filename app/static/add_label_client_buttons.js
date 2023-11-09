@@ -24,4 +24,20 @@ $(document).ready(function () {
       $(this).addClass("active");
     }
   });
+  $("#btn_client_label_d_add").click(function () {
+    $("#client_label_d_add").toggle();
+    if ($(this).hasClass("active")) {
+      $(this).removeClass("active");
+    } else {
+      $(this).addClass("active");
+    }
+  });
+  $("#btn_client_label_e_add").click(function () {
+    $("#client_label_e_add").toggle();
+    if ($(this).hasClass("active")) {
+      $(this).removeClass("active");
+    } else {
+      $(this).addClass("active");
+    }
+  });
 });
