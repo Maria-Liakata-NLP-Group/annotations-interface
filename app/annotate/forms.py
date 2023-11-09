@@ -200,17 +200,22 @@ class PSAnnotationFormClient(FlaskForm):
         name="sub_label_a_2_client",
         data_required=True,
     )
-    scale_a_1 = create_select_multiple_field_without_choices(
+    scale_a_1 = create_select_field_without_choices(
         label="Level",
         name="scale_a_1_client",
         data_required=True,
     )
-    scale_a_2 = create_select_multiple_field_without_choices(
+    scale_a_2 = create_select_field_without_choices(
         label="Adaptivity",
         name="scale_a_2_client",
         data_required=True,
     )
-    comment_a_client = create_text_area_field(
+    evidence_a = create_select_multiple_field_without_choices(
+        label="Evidence",
+        name="evidence_a_client",
+        data_required=True,
+    )
+    comment_a = create_text_area_field(
         label="Comment",
         name="comment_a_client",
         required_if="sub_label_a_1_client",
@@ -230,13 +235,17 @@ class PSAnnotationFormClient(FlaskForm):
         label=None,
         name="sub_label_a_2_client_add",
     )
-    scale_a_1_add = create_select_multiple_field_without_choices(
+    scale_a_1_add = create_select_field_without_choices(
         label="Level",
         name="scale_a_1_client_add",
     )
-    scale_a_2_add = create_select_multiple_field_without_choices(
+    scale_a_2_add = create_select_field_without_choices(
         label="Adaptivity",
         name="scale_a_2_client_add",
+    )
+    evidence_a_add = create_select_multiple_field_without_choices(
+        label="Evidence",
+        name="evidence_a_client_add",
     )
     comment_a_client_add = create_text_area_field(
         label="Comment",
