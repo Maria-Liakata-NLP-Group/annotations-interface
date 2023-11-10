@@ -13,7 +13,7 @@ $(document).ready(function () {
       // make an AJAX request to the server to get the updated
       // choices for the second select field
       $.ajax({
-        url: "/update_select_choices",
+        url: "/annotate/_update_select_choices",
         type: "POST",
         data: {
           selected_value: selectedValue,

@@ -24,7 +24,8 @@
   <!-- Label A -->
   <h4>{{ form_client.name_a }}</h4>
   <div class="form-group">
-    {{ wtf.form_field(form_client.label_a) }} {{
+    {{ wtf.form_field(form_client.label_a, class="dynamic_select",
+    target="sub_label_a_1_client") }} {{
     wtf.form_field(form_client.sub_label_a_1) }} {{
     wtf.form_field(form_client.scale_a_1) }} {{
     wtf.form_field(form_client.scale_a_2) }} {{

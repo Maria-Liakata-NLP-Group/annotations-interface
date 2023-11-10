@@ -111,7 +111,7 @@ app_content %} {% block head%} {{ super() }}
 </body>
 {% endblock %}
 
-<!-- Use JavaScript to handle button behavior dynamically when clicked on -->
+<!-- Call JavaScript scripts -->
 {% block scripts %} {{ super() }}
 <script
   type="text/javascript"
@@ -120,5 +120,9 @@ app_content %} {% block head%} {{ super() }}
 <script
   type="text/javascript"
   src="{{ url_for('static', filename='add_label_client_buttons.js') }}"
+></script>
+<script
+  type="text/javascript"
+  src="{{ url_for('static', filename='dynamic_select_field_choices.js') }}"
 ></script>
 {% endblock %}
