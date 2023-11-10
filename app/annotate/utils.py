@@ -572,7 +572,7 @@ def get_evidence_dynamic_choices(page_items: list, speaker: Speaker) -> list:
     return choices
 
 
-def assign_evidence_dynamic_choices(
+def assign_dynamic_choices(
     form: Union[
         PSAnnotationFormClient, PSAnnotationFormTherapist, PSAnnotationFormDyad
     ],
@@ -581,7 +581,7 @@ def assign_evidence_dynamic_choices(
 ) -> Union[PSAnnotationFormClient, PSAnnotationFormTherapist, PSAnnotationFormDyad]:
     """
     Assign the dynamic choices to the select fields or select multiple fields in the
-    annotation form that are used to select evidence events.
+    annotation form. Specifically to the labels and evidence fields.
 
     Parameters
     ----------
@@ -596,12 +596,12 @@ def assign_evidence_dynamic_choices(
     -------
     form : PSAnnotationFormClient or PSAnnotationFormTherapist or PSAnnotationFormDyad
         The annotation form with the dynamic choices assigned to the select fields or select
-        multiple fields that start with "start_event_", "end_event_" or "evidence_"
+        multiple fields that start with "label_", "start_event_", "end_event_" or "evidence_"
     """
 
-    choices = get_evidence_dynamic_choices(page_items, speaker)
     # assign the dynamic choices to the select fields or select multiple fields
     # that start with "start_event_", "end_event_" or "evidence_"
+    choices = get_evidence_dynamic_choices(page_items, speaker)
     for field_name in form.__dict__.keys():
         if (
             field_name.startswith("evidence_")
@@ -609,6 +609,30 @@ def assign_evidence_dynamic_choices(
             or field_name.startswith("end_event_")
         ):
             form[field_name].choices = choices
+
+    # find all the form group names in the form (i.e. name_a, name_b, name_c, etc.)
+    # and assign the corresponding choices to their respective labels (i.e. label_a, label_b, label_c, etc.)
+    if speaker == Speaker.client:
+        annotation_schema = ClientAnnotationSchema()
+    elif speaker == Speaker.therapist:
+        annotation_schema = TherapistAnnotationSchema()
+    elif speaker == Speaker.dyad:
+        annotation_schema = DyadAnnotationSchema()
+    names = [attr for attr in dir(form) if attr.startswith("name_")]
+    for name in names:
+        if name.startswith("name_"):
+            parent_label = getattr(form, name)
+            choices = annotation_schema.get_label_children(parent_label)
+            label_attr = (
+                "label_" + name.split("_")[1]
+            )  # i.e. label_a, label_b, label_c, etc.
+            label_attr_add = (
+                "label_" + name.split("_")[1] + "_add"
+            )  # i.e. label_a_add, label_b_add, label_c_add, etc.
+            if label_attr in form.__dict__.keys():
+                form[label_attr].choices = choices
+            if label_attr_add in form.__dict__.keys():
+                form[label_attr_add].choices = choices
     return form
 
 
