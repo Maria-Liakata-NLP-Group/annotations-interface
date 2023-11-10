@@ -9,7 +9,7 @@ $(document).ready(function () {
     var secondSelect = $("#" + targetId);
 
     firstSelect.on("change", function () {
-      var selectedValue = firstSelect.val();
+      var selectedValue = firstSelect.val(); // get the selected value from the first select field
       // make an AJAX request to the server to get the updated
       // choices for the second select field
       $.ajax({

@@ -177,6 +177,18 @@ bp.add_url_rule(
 )
 
 
+# create a route that will handle dynamic updates of the select field choices
+@bp.route("/update_select_choices", methods=["POST"])
+@login_required
+def update_select_choices():
+    """
+    This route handles dynamic updates of a second select field
+    based on the choice of the first select field.
+    """
+    # selected_value = request.form.get("selected_value")
+    pass
+
+
 @bp.route("/annotate_social_media/<int:dataset_id>")
 @login_required
 def annotate_sm(dataset_id):
