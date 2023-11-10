@@ -171,24 +171,24 @@ class PSAnnotationFormClient(FlaskForm):
 
     # Label A
     # -------
-    name_a = "Wish"
+    name_a = "Wish".strip().capitalize()
     label_a = create_select_field_without_choices(
         label="(A)",
         name="label_a_client",
         data_required=True,
     )
     sub_label_a_1 = create_select_field_without_choices(
-        label=None,
+        label="",
         name="sub_label_a_1_client",
         data_required=True,
     )
     scale_a_1 = create_select_field_without_choices(
-        label="Level",
+        label="Level".strip().capitalize(),
         name="scale_a_1_client",
         data_required=True,
     )
     scale_a_2 = create_select_field_without_choices(
-        label="Adaptivity",
+        label="Adaptivity".strip().capitalize(),
         name="scale_a_2_client",
         data_required=True,
     )
@@ -210,15 +210,15 @@ class PSAnnotationFormClient(FlaskForm):
         name="label_a_client_add",
     )
     sub_label_a_1_add = create_select_field_without_choices(
-        label=None,
+        label="",
         name="sub_label_a_1_client_add",
     )
     scale_a_1_add = create_select_field_without_choices(
-        label="Level",
+        label="Level".strip().capitalize(),
         name="scale_a_1_client_add",
     )
     scale_a_2_add = create_select_field_without_choices(
-        label="Adaptivity",
+        label="Adaptivity".strip().capitalize(),
         name="scale_a_2_client_add",
     )
     evidence_a_add = create_select_multiple_field_without_choices(
@@ -233,24 +233,24 @@ class PSAnnotationFormClient(FlaskForm):
 
     # Label B
     # -------
-    name_b = "Response of Other"
+    name_b = "Response of Other".strip().capitalize()
     label_b = create_select_field_without_choices(
         label="(B)",
         name="label_b_client",
         data_required=True,
     )
     sub_label_b_1 = create_select_field_without_choices(
-        label=None,
+        label="",
         name="sub_label_b_1_client",
         data_required=True,
     )
     scale_b_1 = create_select_field_without_choices(
-        label="Level",
+        label="Level".strip().capitalize(),
         name="scale_b_1_client",
         data_required=True,
     )
     scale_b_2 = create_select_field_without_choices(
-        label="Adaptivity",
+        label="Adaptivity".strip().capitalize(),
         name="scale_b_2_client",
         data_required=True,
     )
@@ -272,15 +272,15 @@ class PSAnnotationFormClient(FlaskForm):
         name="label_b_client_add",
     )
     sub_label_b_1_add = create_select_field_without_choices(
-        label=None,
+        label="",
         name="sub_label_b_1_client_add",
     )
     scale_b_1_add = create_select_field_without_choices(
-        label="Level",
+        label="Level".strip().capitalize(),
         name="scale_b_1_client_add",
     )
     scale_b_2_add = create_select_field_without_choices(
-        label="Adaptivity",
+        label="Adaptivity".strip().capitalize(),
         name="scale_b_2_client_add",
     )
     evidence_b_add = create_select_multiple_field_without_choices(
@@ -295,24 +295,24 @@ class PSAnnotationFormClient(FlaskForm):
 
     # Label C
     # -------
-    name_c = "Response of self"
+    name_c = "Response of Self".strip().capitalize()
     label_c = create_select_field_without_choices(
         label="(C)",
         name="label_c_client",
         data_required=True,
     )
     sub_label_c_1 = create_select_field_without_choices(
-        label=None,
+        label="",
         name="sub_label_c_1_client",
         data_required=True,
     )
     scale_c_1 = create_select_field_without_choices(
-        label="Level",
+        label="Level".strip().capitalize(),
         name="scale_c_1_client",
         data_required=True,
     )
     scale_c_2 = create_select_field_without_choices(
-        label="Adaptivity",
+        label="Adaptivity".strip().capitalize(),
         name="scale_c_2_client",
         data_required=True,
     )
@@ -334,15 +334,15 @@ class PSAnnotationFormClient(FlaskForm):
         name="label_c_client_add",
     )
     sub_label_c_1_add = create_select_field_without_choices(
-        label=None,
+        label="",
         name="sub_label_c_1_client_add",
     )
     scale_c_1_add = create_select_field_without_choices(
-        label="Level",
+        label="Level".strip().capitalize(),
         name="scale_c_1_client_add",
     )
     scale_c_2_add = create_select_field_without_choices(
-        label="Adaptivity",
+        label="Adaptivity".strip().capitalize(),
         name="scale_c_2_client_add",
     )
     evidence_c_add = create_select_multiple_field_without_choices(
@@ -357,19 +357,19 @@ class PSAnnotationFormClient(FlaskForm):
 
     # Label D
     # -------
-    name_d = "Emotional experiencing and regulation"
+    name_d = "Emotional experiencing and regulation".strip().capitalize()
     label_d = create_select_field_without_choices(
         label="(D)",
         name="label_d_client",
         data_required=True,
     )
     scale_d_1 = create_select_field_without_choices(
-        label="Arousal level",
+        label="Arousal level".strip().capitalize(),
         name="scale_d_1_client",
         data_required=True,
     )
     scale_d_2 = create_select_field_without_choices(
-        label="Adaptivity",
+        label="Adaptivity".strip().capitalize(),
         name="scale_d_2_client",
         data_required=True,
     )
@@ -391,11 +391,11 @@ class PSAnnotationFormClient(FlaskForm):
         name="label_d_client_add",
     )
     scale_d_1_add = create_select_field_without_choices(
-        label="Arousal level",
+        label="Arousal level".strip().capitalize(),
         name="scale_d_1_client_add",
     )
     scale_d_2_add = create_select_field_without_choices(
-        label="Adaptivity",
+        label="Adaptivity".strip().capitalize(),
         name="scale_d_2_client_add",
     )
     evidence_d_add = create_select_multiple_field_without_choices(
@@ -410,9 +410,9 @@ class PSAnnotationFormClient(FlaskForm):
 
     # Label E
     # -------
-    name_e = "Insight"
+    name_e = "Insight".strip().capitalize()
     scale_e_1 = create_select_field_without_choices(
-        label="Recognition",
+        label="Recognition".strip().capitalize(),
         name="scale_e_1_client",
         data_required=True,
     )
@@ -429,7 +429,7 @@ class PSAnnotationFormClient(FlaskForm):
     # Label E - additional
     # --------------------
     scale_e_1_add = create_select_field_without_choices(
-        label="Recognition",
+        label="Recognition".strip().capitalize(),
         name="scale_e_1_client_add",
     )
     evidence_e_add = create_select_multiple_field_without_choices(
@@ -443,14 +443,14 @@ class PSAnnotationFormClient(FlaskForm):
 
     # Label F
     # -------
-    name_f = "Moment of Change"
+    name_f = "Moment of Change".strip().capitalize()
     label_f = create_select_field_without_choices(
         label="(F)",
         name="label_f_client",
         data_required=True,
     )
     scale_f_1 = create_select_field_without_choices(
-        label="Deterioration",
+        label="Deterioration".strip().capitalize(),
         name="scale_f_1_client",
     )
     start_event_f = create_select_field_without_choices(
