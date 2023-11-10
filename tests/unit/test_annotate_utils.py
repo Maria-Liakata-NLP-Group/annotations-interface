@@ -6,7 +6,6 @@ from app.models import PSDialogTurn, PSDialogEvent, ClientAnnotationSchema
 from app.annotate.utils import (
     split_dialog_turns,
     get_events_from_segments,
-    get_annotation_label_children,
     find_annotation_parent_label_depth,
 )
 from app.annotate.forms import PSAnnotationForm
@@ -97,15 +96,14 @@ def test_get_events_from_segments(insert_ps_dialog_turns):
 
 
 def test_get_annotation_label_children(new_ps_annotation_schema_client):
-    """Test the get_annotation_label_children() function."""
+    """Test the get_label_children() method of the AnnotationSchemaMixin class."""
 
     # check "tests/data/annotation_schema/client.json"
     label = "labelB1"
     parent_label = "labelA1"
     child_label_names = ["labelC1", "labelC2"]
-    child_labels = get_annotation_label_children(
-        label, ClientAnnotationSchema, parent_label
-    )
+    client_annotation_schema = ClientAnnotationSchema()
+    child_labels = client_annotation_schema.get_label_children(label, parent_label)
     # extract the names of the child labels (list of tuples where name is second element)
     child_label_names_extracted = [child_label[1] for child_label in child_labels]
     # sort the lists to make sure they are in the same order, and apply strip() and capitalize()

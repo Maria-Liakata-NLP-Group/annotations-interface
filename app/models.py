@@ -4,7 +4,7 @@ import json
 from typing import Union
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin, AnonymousUserMixin
-from flask import current_app
+from flask import current_app, abort
 import warnings
 import os
 from app.utils import (
@@ -637,7 +637,60 @@ class EvidenceDyad(db.Model):
     label = db.Column(db.Enum(LabelNamesDyad), nullable=True, default=None)
 
 
-class ClientAnnotationSchema(db.Model):
+class AnnotationSchemaMixin:
+    """Mixin class for annotation schema classes"""
+
+    def get_label_children(
+        self,
+        label: Union[int, str],
+        parent: str = None,
+    ) -> list:
+        """
+        Given an annotation label, query the database to find its child labels
+        so that they can be used as choices for the annotation form select fields.
+
+        Parameters
+        ----------
+        label : int or str
+            The annotation label ID or name
+        parent : str
+            The parent label name, used when a label name is passed as the "label" parameter
+
+        Returns
+        -------
+        choices : list
+            A list of of tuples containing the child label IDs and names, to be used as choices
+            for the select fields in the annotation form
+        """
+        if isinstance(label, int):
+            label = self.query.get_or_404(label)
+            children = label.children
+        elif isinstance(label, str):
+            label = label.strip().capitalize()
+            labels = self.query.filter_by(label=label).all()
+            if not labels:
+                abort(404)  # if the label does not exist, abort with 404
+            elif parent:
+                parent = parent.strip().capitalize()
+                labels = [
+                    label
+                    for label in labels
+                    if label.parent and label.parent.label == parent
+                ]
+                if not labels:
+                    abort(404)
+            if len(labels) > 1:
+                warnings.warn(
+                    f"Multiple labels with the name '{label}' exist. "
+                    f"Using the first one with ID {labels[0].id}."
+                )
+            label = labels[0]
+            children = label.children
+        choices = [(label.id, label.label) for label in children]
+        return choices
+
+
+class ClientAnnotationSchema(db.Model, AnnotationSchemaMixin):
     """Self-referencing table to store the client annotation schema"""
 
     __tablename__ = "client_annotation_schema"
