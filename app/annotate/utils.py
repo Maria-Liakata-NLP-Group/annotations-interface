@@ -533,9 +533,9 @@ def create_psy_annotation_form(
     return form
 
 
-def get_dynamic_choices(page_items: list, speaker: Speaker) -> list:
+def get_evidence_dynamic_choices(page_items: list, speaker: Speaker) -> list:
     """
-    Get the dynamic choices for the select fields in the annotation form.
+    Get the dynamic choices for the evidence select fields in the annotation form.
     This is used to populate the select fields with the events for the current page,
     to be used as evidence for the annotation.
 
@@ -550,7 +550,7 @@ def get_dynamic_choices(page_items: list, speaker: Speaker) -> list:
     -------
     choices : list of tuples
         A list of tuples containing the event IDs and event numbers, to be used as choices
-        for the select fields
+        for the evidence select fields
     """
 
     if speaker == Speaker.client:
@@ -598,7 +598,7 @@ def assign_dynamic_choices(
         multiple fields that start with "start_event_", "end_event_" or "relevant_events_"
     """
 
-    choices = get_dynamic_choices(page_items, speaker)
+    choices = get_evidence_dynamic_choices(page_items, speaker)
     # find the select multiple field(s) in the form. They all start with "relevant_events_",
     # "start_event_" or "end_event_"
     for field_name in form.__dict__.keys():
