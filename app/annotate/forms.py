@@ -2,138 +2,31 @@
 Annotation forms for the app
 """
 from flask_wtf import FlaskForm
-from wtforms import SelectField, SubmitField, TextAreaField, SelectMultipleField
-from wtforms.validators import (
-    DataRequired,
-    Length,
-    Optional,
-    InputRequired,
+from wtforms import SubmitField
+from app.annotate.forms_utils import (
+    create_select_field,
+    create_select_field_without_choices,
+    create_select_multiple_field_without_choices,
+    create_text_area_field,
 )
-
 from app.utils import (
-    LabelNamesClient,
     LabelNamesTherapist,
     LabelNamesDyad,
-    SubLabelsAClient,
     SubLabelsATherapist,
     SubLabelsADyad,
-    SubLabelsBClient,
     SubLabelsBTherapist,
     SubLabelsBDyad,
-    SubLabelsCClient,
     SubLabelsCTherapist,
-    SubLabelsDClient,
     SubLabelsDTherapist,
-    SubLabelsEClient,
     SubLabelsETherapist,
-    SubLabelsFClient,
-    LabelStrengthAClient,
     LabelStrengthATherapist,
     LabelStrengthADyad,
-    LabelStrengthBClient,
     LabelStrengthBTherapist,
     LabelStrengthBDyad,
-    LabelStrengthCClient,
     LabelStrengthCTherapist,
-    LabelStrengthDClient,
     LabelStrengthDTherapist,
-    LabelStrengthEClient,
     LabelStrengthETherapist,
-    LabelStrengthFClient,
 )
-
-
-class RequiredIf(InputRequired):
-    """Validator which makes a form field required if another field is set to a certain value."""
-
-    field_flags = ("requiredif",)
-
-    def __init__(self, other_field_name, value, message=None, *args, **kwargs):
-        self.other_field_name = other_field_name
-        self.value = value
-        self.message = message
-
-    def __call__(self, form, field):
-        other_field = form[self.other_field_name]
-        if other_field is None:
-            raise Exception('no field named "%s" in form' % self.other_field_name)
-        if (other_field.data).lower() == self.value.lower():
-            super(RequiredIf, self).__call__(form, field)
-        else:
-            Optional().__call__(form, field)
-
-
-def create_select_field(label, choices, name, default=None):
-    """Create a select field with the given label, choices, name and default value"""
-
-    return SelectField(
-        label=label,
-        choices=[(choice.name, choice.value) for choice in choices],
-        validators=[DataRequired()],
-        name=name,
-        default=default,
-    )
-
-
-def create_select_field_without_choices(label, name, data_required=False):
-    """
-    Create a select field with the given label and name, but without choices.
-    This is used for select fields with dynamic choice values.
-    Set 'data_required' to True if the field is required.
-    """
-
-    if data_required:
-        return SelectField(
-            label=label,
-            validators=[DataRequired()],
-            name=name,
-            coerce=int,
-            default=None,
-        )
-    else:
-        return SelectField(
-            label=label,
-            name=name,
-            coerce=int,
-            default=None,
-        )
-
-
-def create_select_multiple_field_without_choices(label, name):
-    """
-    Create a select multiple field with the given label and name, but without choices.
-    This is used for select multiple fields with dynamic choice values.
-    """
-
-    return SelectMultipleField(
-        label=label,
-        validators=[DataRequired()],
-        name=name,
-        coerce=int,
-    )
-
-
-def create_text_area_field(
-    label, name, required_if=None, max_length=200, rows=2, cols=10
-):
-    """
-    Create a text area field with the given label, name and max length.
-    The field is required if the field with the given name is set to the given value.
-    Otherwise, the field is optional.
-    """
-
-    if required_if:
-        value = "other"  # value of the field that requires the text area field
-        message = "If you select Other, please provide a comment."
-        validators = [RequiredIf(required_if, value, message), Length(max=max_length)]
-    else:
-        validators = [Length(max=max_length)]
-    return TextAreaField(
-        label,
-        validators=validators,
-        name=name,
-        render_kw={"rows": rows, "cols": cols},
-    )
 
 
 class PSAnnotationForm(FlaskForm):
@@ -274,95 +167,305 @@ class PSAnnotationForm(FlaskForm):
 class PSAnnotationFormClient(FlaskForm):
     """Segment level annotation form of psychotherapy datasets for the client"""
 
-    label_a = create_select_field(
-        label=LabelNamesClient.label_a.value,
-        choices=SubLabelsAClient,
+    # Label A
+    # -------
+    name_a = "Wish"
+    label_a = create_select_field_without_choices(
+        label="(A)",
         name="label_a_client",
+        data_required=True,
     )
-    label_b = create_select_field(
-        label=LabelNamesClient.label_b.value,
-        choices=SubLabelsBClient,
-        name="label_b_client",
+    sub_label_a_1 = create_select_field_without_choices(
+        label=None,
+        name="sub_label_a_1_client",
+        data_required=True,
     )
-    label_c = create_select_field(
-        label=LabelNamesClient.label_c.value,
-        choices=SubLabelsCClient,
-        name="label_c_client",
+    scale_a_1 = create_select_field_without_choices(
+        label="Level",
+        name="scale_a_1_client",
+        data_required=True,
     )
-    label_d = create_select_field(
-        label=LabelNamesClient.label_d.value,
-        choices=SubLabelsDClient,
-        name="label_d_client",
+    scale_a_2 = create_select_field_without_choices(
+        label="Adaptivity",
+        name="scale_a_2_client",
+        data_required=True,
     )
-    label_e = create_select_field(
-        label=LabelNamesClient.label_e.value,
-        choices=SubLabelsEClient,
-        name="label_e_client",
-    )
-    label_f = create_select_field(
-        label=LabelNamesClient.label_f.value,
-        choices=SubLabelsFClient,
-        name="label_f_client",
-        default=SubLabelsFClient.no_change.name,
-    )
-    strength_a = create_select_field(
-        label="Strength", choices=LabelStrengthAClient, name="strength_a_client"
-    )
-    strength_b = create_select_field(
-        label="Strength", choices=LabelStrengthBClient, name="strength_b_client"
-    )
-    strength_c = create_select_field(
-        label="Strength", choices=LabelStrengthCClient, name="strength_c_client"
-    )
-    strength_d = create_select_field(
-        label="Strength", choices=LabelStrengthDClient, name="strength_d_client"
-    )
-    strength_e = create_select_field(
-        label="Strength", choices=LabelStrengthEClient, name="strength_e_client"
-    )
-    strength_f = create_select_field(
-        label="Strength",
-        choices=LabelStrengthFClient,
-        name="strength_f_client",
-        default=LabelStrengthFClient.no_change.name,
+    evidence_a = create_select_multiple_field_without_choices(
+        label="Evidence",
+        name="evidence_a_client",
+        data_required=True,
     )
     comment_a = create_text_area_field(
-        label="Comment", name="comment_a_client", required_if="label_a"
-    )  # Note that HTML "name" is unique and is used in the tests to identify the field
+        label="Comment",
+        name="comment_a_client",
+        required_if="label_a",
+    )
+
+    # Label A - additional
+    # --------------------
+    label_a_add = create_select_field_without_choices(
+        label="(A)",
+        name="label_a_client_add",
+    )
+    sub_label_a_1_add = create_select_field_without_choices(
+        label=None,
+        name="sub_label_a_1_client_add",
+    )
+    scale_a_1_add = create_select_field_without_choices(
+        label="Level",
+        name="scale_a_1_client_add",
+    )
+    scale_a_2_add = create_select_field_without_choices(
+        label="Adaptivity",
+        name="scale_a_2_client_add",
+    )
+    evidence_a_add = create_select_multiple_field_without_choices(
+        label="Evidence",
+        name="evidence_a_client_add",
+    )
+    comment_a_add = create_text_area_field(
+        label="Comment",
+        name="comment_a_client_add",
+        required_if="label_a_add",
+    )
+
+    # Label B
+    # -------
+    name_b = "Response of Other"
+    label_b = create_select_field_without_choices(
+        label="(B)",
+        name="label_b_client",
+        data_required=True,
+    )
+    sub_label_b_1 = create_select_field_without_choices(
+        label=None,
+        name="sub_label_b_1_client",
+        data_required=True,
+    )
+    scale_b_1 = create_select_field_without_choices(
+        label="Level",
+        name="scale_b_1_client",
+        data_required=True,
+    )
+    scale_b_2 = create_select_field_without_choices(
+        label="Adaptivity",
+        name="scale_b_2_client",
+        data_required=True,
+    )
+    evidence_b = create_select_multiple_field_without_choices(
+        label="Evidence",
+        name="evidence_b_client",
+        data_required=True,
+    )
     comment_b = create_text_area_field(
-        label="Comment", name="comment_b_client", required_if="label_b"
+        label="Comment",
+        name="comment_b_client",
+        required_if="label_b",
+    )
+
+    # Label B - additional
+    # --------------------
+    label_b_add = create_select_field_without_choices(
+        label="(B)",
+        name="label_b_client_add",
+    )
+    sub_label_b_1_add = create_select_field_without_choices(
+        label=None,
+        name="sub_label_b_1_client_add",
+    )
+    scale_b_1_add = create_select_field_without_choices(
+        label="Level",
+        name="scale_b_1_client_add",
+    )
+    scale_b_2_add = create_select_field_without_choices(
+        label="Adaptivity",
+        name="scale_b_2_client_add",
+    )
+    evidence_b_add = create_select_multiple_field_without_choices(
+        label="Evidence",
+        name="evidence_b_client_add",
+    )
+    comment_b_add = create_text_area_field(
+        label="Comment",
+        name="comment_b_client_add",
+        required_if="label_b_add",
+    )
+
+    # Label C
+    # -------
+    name_c = "Response of self"
+    label_c = create_select_field_without_choices(
+        label="(C)",
+        name="label_c_client",
+        data_required=True,
+    )
+    sub_label_c_1 = create_select_field_without_choices(
+        label=None,
+        name="sub_label_c_1_client",
+        data_required=True,
+    )
+    scale_c_1 = create_select_field_without_choices(
+        label="Level",
+        name="scale_c_1_client",
+        data_required=True,
+    )
+    scale_c_2 = create_select_field_without_choices(
+        label="Adaptivity",
+        name="scale_c_2_client",
+        data_required=True,
+    )
+    evidence_c = create_select_multiple_field_without_choices(
+        label="Evidence",
+        name="evidence_c_client",
+        data_required=True,
     )
     comment_c = create_text_area_field(
-        label="Comment", name="comment_c_client", required_if="label_c"
+        label="Comment",
+        name="comment_c_client",
+        required_if="label_c",
+    )
+
+    # Label C - additional
+    # --------------------
+    label_c_add = create_select_field_without_choices(
+        label="(C)",
+        name="label_c_client_add",
+    )
+    sub_label_c_1_add = create_select_field_without_choices(
+        label=None,
+        name="sub_label_c_1_client_add",
+    )
+    scale_c_1_add = create_select_field_without_choices(
+        label="Level",
+        name="scale_c_1_client_add",
+    )
+    scale_c_2_add = create_select_field_without_choices(
+        label="Adaptivity",
+        name="scale_c_2_client_add",
+    )
+    evidence_c_add = create_select_multiple_field_without_choices(
+        label="Evidence",
+        name="evidence_c_client_add",
+    )
+    comment_c_add = create_text_area_field(
+        label="Comment",
+        name="comment_c_client_add",
+        required_if="label_c_add",
+    )
+
+    # Label D
+    # -------
+    name_d = "Emotional experiencing and regulation"
+    label_d = create_select_field_without_choices(
+        label="(D)",
+        name="label_d_client",
+        data_required=True,
+    )
+    scale_d_1 = create_select_field_without_choices(
+        label="Arousal level",
+        name="scale_d_1_client",
+        data_required=True,
+    )
+    scale_d_2 = create_select_field_without_choices(
+        label="Adaptivity",
+        name="scale_d_2_client",
+        data_required=True,
+    )
+    evidence_d = create_select_multiple_field_without_choices(
+        label="Evidence",
+        name="evidence_d_client",
+        data_required=True,
     )
     comment_d = create_text_area_field(
-        label="Comment", name="comment_d_client", required_if="label_d"
+        label="Comment",
+        name="comment_d_client",
+        required_if="label_d",
+    )
+
+    # Label D - additional
+    # --------------------
+    label_d_add = create_select_field_without_choices(
+        label="(D)",
+        name="label_d_client_add",
+    )
+    scale_d_1_add = create_select_field_without_choices(
+        label="Arousal level",
+        name="scale_d_1_client_add",
+    )
+    scale_d_2_add = create_select_field_without_choices(
+        label="Adaptivity",
+        name="scale_d_2_client_add",
+    )
+    evidence_d_add = create_select_multiple_field_without_choices(
+        label="Evidence",
+        name="evidence_d_client_add",
+    )
+    comment_d_add = create_text_area_field(
+        label="Comment",
+        name="comment_d_client_add",
+        required_if="label_d_add",
+    )
+
+    # Label E
+    # -------
+    name_e = "Insight"
+    scale_e_1 = create_select_field_without_choices(
+        label="Recognition",
+        name="scale_e_1_client",
+        data_required=True,
+    )
+    evidence_e = create_select_multiple_field_without_choices(
+        label="Evidence",
+        name="evidence_e_client",
+        data_required=True,
     )
     comment_e = create_text_area_field(
-        label="Comment", name="comment_e_client", required_if="label_e"
+        label="Comment",
+        name="comment_e_client",
     )
-    comment_f = create_text_area_field(label="Comment", name="comment_f_client")
-    relevant_events_a = create_select_multiple_field_without_choices(
-        label="Evidence", name="relevant_events_a_client"
+
+    # Label E - additional
+    # --------------------
+    scale_e_1_add = create_select_field_without_choices(
+        label="Recognition",
+        name="scale_e_1_client_add",
     )
-    relevant_events_b = create_select_multiple_field_without_choices(
-        label="Evidence", name="relevant_events_b_client"
+    evidence_e_add = create_select_multiple_field_without_choices(
+        label="Evidence",
+        name="evidence_e_client_add",
     )
-    relevant_events_c = create_select_multiple_field_without_choices(
-        label="Evidence", name="relevant_events_c_client"
+    comment_e_add = create_text_area_field(
+        label="Comment",
+        name="comment_e_client_add",
     )
-    relevant_events_d = create_select_multiple_field_without_choices(
-        label="Evidence", name="relevant_events_d_client"
+
+    # Label F
+    # -------
+    name_f = "Moment of Change"
+    label_f = create_select_field_without_choices(
+        label="(F)",
+        name="label_f_client",
+        data_required=True,
     )
-    relevant_events_e = create_select_multiple_field_without_choices(
-        label="Evidence", name="relevant_events_e_client"
+    scale_f_1 = create_select_field_without_choices(
+        label="Deterioration",
+        name="scale_f_1_client",
     )
     start_event_f = create_select_field_without_choices(
-        label="Start", name="start_event_f_client"
+        label="Start",
+        name="start_event_f_client",
     )
     end_event_f = create_select_field_without_choices(
-        label="End", name="end_event_f_client"
+        label="End",
+        name="end_event_f_client",
     )
+    comment_f = create_text_area_field(
+        label="Comment",
+        name="comment_f_client",
+    )
+
+    # Summary comment
+    # ---------------
     comment_summary = create_text_area_field(
         label="Summary Comment",
         name="comment_summary_client",

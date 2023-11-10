@@ -22,15 +22,16 @@
   {% endif %}
 
   <!-- Label A -->
-
+  <h4>{{ form_client.name_a }}</h4>
   <div class="form-group">
     {{ wtf.form_field(form_client.label_a) }} {{
-    wtf.form_field(form_client.strength_a) }} {{
-    wtf.form_field(form_client.relevant_events_a) }} {{
+    wtf.form_field(form_client.sub_label_a_1) }} {{
+    wtf.form_field(form_client.scale_a_1) }} {{
+    wtf.form_field(form_client.scale_a_2) }} {{
+    wtf.form_field(form_client.evidence_a) }} {{
     wtf.form_field(form_client.comment_a) }}
   </div>
   <p></p>
-
   <!-- Button to toggle an additional form group for label A -->
   <button
     type="button"
@@ -41,23 +42,26 @@
     Add another
   </button>
   <div class="form-group collapse" id="client_label_a_add">
-    {{ wtf.form_field(form_client.label_a) }} {{
-    wtf.form_field(form_client.strength_a) }} {{
-    wtf.form_field(form_client.relevant_events_a) }} {{
-    wtf.form_field(form_client.comment_a) }}
+    {{ wtf.form_field(form_client.label_a_add) }} {{
+    wtf.form_field(form_client.sub_label_a_1_add) }} {{
+    wtf.form_field(form_client.scale_a_1_add) }} {{
+    wtf.form_field(form_client.scale_a_2_add) }} {{
+    wtf.form_field(form_client.evidence_a_add) }} {{
+    wtf.form_field(form_client.comment_a_add) }}
   </div>
   <p></p>
 
   <!-- Label B -->
-
+  <h4>{{ form_client.name_b }}</h4>
   <div class="form-group">
     {{ wtf.form_field(form_client.label_b) }} {{
-    wtf.form_field(form_client.strength_b) }} {{
-    wtf.form_field(form_client.relevant_events_b) }} {{
+    wtf.form_field(form_client.sub_label_b_1) }} {{
+    wtf.form_field(form_client.scale_b_1) }} {{
+    wtf.form_field(form_client.scale_b_2) }} {{
+    wtf.form_field(form_client.evidence_b) }} {{
     wtf.form_field(form_client.comment_b) }}
   </div>
   <p></p>
-
   <!-- Button to toggle an additional form group for label B -->
   <button
     type="button"
@@ -68,23 +72,26 @@
     Add another
   </button>
   <div class="form-group collapse" id="client_label_b_add">
-    {{ wtf.form_field(form_client.label_b) }} {{
-    wtf.form_field(form_client.strength_b) }} {{
-    wtf.form_field(form_client.relevant_events_b) }} {{
-    wtf.form_field(form_client.comment_b) }}
+    {{ wtf.form_field(form_client.label_b_add) }} {{
+    wtf.form_field(form_client.sub_label_b_1_add) }} {{
+    wtf.form_field(form_client.scale_b_1_add) }} {{
+    wtf.form_field(form_client.scale_b_2_add) }} {{
+    wtf.form_field(form_client.evidence_b_add) }} {{
+    wtf.form_field(form_client.comment_b_add) }}
   </div>
   <p></p>
 
   <!-- Label C -->
-
+  <h4>{{ form_client.name_c }}</h4>
   <div class="form-group">
     {{ wtf.form_field(form_client.label_c) }} {{
-    wtf.form_field(form_client.strength_c) }} {{
-    wtf.form_field(form_client.relevant_events_c) }} {{
+    wtf.form_field(form_client.sub_label_c_1) }} {{
+    wtf.form_field(form_client.scale_c_1) }} {{
+    wtf.form_field(form_client.scale_c_2) }} {{
+    wtf.form_field(form_client.evidence_c) }} {{
     wtf.form_field(form_client.comment_c) }}
   </div>
   <p></p>
-
   <!-- Button to toggle an additional form group for label C -->
   <button
     type="button"
@@ -95,38 +102,85 @@
     Add another
   </button>
   <div class="form-group collapse" id="client_label_c_add">
-    {{ wtf.form_field(form_client.label_c) }} {{
-    wtf.form_field(form_client.strength_c) }} {{
-    wtf.form_field(form_client.relevant_events_c) }} {{
-    wtf.form_field(form_client.comment_c) }}
+    {{ wtf.form_field(form_client.label_c_add) }} {{
+    wtf.form_field(form_client.sub_label_c_1_add) }} {{
+    wtf.form_field(form_client.scale_c_1_add) }} {{
+    wtf.form_field(form_client.scale_c_2_add) }} {{
+    wtf.form_field(form_client.evidence_c_add) }} {{
+    wtf.form_field(form_client.comment_c_add) }}
   </div>
   <p></p>
 
+  <!-- Label D -->
+  <h4>{{ form_client.name_d }}</h4>
   <div class="form-group">
     {{ wtf.form_field(form_client.label_d) }} {{
-    wtf.form_field(form_client.strength_d) }} {{
-    wtf.form_field(form_client.relevant_events_d) }} {{
+    wtf.form_field(form_client.scale_d_1) }} {{
+    wtf.form_field(form_client.scale_d_2) }} {{
+    wtf.form_field(form_client.evidence_d) }} {{
     wtf.form_field(form_client.comment_d) }}
   </div>
   <p></p>
+  <!-- Button to toggle an additional form group for label D -->
+  <button
+    type="button"
+    class="btn btn-secondary mx-2"
+    id="btn_client_label_d_add"
+    data-target="#client_label_d_add"
+  >
+    Add another
+  </button>
+  <div class="form-group collapse" id="client_label_d_add">
+    {{ wtf.form_field(form_client.label_d_add) }} {{
+    wtf.form_field(form_client.scale_d_1_add) }} {{
+    wtf.form_field(form_client.scale_d_2_add) }} {{
+    wtf.form_field(form_client.evidence_d_add) }} {{
+    wtf.form_field(form_client.comment_d_add) }}
+  </div>
+  <p></p>
+
+  <!-- Label E -->
+  <h4>{{ form_client.name_e }}</h4>
   <div class="form-group">
-    {{ wtf.form_field(form_client.label_e) }} {{
-    wtf.form_field(form_client.strength_e) }} {{
-    wtf.form_field(form_client.relevant_events_e) }} {{
+    {{ wtf.form_field(form_client.scale_e_1) }} {{
+    wtf.form_field(form_client.evidence_e) }} {{
     wtf.form_field(form_client.comment_e) }}
   </div>
   <p></p>
+  <!-- Button to toggle an additional form group for label E -->
+  <button
+    type="button"
+    class="btn btn-secondary mx-2"
+    id="btn_client_label_e_add"
+    data-target="#client_label_e_add"
+  >
+    Add another
+  </button>
+  <div class="form-group collapse" id="client_label_e_add">
+    {{ wtf.form_field(form_client.scale_e_1_add) }} {{
+    wtf.form_field(form_client.evidence_e_add) }} {{
+    wtf.form_field(form_client.comment_e_add) }}
+  </div>
+  <p></p>
+
+  <!-- Label F -->
+  <h4>{{ form_client.name_f }}</h4>
   <div class="form-group">
     {{ wtf.form_field(form_client.label_f) }} {{
-    wtf.form_field(form_client.strength_f) }} {{
+    wtf.form_field(form_client.scale_f_1) }} {{
     wtf.form_field(form_client.start_event_f) }} {{
     wtf.form_field(form_client.end_event_f) }} {{
     wtf.form_field(form_client.comment_f) }}
   </div>
+  <p></p>
+
+  <!-- Summary comment -->
   <div style="text-align: center">
     {{ wtf.form_field(form_client.comment_summary) }}
   </div>
   <p></p>
+
+  <!-- Submit -->
   <p>
     <input type="submit" name="submit_form_client" value="Submit" />
   </p>
