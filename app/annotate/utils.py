@@ -4,11 +4,10 @@ Miscellaneous utility functions for the annotate blueprint
 from typing import Union
 from datetime import datetime
 import itertools
-from flask import url_for, abort
+from flask import url_for
 from flask_login import current_user
 from app.utils import Speaker, LabelNamesClient, LabelNamesTherapist, LabelNamesDyad
 from sqlalchemy import desc
-import warnings
 from app.models import (
     PSAnnotationClient,
     PSAnnotationTherapist,
