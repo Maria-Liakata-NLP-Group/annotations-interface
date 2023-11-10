@@ -32,6 +32,8 @@ from app.utils import (
 class PSAnnotationForm(FlaskForm):
     """Generic segment level annotation form of psychotherapy datasets"""
 
+    # NOTE: currently this form is not used. It is kept here for future reference.
+
     # TODO: finish writing this class when there is time. The purpose of this class is
     # to create the annotation forms dynamically, based on the annotation schema on the
     # database, without hard-coding the fields in the form.
