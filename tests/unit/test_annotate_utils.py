@@ -6,7 +6,6 @@ from app.models import PSDialogTurn, PSDialogEvent, ClientAnnotationSchema
 from app.annotate.utils import (
     split_dialog_turns,
     get_events_from_segments,
-    find_annotation_parent_label_depth,
 )
 from app.annotate.forms import PSAnnotationForm
 import pytest
@@ -123,12 +122,13 @@ def test_get_annotation_label_children(new_ps_annotation_schema_client):
 
 
 def test_find_annotation_parent_label_depth():
-    """Test the find_annotation_parent_label_depth() function."""
+    """Test the find_parent_label_depth() method of the AnnotationSchemaMixin class."""
 
+    client_annotation_schema = ClientAnnotationSchema()
     # check "tests/data/annotation_schema/client.json"
-    assert find_annotation_parent_label_depth("labelA1", ClientAnnotationSchema) == 2
-    assert find_annotation_parent_label_depth("labelA2", ClientAnnotationSchema) == 3
-    assert find_annotation_parent_label_depth("labelA3", ClientAnnotationSchema) == 1
+    assert client_annotation_schema.find_parent_label_depth("labelA1") == 2
+    assert client_annotation_schema.find_parent_label_depth("labelA2") == 3
+    assert client_annotation_schema.find_parent_label_depth("labelA3") == 1
 
 
 # skip this test for now until the PSAnnotationForm class is refactored

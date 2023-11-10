@@ -689,6 +689,64 @@ class AnnotationSchemaMixin:
         choices = [(label.id, label.label) for label in children]
         return choices
 
+    def find_parent_label_depth(self, label: Union[int, str]) -> int:
+        """
+        Given a parent label of the annotation schema (i.e. a label with no parent), find
+        its depth (i.e. how many levels of child labels it has) in the annotation schema tree.
+
+        Parameters
+        ----------
+        label : int or str
+            The annotation label ID or name. It must be a parent label (i.e. a label with no parent).
+
+        Returns
+        -------
+        depth : int
+            The deepest level of the label in the annotation schema tree
+        """
+
+        if isinstance(label, int):
+            label = self.query.get_or_404(label)
+            if label.parent:
+                abort(404)
+        elif isinstance(label, str):
+            label = label.strip().capitalize()
+            labels = self.query.filter_by(label=label).all()
+            if not labels:
+                abort(404)
+            else:
+                # filter the label list to only include labels with no parent
+                labels = [label for label in labels if not label.parent]
+                if not labels:
+                    abort(404)
+                elif len(labels) > 1:
+                    warnings.warn(
+                        f"Multiple parent labels with the name '{label}' exist. "
+                        f"Using the first one with ID {labels[0].id}."
+                    )
+                label = labels[0]
+
+        def find_deepest_level(label):
+            """Recursively find the depth of a label in the annotation schema tree."""
+            # Base case: If the label has no children, it is a leaf label.
+            if not label.children.all():
+                return 0
+
+            # Initialize the maximum depth to the current depth.
+            max_depth = 0
+
+            # Recursively explore each child label.
+            for child in label.children.all():
+                # Calculate the depth of the child label.
+                child_depth = find_deepest_level(child)
+                # Update the maximum depth if the child's depth is greater.
+                max_depth = max(max_depth, child_depth)
+
+            # Add 1 to the maximum depth to account for the current label.
+            return max_depth + 1
+
+        return find_deepest_level(label)
+
 
 class ClientAnnotationSchema(db.Model, AnnotationSchemaMixin):
     """Self-referencing table to store the client annotation schema"""
