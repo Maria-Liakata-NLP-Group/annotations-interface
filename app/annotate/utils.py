@@ -572,7 +572,7 @@ def get_evidence_dynamic_choices(page_items: list, speaker: Speaker) -> list:
     return choices
 
 
-def assign_dynamic_choices(
+def assign_evidence_dynamic_choices(
     form: Union[
         PSAnnotationFormClient, PSAnnotationFormTherapist, PSAnnotationFormDyad
     ],
@@ -580,7 +580,8 @@ def assign_dynamic_choices(
     speaker: Speaker,
 ) -> Union[PSAnnotationFormClient, PSAnnotationFormTherapist, PSAnnotationFormDyad]:
     """
-    Assign the dynamic choices to the select fields or select multiple fields in the annotation form.
+    Assign the dynamic choices to the select fields or select multiple fields in the
+    annotation form that are used to select evidence events.
 
     Parameters
     ----------
@@ -595,15 +596,15 @@ def assign_dynamic_choices(
     -------
     form : PSAnnotationFormClient or PSAnnotationFormTherapist or PSAnnotationFormDyad
         The annotation form with the dynamic choices assigned to the select fields or select
-        multiple fields that start with "start_event_", "end_event_" or "relevant_events_"
+        multiple fields that start with "start_event_", "end_event_" or "evidence_"
     """
 
     choices = get_evidence_dynamic_choices(page_items, speaker)
-    # find the select multiple field(s) in the form. They all start with "relevant_events_",
-    # "start_event_" or "end_event_"
+    # assign the dynamic choices to the select fields or select multiple fields
+    # that start with "start_event_", "end_event_" or "evidence_"
     for field_name in form.__dict__.keys():
         if (
-            field_name.startswith("relevant_events_")
+            field_name.startswith("evidence_")
             or field_name.startswith("start_event_")
             or field_name.startswith("end_event_")
         ):

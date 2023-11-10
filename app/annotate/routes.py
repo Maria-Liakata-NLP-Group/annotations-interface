@@ -11,7 +11,7 @@ from app.annotate.utils import (
     fetch_dialog_turn_annotations,
     new_dialog_turn_annotation_to_db,
     create_psy_annotation_form,
-    assign_dynamic_choices,
+    assign_evidence_dynamic_choices,
 )
 from flask.views import View
 
@@ -53,7 +53,7 @@ class AnnotatePSView(View):
         """Create the annotations form for the specified speaker"""
         annotations = fetch_dialog_turn_annotations(dialog_turns, speaker)
         form = create_psy_annotation_form(annotations, speaker)
-        form = assign_dynamic_choices(form, page_items, speaker)
+        form = assign_evidence_dynamic_choices(form, page_items, speaker)
         return form, annotations
 
     def dispatch_request(self, dataset_id: int):
