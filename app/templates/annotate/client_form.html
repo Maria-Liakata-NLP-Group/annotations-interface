@@ -43,7 +43,8 @@
     Add another
   </button>
   <div class="form-group collapse" id="client_label_a_add">
-    {{ wtf.form_field(form_client.label_a_add) }} {{
+    {{ wtf.form_field(form_client.label_a_add, class="dynamic_select",
+    data_target="sub_label_a_1_client_add") }} {{
     wtf.form_field(form_client.sub_label_a_1_add) }} {{
     wtf.form_field(form_client.scale_a_1_add) }} {{
     wtf.form_field(form_client.scale_a_2_add) }} {{
@@ -55,7 +56,8 @@
   <!-- Label B -->
   <h4>{{ form_client.name_b }}</h4>
   <div class="form-group">
-    {{ wtf.form_field(form_client.label_b) }} {{
+    {{ wtf.form_field(form_client.label_b, class="dynamic_select",
+    data_target="sub_label_b_1_client") }} {{
     wtf.form_field(form_client.sub_label_b_1) }} {{
     wtf.form_field(form_client.scale_b_1) }} {{
     wtf.form_field(form_client.scale_b_2) }} {{
@@ -73,7 +75,8 @@
     Add another
   </button>
   <div class="form-group collapse" id="client_label_b_add">
-    {{ wtf.form_field(form_client.label_b_add) }} {{
+    {{ wtf.form_field(form_client.label_b_add, class="dynamic_select",
+    data_target="sub_label_b_1_client_add") }} {{
     wtf.form_field(form_client.sub_label_b_1_add) }} {{
     wtf.form_field(form_client.scale_b_1_add) }} {{
     wtf.form_field(form_client.scale_b_2_add) }} {{
@@ -85,7 +88,8 @@
   <!-- Label C -->
   <h4>{{ form_client.name_c }}</h4>
   <div class="form-group">
-    {{ wtf.form_field(form_client.label_c) }} {{
+    {{ wtf.form_field(form_client.label_c, class="dynamic_select",
+    data_target="sub_label_c_1_client") }} {{
     wtf.form_field(form_client.sub_label_c_1) }} {{
     wtf.form_field(form_client.scale_c_1) }} {{
     wtf.form_field(form_client.scale_c_2) }} {{
@@ -103,7 +107,8 @@
     Add another
   </button>
   <div class="form-group collapse" id="client_label_c_add">
-    {{ wtf.form_field(form_client.label_c_add) }} {{
+    {{ wtf.form_field(form_client.label_c_add, class="dynamic_select",
+    data_target="sub_label_c_1_client_add") }} {{
     wtf.form_field(form_client.sub_label_c_1_add) }} {{
     wtf.form_field(form_client.scale_c_1_add) }} {{
     wtf.form_field(form_client.scale_c_2_add) }} {{
