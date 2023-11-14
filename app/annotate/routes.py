@@ -1,8 +1,22 @@
 from app.annotate import bp
 from app import db
-from flask import render_template, request, url_for, current_app, abort, flash, redirect
+from flask import (
+    render_template,
+    request,
+    url_for,
+    current_app,
+    abort,
+    flash,
+    redirect,
+    jsonify,
+)
 from flask_login import login_required
-from app.models import Dataset
+from app.models import (
+    Dataset,
+    ClientAnnotationSchema,
+    TherapistAnnotationSchema,
+    DyadAnnotationSchema,
+)
 from app.utils import Speaker
 from app.annotate.utils import (
     split_dialog_turns,
@@ -14,6 +28,7 @@ from app.annotate.utils import (
     assign_dynamic_choices,
 )
 from flask.views import View
+import warnings
 
 
 class AnnotatePSView(View):
@@ -177,7 +192,6 @@ bp.add_url_rule(
 )
 
 
-# create a route that will handle dynamic updates of the select field choices
 @bp.route("/_update_select_choices", methods=["POST"])
 @login_required
 def update_select_choices():
@@ -185,8 +199,27 @@ def update_select_choices():
     This route handles dynamic updates of a second select field
     based on the choice of the first select field.
     """
+    select_field_name = request.form.get("select_field_name")
     selected_value = request.form.get("selected_value")
-    pass
+
+    if "client" in select_field_name:
+        annotation_schema = ClientAnnotationSchema()
+    elif "therapist" in select_field_name:
+        annotation_schema = TherapistAnnotationSchema()
+    elif "dyad" in select_field_name:
+        annotation_schema = DyadAnnotationSchema()
+    else:
+        warnings.warn(
+            "The select field name does not match any of the expected values."
+        )
+        abort(404)
+    choices = annotation_schema.get_label_children(selected_value)
+
+    options = ""
+    for value, label in choices:
+        options += f'<option value="{value}">{label}</option>'
+
+    return jsonify({"options": options})
 
 
 @bp.route("/annotate_social_media/<int:dataset_id>")

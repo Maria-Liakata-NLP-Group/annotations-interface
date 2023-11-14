@@ -5,6 +5,7 @@ $(document).ready(function () {
   // find all select fields with the class "dynamic_select"
   $(".dynamic_select").each(function () {
     var firstSelect = $(this);
+    var firstSelectName = firstSelect.attr("name");
     var targetId = firstSelect.data("target");
     var secondSelect = $("#" + targetId);
 
@@ -16,6 +17,7 @@ $(document).ready(function () {
         url: "/annotate/_update_select_choices",
         type: "POST",
         data: {
+          select_field_name: firstSelectName,
           selected_value: selectedValue,
         },
         success: function (data) {
