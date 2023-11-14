@@ -172,13 +172,14 @@ class PSAnnotationFormClient(FlaskForm):
     # Label A
     # -------
     name_a = "Wish".strip().capitalize()
+    title_a = "(A) " + name_a
     label_a = create_select_field_without_choices(
-        label="(A)",
+        label="Choose one",
         name="label_a_client",
         data_required=True,
     )
     sub_label_a_1 = create_select_field_without_choices(
-        label="",
+        label="Choose one",
         name="sub_label_a_1_client",
         data_required=True,
     )
@@ -206,11 +207,11 @@ class PSAnnotationFormClient(FlaskForm):
     # Label A - additional
     # --------------------
     label_a_add = create_select_field_without_choices(
-        label="(A)",
+        label="Choose one",
         name="label_a_client_add",
     )
     sub_label_a_1_add = create_select_field_without_choices(
-        label="",
+        label="Choose one",
         name="sub_label_a_1_client_add",
     )
     scale_a_1_add = create_select_field_without_choices(
@@ -234,13 +235,14 @@ class PSAnnotationFormClient(FlaskForm):
     # Label B
     # -------
     name_b = "Response of Other".strip().capitalize()
+    title_b = "(B) " + name_b
     label_b = create_select_field_without_choices(
-        label="(B)",
+        label="Choose one",
         name="label_b_client",
         data_required=True,
     )
     sub_label_b_1 = create_select_field_without_choices(
-        label="",
+        label="Choose one",
         name="sub_label_b_1_client",
         data_required=True,
     )
@@ -268,11 +270,11 @@ class PSAnnotationFormClient(FlaskForm):
     # Label B - additional
     # --------------------
     label_b_add = create_select_field_without_choices(
-        label="(B)",
+        label="Choose one",
         name="label_b_client_add",
     )
     sub_label_b_1_add = create_select_field_without_choices(
-        label="",
+        label="Choose one",
         name="sub_label_b_1_client_add",
     )
     scale_b_1_add = create_select_field_without_choices(
@@ -296,13 +298,14 @@ class PSAnnotationFormClient(FlaskForm):
     # Label C
     # -------
     name_c = "Response of Self".strip().capitalize()
+    title_c = "(C) " + name_c
     label_c = create_select_field_without_choices(
-        label="(C)",
+        label="Choose one",
         name="label_c_client",
         data_required=True,
     )
     sub_label_c_1 = create_select_field_without_choices(
-        label="",
+        label="Choose one",
         name="sub_label_c_1_client",
         data_required=True,
     )
@@ -330,11 +333,11 @@ class PSAnnotationFormClient(FlaskForm):
     # Label C - additional
     # --------------------
     label_c_add = create_select_field_without_choices(
-        label="(C)",
+        label="Choose one",
         name="label_c_client_add",
     )
     sub_label_c_1_add = create_select_field_without_choices(
-        label="",
+        label="Choose one",
         name="sub_label_c_1_client_add",
     )
     scale_c_1_add = create_select_field_without_choices(
@@ -358,8 +361,9 @@ class PSAnnotationFormClient(FlaskForm):
     # Label D
     # -------
     name_d = "Emotional experiencing and regulation".strip().capitalize()
+    title_d = "(D) " + name_d
     label_d = create_select_field_without_choices(
-        label="(D)",
+        label="Choose one",
         name="label_d_client",
         data_required=True,
     )
@@ -387,7 +391,7 @@ class PSAnnotationFormClient(FlaskForm):
     # Label D - additional
     # --------------------
     label_d_add = create_select_field_without_choices(
-        label="(D)",
+        label="Choose one",
         name="label_d_client_add",
     )
     scale_d_1_add = create_select_field_without_choices(
@@ -411,6 +415,7 @@ class PSAnnotationFormClient(FlaskForm):
     # Label E
     # -------
     name_e = "Insight".strip().capitalize()
+    title_e = "(E) " + name_e
     scale_e_1 = create_select_field_without_choices(
         label="Recognition".strip().capitalize(),
         name="scale_e_1_client",
@@ -444,8 +449,9 @@ class PSAnnotationFormClient(FlaskForm):
     # Label F
     # -------
     name_f = "Moment of Change".strip().capitalize()
+    title_f = "(F) " + name_f
     label_f = create_select_field_without_choices(
-        label="(F)",
+        label="Choose one",
         name="label_f_client",
         data_required=True,
     )
