@@ -200,7 +200,7 @@ def update_select_choices():
     based on the choice of the first select field.
     """
     select_field_name = request.form.get("select_field_name")
-    selected_value = request.form.get("selected_value")
+    selected_value = int(request.form.get("selected_value"))
 
     if "client" in select_field_name:
         annotation_schema = ClientAnnotationSchema()
