@@ -37,3 +37,7 @@
 #client_label_e_add {
   display: none; /* Hide the additional label form groups initially */
 }
+.underline-text {
+  text-decoration: underline;
+  text-decoration-thickness: 3px;
+}
