@@ -619,19 +619,18 @@ def assign_dynamic_choices(
         annotation_schema = DyadAnnotationSchema()
     names = [attr for attr in dir(form) if attr.startswith("name_")]
     for name in names:
-        if name.startswith("name_"):
-            parent_label = getattr(form, name)
-            choices = annotation_schema.get_label_children(parent_label)
-            label_attr = (
-                "label_" + name.split("_")[1]
-            )  # i.e. label_a, label_b, label_c, etc.
-            label_attr_add = (
-                "label_" + name.split("_")[1] + "_add"
-            )  # i.e. label_a_add, label_b_add, label_c_add, etc.
-            if label_attr in form.__dict__.keys():
-                form[label_attr].choices = choices
-            if label_attr_add in form.__dict__.keys():
-                form[label_attr_add].choices = choices
+        parent_label = getattr(form, name)
+        choices = annotation_schema.get_label_children(parent_label)
+        letter = name.split("_")[1]  # i.e. a, b, c, etc.
+        label_attr = "label_" + letter  # i.e. label_a, label_b, label_c, etc.
+        label_attr_add = (
+            "label_" + letter + "_add"
+        )  # i.e. label_a_add, label_b_add, label_c_add, etc.
+        if label_attr in form.__dict__.keys():
+            form[label_attr].choices = choices
+        if label_attr_add in form.__dict__.keys():
+            form[label_attr_add].choices = choices
+
     return form
 
 
