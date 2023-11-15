@@ -640,6 +640,12 @@ class EvidenceDyad(db.Model):
 class AnnotationSchemaMixin:
     """Mixin class for annotation schema classes"""
 
+    def _find_label():
+        # TODO: the functions below use roughly the same code to find a label.
+        #  This code should be refactored into a single function.
+
+        pass
+
     def get_label_children(
         self,
         label: Union[int, str],
@@ -687,6 +693,63 @@ class AnnotationSchemaMixin:
             label = labels[0]
             children = label.children
         choices = [(label.id, label.label) for label in children]
+        return choices
+
+    def get_label_scales(
+        self,
+        label: Union[int, str],
+        scale_title: str,
+    ):
+        """
+        Given a parent label of the annotation schema (i.e. a label with no parent), find
+        its scales in the annotation schema scales so that they can be used as choices for the
+        annotation form select fields.
+
+        Parameters
+        ----------
+        label : int or str
+            The annotation label ID or name. It must be a parent label (i.e. a label with no parent).
+        scale_title : str
+            The scale title.
+
+        Returns
+        -------
+        choices : list
+            A list of of tuples containing the scale level IDs and names, to be used as choices
+            for the select fields in the annotation form
+        """
+
+        if isinstance(label, int):
+            label = self.query.get_or_404(label)
+            if label.parent:
+                print("Label is not a parent label")
+                abort(404)
+        elif isinstance(label, str):
+            label = label.strip().capitalize()
+            labels = self.query.filter_by(label=label).all()
+            if not labels:
+                print("Label does not exist")
+                abort(404)
+            else:
+                # filter the label list to only include labels with no parent
+                labels = [label for label in labels if not label.parent]
+                if not labels:
+                    print("Label is not a parent label")
+                    abort(404)
+                elif len(labels) > 1:
+                    warnings.warn(
+                        f"Multiple parent labels with the name '{label}' exist. "
+                        f"Using the first one with ID {labels[0].id}."
+                    )
+                label = labels[0]
+        scale_title = scale_title.strip().capitalize()
+        scales = label.scales.filter_by(scale_title=scale_title).all()
+        if not scales:
+            warnings.warn(
+                f"No scales with the title '{scale_title}' exist for the label '{label.label}'."
+            )
+            return []
+        choices = [(scale.id, scale.scale_level) for scale in scales]
         return choices
 
     def find_parent_label_depth(self, label: Union[int, str]) -> int:

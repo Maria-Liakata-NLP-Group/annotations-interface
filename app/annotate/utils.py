@@ -580,7 +580,7 @@ def assign_dynamic_choices(
 ) -> Union[PSAnnotationFormClient, PSAnnotationFormTherapist, PSAnnotationFormDyad]:
     """
     Assign the dynamic choices to the select fields or select multiple fields in the
-    annotation form. Specifically to the labels and evidence fields.
+    annotation form. Specifically to the labels, scales and evidence fields.
 
     Parameters
     ----------
@@ -595,7 +595,8 @@ def assign_dynamic_choices(
     -------
     form : PSAnnotationFormClient or PSAnnotationFormTherapist or PSAnnotationFormDyad
         The annotation form with the dynamic choices assigned to the select fields or select
-        multiple fields that start with "label_", "start_event_", "end_event_" or "evidence_"
+        multiple fields that start with "label_", "scale_", "start_event_", "end_event_" or
+        "evidence_".
     """
 
     # assign the dynamic choices to the select fields or select multiple fields
@@ -610,7 +611,8 @@ def assign_dynamic_choices(
             form[field_name].choices = choices
 
     # find all the form group names in the form (i.e. name_a, name_b, name_c, etc.)
-    # and assign the corresponding choices to their respective labels (i.e. label_a, label_b, label_c, etc.)
+    # assign the corresponding choices to their respective labels (i.e. label_a, label_b, label_c, etc.)
+    # and scales (i.e. scale_a, scale_b, scale_c, etc.)
     if speaker == Speaker.client:
         annotation_schema = ClientAnnotationSchema()
     elif speaker == Speaker.therapist:
@@ -618,6 +620,8 @@ def assign_dynamic_choices(
     elif speaker == Speaker.dyad:
         annotation_schema = DyadAnnotationSchema()
     names = [attr for attr in dir(form) if attr.startswith("name_")]
+    scales = [attr for attr in dir(form) if attr.startswith("scale_")]
+
     for name in names:
         parent_label = getattr(form, name)
         choices = annotation_schema.get_label_children(parent_label)
@@ -630,6 +634,11 @@ def assign_dynamic_choices(
             form[label_attr].choices = choices
         if label_attr_add in form.__dict__.keys():
             form[label_attr_add].choices = choices
+        for scale in scales:
+            if "scale_" + letter in scale:  # i.e. scale_a, scale_b, scale_c, etc.
+                scale_title = getattr(form, scale).label.text
+                choices = annotation_schema.get_label_scales(parent_label, scale_title)
+                form[scale].choices = choices
 
     return form
 
