@@ -640,11 +640,48 @@ class EvidenceDyad(db.Model):
 class AnnotationSchemaMixin:
     """Mixin class for annotation schema classes"""
 
-    def _find_label():
-        # TODO: the functions below use roughly the same code to find a label.
-        #  This code should be refactored into a single function.
+    def _find_label(self, label: Union[int, str], parent: str = None) -> object:
+        """
+        Given an annotation label, query the database to find the corresponding label object.
 
-        pass
+        Parameters
+        ----------
+        label : int or str
+            The annotation label ID or name
+        parent : str
+            The parent label name, used when a label name is passed as the "label" parameter
+
+        Returns
+        -------
+        label : object
+            The label object
+        """
+
+        if isinstance(label, int):
+            label = self.query.get_or_404(label)
+        elif isinstance(label, str):
+            label = label.strip().capitalize()
+            labels = self.query.filter_by(label=label).all()
+            if not labels:
+                print("Label does not exist")
+                abort(404)
+            elif parent:
+                parent = parent.strip().capitalize()
+                labels = [
+                    label
+                    for label in labels
+                    if label.parent and label.parent.label == parent
+                ]
+                if not labels:
+                    print("Label with given parent does not exist")
+                    abort(404)
+            if len(labels) > 1:
+                warnings.warn(
+                    f"Multiple labels with the name '{label}' exist. "
+                    f"Using the first one with ID {labels[0].id}."
+                )
+            label = labels[0]
+        return label
 
     def get_label_children(
         self,
@@ -668,30 +705,8 @@ class AnnotationSchemaMixin:
             A list of of tuples containing the child label IDs and names, to be used as choices
             for the select fields in the annotation form
         """
-        if isinstance(label, int):
-            label = self.query.get_or_404(label)
-            children = label.children
-        elif isinstance(label, str):
-            label = label.strip().capitalize()
-            labels = self.query.filter_by(label=label).all()
-            if not labels:
-                abort(404)  # if the label does not exist, abort with 404
-            elif parent:
-                parent = parent.strip().capitalize()
-                labels = [
-                    label
-                    for label in labels
-                    if label.parent and label.parent.label == parent
-                ]
-                if not labels:
-                    abort(404)
-            if len(labels) > 1:
-                warnings.warn(
-                    f"Multiple labels with the name '{label}' exist. "
-                    f"Using the first one with ID {labels[0].id}."
-                )
-            label = labels[0]
-            children = label.children
+        label = self._find_label(label, parent)
+        children = label.children
         choices = [(label.id, label.label) for label in children]
         return choices
 
@@ -719,29 +734,10 @@ class AnnotationSchemaMixin:
             for the select fields in the annotation form
         """
 
-        if isinstance(label, int):
-            label = self.query.get_or_404(label)
-            if label.parent:
-                print("Label is not a parent label")
-                abort(404)
-        elif isinstance(label, str):
-            label = label.strip().capitalize()
-            labels = self.query.filter_by(label=label).all()
-            if not labels:
-                print("Label does not exist")
-                abort(404)
-            else:
-                # filter the label list to only include labels with no parent
-                labels = [label for label in labels if not label.parent]
-                if not labels:
-                    print("Label is not a parent label")
-                    abort(404)
-                elif len(labels) > 1:
-                    warnings.warn(
-                        f"Multiple parent labels with the name '{label}' exist. "
-                        f"Using the first one with ID {labels[0].id}."
-                    )
-                label = labels[0]
+        label = self._find_label(label)
+        if label.parent:
+            print("Label is not a parent label")
+            abort(404)
         scale_title = scale_title.strip().capitalize()
         scales = label.scales.filter_by(scale_title=scale_title).all()
         if not scales:
@@ -768,26 +764,10 @@ class AnnotationSchemaMixin:
             The deepest level of the label in the annotation schema tree
         """
 
-        if isinstance(label, int):
-            label = self.query.get_or_404(label)
-            if label.parent:
-                abort(404)
-        elif isinstance(label, str):
-            label = label.strip().capitalize()
-            labels = self.query.filter_by(label=label).all()
-            if not labels:
-                abort(404)
-            else:
-                # filter the label list to only include labels with no parent
-                labels = [label for label in labels if not label.parent]
-                if not labels:
-                    abort(404)
-                elif len(labels) > 1:
-                    warnings.warn(
-                        f"Multiple parent labels with the name '{label}' exist. "
-                        f"Using the first one with ID {labels[0].id}."
-                    )
-                label = labels[0]
+        label = self._find_label(label)
+        if label.parent:
+            print("Label is not a parent label")
+            abort(404)
 
         def find_deepest_level(label):
             """Recursively find the depth of a label in the annotation schema tree."""
