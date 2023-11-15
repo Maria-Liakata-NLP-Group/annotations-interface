@@ -708,6 +708,8 @@ class AnnotationSchemaMixin:
         label = self._find_label(label, parent)
         children = label.children
         choices = [(label.id, label.label) for label in children]
+        # sort by label id
+        choices = sorted(choices, key=lambda x: x[0])
         return choices
 
     def get_label_scales(
@@ -746,6 +748,8 @@ class AnnotationSchemaMixin:
             )
             return []
         choices = [(scale.id, scale.scale_level) for scale in scales]
+        # sort by scale id
+        choices = sorted(choices, key=lambda x: x[0])
         return choices
 
     def find_parent_label_depth(self, label: Union[int, str]) -> int:
