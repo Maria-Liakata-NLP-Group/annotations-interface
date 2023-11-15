@@ -131,6 +131,16 @@ def test_find_annotation_parent_label_depth():
     assert client_annotation_schema.find_parent_label_depth("labelA3") == 1
 
 
+def test_get_annotation_label_scales():
+    """Test the get_label_scales() method of the AnnotationSchemaMixin class."""
+
+    client_annotation_schema = ClientAnnotationSchema()
+    # check "tests/data/annotation_schema/scales/client.json"
+    scales = client_annotation_schema.get_label_scales("labelA1", "scale1")
+    expected_scales = [(1, "One"), (2, "Two"), (3, "Three")]
+    assert scales == expected_scales
+
+
 # skip this test for now until the PSAnnotationForm class is refactored
 @pytest.mark.skip(reason="PSAnnotationForm class needs to be refactored")
 def test_ps_annotation_form():
