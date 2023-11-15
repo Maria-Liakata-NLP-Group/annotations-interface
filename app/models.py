@@ -663,7 +663,7 @@ class AnnotationSchemaMixin:
             label = label.strip().capitalize()
             labels = self.query.filter_by(label=label).all()
             if not labels:
-                print("Label does not exist")
+                print(f"Label '{label}' does not exist")
                 abort(404)
             elif parent:
                 parent = parent.strip().capitalize()
@@ -673,7 +673,7 @@ class AnnotationSchemaMixin:
                     if label.parent and label.parent.label == parent
                 ]
                 if not labels:
-                    print("Label with given parent does not exist")
+                    print(f"Label '{label}' with given parent does not exist")
                     abort(404)
             if len(labels) > 1:
                 warnings.warn(
