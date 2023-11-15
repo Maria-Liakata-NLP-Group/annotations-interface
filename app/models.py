@@ -752,6 +752,19 @@ class AnnotationSchemaMixin:
         choices = sorted(choices, key=lambda x: x[0])
         return choices
 
+    def find_parent_labels(self) -> list:
+        """
+        Find all parent labels of the annotation schema (i.e. labels with no parent).
+
+        Returns
+        -------
+        parent_labels : list
+            A list of parent label objects
+        """
+
+        parent_labels = self.query.filter_by(parent_id=None).all()
+        return parent_labels
+
     def find_parent_label_depth(self, label: Union[int, str]) -> int:
         """
         Given a parent label of the annotation schema (i.e. a label with no parent), find
