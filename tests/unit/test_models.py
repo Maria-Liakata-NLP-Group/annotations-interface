@@ -407,51 +407,24 @@ def test_annotation_schema_manager(db_session):
     manager = AnnotationSchemaManager()
     manager.add_labels_client()
 
-    # verify that there are 17 labels in total
+    # verify that the labels are correctly added to the database
     labels = ClientAnnotationSchema.query.all()
-    assert len(labels) == 17
-    # verify that there are only 3 labels with no parent
-    assert len([label for label in labels if label.parent is None]) == 3
+    assert len(labels) > 100 and len(labels) < 200
 
-    # verify that "labelA1" has 2 children
-    label_a1 = ClientAnnotationSchema.query.filter_by(
-        label="labelA1".capitalize()
-    ).first()
-    assert len(label_a1.children.all()) == 2
+    # verify that there are only 6 labels with no parent
+    assert len([label for label in labels if label.parent is None]) == 6
 
-    # verify that "labelB2" has no children
-    label_b2 = ClientAnnotationSchema.query.filter_by(
-        label="labelB2".capitalize()
-    ).first()
-    assert len(label_b2.children.all()) == 0
+    # verify that "Wish" has 10 child labels
+    label = ClientAnnotationSchema.query.filter_by(label="Wish").first()
+    assert len(label.children.all()) == 10
 
-    # verify that the parent of "labelC4" is "labelB3"
-    label_c4 = ClientAnnotationSchema.query.filter_by(
-        label="labelC4".capitalize()
-    ).first()
-    assert label_c4.parent.label == "labelB3".capitalize()
+    # verify that "Insight" has no child labels
+    label = ClientAnnotationSchema.query.filter_by(label="Insight").first()
+    assert len(label.children.all()) == 0
 
-    # verify that "labelC5" has two children, that its parent is
-    # "labelB5" and that a child of "labelA2" is "labelB5"
-    label_c5 = ClientAnnotationSchema.query.filter_by(
-        label="labelC5".capitalize()
-    ).first()
-    assert len(label_c5.children.all()) == 2
-    assert label_c5.parent.label == "labelB5".capitalize()
-    label_b5 = ClientAnnotationSchema.query.filter_by(
-        label="labelB5".capitalize()
-    ).first()
-    label_a2 = ClientAnnotationSchema.query.filter_by(
-        label="labelA2".capitalize()
-    ).first()
-    assert label_b5 in label_a2.children.all()
-
-    # verify that "labelA3" has two children and no parent
-    label_a3 = ClientAnnotationSchema.query.filter_by(
-        label="labelA3".capitalize()
-    ).first()
-    assert len(label_a3.children.all()) == 2
-    assert label_a3.parent is None
+    # verify that the parent of "To compromise" is "To avoid conflict"
+    label = ClientAnnotationSchema.query.filter_by(label="To compromise").first()
+    assert label.parent.label == "To avoid conflict"
 
     # remove the labels from the database
     manager.remove_labels_client()
@@ -471,34 +444,23 @@ def test_annotation_schema_scale_manager(db_session):
     with pytest.warns(UserWarning, match="non-existent-label".strip().capitalize()):
         scales_manager.add_scales_client()
 
-    # verify that the unique scale titles are "scale1" and "scale2"
+    # verify that the scales are correctly added to the database
     scales = ClientAnnotationSchemaScale.query.all()
-    scale_titles = [scale.scale_title for scale in scales]
-    assert set(scale_titles) == {"scale1".capitalize(), "scale2".capitalize()}
+    assert len(scales) > 20 and len(scales) < 100
 
     # verify that the scales are correctly linked to the labels
-    # "labelA1" has two scale titles: "scale1" and "scale2"
-    label_a1 = ClientAnnotationSchema.query.filter_by(
-        label="labelA1".capitalize()
-    ).first()
-    scale_titles = [scale.scale_title for scale in label_a1.scales.all()]
-    assert scale_titles.sort() == ["scale1".capitalize(), "scale2".capitalize()].sort()
-    # "labelA2" has also got two scale titles: "scale1" and "scale2"
-    label_a2 = ClientAnnotationSchema.query.filter_by(
-        label="labelA2".capitalize()
-    ).first()
-    scale_titles = [scale.scale_title for scale in label_a2.scales.all()]
-    assert scale_titles.sort() == ["scale1".capitalize(), "scale2".capitalize()].sort()
+    # "Wish" has two scale titles: "Level" and "Adaptivity"
+    wish = ClientAnnotationSchema.query.filter_by(label="Wish").first()
+    scale_titles = [scale.scale_title for scale in wish.scales.all()]
+    scale_titles = list(set(scale_titles))
+    scale_titles.sort()
+    assert scale_titles == ["Adaptivity", "Level"]
 
-    # verify that "scale1" of "labelA1" has three levels: "one", "two" and "three"
-    scale1_label_a1 = ClientAnnotationSchemaScale.query.filter_by(
-        scale_title="scale1".capitalize(), label=label_a1
+    # verify that scale title "Level" of "Wish" has 5 scale levels
+    scales = ClientAnnotationSchemaScale.query.filter_by(
+        scale_title="Level", label=wish
     ).all()
-    levels = [scale.scale_level for scale in scale1_label_a1]
-    assert (
-        levels.sort()
-        == ["one".capitalize(), "two".capitalize(), "three".capitalize()].sort()
-    )
+    assert len(scales) == 5
 
     # remove scales and labels from the database
     scales_manager.remove_scales_client()
