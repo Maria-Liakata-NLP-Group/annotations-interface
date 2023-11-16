@@ -1,14 +1,152 @@
 {
-  "labelA1": {
-    "labelB1": ["labelC1", "labelC2"],
-    "labelB2": []
+  "Wish": {
+    "To be liked, understood, supported and close": [
+      "To be liked",
+      "To be understood",
+      "To be cared for",
+      "To be helped",
+      "Not to be responsible",
+      "To be close",
+      "To be open",
+      "To be opened up to",
+      "To be like others"
+    ],
+    "To be distant and to oppose others": [
+      "To be distant",
+      "To be independent",
+      "To manage by myself",
+      "To oppose others",
+      "To be dominant or to control others"
+    ],
+    "To avoid conflict": [
+      "To avoid conflict",
+      "To compromise",
+      "To be flexible"
+    ],
+    "To be hurt": ["To be hurt by others", "To hurt myself", "To be punished"],
+    "To accept others": [
+      "To accept others",
+      "To respect others",
+      "To understand others"
+    ],
+    "To have security": [
+      "To have security",
+      "To have stability",
+      "Not to be hurt",
+      "To trust others"
+    ],
+    "To be accepted": ["To be accepted", "To be appreciated/respected"],
+    "To better myself and to be my own self": [
+      "To better myself",
+      "To achieve",
+      "To be good",
+      "To help others",
+      "To be my own self",
+      "To know what is right for me",
+      "To have self-esteem",
+      "To be unique",
+      "To be happy",
+      "To be excited",
+      "To have interest",
+      "To feel sexual"
+    ],
+    "No wish is expressed": [],
+    "Other": []
   },
-  "labelA2": {
-    "labelB3": ["labelC3", "labelC4"],
-    "labelB4": [],
-    "labelB5": {
-      "labelC5": ["labelD1", "labelD2"]
-    }
+  "Response of Other": {
+    "Other like, understanding, supporting and close": [
+      "Like/love me",
+      "Are understanding",
+      "Are helpful",
+      "Are open",
+      "Are close/warm"
+    ],
+    "Other dislike, not understanding, unhelpful and distant": [
+      "Dislike me",
+      "Are not understanding",
+      "Are unhelpful",
+      "Are distant/cold"
+    ],
+    "Are dependent and controlling": [
+      "Dependent on me",
+      "Are controlling",
+      "Strict",
+      "Oppose me"
+    ],
+    "Accepts me": ["Accepts me", "Respect me", "Gives me independence"],
+    "Rejecting": ["Don't accept me", "Don't respect me", "Don't trust me"],
+    "Other has bad qualities": [
+      "Bad",
+      "Not trustworthy",
+      "Limited",
+      "Upset/anxious/angry",
+      "Hurt",
+      "Devaluation"
+    ],
+    "Other has good qualities": [
+      "Good",
+      "Trustful",
+      "Strong/smart/interesting",
+      "Happy/funny",
+      "Idealization"
+    ],
+    "No response of other is expressed": [],
+    "Other": []
   },
-  "labelA3": ["labelB6", "labelB7"]
+  "Response of Self": {
+    "Feel close, liked and accepted": [
+      "Feel liked/loved/comfortable/understood",
+      "Like the other, feel open, close to the other",
+      "Helped by the other",
+      "Feel accepted/respected"
+    ],
+    "Feel distant and rejected": [
+      "Feel unloved, not understood",
+      "Indifferent",
+      "Disappointed",
+      "Feel rejected",
+      "Hurt"
+    ],
+    "Accept the other": [
+      "Accept/understand the other/compassionate towards the other",
+      "Helping the other"
+    ],
+    "Flight, over-compliance": [
+      "Avoidance/escape",
+      "Helpless, give up, hopeless",
+      "Depressed",
+      "Anxious, guilty, ashamed",
+      "Self criticism/self hate"
+    ],
+    "Fight and over compensatory": [
+      "Blames, demanding",
+      "Aggressive, hurt other",
+      "Oppose others",
+      "Over compensatory",
+      "Perfectionistic"
+    ],
+    "Feel agency, self-acceptance and esteem": [
+      "Self-acceptance/compassion",
+      "Experience agency/self-controlled",
+      "Self-confident/esteem"
+    ],
+    "No response of self is expressed": [],
+    "Other": []
+  },
+  "Emotional experiencing and regulation": [
+    "Calm/laid back",
+    "Angry",
+    "Sad/depressed",
+    "Content/happy/joy",
+    "Anxious/tense",
+    "Vigorous/energetic",
+    "Ashamed",
+    "Guilty",
+    "Surprised",
+    "Disgusted",
+    "Self-compassionate",
+    "Other"
+  ],
+  "Insight": [],
+  "Moment of Change": ["Switch", "Escalation", "No change"]
 }
