@@ -712,6 +712,29 @@ class AnnotationSchemaMixin:
         choices = sorted(choices, key=lambda x: x[0])
         return choices
 
+    def get_label_scale_titles(
+        self, label: Union[int, str], parent: str = None
+    ) -> list:
+        """
+        Given an annotation label, query the database to find its scale titles.
+
+        Parameters
+        ----------
+        label : int or str
+            The annotation label ID or name
+        parent : str
+            The parent label name, used when a label name is passed as the "label" parameter
+
+        Returns
+        -------
+        scale_titles : list
+            A list of scale titles
+        """
+        label = self._find_label(label, parent)
+        scale_titles = [scale.scale_title for scale in label.scales]
+        scale_titles = sorted(list(set(scale_titles)))  # remove duplicates
+        return scale_titles
+
     def get_label_scales(
         self,
         label: Union[int, str],
