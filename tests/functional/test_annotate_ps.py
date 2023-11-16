@@ -19,7 +19,9 @@ from app.utils import SubLabelsAClient
     scope="session",
 )
 @pytest.mark.dependency()
-def test_valid_login(test_client, insert_ps_dialog_turns):
+def test_valid_login(
+    test_client, insert_ps_dialog_turns, new_ps_annotation_schema_client
+):
     """
     GIVEN a Flask application configured for testing and a dataset with psychotherapy dialog turns
     WHEN the '/annotate_psychotherapy' page is requested (GET) after logging in
