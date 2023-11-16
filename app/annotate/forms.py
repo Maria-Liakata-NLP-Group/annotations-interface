@@ -32,6 +32,8 @@ from app.utils import (
 class DynamicForm(FlaskForm):
     def __init__(self):
         self.groups = []
+        self.comment_summary = None
+        self.submit = SubmitField("Submit")
 
     def add_group(self, group):
         self.groups.append(group)
