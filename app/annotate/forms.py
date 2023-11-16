@@ -38,6 +38,42 @@ class DynamicForm(FlaskForm):
 
     def add_group(self, group):
         self.groups.append(group)
+        letter = group["letter"]
+        # first sort out the main fields
+        main = group["main"]
+        keys = list(main.keys())
+        if "label" in keys:
+            setattr(self, f"label_{letter}", main["label"])
+        if "sub_label" in keys:
+            setattr(self, f"sub_label_{letter}", main["sub_label"])
+        if "scales" in keys:
+            for i, scale in enumerate(main["scales"]):
+                setattr(self, f"scale_{letter}_{i}", scale)
+        if "evidence" in keys:
+            setattr(self, f"evidence_{letter}", main["evidence"])
+        elif "start_event" and "end_event" in keys:
+            setattr(self, f"start_event_{letter}", main["start_event"])
+            setattr(self, f"end_event_{letter}", main["end_event"])
+        if "comment" in keys:
+            setattr(self, f"comment_{letter}", main["comment"])
+
+        # then sort out the additional fields
+        additional = group["add"]
+        keys = list(additional.keys())
+        if "label" in keys:
+            setattr(self, f"label_{letter}_add", additional["label"])
+        if "sub_label" in keys:
+            setattr(self, f"sub_label_{letter}_add", additional["sub_label"])
+        if "scales" in keys:
+            for i, scale in enumerate(additional["scales"]):
+                setattr(self, f"scale_{letter}_{i}_add", scale)
+        if "evidence" in keys:
+            setattr(self, f"evidence_{letter}_add", additional["evidence"])
+        elif "start_event" and "end_event" in keys:
+            setattr(self, f"start_event_{letter}_add", additional["start_event"])
+            setattr(self, f"end_event_{letter}_add", additional["end_event"])
+        if "comment" in keys:
+            setattr(self, f"comment_{letter}_add", additional["comment"])
 
 
 class PSAnnotationFormClient(FlaskForm):

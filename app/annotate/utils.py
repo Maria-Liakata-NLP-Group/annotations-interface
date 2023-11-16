@@ -502,7 +502,7 @@ def create_psy_annotation_form(
             )
         else:
             # if there are no annotations, create an empty form
-            form = PSAnnotationFormClient()
+            form = create_dynamic_form(speaker)
     elif speaker == Speaker.therapist:
         if annotations:
             # if there are annotations, fill the form with the values
@@ -806,8 +806,9 @@ def create_dynamic_form(speaker, label_name_exception="Moment of Change"):
         group = {}
         letter = alphabet[i]
         label_name = parent_label.label
+        group["letter"] = letter
         group["name"] = label_name
-        group["title"] = "(" + letter.upper() + ") " + parent_label.label
+        group["title"] = "(" + letter.upper() + ") " + label_name
 
         keys = ["main", "add"]
 

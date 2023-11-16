@@ -68,7 +68,7 @@ class AnnotatePSView(View):
         """Create the annotations form for the specified speaker"""
         annotations = fetch_dialog_turn_annotations(dialog_turns, speaker)
         form = create_psy_annotation_form(annotations, speaker)
-        form = assign_dynamic_choices(form, page_items, speaker)
+        # form = assign_dynamic_choices(form, page_items, speaker)
         return form, annotations
 
     def dispatch_request(self, dataset_id: int):
