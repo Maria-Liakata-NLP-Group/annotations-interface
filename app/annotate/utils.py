@@ -31,7 +31,10 @@ from app.annotate.forms import (
     PSAnnotationFormDyad,
     DynamicForm,
 )
-from app.annotate.forms_utils import create_select_field_without_choices
+from app.annotate.forms_utils import (
+    create_select_field_without_choices,
+    create_select_multiple_field_without_choices,
+)
 
 
 def split_dialog_turns(dialog_turns: list, time_interval: int = 300) -> list:
@@ -790,15 +793,12 @@ def create_dynamic_form(speaker):
 
     if speaker == Speaker.client:
         annotation_schema = ClientAnnotationSchema()
-        scale_schema = ClientAnnotationSchemaScale()
         who = "client"
     elif speaker == Speaker.therapist:
         annotation_schema = TherapistAnnotationSchema()
-        scale_schema = TherapistAnnotationSchemaScale()
         who = "therapist"
     elif speaker == Speaker.dyad:
         annotation_schema = DyadAnnotationSchema()
-        scale_schema = DyadAnnotationSchemaScale()
         who = "dyad"
 
     # for each parent label we create a dictionary
@@ -822,5 +822,33 @@ def create_dynamic_form(speaker):
                 name="sub_label_" + letter + "_" + who,
                 data_required=True,
             )
+
+        scale_titles = annotation_schema.get_label_scale_titles(parent_label)
+        scales = []
+        for j, scale_title in enumerate(scale_titles):
+            scale = create_select_field_without_choices(
+                label=scale_title,
+                name="scale_" + letter + "_" + str(j) + "_" + who,
+                data_required=True,
+            )
+            scales.append(scale)
+        group["scales"] = scales
+
+        if group["name"] != "Moment of Change".strip().capitalize():
+            group["evidence"] = create_select_multiple_field_without_choices(
+                label="Evidence",
+                name="evidence_" + letter + "_" + who,
+                data_required=True,
+            )
+        else:
+            group["start_event"] = create_select_field_without_choices(
+                label="Start event",
+                name="start_event_" + letter + "_" + who,
+            )
+            group["end_event"] = create_select_field_without_choices(
+                label="End event",
+                name="end_event_" + letter + "_" + who,
+            )
+
         form.add_group(group)
     return form
