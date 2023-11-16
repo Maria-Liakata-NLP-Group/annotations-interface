@@ -20,9 +20,6 @@ from app.models import (
     ClientAnnotationSchema,
     TherapistAnnotationSchema,
     DyadAnnotationSchema,
-    ClientAnnotationSchemaScale,
-    TherapistAnnotationSchemaScale,
-    DyadAnnotationSchemaScale,
 )
 from app import db
 from app.annotate.forms import (
@@ -34,6 +31,7 @@ from app.annotate.forms import (
 from app.annotate.forms_utils import (
     create_select_field_without_choices,
     create_select_multiple_field_without_choices,
+    create_text_area_field,
 )
 
 
@@ -788,7 +786,7 @@ def fetch_evidence_dyad(annotation: PSAnnotationDyad):
     )
 
 
-def create_dynamic_form(speaker):
+def create_dynamic_form(speaker, label_name_exception="Moment of Change"):
     form = DynamicForm()
 
     if speaker == Speaker.client:
@@ -807,48 +805,77 @@ def create_dynamic_form(speaker):
     for i, parent_label in enumerate(parent_labels):
         group = {}
         letter = alphabet[i]
-        group["name"] = parent_label.label
+        label_name = parent_label.label
+        group["name"] = label_name
         group["title"] = "(" + letter.upper() + ") " + parent_label.label
 
-        if annotation_schema.find_parent_label_depth(parent_label) >= 1:
-            group["label"] = create_select_field_without_choices(
-                label="Choose one",
-                name="label_" + letter + "_" + who,
-                data_required=True,
-            )
-        if annotation_schema.find_parent_label_depth(parent_label) == 2:
-            group["sub_label"] = create_select_field_without_choices(
-                label="Choose one",
-                name="sub_label_" + letter + "_" + who,
-                data_required=True,
-            )
+        keys = ["main", "add"]
 
-        scale_titles = annotation_schema.get_label_scale_titles(parent_label)
-        scales = []
-        for j, scale_title in enumerate(scale_titles):
-            scale = create_select_field_without_choices(
-                label=scale_title,
-                name="scale_" + letter + "_" + str(j) + "_" + who,
-                data_required=True,
-            )
-            scales.append(scale)
-        group["scales"] = scales
+        for key in keys:
+            if key == "main":
+                data_required = True
+                suffix = who
+            else:
+                data_required = False
+                suffix = who + "_add"
 
-        if group["name"] != "Moment of Change".strip().capitalize():
-            group["evidence"] = create_select_multiple_field_without_choices(
-                label="Evidence",
-                name="evidence_" + letter + "_" + who,
-                data_required=True,
-            )
-        else:
-            group["start_event"] = create_select_field_without_choices(
-                label="Start event",
-                name="start_event_" + letter + "_" + who,
-            )
-            group["end_event"] = create_select_field_without_choices(
-                label="End event",
-                name="end_event_" + letter + "_" + who,
-            )
+            group[key] = {}
 
+            # create the label select field
+            if annotation_schema.find_parent_label_depth(parent_label) >= 1:
+                group[key]["label"] = create_select_field_without_choices(
+                    label="Choose one",
+                    name="label_" + letter + "_" + suffix,
+                    data_required=data_required,
+                )
+            # create the sub-label select field
+            if annotation_schema.find_parent_label_depth(parent_label) == 2:
+                group[key]["sub_label"] = create_select_field_without_choices(
+                    label="Choose one",
+                    name="sub_label_" + letter + "_" + suffix,
+                    data_required=data_required,
+                )
+            # create the scale select field(s)
+            scale_titles = annotation_schema.get_label_scale_titles(parent_label)
+            scales = []
+            for j, scale_title in enumerate(scale_titles):
+                scale = create_select_field_without_choices(
+                    label=scale_title,
+                    name="scale_" + letter + "_" + str(j) + "_" + suffix,
+                    data_required=data_required,
+                )
+                scales.append(scale)
+            group[key]["scales"] = scales
+            # create the evidence select field(s)
+            if label_name != label_name_exception.strip().capitalize():
+                group["evidence"] = create_select_multiple_field_without_choices(
+                    label="Evidence",
+                    name="evidence_" + letter + "_" + suffix,
+                    data_required=True,
+                )
+            else:
+                group["start_event"] = create_select_field_without_choices(
+                    label="Start event",
+                    name="start_event_" + letter + "_" + suffix,
+                )
+                group["end_event"] = create_select_field_without_choices(
+                    label="End event",
+                    name="end_event_" + letter + "_" + suffix,
+                )
+            # create the comment text area
+            group[key]["comment"] = create_text_area_field(
+                label="Comment",
+                name="comment_" + letter + "_" + suffix,
+            )
         form.add_group(group)
+
+        # create the summary comment text area
+        form.comment_summary = create_text_area_field(
+            label="Summary comment",
+            name="comment_summary_" + who,
+            max_length=500,
+            rows=3,
+            cols=15,
+        )
+
     return form
