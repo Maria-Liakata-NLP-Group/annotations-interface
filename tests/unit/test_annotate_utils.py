@@ -98,9 +98,9 @@ def test_get_annotation_label_children(new_ps_annotation_schema_client):
     """Test the get_label_children() method of the AnnotationSchemaMixin class."""
 
     # check "tests/data/annotation_schema/client.json"
-    label = "labelB1"
-    parent_label = "labelA1"
-    child_label_names = ["labelC1", "labelC2"]
+    label = "To avoid conflict"
+    parent_label = "Wish"
+    child_label_names = ["To avoid conflict", "To compromise", "To be flexible"]
     client_annotation_schema = ClientAnnotationSchema()
     child_labels = client_annotation_schema.get_label_children(label, parent_label)
     # extract the names of the child labels (list of tuples where name is second element)
@@ -126,9 +126,9 @@ def test_find_annotation_parent_label_depth():
 
     client_annotation_schema = ClientAnnotationSchema()
     # check "tests/data/annotation_schema/client.json"
-    assert client_annotation_schema.find_parent_label_depth("labelA1") == 2
-    assert client_annotation_schema.find_parent_label_depth("labelA2") == 3
-    assert client_annotation_schema.find_parent_label_depth("labelA3") == 1
+    assert client_annotation_schema.find_parent_label_depth("Wish") == 2
+    assert client_annotation_schema.find_parent_label_depth("Insight") == 0
+    assert client_annotation_schema.find_parent_label_depth("Moment of change") == 1
 
 
 def test_get_annotation_label_scales():
@@ -136,8 +136,14 @@ def test_get_annotation_label_scales():
 
     client_annotation_schema = ClientAnnotationSchema()
     # check "tests/data/annotation_schema/scales/client.json"
-    scales = client_annotation_schema.get_label_scales("labelA1", "scale1")
-    expected_scales = [(1, "One"), (2, "Two"), (3, "Three")]
+    scales = client_annotation_schema.get_label_scales("Wish", "Level")
+    expected_scales = [
+        (1, "1. Not present".strip().capitalize()),
+        (2, "2. Somewhat present".strip().capitalize()),
+        (3, "3. Moderately present".strip().capitalize()),
+        (4, "4. Very present".strip().capitalize()),
+        (5, "5. Highly present".strip().capitalize()),
+    ]
     assert scales == expected_scales
 
 
