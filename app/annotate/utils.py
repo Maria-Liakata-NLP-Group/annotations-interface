@@ -1,6 +1,7 @@
 """
 Miscellaneous utility functions for the annotate blueprint
 """
+import string
 from typing import Union
 from datetime import datetime
 import itertools
@@ -19,13 +20,18 @@ from app.models import (
     ClientAnnotationSchema,
     TherapistAnnotationSchema,
     DyadAnnotationSchema,
+    ClientAnnotationSchemaScale,
+    TherapistAnnotationSchemaScale,
+    DyadAnnotationSchemaScale,
 )
 from app import db
 from app.annotate.forms import (
     PSAnnotationFormClient,
     PSAnnotationFormTherapist,
     PSAnnotationFormDyad,
+    DynamicForm,
 )
+from app.annotate.forms_utils import create_select_field_without_choices
 
 
 def split_dialog_turns(dialog_turns: list, time_interval: int = 300) -> list:
@@ -777,3 +783,44 @@ def fetch_evidence_dyad(annotation: PSAnnotationDyad):
         events[LabelNamesDyad.label_a],
         events[LabelNamesDyad.label_b],
     )
+
+
+def create_dynamic_form(speaker):
+    form = DynamicForm()
+
+    if speaker == Speaker.client:
+        annotation_schema = ClientAnnotationSchema()
+        scale_schema = ClientAnnotationSchemaScale()
+        who = "client"
+    elif speaker == Speaker.therapist:
+        annotation_schema = TherapistAnnotationSchema()
+        scale_schema = TherapistAnnotationSchemaScale()
+        who = "therapist"
+    elif speaker == Speaker.dyad:
+        annotation_schema = DyadAnnotationSchema()
+        scale_schema = DyadAnnotationSchemaScale()
+        who = "dyad"
+
+    # for each parent label we create a dictionary
+    parent_labels = annotation_schema.find_parent_labels()
+    alphabet = string.ascii_lowercase
+    for i, parent_label in enumerate(parent_labels):
+        group = {}
+        letter = alphabet[i]
+        group["name"] = parent_label.label
+        group["title"] = "(" + letter.upper() + ") " + parent_label.label
+
+        if annotation_schema.find_parent_label_depth(parent_label) >= 1:
+            group["label"] = create_select_field_without_choices(
+                label="Choose one",
+                name="label_" + letter + "_" + who,
+                data_required=True,
+            )
+        if annotation_schema.find_parent_label_depth(parent_label) == 2:
+            group["sub_label"] = create_select_field_without_choices(
+                label="Choose one",
+                name="sub_label_" + letter + "_" + who,
+                data_required=True,
+            )
+        form.add_group(group)
+    return form
