@@ -11,40 +11,44 @@ from wtforms.validators import (
 
 
 class RequiredIf(InputRequired):
-    """Validator which makes a form field required if another field is set to a certain value."""
+    """Validator which makes a form field required if another field is set to a certain value or values."""
 
     field_flags = ("requiredif",)
 
-    def __init__(self, other_field_name, value, message=None, *args, **kwargs):
+    def __init__(
+        self, other_field_name: str, values: list, message: str = None, *args, **kwargs
+    ):
         self.other_field_name = other_field_name
-        self.value = value
+        self.values = list(map(str.lower, values))
         self.message = message
 
     def __call__(self, form, field):
         other_field = form[self.other_field_name]
         if other_field is None:
             raise Exception('no field named "%s" in form' % self.other_field_name)
-        if (other_field.data).lower() == self.value.lower():
+        if (other_field.data).lower() in self.values:
             super(RequiredIf, self).__call__(form, field)
         else:
             Optional().__call__(form, field)
 
 
 class RequiredIfNot(InputRequired):
-    """Validator which makes a form field required if another field is not set to a certain value."""
+    """Validator which makes a form field required if another field is not set to a certain value or values."""
 
     field_flags = ("requiredifnot",)
 
-    def __init__(self, other_field_name, value, message=None, *args, **kwargs):
+    def __init__(
+        self, other_field_name: str, values: list, message: str = None, *args, **kwargs
+    ):
         self.other_field_name = other_field_name
-        self.value = value
+        self.values = list(map(str.lower, values))
         self.message = message
 
     def __call__(self, form, field):
         other_field = form[self.other_field_name]
         if other_field is None:
             raise Exception('no field named "%s" in form' % self.other_field_name)
-        if (other_field.data).lower() != self.value.lower():
+        if (other_field.data).lower() not in self.values:
             super(RequiredIfNot, self).__call__(form, field)
         else:
             Optional().__call__(form, field)
@@ -79,7 +83,7 @@ def create_select_field_without_choices(
     if data_required:
         validators = [DataRequired()]
     elif required_if_not:
-        value = "Other"
+        value = ["Other"]
         message = "Please select an option."
         validators = [RequiredIfNot(required_if_not, value, message)]
     else:
@@ -124,8 +128,8 @@ def create_text_area_field(
     """
 
     if required_if:
-        value = "Other"  # value of the field that requires the text area field
-        message = f"If you select {value}, please provide a comment."
+        value = ["Other"]  # value of the field that requires the text area field
+        message = f"If you select {value[0]}, please provide a comment."
         validators = [RequiredIf(required_if, value, message), Length(max=max_length)]
     else:
         validators = [Length(max=max_length)]
