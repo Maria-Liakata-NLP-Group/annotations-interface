@@ -181,7 +181,6 @@ class PSAnnotationFormClient(FlaskForm):
     sub_label_a_1 = create_select_field_without_choices(
         label="Choose one",
         name="sub_label_a_1_client",
-        required_if_not="label_a",
     )
     scale_a_1 = create_select_field_without_choices(
         label="Level".strip().capitalize(),
@@ -201,7 +200,6 @@ class PSAnnotationFormClient(FlaskForm):
     comment_a = create_text_area_field(
         label="Comment",
         name="comment_a_client",
-        required_if="label_a",
     )
 
     # Label A - additional
@@ -229,7 +227,6 @@ class PSAnnotationFormClient(FlaskForm):
     comment_a_add = create_text_area_field(
         label="Comment",
         name="comment_a_client_add",
-        required_if="label_a_add",
     )
 
     # Label B
@@ -244,7 +241,6 @@ class PSAnnotationFormClient(FlaskForm):
     sub_label_b_1 = create_select_field_without_choices(
         label="Choose one",
         name="sub_label_b_1_client",
-        required_if_not="label_b",
     )
     scale_b_1 = create_select_field_without_choices(
         label="Level".strip().capitalize(),
@@ -264,7 +260,6 @@ class PSAnnotationFormClient(FlaskForm):
     comment_b = create_text_area_field(
         label="Comment",
         name="comment_b_client",
-        required_if="label_b",
     )
 
     # Label B - additional
@@ -292,7 +287,6 @@ class PSAnnotationFormClient(FlaskForm):
     comment_b_add = create_text_area_field(
         label="Comment",
         name="comment_b_client_add",
-        required_if="label_b_add",
     )
 
     # Label C
@@ -307,7 +301,6 @@ class PSAnnotationFormClient(FlaskForm):
     sub_label_c_1 = create_select_field_without_choices(
         label="Choose one",
         name="sub_label_c_1_client",
-        required_if_not="label_c",
     )
     scale_c_1 = create_select_field_without_choices(
         label="Level".strip().capitalize(),
@@ -327,7 +320,6 @@ class PSAnnotationFormClient(FlaskForm):
     comment_c = create_text_area_field(
         label="Comment",
         name="comment_c_client",
-        required_if="label_c",
     )
 
     # Label C - additional
@@ -355,7 +347,6 @@ class PSAnnotationFormClient(FlaskForm):
     comment_c_add = create_text_area_field(
         label="Comment",
         name="comment_c_client_add",
-        required_if="label_c_add",
     )
 
     # Label D
@@ -385,7 +376,6 @@ class PSAnnotationFormClient(FlaskForm):
     comment_d = create_text_area_field(
         label="Comment",
         name="comment_d_client",
-        required_if="label_d",
     )
 
     # Label D - additional
@@ -409,7 +399,6 @@ class PSAnnotationFormClient(FlaskForm):
     comment_d_add = create_text_area_field(
         label="Comment",
         name="comment_d_client_add",
-        required_if="label_d_add",
     )
 
     # Label E
