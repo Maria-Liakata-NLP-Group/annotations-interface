@@ -125,4 +125,8 @@ app_content %} {% block head%} {{ super() }}
   type="text/javascript"
   src="{{ url_for('static', filename='dynamic_select_field_choices.js') }}"
 ></script>
+<script
+  type="text/javascript"
+  src="{{ url_for('static', filename='make_comment_field_compulsory.js') }}"
+></script>
 {% endblock %}
