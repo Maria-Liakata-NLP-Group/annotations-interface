@@ -62,28 +62,35 @@ def create_select_field(label, choices, name, default=None):
     )
 
 
-def create_select_field_without_choices(label, name, data_required=False):
+def create_select_field_without_choices(
+    label,
+    name,
+    data_required=False,
+    required_if_not=None,
+):
     """
     Create a select field with the given label and name, but without choices.
     This is used for select fields with dynamic choice values.
-    Set 'data_required' to True if the field is required.
+    Set 'data_required' to True if the field is always required.
+    Alternatively, set 'required_if_not' to the name of the first field that requires
+    this second field if the first field is not set to "Other".
     """
 
     if data_required:
-        return SelectField(
-            label=label,
-            validators=[DataRequired()],
-            name=name,
-            coerce=int,
-            default=None,
-        )
+        validators = [DataRequired()]
+    elif required_if_not:
+        value = "Other"
+        message = "Please select an option."
+        validators = [RequiredIfNot(required_if_not, value, message)]
     else:
-        return SelectField(
-            label=label,
-            name=name,
-            coerce=int,
-            default=None,
-        )
+        validators = []
+    return SelectField(
+        label=label,
+        validators=validators,
+        name=name,
+        coerce=int,
+        default=None,
+    )
 
 
 def create_select_multiple_field_without_choices(label, name, data_required=False):

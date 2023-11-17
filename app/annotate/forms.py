@@ -181,7 +181,7 @@ class PSAnnotationFormClient(FlaskForm):
     sub_label_a_1 = create_select_field_without_choices(
         label="Choose one",
         name="sub_label_a_1_client",
-        data_required=True,
+        required_if_not="label_a",
     )
     scale_a_1 = create_select_field_without_choices(
         label="Level".strip().capitalize(),
