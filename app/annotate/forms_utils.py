@@ -63,11 +63,11 @@ def create_select_field(label, choices, name, default=None):
 
 
 def create_select_field_without_choices(
-    label,
-    name,
-    data_required=False,
-    required_if_not=None,
-):
+    label: str,
+    name: str,
+    data_required: bool = False,
+    required_if_not: str = None,
+) -> SelectField:
     """
     Create a select field with the given label and name, but without choices.
     This is used for select fields with dynamic choice values.
@@ -89,7 +89,6 @@ def create_select_field_without_choices(
         validators=validators,
         name=name,
         coerce=int,
-        default=None,
     )
 
 
