@@ -30,6 +30,26 @@ class RequiredIf(InputRequired):
             Optional().__call__(form, field)
 
 
+class RequiredIfNot(InputRequired):
+    """Validator which makes a form field required if another field is not set to a certain value."""
+
+    field_flags = ("requiredifnot",)
+
+    def __init__(self, other_field_name, value, message=None, *args, **kwargs):
+        self.other_field_name = other_field_name
+        self.value = value
+        self.message = message
+
+    def __call__(self, form, field):
+        other_field = form[self.other_field_name]
+        if other_field is None:
+            raise Exception('no field named "%s" in form' % self.other_field_name)
+        if (other_field.data).lower() != self.value.lower():
+            super(RequiredIfNot, self).__call__(form, field)
+        else:
+            Optional().__call__(form, field)
+
+
 def create_select_field(label, choices, name, default=None):
     """Create a select field with the given label, choices, name and default value"""
 
@@ -98,8 +118,8 @@ def create_text_area_field(
     """
 
     if required_if:
-        value = "other"  # value of the field that requires the text area field
-        message = "If you select Other, please provide a comment."
+        value = "Other"  # value of the field that requires the text area field
+        message = f"If you select {value}, please provide a comment."
         validators = [RequiredIf(required_if, value, message), Length(max=max_length)]
     else:
         validators = [Length(max=max_length)]
