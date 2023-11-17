@@ -15,14 +15,9 @@ $(document).ready(function () {
       // if the selected value is "Other", the comment field is required
       if (selectedLabel === "Other") {
         commentField.prop("required", true);
-        // set custom validation message
-        commentField[0].setCustomValidity(
-          "If you select 'Other', please provide a comment."
-        );
+        // TODO: set custom validation message
       } else {
         commentField.prop("required", false);
-        // remove custom validation message
-        commentField[0].setCustomValidity("");
       }
     });
   });
