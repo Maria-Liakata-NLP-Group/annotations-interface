@@ -830,6 +830,29 @@ class AnnotationSchemaMixin:
 
         return find_deepest_level(label)
 
+    def find_labels_without_children(self, parent: Union[int, str]):
+        """
+        Given a parent label of the annotation schema (i.e. a label with no parent), find
+        its child labels that have no children of their own.
+
+        Parameters
+        ----------
+        parent : int or str
+            The annotation label ID or name. It must be a parent label (i.e. a label with no parent).
+
+        Returns
+        -------
+        labels : list
+            A list of label objects that have no children
+        """
+
+        parent = self._find_label(parent)
+        if parent.parent:
+            print(f"Label {parent.label} is not a parent label")
+            abort(404)
+        labels = parent.children.filter_by(children=None).all()
+        return labels
+
 
 class ClientAnnotationSchema(db.Model, AnnotationSchemaMixin):
     """Self-referencing table to store the client annotation schema"""
