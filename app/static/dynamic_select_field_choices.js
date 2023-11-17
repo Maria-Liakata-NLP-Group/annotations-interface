@@ -1,5 +1,6 @@
 // JavaScript to dynamically update the choices of a second select field
-// based on the choice of another select field.
+// based on the choice of another select field. If the updated choices are
+// empty, the second select field is not required.
 
 $(document).ready(function () {
   // find all select fields with the class "dynamic_select"
@@ -21,6 +22,12 @@ $(document).ready(function () {
           selected_value: selectedValue,
         },
         success: function (data) {
+          // if the updated choices are empty, the second select field is not required
+          if (data.options) {
+            secondSelect.prop("required", true);
+          } else {
+            secondSelect.prop("required", false);
+          }
           // update the second select field with the new choices
           secondSelect.html(data.options);
         },
