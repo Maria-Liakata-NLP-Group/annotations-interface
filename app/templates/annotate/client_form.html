@@ -24,13 +24,13 @@
   <!-- Label A -->
   <div class="form-group">
     <h4 class="underline-text">{{ form_client.title_a }}</h4>
-    {{ wtf.form_field(form_client.label_a, class="dynamic_select",
+    {{ wtf.form_field(form_client.label_a, class_="form-control dynamic_select",
     data_target="sub_label_a_1_client") }} {{
     wtf.form_field(form_client.sub_label_a_1) }} {{
     wtf.form_field(form_client.scale_a_1) }} {{
     wtf.form_field(form_client.scale_a_2) }} {{
     wtf.form_field(form_client.evidence_a) }} {{
-    wtf.form_field(form_client.comment_a, class="comment_field",
+    wtf.form_field(form_client.comment_a, class_="form-control comment_field",
     data_target="label_a_client") }}
   </div>
   <p></p>
@@ -44,13 +44,14 @@
     Add another
   </button>
   <div class="form-group collapse" id="client_label_a_add">
-    {{ wtf.form_field(form_client.label_a_add, class="dynamic_select",
-    data_target="sub_label_a_1_client_add") }} {{
+    {{ wtf.form_field(form_client.label_a_add, class_="form-control
+    dynamic_select", data_target="sub_label_a_1_client_add") }} {{
     wtf.form_field(form_client.sub_label_a_1_add) }} {{
     wtf.form_field(form_client.scale_a_1_add) }} {{
     wtf.form_field(form_client.scale_a_2_add) }} {{
     wtf.form_field(form_client.evidence_a_add) }} {{
-    wtf.form_field(form_client.comment_a_add) }}
+    wtf.form_field(form_client.comment_a_add, class_="form-control
+    comment_field", data_target="label_a_client_add") }}
   </div>
   <p></p>
 
