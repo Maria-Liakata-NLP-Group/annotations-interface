@@ -35,6 +35,8 @@ class RequiredIf(InputRequired):
 class RequiredIfNot(InputRequired):
     """Validator which makes a form field required if another field is not set to a certain value or values."""
 
+    # NOTE: deprecated, using JavaScript instead
+
     field_flags = ("requiredifnot",)
 
     def __init__(
@@ -70,22 +72,15 @@ def create_select_field_without_choices(
     label: str,
     name: str,
     data_required: bool = False,
-    required_if_not: str = None,
 ) -> SelectField:
     """
     Create a select field with the given label and name, but without choices.
     This is used for select fields with dynamic choice values.
     Set 'data_required' to True if the field is always required.
-    Alternatively, set 'required_if_not' to the name of the first field that requires
-    this second field if the first field is not set to "Other".
     """
 
     if data_required:
         validators = [DataRequired()]
-    elif required_if_not:
-        value = ["Other"]
-        message = "Please select an option."
-        validators = [RequiredIfNot(required_if_not, value, message)]
     else:
         validators = []
     return SelectField(
