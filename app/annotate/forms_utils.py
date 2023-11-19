@@ -13,6 +13,8 @@ from wtforms.validators import (
 class RequiredIf(InputRequired):
     """Validator which makes a form field required if another field is set to a certain value or values."""
 
+    # NOTE: deprecated, using JavaScript instead
+
     field_flags = ("requiredif",)
 
     def __init__(
@@ -114,18 +116,21 @@ def create_select_multiple_field_without_choices(label, name, data_required=Fals
 
 
 def create_text_area_field(
-    label, name, required_if=None, max_length=200, rows=2, cols=10
+    label: str,
+    name: str,
+    data_required: bool = False,
+    max_length: int = 200,
+    rows: int = 2,
+    cols: int = 10,
 ):
     """
-    Create a text area field with the given label, name and max length.
-    The field is required if the field with the given name is set to the given value.
-    Otherwise, the field is optional.
+    Create a text area field with the given label, name and max length validation.
+    Set 'data_required' to True if the field is required.
+    Use 'rows' and 'cols' to set the size of the text area.
     """
 
-    if required_if:
-        value = ["Other"]  # value of the field that requires the text area field
-        message = f"If you select {value[0]}, please provide a comment."
-        validators = [RequiredIf(required_if, value, message), Length(max=max_length)]
+    if data_required:
+        validators = [DataRequired(), Length(max=max_length)]
     else:
         validators = [Length(max=max_length)]
     return TextAreaField(

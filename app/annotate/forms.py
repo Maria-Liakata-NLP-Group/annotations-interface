@@ -516,21 +516,11 @@ class PSAnnotationFormTherapist(FlaskForm):
     strength_e = create_select_field(
         label="Strength", choices=LabelStrengthETherapist, name="strength_e_therapist"
     )
-    comment_a = create_text_area_field(
-        label="Comment", name="comment_a_therapist", required_if="label_a"
-    )
-    comment_b = create_text_area_field(
-        label="Comment", name="comment_b_therapist", required_if="label_b"
-    )
-    comment_c = create_text_area_field(
-        label="Comment", name="comment_c_therapist", required_if="label_c"
-    )
-    comment_d = create_text_area_field(
-        label="Comment", name="comment_d_therapist", required_if="label_d"
-    )
-    comment_e = create_text_area_field(
-        label="Comment", name="comment_e_therapist", required_if="label_e"
-    )
+    comment_a = create_text_area_field(label="Comment", name="comment_a_therapist")
+    comment_b = create_text_area_field(label="Comment", name="comment_b_therapist")
+    comment_c = create_text_area_field(label="Comment", name="comment_c_therapist")
+    comment_d = create_text_area_field(label="Comment", name="comment_d_therapist")
+    comment_e = create_text_area_field(label="Comment", name="comment_e_therapist")
     relevant_events_a = create_select_multiple_field_without_choices(
         label="Evidence", name="relevant_events_a_therapist"
     )
@@ -571,12 +561,8 @@ class PSAnnotationFormDyad(FlaskForm):
     strength_b = create_select_field(
         label="Strength", choices=LabelStrengthBDyad, name="strength_b_dyad"
     )
-    comment_a = create_text_area_field(
-        label="Comment", name="comment_a_dyad", required_if="label_a"
-    )
-    comment_b = create_text_area_field(
-        label="Comment", name="comment_b_dyad", required_if="label_b"
-    )
+    comment_a = create_text_area_field(label="Comment", name="comment_a_dyad")
+    comment_b = create_text_area_field(label="Comment", name="comment_b_dyad")
     relevant_events_a = create_select_multiple_field_without_choices(
         label="Evidence", name="relevant_events_a_dyad"
     )
