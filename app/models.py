@@ -683,6 +683,11 @@ class AnnotationSchemaMixin:
             label = labels[0]
         return label
 
+    def _append_placeholder(self, choices: list) -> list:
+        """Append a placeholder choice to a list of choices"""
+        choices = [(0, "Select one...")] + choices
+        return choices
+
     def get_label_children(
         self,
         label: Union[int, str],
@@ -710,6 +715,7 @@ class AnnotationSchemaMixin:
         choices = [(label.id, label.label) for label in children]
         # sort by label id
         choices = sorted(choices, key=lambda x: x[0])
+        choices = self._append_placeholder(choices)
         return choices
 
     def get_label_scale_titles(
@@ -773,6 +779,7 @@ class AnnotationSchemaMixin:
         choices = [(scale.id, scale.scale_level) for scale in scales]
         # sort by scale id
         choices = sorted(choices, key=lambda x: x[0])
+        choices = self._append_placeholder(choices)
         return choices
 
     def find_parent_labels(self) -> list:
