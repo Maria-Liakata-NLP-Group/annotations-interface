@@ -692,6 +692,7 @@ class AnnotationSchemaMixin:
         self,
         label: Union[int, str],
         parent: str = None,
+        append_placeholder: bool = True,
     ) -> list:
         """
         Given an annotation label, query the database to find its child labels
@@ -703,19 +704,23 @@ class AnnotationSchemaMixin:
             The annotation label ID or name
         parent : str
             The parent label name, used when a label name is passed as the "label" parameter
+        append_placeholder : bool
+            Whether to append a placeholder choice to the list of choices
 
         Returns
         -------
         choices : list
             A list of of tuples containing the child label IDs and names, to be used as choices
-            for the select fields in the annotation form
+            for the select fields in the annotation form. If 'append_placeholder' is True, a placeholder
+            choice is appended to the list of choices.
         """
         label = self._find_label(label, parent)
         children = label.children
         choices = [(label.id, label.label) for label in children]
         # sort by label id
         choices = sorted(choices, key=lambda x: x[0])
-        choices = self._append_placeholder(choices)
+        if choices and append_placeholder:
+            choices = self._append_placeholder(choices)
         return choices
 
     def get_label_scale_titles(
@@ -745,6 +750,7 @@ class AnnotationSchemaMixin:
         self,
         label: Union[int, str],
         scale_title: str,
+        append_placeholder: bool = True,
     ):
         """
         Given a parent label of the annotation schema (i.e. a label with no parent), find
@@ -762,7 +768,8 @@ class AnnotationSchemaMixin:
         -------
         choices : list
             A list of of tuples containing the scale level IDs and names, to be used as choices
-            for the select fields in the annotation form
+            for the select fields in the annotation form. If 'append_placeholder' is True, a placeholder
+            choice is appended to the list of choices.
         """
 
         label = self._find_label(label)
@@ -779,7 +786,8 @@ class AnnotationSchemaMixin:
         choices = [(scale.id, scale.scale_level) for scale in scales]
         # sort by scale id
         choices = sorted(choices, key=lambda x: x[0])
-        choices = self._append_placeholder(choices)
+        if choices and append_placeholder:
+            choices = self._append_placeholder(choices)
         return choices
 
     def find_parent_labels(self) -> list:

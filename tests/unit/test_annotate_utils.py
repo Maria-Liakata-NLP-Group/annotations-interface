@@ -102,7 +102,9 @@ def test_get_annotation_label_children(new_ps_annotation_schema_client):
     parent_label = "Wish"
     child_label_names = ["To avoid conflict", "To compromise", "To be flexible"]
     client_annotation_schema = ClientAnnotationSchema()
-    child_labels = client_annotation_schema.get_label_children(label, parent_label)
+    child_labels = client_annotation_schema.get_label_children(
+        label, parent_label, append_placeholder=False
+    )
     # extract the names of the child labels (list of tuples where name is second element)
     child_label_names_extracted = [child_label[1] for child_label in child_labels]
     # sort the lists to make sure they are in the same order, and apply strip() and capitalize()
@@ -136,7 +138,9 @@ def test_get_annotation_label_scales():
 
     client_annotation_schema = ClientAnnotationSchema()
     # check "tests/data/annotation_schema/scales/client.json"
-    scales = client_annotation_schema.get_label_scales("Wish", "Level")
+    scales = client_annotation_schema.get_label_scales(
+        "Wish", "Level", append_placeholder=False
+    )
     expected_scales = [
         (1, "1. Not present".strip().capitalize()),
         (2, "2. Somewhat present".strip().capitalize()),
