@@ -476,66 +476,68 @@ class PSAnnotationFormClient(FlaskForm):
 class PSAnnotationFormTherapist(FlaskForm):
     """Segment level annotation form of psychotherapy datasets for the therapist"""
 
-    label_a = create_select_field(
-        label=LabelNamesTherapist.label_a.value,
-        choices=SubLabelsATherapist,
+    # Label A
+    # -------
+    name_a = "Intervention type".strip().capitalize()
+    title_a = "(A) " + name_a
+    label_a = create_select_field_without_choices(
+        label="Choose one",
         name="label_a_therapist",
+        data_required=True,
     )
-    label_b = create_select_field(
-        label=LabelNamesTherapist.label_b.value,
-        choices=SubLabelsBTherapist,
-        name="label_b_therapist",
+    sub_label_a_1 = create_select_field_without_choices(
+        label="Choose one",
+        name="sub_label_a_1_therapist",
     )
-    label_c = create_select_field(
-        label=LabelNamesTherapist.label_c.value,
-        choices=SubLabelsCTherapist,
-        name="label_c_therapist",
+    scale_a_1 = create_select_field_without_choices(
+        label="Typicality scale".strip().capitalize(),
+        name="scale_a_1_therapist",
+        data_required=True,
     )
-    label_d = create_select_field(
-        label=LabelNamesTherapist.label_d.value,
-        choices=SubLabelsDTherapist,
-        name="label_d_therapist",
+    scale_a_2 = create_select_field_without_choices(
+        label="Quality".strip().capitalize(),
+        name="scale_a_2_therapist",
+        data_required=True,
     )
-    label_e = create_select_field(
-        label=LabelNamesTherapist.label_e.value,
-        choices=SubLabelsETherapist,
-        name="label_e_therapist",
+    evidence_a = create_select_multiple_field_without_choices(
+        label="Evidence",
+        name="evidence_a_therapist",
+        data_required=True,
     )
-    strength_a = create_select_field(
-        label="Strength", choices=LabelStrengthATherapist, name="strength_a_therapist"
+    comment_a = create_text_area_field(
+        label="Comment",
+        name="comment_a_therapist",
     )
-    strength_b = create_select_field(
-        label="Strength", choices=LabelStrengthBTherapist, name="strength_b_therapist"
+
+    # Label A - additional
+    # --------------------
+    label_a_add = create_select_field_without_choices(
+        label="Choose one",
+        name="label_a_therapist_add",
     )
-    strength_c = create_select_field(
-        label="Strength", choices=LabelStrengthCTherapist, name="strength_c_therapist"
+    sub_label_a_1_add = create_select_field_without_choices(
+        label="Choose one",
+        name="sub_label_a_1_therapist_add",
     )
-    strength_d = create_select_field(
-        label="Strength", choices=LabelStrengthDTherapist, name="strength_d_therapist"
+    scale_a_1_add = create_select_field_without_choices(
+        label="Typicality scale".strip().capitalize(),
+        name="scale_a_1_therapist_add",
     )
-    strength_e = create_select_field(
-        label="Strength", choices=LabelStrengthETherapist, name="strength_e_therapist"
+    scale_a_2_add = create_select_field_without_choices(
+        label="Quality".strip().capitalize(),
+        name="scale_a_2_therapist_add",
     )
-    comment_a = create_text_area_field(label="Comment", name="comment_a_therapist")
-    comment_b = create_text_area_field(label="Comment", name="comment_b_therapist")
-    comment_c = create_text_area_field(label="Comment", name="comment_c_therapist")
-    comment_d = create_text_area_field(label="Comment", name="comment_d_therapist")
-    comment_e = create_text_area_field(label="Comment", name="comment_e_therapist")
-    relevant_events_a = create_select_multiple_field_without_choices(
-        label="Evidence", name="relevant_events_a_therapist"
+    evidence_a_add = create_select_multiple_field_without_choices(
+        label="Evidence",
+        name="evidence_a_therapist_add",
     )
-    relevant_events_b = create_select_multiple_field_without_choices(
-        label="Evidence", name="relevant_events_b_therapist"
+    comment_a_add = create_text_area_field(
+        label="Comment",
+        name="comment_a_therapist_add",
     )
-    relevant_events_c = create_select_multiple_field_without_choices(
-        label="Evidence", name="relevant_events_c_therapist"
-    )
-    relevant_events_d = create_select_multiple_field_without_choices(
-        label="Evidence", name="relevant_events_d_therapist"
-    )
-    relevant_events_e = create_select_multiple_field_without_choices(
-        label="Evidence", name="relevant_events_e_therapist"
-    )
+
+    # Summary comment
+    # ---------------
     comment_summary = create_text_area_field(
         label="Summary Comment",
         name="comment_summary_therapist",
