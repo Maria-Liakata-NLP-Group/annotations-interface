@@ -18,8 +18,8 @@ function toggleAdditionalFormGroup(buttonId, formGroupId, evidenceId) {
   });
 }
 
-// call the function
 $(document).ready(function () {
+  // call the function for the client labels
   toggleAdditionalFormGroup(
     "#btn_client_label_a_add",
     "#client_label_a_add",
@@ -44,5 +44,12 @@ $(document).ready(function () {
     "#btn_client_label_e_add",
     "#client_label_e_add",
     "#evidence_e_client_add"
+  );
+
+  // call the function for the therapist labels
+  toggleAdditionalFormGroup(
+    "#btn_therapist_label_a_add",
+    "#therapist_label_a_add",
+    "#evidence_a_therapist_add"
   );
 });
