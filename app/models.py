@@ -902,7 +902,7 @@ class ClientAnnotationSchema(db.Model, AnnotationSchemaMixin):
         return "<ClientAnnotationSchema {}>".format(self.label[:10])
 
 
-class TherapistAnnotationSchema(db.Model):
+class TherapistAnnotationSchema(db.Model, AnnotationSchemaMixin):
     """Self-referencing table to store the therapist annotation schema"""
 
     __tablename__ = "therapist_annotation_schema"
