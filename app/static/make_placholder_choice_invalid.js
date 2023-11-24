@@ -3,8 +3,9 @@
 // If the select field is inside a collapsible form-group
 // that is hidden, the select field is ignored.
 
-function validateForm() {
-  var selectFields = document.querySelectorAll("select");
+function validateForm(who) {
+  // find all select fields that have an id containing the string 'who' ('client', 'therapist' or 'dyad')
+  var selectFields = document.querySelectorAll("select[id*=" + who + "]");
   for (var i = 0; i < selectFields.length; i++) {
     if (selectFields[i].value === "0") {
       // find the collapsible form-group
