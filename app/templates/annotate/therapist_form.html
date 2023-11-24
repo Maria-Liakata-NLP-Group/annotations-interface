@@ -6,6 +6,7 @@
   role="form"
   class="collapse"
   id="form_therapist"
+  onsubmit="return validateForm()"
 >
   {{ form_therapist.hidden_tag() }}
   <!-- Hidden CSRF token -->
@@ -19,45 +20,47 @@
   </div>
   {% endif %}
 
+  <!-- Label A -->
   <div class="form-group">
-    {{ wtf.form_field(form_therapist.label_a) }} {{
-    wtf.form_field(form_therapist.strength_a) }} {{
-    wtf.form_field(form_therapist.relevant_events_a) }} {{
-    wtf.form_field(form_therapist.comment_a) }}
+    <h4 class="underline-text">{{ form_therapist.title_a }}</h4>
+    {{ wtf.form_field(form_therapist.label_a, class_="form-control
+    dynamic_select", data_target="sub_label_a_1_therapist") }} {{
+    wtf.form_field(form_therapist.sub_label_a_1) }} {{
+    wtf.form_field(form_therapist.scale_a_1) }} {{
+    wtf.form_field(form_therapist.scale_a_2) }} {{
+    wtf.form_field(form_therapist.evidence_a) }} {{
+    wtf.form_field(form_therapist.comment_a, class_="form-control
+    comment_field", data_target="label_a_client") }}
   </div>
   <p></p>
-  <div class="form-group">
-    {{ wtf.form_field(form_therapist.label_b) }} {{
-    wtf.form_field(form_therapist.strength_b) }} {{
-    wtf.form_field(form_therapist.relevant_events_b) }} {{
-    wtf.form_field(form_therapist.comment_b) }}
+  <!-- Button to toggle an additional form group for label A -->
+  <button
+    type="button"
+    class="btn btn-secondary mx-2"
+    id="btn_therapist_label_a_add"
+    data-target="#therapist_label_a_add"
+  >
+    Add another
+  </button>
+  <div class="form-group collapse" id="therapist_label_a_add">
+    {{ wtf.form_field(form_therapist.label_a, class_="form-control
+    dynamic_select", data_target="sub_label_a_1_therapist") }} {{
+    wtf.form_field(form_therapist.sub_label_a_1) }} {{
+    wtf.form_field(form_therapist.scale_a_1) }} {{
+    wtf.form_field(form_therapist.scale_a_2) }} {{
+    wtf.form_field(form_therapist.evidence_a) }} {{
+    wtf.form_field(form_therapist.comment_a, class_="form-control
+    comment_field", data_target="label_a_client") }}
   </div>
   <p></p>
-  <div class="form-group">
-    {{ wtf.form_field(form_therapist.label_c) }} {{
-    wtf.form_field(form_therapist.strength_c) }} {{
-    wtf.form_field(form_therapist.relevant_events_c) }} {{
-    wtf.form_field(form_therapist.comment_c) }}
-  </div>
-  <p></p>
-  <div class="form-group">
-    {{ wtf.form_field(form_therapist.label_d) }} {{
-    wtf.form_field(form_therapist.strength_d) }} {{
-    wtf.form_field(form_therapist.relevant_events_d) }} {{
-    wtf.form_field(form_therapist.comment_d) }}
-  </div>
-  <p></p>
-  <div class="form-group">
-    {{ wtf.form_field(form_therapist.label_e) }} {{
-    wtf.form_field(form_therapist.strength_e) }} {{
-    wtf.form_field(form_therapist.relevant_events_e) }} {{
-    wtf.form_field(form_therapist.comment_e) }}
-  </div>
-  <p></p>
+
+  <!-- Summary comment -->
   <div style="text-align: center">
     {{ wtf.form_field(form_therapist.comment_summary) }}
   </div>
   <p></p>
+
+  <!-- Submit -->
   <p>
     <input type="submit" name="submit_form_therapist" value="Submit" />
   </p>
