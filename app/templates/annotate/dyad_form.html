@@ -6,6 +6,7 @@
   role="form"
   class="collapse"
   id="form_dyad"
+  onsubmit="return validateForm()"
 >
   {{ form_dyad.hidden_tag() }}
   <!-- Hidden CSRF token -->
@@ -19,24 +20,61 @@
   </div>
   {% endif %}
 
+  <!-- Label A -->
   <div class="form-group">
-    {{ wtf.form_field(form_dyad.label_a) }} {{
-    wtf.form_field(form_dyad.strength_a) }} {{
-    wtf.form_field(form_dyad.relevant_events_a) }} {{
+    <h4 class="underline-text">{{ form_dyad.title_a }}</h4>
+    {{ wtf.form_field(form_dyad.scale_a_1) }} {{
+    wtf.form_field(form_dyad.evidence_a) }} {{
     wtf.form_field(form_dyad.comment_a) }}
   </div>
   <p></p>
+  <!-- Button to toggle an additional form group for label A -->
+  <button
+    type="button"
+    class="btn btn-secondary mx-2"
+    id="btn_dyad_label_a_add"
+    data-target="#dyad_label_a_add"
+  >
+    Add another
+  </button>
+  <div class="form-group collapse" id="dyad_label_a_add">
+    {{ wtf.form_field(form_dyad.scale_a_1_add) }} {{
+    wtf.form_field(form_dyad.evidence_a_add) }} {{
+    wtf.form_field(form_dyad.comment_a_add) }}
+  </div>
+  <p></p>
+
+  <!-- Label B -->
   <div class="form-group">
-    {{ wtf.form_field(form_dyad.label_b) }} {{
-    wtf.form_field(form_dyad.strength_b) }} {{
-    wtf.form_field(form_dyad.relevant_events_b) }} {{
+    <h4 class="underline-text">{{ form_dyad.title_b }}</h4>
+    {{ wtf.form_field(form_dyad.label_b, class_="form-control dynamic_select" )
+    }} {{ wtf.form_field(form_dyad.scale_b_1) }} {{
+    wtf.form_field(form_dyad.evidence_b) }} {{
     wtf.form_field(form_dyad.comment_b) }}
+  </div>
+  <p></p>
+  <!-- Button to toggle an additional form group for label A -->
+  <button
+    type="button"
+    class="btn btn-secondary mx-2"
+    id="btn_dyad_label_b_add"
+    data-target="#dyad_label_b_add"
+  >
+    Add another
+  </button>
+  <div class="form-group collapse" id="dyad_label_b_add">
+    {{ wtf.form_field(form_dyad.label_b_add, class_="form-control
+    dynamic_select" ) }} {{ wtf.form_field(form_dyad.scale_b_1_add) }} {{
+    wtf.form_field(form_dyad.evidence_b_add) }} {{
+    wtf.form_field(form_dyad.comment_b_add) }}
   </div>
   <p></p>
   <div style="text-align: center">
     {{ wtf.form_field(form_dyad.comment_summary) }}
   </div>
   <p></p>
+
+  <!-- Submit button -->
   <p>
     <input type="submit" name="submit_form_dyad" value="Submit" />
   </p>

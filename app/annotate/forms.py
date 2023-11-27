@@ -551,26 +551,85 @@ class PSAnnotationFormTherapist(FlaskForm):
 class PSAnnotationFormDyad(FlaskForm):
     """Segment level annotation form of psychotherapy datasets for the dyad"""
 
-    label_a = create_select_field(
-        label=LabelNamesDyad.label_a.value, choices=SubLabelsADyad, name="label_a_dyad"
+    # Label A
+    # -------
+    name_a = "Alliance/reciprocity".strip().capitalize()
+    title_a = "(A) " + name_a
+    scale_a_1 = create_select_field_without_choices(
+        label="Level".strip().capitalize(),
+        name="scale_a_1_dyad",
+        data_required=True,
     )
-    label_b = create_select_field(
-        label=LabelNamesDyad.label_b.value, choices=SubLabelsBDyad, name="label_b_dyad"
+    evidence_a = create_select_multiple_field_without_choices(
+        label="Evidence",
+        name="evidence_a_dyad",
+        data_required=True,
     )
-    strength_a = create_select_field(
-        label="Strength", choices=LabelStrengthADyad, name="strength_a_dyad"
+    comment_a = create_text_area_field(
+        label="Comment",
+        name="comment_a_dyad",
     )
-    strength_b = create_select_field(
-        label="Strength", choices=LabelStrengthBDyad, name="strength_b_dyad"
+
+    # Label A - additional
+    # --------------------
+    scale_a_1_add = create_select_field_without_choices(
+        label="Level".strip().capitalize(),
+        name="scale_a_1_dyad_add",
     )
-    comment_a = create_text_area_field(label="Comment", name="comment_a_dyad")
-    comment_b = create_text_area_field(label="Comment", name="comment_b_dyad")
-    relevant_events_a = create_select_multiple_field_without_choices(
-        label="Evidence", name="relevant_events_a_dyad"
+    evidence_a_add = create_select_multiple_field_without_choices(
+        label="Evidence",
+        name="evidence_a_dyad_add",
     )
-    relevant_events_b = create_select_multiple_field_without_choices(
-        label="Evidence", name="relevant_events_b_dyad"
+    comment_a_add = create_text_area_field(
+        label="Comment",
+        name="comment_a_dyad_add",
     )
+
+    # Label B
+    # -------
+    name_b = "Tension/rupture".strip().capitalize()
+    title_b = "(B) " + name_b
+    label_b = create_select_field_without_choices(
+        label="Choose one",
+        name="label_b_dyad",
+        data_required=True,
+    )
+    scale_b_1 = create_select_field_without_choices(
+        label="Level".strip().capitalize(),
+        name="scale_b_1_dyad",
+        data_required=True,
+    )
+    evidence_b = create_select_multiple_field_without_choices(
+        label="Evidence",
+        name="evidence_b_dyad",
+        data_required=True,
+    )
+    comment_b = create_text_area_field(
+        label="Comment",
+        name="comment_b_dyad",
+    )
+
+    # Label B - additional
+    # --------------------
+    label_b_add = create_select_field_without_choices(
+        label="Choose one",
+        name="label_b_dyad_add",
+    )
+    scale_b_1_add = create_select_field_without_choices(
+        label="Level".strip().capitalize(),
+        name="scale_b_1_dyad_add",
+    )
+    evidence_b_add = create_select_multiple_field_without_choices(
+        label="Evidence",
+        name="evidence_b_dyad_add",
+    )
+    comment_b_add = create_text_area_field(
+        label="Comment",
+        name="comment_b_dyad_add",
+    )
+
+    # Summary comment
+    # ---------------
     comment_summary = create_text_area_field(
         label="Summary Comment",
         name="comment_summary_dyad",
@@ -578,3 +637,4 @@ class PSAnnotationFormDyad(FlaskForm):
         rows=3,
         cols=15,
     )
+    submit = SubmitField("Submit")
