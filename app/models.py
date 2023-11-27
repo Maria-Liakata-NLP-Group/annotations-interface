@@ -931,7 +931,7 @@ class TherapistAnnotationSchema(db.Model, AnnotationSchemaMixin):
         return "<TherapistAnnotationSchema {}>".format(self.label[:10])
 
 
-class DyadAnnotationSchema(db.Model):
+class DyadAnnotationSchema(db.Model, AnnotationSchemaMixin):
     """Self-referencing table to store the dyad annotation schema"""
 
     __tablename__ = "dyad_annotation_schema"
