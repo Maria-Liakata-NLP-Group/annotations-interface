@@ -52,4 +52,16 @@ $(document).ready(function () {
     "#therapist_label_a_add",
     "#evidence_a_therapist_add"
   );
+
+  // call the function for the dyad labels
+  toggleAdditionalFormGroup(
+    "#btn_dyad_label_a_add",
+    "#dyad_label_a_add",
+    "#evidence_a_dyad_add"
+  );
+  toggleAdditionalFormGroup(
+    "#btn_dyad_label_b_add",
+    "#dyad_label_b_add",
+    "#evidence_b_dyad_add"
+  );
 });
