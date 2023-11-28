@@ -6,7 +6,7 @@
   role="form"
   class="collapse"
   id="form_dyad"
-  onsubmit="return validateForm()"
+  onsubmit="return validateForm('dyad')"
 >
   {{ form_dyad.hidden_tag() }}
   <!-- Hidden CSRF token -->
@@ -50,7 +50,8 @@
     {{ wtf.form_field(form_dyad.label_b, class_="form-control dynamic_select" )
     }} {{ wtf.form_field(form_dyad.scale_b_1) }} {{
     wtf.form_field(form_dyad.evidence_b) }} {{
-    wtf.form_field(form_dyad.comment_b) }}
+    wtf.form_field(form_dyad.comment_b, class_="form-control comment_field",
+    data_target="label_b_dyad") }}
   </div>
   <p></p>
   <!-- Button to toggle an additional form group for label A -->
@@ -66,9 +67,12 @@
     {{ wtf.form_field(form_dyad.label_b_add, class_="form-control
     dynamic_select" ) }} {{ wtf.form_field(form_dyad.scale_b_1_add) }} {{
     wtf.form_field(form_dyad.evidence_b_add) }} {{
-    wtf.form_field(form_dyad.comment_b_add) }}
+    wtf.form_field(form_dyad.comment_b_add, class="form-control comment_field",
+    data_target="label_b_dyad_add") }}
   </div>
   <p></p>
+
+  <!-- Summary comment -->
   <div style="text-align: center">
     {{ wtf.form_field(form_dyad.comment_summary) }}
   </div>
