@@ -213,7 +213,9 @@ def fetch_dialog_turn_annotations(
 
 
 def new_dialog_turn_annotation_to_db(
-    form: Union[PSAnnotationClient, PSAnnotationFormTherapist, PSAnnotationFormDyad],
+    form: Union[
+        PSAnnotationFormClient, PSAnnotationFormTherapist, PSAnnotationFormDyad
+    ],
     speaker: Speaker,
     dataset: Dataset,
     dialog_turns: list,
