@@ -582,7 +582,9 @@ def assign_dynamic_choices(
 ) -> Union[PSAnnotationFormClient, PSAnnotationFormTherapist, PSAnnotationFormDyad]:
     """
     Assign the dynamic choices to the select fields or select multiple fields in the
-    annotation form. Specifically to the labels, scales and evidence fields.
+    annotation form. Specifically to the labels, scales and evidence fields. For the
+    sub labels, assign a list of tuples containing values 0 to 1000, but with no label,
+    that work as placeholders.
 
     Parameters
     ----------
@@ -598,7 +600,9 @@ def assign_dynamic_choices(
     form : PSAnnotationFormClient or PSAnnotationFormTherapist or PSAnnotationFormDyad
         The annotation form with the dynamic choices assigned to the select fields or select
         multiple fields that start with "label_", "scale_", "start_event_", "end_event_" or
-        "evidence_".
+        "evidence_". For the sub labels, assign a list of tuples containing values 0 to 1000,
+        but with no label, that work as placeholders. An AJAX call is made to the server later
+        to get the actual choices dynamically.
     """
 
     # assign the dynamic choices to the select fields or select multiple fields
@@ -641,6 +645,13 @@ def assign_dynamic_choices(
                 scale_title = getattr(form, scale).label.text
                 choices = annotation_schema.get_label_scales(parent_label, scale_title)
                 form[scale].choices = choices
+
+    # for the sub labels, assign a list of tuples containing values 0 to 1000, but with no label
+    # these work as placeholders, so that they can be pre-populated
+    # an AJAX call is mde to the server later to get the actual choices dynamically
+    sub_labels = [attr for attr in dir(form) if attr.startswith("sub_label_")]
+    for sub_label in sub_labels:
+        form[sub_label].choices = [(i, "") for i in range(0, 1001)]
 
     return form
 
