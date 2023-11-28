@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <!-- SQL XML created by WWW SQL Designer, https://github.com/ondras/wwwsqldesigner/ -->
-<!-- Active URL: https://sql.toad.cz/ -->
+<!-- Active URL: http://127.0.0.1:8080/ -->
 <sql>
 <datatypes db="mysql">
 	<group label="Numeric" color="rgb(238,238,170)">
@@ -66,7 +66,7 @@
 </key>
 <comment>This is the table storing the information about the web app users (the annotators)</comment>
 </table>
-<table x="354" y="1222" name="sm_annotation">
+<table x="406" y="1480" name="sm_annotation">
 <row name="id" null="1" autoincrement="1">
 <datatype>INTEGER</datatype>
 <default>NULL</default></row>
@@ -96,7 +96,7 @@
 </key>
 <comment>This is the table where the annotations of the social media threads are stored</comment>
 </table>
-<table x="646" y="1108" name="sm_post">
+<table x="920" y="1511" name="sm_post">
 <row name="id" null="1" autoincrement="1">
 <datatype>INTEGER</datatype>
 <default>NULL</default></row>
@@ -137,7 +137,7 @@
 </key>
 <comment>This table contains the social media posts made by each social media user</comment>
 </table>
-<table x="861" y="902" name="sm_reply">
+<table x="927" y="1165" name="sm_reply">
 <row name="id" null="1" autoincrement="1">
 <datatype>INTEGER</datatype>
 <default>NULL</default><comment>unique reply identifier, provided by the input JSON</comment>
@@ -176,7 +176,7 @@
 </key>
 <comment>Table storing replies to social media posts</comment>
 </table>
-<table x="473" y="955" name="dataset">
+<table x="524" y="1167" name="dataset">
 <row name="id" null="1" autoincrement="1">
 <datatype>INTEGER</datatype>
 <default>NULL</default></row>
@@ -209,7 +209,7 @@
 </key>
 <comment>this table stores information about the datasets uploaded to the web app by the web app users (the annotators)</comment>
 </table>
-<table x="101" y="1233" name="role">
+<table x="50" y="1337" name="role">
 <row name="id" null="1" autoincrement="1">
 <datatype>INTEGER</datatype>
 <default>NULL</default></row>
@@ -236,7 +236,7 @@
 </key>
 <comment>This table specifies the roles that the users can have. Currently either "Annotator" or "Administrator"</comment>
 </table>
-<table x="1184" y="1116" name="ps_dialog_turn">
+<table x="1436" y="1256" name="ps_dialog_turn">
 <row name="id" null="1" autoincrement="1">
 <datatype>INTEGER</datatype>
 <default>NULL</default></row>
@@ -290,7 +290,7 @@
 </key>
 <comment>This is an association table to construct many-to-many relationships between the "user" and "dataset" tables</comment>
 </table>
-<table x="1466" y="1192" name="ps_dialog_event">
+<table x="2023" y="1409" name="ps_dialog_event">
 <row name="id" null="1" autoincrement="1">
 <datatype>INTEGER</datatype>
 <default>NULL</default></row>
@@ -325,26 +325,6 @@
 <row name="timestamp" null="1" autoincrement="0">
 <datatype>DATETIME</datatype>
 <default>'datetime.utcnow'</default><comment>when annotation was created</comment>
-</row>
-<row name="label_a" null="1" autoincrement="0">
-<datatype>ENUM</datatype>
-<default>NULL</default><comment>one of a series of subcategories</comment>
-</row>
-<row name="label_b" null="1" autoincrement="0">
-<datatype>ENUM</datatype>
-<default>NULL</default><comment>one of a series of subcategories</comment>
-</row>
-<row name="label_c" null="1" autoincrement="0">
-<datatype>ENUM</datatype>
-<default>NULL</default><comment>one of a series of subcategories</comment>
-</row>
-<row name="label_d" null="1" autoincrement="0">
-<datatype>INTEGER</datatype>
-<default>NULL</default><comment>one of a series of subcategories</comment>
-</row>
-<row name="label_e" null="1" autoincrement="0">
-<datatype>ENUM</datatype>
-<default>NULL</default><comment>one of a series of subcategories</comment>
 </row>
 <row name="strength_a" null="1" autoincrement="0">
 <datatype>ENUM</datatype>
@@ -406,72 +386,6 @@
 <datatype>DATETIME</datatype>
 <default>'datetime.utcnow()'</default><comment>when annotation was created</comment>
 </row>
-<row name="label_a" null="1" autoincrement="0">
-<datatype>ENUM</datatype>
-<default>NULL</default><comment>one of a series of subcategories</comment>
-</row>
-<row name="label_b" null="1" autoincrement="0">
-<datatype>ENUM</datatype>
-<default>NULL</default><comment>one of a series of subcategories</comment>
-</row>
-<row name="label_c" null="1" autoincrement="0">
-<datatype>ENUM</datatype>
-<default>NULL</default><comment>one of a series of subcategories</comment>
-</row>
-<row name="label_d" null="1" autoincrement="0">
-<datatype>ENUM</datatype>
-<default>NULL</default><comment>one of a series of subcategories</comment>
-</row>
-<row name="label_e" null="1" autoincrement="0">
-<datatype>ENUM</datatype>
-<default>NULL</default><comment>one of a series of subcategories</comment>
-</row>
-<row name="label_f" null="1" autoincrement="0">
-<datatype>ENUM</datatype>
-<default>NULL</default><comment>One of a series of subcategories. This is the MoC</comment>
-</row>
-<row name="strength_a" null="1" autoincrement="0">
-<datatype>ENUM</datatype>
-<default>NULL</default><comment>one of a series of subcategories</comment>
-</row>
-<row name="strength_b" null="1" autoincrement="0">
-<datatype>ENUM</datatype>
-<default>NULL</default><comment>one of a series of subcategories</comment>
-</row>
-<row name="strength_c" null="1" autoincrement="0">
-<datatype>ENUM</datatype>
-<default>NULL</default><comment>one of a series of subcategories</comment>
-</row>
-<row name="strength_d" null="1" autoincrement="0">
-<datatype>ENUM</datatype>
-<default>NULL</default><comment>one of a series of subcategories</comment>
-</row>
-<row name="strength_e" null="1" autoincrement="0">
-<datatype>ENUM</datatype>
-<default>NULL</default><comment>one of a series of subcategories</comment>
-</row>
-<row name="strength_f" null="1" autoincrement="0">
-<datatype>ENUM</datatype>
-<default>NULL</default><comment>one of a series of subcategories</comment>
-</row>
-<row name="comment_a" null="1" autoincrement="0">
-<datatype>MEDIUMTEXT</datatype>
-<default>NULL</default></row>
-<row name="comment_b" null="1" autoincrement="0">
-<datatype>MEDIUMTEXT</datatype>
-<default>NULL</default></row>
-<row name="comment_c" null="1" autoincrement="0">
-<datatype>MEDIUMTEXT</datatype>
-<default>NULL</default></row>
-<row name="comment_d" null="1" autoincrement="0">
-<datatype>MEDIUMTEXT</datatype>
-<default>NULL</default></row>
-<row name="comment_e" null="1" autoincrement="0">
-<datatype>MEDIUMTEXT</datatype>
-<default>NULL</default></row>
-<row name="comment_f" null="1" autoincrement="0">
-<datatype>MEDIUMTEXT</datatype>
-<default>NULL</default></row>
 <row name="comment_summary" null="1" autoincrement="0">
 <datatype>MEDIUMTEXT</datatype>
 <default>NULL</default><comment>overall summary of the annotation</comment>
@@ -489,21 +403,13 @@
 </key>
 <comment>Table to store annotations for the client/patient at the segment level</comment>
 </table>
-<table x="122" y="130" name="ps_annotation_dyad">
+<table x="231" y="173" name="ps_annotation_dyad">
 <row name="id" null="1" autoincrement="1">
 <datatype>INTEGER</datatype>
 <default>NULL</default></row>
 <row name="timestamp" null="1" autoincrement="0">
 <datatype>DATETIME</datatype>
 <default>'datetime.utcnow()'</default><comment>when annotation was created</comment>
-</row>
-<row name="label_a" null="1" autoincrement="0">
-<datatype>ENUM</datatype>
-<default>NULL</default><comment>one of a series of subcategories</comment>
-</row>
-<row name="label_b" null="1" autoincrement="0">
-<datatype>ENUM</datatype>
-<default>NULL</default><comment>one of a series of subcategories</comment>
 </row>
 <row name="strength_a" null="1" autoincrement="0">
 <datatype>ENUM</datatype>
@@ -538,7 +444,7 @@
 </key>
 <comment>Table to store annotations at the segment level for the dyad (interaction between the client and therapist)</comment>
 </table>
-<table x="1384" y="892" name="annotationclient_dialogturn">
+<table x="1872" y="1014" name="annotationclient_dialogturn">
 <row name="id_annotation" null="1" autoincrement="0">
 <datatype>INTEGER</datatype>
 <default>NULL</default><relation table="ps_annotation_client" row="id" />
@@ -551,7 +457,7 @@
 </key>
 <comment>This is an association table to construct many-to-many relationships between the "ps_dialog_turn_annotation_client" and "ps_dialog_turn" tables</comment>
 </table>
-<table x="1379" y="1004" name="annotationstherapist_dialogturn">
+<table x="1878" y="1201" name="annotationstherapist_dialogturn">
 <row name="id_annotation" null="1" autoincrement="0">
 <datatype>INTEGER</datatype>
 <default>NULL</default><relation table="ps_annotation_therapist" row="id" />
@@ -564,7 +470,7 @@
 </key>
 <comment>This is an association table to construct many-to-many relationships between the "ps_dialog_turn_annotation_therapist" and "ps_dialog_turn" tables</comment>
 </table>
-<table x="1389" y="759" name="annotationdyad_dialogturn">
+<table x="1877" y="829" name="annotationdyad_dialogturn">
 <row name="id_annotation" null="1" autoincrement="0">
 <datatype>INTEGER</datatype>
 <default>NULL</default><relation table="ps_annotation_dyad" row="id" />
@@ -577,7 +483,7 @@
 </key>
 <comment>This is an association table to construct many-to-many relationships between the "ps_dialog_turn_annotation_dyad" and "ps_dialog_turn" tables</comment>
 </table>
-<table x="1759" y="253" name="evidence_client">
+<table x="2139" y="606" name="evidence_client">
 <row name="id" null="1" autoincrement="1">
 <datatype>INTEGER</datatype>
 <default>NULL</default></row>
@@ -598,7 +504,7 @@
 </key>
 <comment>Table to store the dialog events that are marked as evidence for a particular annotation for the client</comment>
 </table>
-<table x="1409" y="469" name="evidence_therapist">
+<table x="1348" y="913" name="evidence_therapist">
 <row name="id" null="1" autoincrement="1">
 <datatype>INTEGER</datatype>
 <default>NULL</default></row>
@@ -619,7 +525,7 @@
 </key>
 <comment>Table to store the dialog events that are marked as evidence for a particular annotation for the therapist</comment>
 </table>
-<table x="1999" y="444" name="evidence_dyad">
+<table x="2349" y="1111" name="evidence_dyad">
 <row name="id" null="1" autoincrement="1">
 <datatype>INTEGER</datatype>
 <default>NULL</default></row>
@@ -639,5 +545,194 @@
 <part>id</part>
 </key>
 <comment>Table to store the dialog events that are marked as evidence for a particular annotation for the dyad</comment>
+</table>
+<table x="2121" y="14" name="client_annotation_schema">
+<row name="id" null="1" autoincrement="1">
+<datatype>INTEGER</datatype>
+<default>NULL</default></row>
+<row name="label" null="1" autoincrement="0">
+<datatype>VARCHAR</datatype>
+<default>NULL</default></row>
+<row name="parent_id" null="1" autoincrement="0">
+<datatype>INTEGER</datatype>
+<default>NULL</default><relation table="client_annotation_schema" row="id" />
+<comment>this points to the label that this label is a child of</comment>
+</row>
+<key type="PRIMARY" name="">
+<part>id</part>
+</key>
+<comment>this is a self-referencing table that stores the different labels that constitute the annotations schema for the client</comment>
+</table>
+<table x="1615" y="235" name="annotationclient_annotationschema">
+<row name="id_ps_annotation_client" null="1" autoincrement="0">
+<datatype>INTEGER</datatype>
+<default>NULL</default><relation table="ps_annotation_client" row="id" />
+</row>
+<row name="id_client_annotations_schema" null="1" autoincrement="0">
+<datatype>INTEGER</datatype>
+<default>NULL</default><relation table="client_annotation_schema" row="id" />
+</row>
+<key type="PRIMARY" name="">
+</key>
+<comment>association table between client annotations table and annotations schema table</comment>
+</table>
+<table x="1056" y="557" name="therapist_annotation_schema">
+<row name="id" null="1" autoincrement="1">
+<datatype>INTEGER</datatype>
+<default>NULL</default></row>
+<row name="label" null="1" autoincrement="0">
+<datatype>VARCHAR</datatype>
+<default>NULL</default></row>
+<row name="parent_id" null="1" autoincrement="0">
+<datatype>INTEGER</datatype>
+<default>NULL</default><relation table="therapist_annotation_schema" row="id" />
+<comment>this points to the label that this label is a child of</comment>
+</row>
+<key type="PRIMARY" name="">
+<part>id</part>
+</key>
+<comment>this is a self-referencing table that stores the different labels that constitute the annotations schema for the therapist</comment>
+</table>
+<table x="530" y="416" name="annotationtherapist_annotationschema">
+<row name="id_ps_annotation_therapist" null="1" autoincrement="0">
+<datatype>INTEGER</datatype>
+<default>NULL</default><relation table="ps_annotation_therapist" row="id" />
+</row>
+<row name="id_therapist_annotation_schema" null="1" autoincrement="0">
+<datatype>INTEGER</datatype>
+<default>NULL</default><relation table="therapist_annotation_schema" row="id" />
+</row>
+<key type="PRIMARY" name="">
+</key>
+<comment>association table between therapist annotations table and annotations schema table</comment>
+</table>
+<table x="58" y="597" name="dyad_annotation_schema">
+<row name="id" null="1" autoincrement="1">
+<datatype>INTEGER</datatype>
+<default>NULL</default></row>
+<row name="label" null="1" autoincrement="0">
+<datatype>VARCHAR</datatype>
+<default>NULL</default></row>
+<row name="parent_id" null="1" autoincrement="0">
+<datatype>INTEGER</datatype>
+<default>NULL</default><relation table="dyad_annotation_schema" row="id" />
+<comment>this points to the label that this label is a child of</comment>
+</row>
+<key type="PRIMARY" name="">
+<part>id</part>
+</key>
+<comment>this is a self-referencing table that stores the different labels that constitute the annotations schema for the dyad</comment>
+</table>
+<table x="49" y="482" name="annotationdyad_annotationschema">
+<row name="id_ps_annotation_dyad" null="1" autoincrement="0">
+<datatype>INTEGER</datatype>
+<default>NULL</default><relation table="ps_annotation_dyad" row="id" />
+</row>
+<row name="id_dyad_annotation_schema" null="1" autoincrement="0">
+<datatype>INTEGER</datatype>
+<default>NULL</default><relation table="dyad_annotation_schema" row="id" />
+</row>
+<key type="PRIMARY" name="">
+</key>
+<comment>association table between dyad annotations table and annotations schema table</comment>
+</table>
+<table x="2104" y="369" name="client_annotation_schema_scale">
+<row name="id" null="1" autoincrement="1">
+<datatype>INTEGER</datatype>
+<default>NULL</default></row>
+<row name="scale_title" null="1" autoincrement="0">
+<datatype>VARCHAR</datatype>
+<default>NULL</default></row>
+<row name="scale_level" null="1" autoincrement="0">
+<datatype>VARCHAR</datatype>
+<default>NULL</default></row>
+<row name="id_client_annotation_schema" null="1" autoincrement="0">
+<datatype>INTEGER</datatype>
+<default>NULL</default><relation table="client_annotation_schema" row="id" />
+</row>
+<key type="PRIMARY" name="">
+<part>id</part>
+</key>
+</table>
+<table x="1037" y="752" name="therapist_annotation_schema_scale">
+<row name="id" null="1" autoincrement="1">
+<datatype>INTEGER</datatype>
+<default>NULL</default></row>
+<row name="scale_title" null="0" autoincrement="0">
+<datatype>VARCHAR</datatype>
+<default>'NULL'</default></row>
+<row name="scale_level" null="0" autoincrement="0">
+<datatype>VARCHAR</datatype>
+<default>'NULL'</default></row>
+<row name="id_therapist_annotation_schema" null="1" autoincrement="0">
+<datatype>INTEGER</datatype>
+<default>NULL</default><relation table="therapist_annotation_schema" row="id" />
+</row>
+<key type="PRIMARY" name="">
+<part>id</part>
+</key>
+</table>
+<table x="601" y="928" name="dyad_annotation_schema_scale">
+<row name="id" null="1" autoincrement="1">
+<datatype>INTEGER</datatype>
+<default>NULL</default></row>
+<row name="scale_title" null="0" autoincrement="0">
+<datatype>VARCHAR</datatype>
+<default>'NULL'</default></row>
+<row name="scale_level" null="0" autoincrement="0">
+<datatype>VARCHAR</datatype>
+<default>'NULL'</default></row>
+<row name="id_dyad_annotation_schema" null="1" autoincrement="0">
+<datatype>INTEGER</datatype>
+<default>NULL</default><relation table="dyad_annotation_schema" row="id" />
+</row>
+<key type="PRIMARY" name="">
+<part>id</part>
+</key>
+</table>
+<table x="1593" y="402" name="annotationclient_annotationschemascale">
+<row name="id" null="1" autoincrement="1">
+<datatype>INTEGER</datatype>
+<default>NULL</default></row>
+<row name="id_client_annotation_schema_scale" null="1" autoincrement="0">
+<datatype>INTEGER</datatype>
+<default>NULL</default><relation table="client_annotation_schema_scale" row="id" />
+</row>
+<row name="id_ps_annotation_client" null="1" autoincrement="0">
+<datatype>INTEGER</datatype>
+<default>NULL</default><relation table="ps_annotation_client" row="id" />
+</row>
+<key type="PRIMARY" name="">
+<part>id</part>
+</key>
+<comment>association table between client annotations table and annotations schema scale table</comment>
+</table>
+<table x="2107" y="186" name="client_annotation_comment">
+<row name="id" null="1" autoincrement="1">
+<datatype>INTEGER</datatype>
+<default>NULL</default></row>
+<row name="comment" null="1" autoincrement="0">
+<datatype>MEDIUMTEXT</datatype>
+<default>NULL</default></row>
+<row name="id_ps_annotation_client" null="1" autoincrement="0">
+<datatype>INTEGER</datatype>
+<default>NULL</default><relation table="ps_annotation_client" row="id" />
+</row>
+<row name="id_client_annotation_schema" null="1" autoincrement="0">
+<datatype>INTEGER</datatype>
+<default>NULL</default><relation table="client_annotation_schema" row="id" />
+</row>
+<key type="PRIMARY" name="">
+<part>id</part>
+</key>
+<comment>table to store the annotation comments for the client</comment>
+</table>
+<table x="515" y="524" name="annotationtherapist_annotationschemascale">
+<row name="id" null="1" autoincrement="1">
+<datatype>INTEGER</datatype>
+<default>NULL</default></row>
+<key type="PRIMARY" name="">
+<part>id</part>
+</key>
 </table>
 </sql>
