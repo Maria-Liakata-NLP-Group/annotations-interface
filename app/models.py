@@ -1060,6 +1060,25 @@ class ClientAnnotationComment(db.Model):
         return "<ClientAnnotationComment {}>".format(self.comment[:10])
 
 
+class TherapistAnnotationComment(db.Model):
+    """Table to store the comments for the therapist annotation schema"""
+
+    __tablename__ = "therapist_annotation_comment"
+
+    id = db.Column(db.Integer, primary_key=True)
+    comment = db.Column(db.Text, nullable=True)
+    id_therapist_annotation_schema = db.Column(
+        db.Integer, db.ForeignKey("therapist_annotation_schema.id")
+    )
+    id_ps_annotation_therapist = db.Column(
+        db.Integer, db.ForeignKey("ps_annotation_therapist.id")
+    )
+
+    def __repr__(self):
+        """How to print objects of this class"""
+        return "<TherapistAnnotationComment {}>".format(self.comment[:10])
+
+
 class AnnotationSchemaManager:
     def __init__(self):
         """Initialize the manager specifying the JSON files containing the annotation schema"""
