@@ -924,7 +924,11 @@ class TherapistAnnotationSchema(db.Model, AnnotationSchemaMixin):
         backref="label",
         lazy="dynamic",
     )  # one-to-many relationship with TherapistAnnotationSchemaScale class
-
+    comments = db.relationship(
+        "TherapistAnnotationComment",
+        backref="label",
+        lazy="dynamic",
+    )  # one-to-many relationship with TherapistAnnotationComment class
     # create unique constraint on label within a parent
     __table_args__ = (db.UniqueConstraint("label", "parent_id"),)
 
