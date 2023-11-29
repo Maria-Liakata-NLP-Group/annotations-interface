@@ -525,44 +525,19 @@ class PSAnnotationTherapist(db.Model):
     timestamp = db.Column(
         db.DateTime, index=True, default=datetime.utcnow
     )  # when annotation was created
-    label_a = db.Column(db.Enum(SubLabelsATherapist), nullable=True, default=None)
-    label_b = db.Column(db.Enum(SubLabelsBTherapist), nullable=True, default=None)
-    label_c = db.Column(db.Enum(SubLabelsCTherapist), nullable=True, default=None)
-    label_d = db.Column(db.Enum(SubLabelsDTherapist), nullable=True, default=None)
-    label_e = db.Column(db.Enum(SubLabelsETherapist), nullable=True, default=None)
-    strength_a = db.Column(
-        db.Enum(LabelStrengthATherapist), nullable=True, default=None
-    )
-    strength_b = db.Column(
-        db.Enum(LabelStrengthBTherapist), nullable=True, default=None
-    )
-    strength_c = db.Column(
-        db.Enum(LabelStrengthCTherapist), nullable=True, default=None
-    )
-    strength_d = db.Column(
-        db.Enum(LabelStrengthDTherapist), nullable=True, default=None
-    )
-    strength_e = db.Column(
-        db.Enum(LabelStrengthETherapist), nullable=True, default=None
-    )
-    comment_a = db.Column(db.Text, nullable=True)
-    comment_b = db.Column(db.Text, nullable=True)
-    comment_c = db.Column(db.Text, nullable=True)
-    comment_d = db.Column(db.Text, nullable=True)
-    comment_e = db.Column(db.Text, nullable=True)
     comment_summary = db.Column(db.Text, nullable=True)
-    dialog_turns = db.relationship(
-        "PSDialogTurn",
-        secondary=annotationtherapist_dialogturn,
-        backref=db.backref("annotations_therapist", lazy="dynamic"),
-        lazy="dynamic",
-    )  # many-to-many relationship with PSDialogTurn class
     id_user = db.Column(
         db.Integer, db.ForeignKey("user.id")
     )  # id of user (annotator) who created this annotation
     id_dataset = db.Column(
         db.Integer, db.ForeignKey("dataset.id")
     )  # id of dataset associated with this annotation
+    dialog_turns = db.relationship(
+        "PSDialogTurn",
+        secondary=annotationtherapist_dialogturn,
+        backref=db.backref("annotations_therapist", lazy="dynamic"),
+        lazy="dynamic",
+    )  # many-to-many relationship with PSDialogTurn class
     evidence = db.relationship(
         "EvidenceTherapist", backref="annotation", lazy="dynamic"
     )  # one-to-many relationship with EvidenceTherapist class
@@ -573,6 +548,17 @@ class PSAnnotationTherapist(db.Model):
         backref=db.backref("annotations", lazy="dynamic"),
         lazy="dynamic",
     )
+    annotation_scales = db.relationship(
+        "TherapistAnnotationSchemaScale",
+        secondary=annotationtherapist_annotationschemascale,
+        backref=db.backref("annotations", lazy="dynamic"),
+        lazy="dynamic",
+    )  # many-to-many relationship with TherapistAnnotationSchemaScale class
+    annotation_comments = db.relationship(
+        "TherapistAnnotationComment",
+        backref="annotation",
+        lazy="dynamic",
+    )  # one-to-many relationship with TherapistAnnotationComment class
 
 
 class PSAnnotationDyad(db.Model):
