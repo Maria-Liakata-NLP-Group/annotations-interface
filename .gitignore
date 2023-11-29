@@ -15,3 +15,7 @@ data/*
 
 # vscode
 .vscode/
+
+# pyreverse
+*.png
+pylint.rc
