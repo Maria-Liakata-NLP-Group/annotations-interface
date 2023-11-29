@@ -22,7 +22,9 @@ from app.models import (
     AnnotationSchemaManager,
     AnnotationSchemaScaleManager,
     ClientAnnotationSchema,
+    TherapistAnnotationSchema,
     ClientAnnotationSchemaScale,
+    TherapistAnnotationSchemaScale,
     ClientAnnotationComment,
 )
 from app.utils import (
@@ -292,6 +294,27 @@ def new_ps_annotation_schema_client():
     # find a scale associated with the parent label
     scale = ClientAnnotationSchemaScale.query.filter_by(
         id_client_annotation_schema=parent.id
+    ).first()
+    return label, scale
+
+
+# same as above but for therapist
+@pytest.fixture(scope="module")
+def new_ps_annotation_schema_therapist():
+    """Fixture to create a new psychotherapy annotation schema + scales"""
+    schema_manager = AnnotationSchemaManager()
+    schema_manager.add_labels_therapist()
+    scales_manager = AnnotationSchemaScaleManager()
+    scales_manager.add_scales_therapist()
+    # find a label with no child labels
+    label = TherapistAnnotationSchema.query.filter_by(children=None).first()
+    # find the uppermost parent of the label
+    parent = label
+    while parent.parent is not None:
+        parent = parent.parent
+    # find a scale associated with the parent label
+    scale = TherapistAnnotationSchemaScale.query.filter_by(
+        id_therapist_annotation_schema=parent.id
     ).first()
     return label, scale
 

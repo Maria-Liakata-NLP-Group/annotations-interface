@@ -1,0 +1,27 @@
+{
+  "Intervention type": {
+    "Supportive": [
+      "Empathy/sharing experience/being warm/sympathetic",
+      "Calming/providing support, hope or encouragement/down regulation",
+      "Respect, appreciation, acceptance, acknowledgement"
+    ],
+    "Expressive": [
+      "Interpretation/providing insight and meaning oof the mal-adaptive pattern/connecting current and past experience",
+      "Reflecting the subtle wish, RO or RS/relating to the conflict between the different voices",
+      "Transference interpretation"
+    ],
+    "Exploratory": [
+      "Expansion/exploration of experience/questions",
+      "Upregulation of emotions"
+    ],
+    "Directive": [
+      "Teaching new skills and behaviors",
+      "Exposure to the thing the patient is afraid of",
+      "Encouraging behavioral change",
+      "Setting an agenda/providing advice",
+      "Cognitive restructuring/challenging irrational thoughts"
+    ],
+    "No intervention is present in the segment": [],
+    "Other": []
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "Intervention type": {
+    "Typicality scale": [
+      "1. Not at all typical of the segment",
+      "2. Slightly typical of the segment",
+      "3. Somewhat typical of the segment",
+      "4. Typical of the segment",
+      "5. Very typical of the segment"
+    ],
+    "Quality": [
+      "1. Poor quality",
+      "2. Below average quality",
+      "3. Average quality",
+      "4. Above average quality",
+      "5. Excellent quality"
+    ]
+  }
+}
