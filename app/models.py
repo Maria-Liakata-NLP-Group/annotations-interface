@@ -144,6 +144,22 @@ annotationclient_annotationschemascale = db.Table(
 )
 
 
+# association table for many-to-many relationship between PSAnnotationTherapist and TherapistAnnotationSchemaScale
+annotationtherapist_annotationschemascale = db.Table(
+    "annotationtherapist_annotationschemascale",
+    db.Column(
+        "id_ps_annotation_therapist",
+        db.Integer,
+        db.ForeignKey("ps_annotation_therapist.id"),
+    ),
+    db.Column(
+        "id_therapist_annotation_schema_scale",
+        db.Integer,
+        db.ForeignKey("therapist_annotation_schema_scale.id"),
+    ),
+)
+
+
 class User(UserMixin, db.Model):
     """User class for database"""
 
