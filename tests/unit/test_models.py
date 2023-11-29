@@ -505,6 +505,7 @@ def test_new_ps_annotation_therapist(
     db_session,
     new_ps_dialog_turn,
     new_ps_annotation_therapist,
+    new_ps_annotation_schema_therapist,
 ):
     """
     GIVEN a PSAnnotationTherapist model
@@ -518,15 +519,15 @@ def test_new_ps_annotation_therapist(
     annotation = PSAnnotationTherapist.query.all()[0]
     annotator1 = User.query.filter_by(username="annotator1").first()
     dataset = Dataset.query.filter_by(name="Psychotherapy Dataset Test").first()
-    assert annotation.label_a == SubLabelsATherapist.emotional
-    assert annotation.label_b == SubLabelsBTherapist.reframing
-    assert annotation.strength_b == LabelStrengthBTherapist.high
-    assert annotation.comment_a == "test comment a"
-    assert annotation.comment_b == "test comment b"
     assert annotation.comment_summary == "test comment summary"
-    assert annotation.dialog_turns.first() == new_ps_dialog_turn
+    assert annotation.dialog_turns.first().id == new_ps_dialog_turn.id
     assert annotation.author == annotator1
     assert annotation.dataset == dataset
+    label, scale = new_ps_annotation_schema_therapist
+    new_ps_annotation_therapist.annotation_labels.append(label)
+    new_ps_annotation_therapist.annotation_scales.append(scale)
+    assert label.annotations.first() == new_ps_annotation_therapist
+    assert scale.annotations.first() == new_ps_annotation_therapist
 
 
 @pytest.mark.order(after="test_new_ps_annotation_therapist")
