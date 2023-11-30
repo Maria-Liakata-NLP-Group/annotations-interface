@@ -71,14 +71,13 @@ def create_select_field(label, choices, name, default=None):
 
 
 def create_select_field_without_choices(
-    label: str,
-    name: str,
-    data_required: bool = False,
+    label: str, name: str, data_required: bool = False, validate_choice: bool = False
 ) -> SelectField:
     """
     Create a select field with the given label and name, but without choices.
     This is used for select fields with dynamic choice values.
     Set 'data_required' to True if the field is always required.
+    Set 'validate_choice' to True to allow choice validation, more info in the WTForms docs.
     """
 
     if data_required:
@@ -90,6 +89,7 @@ def create_select_field_without_choices(
         validators=validators,
         name=name,
         coerce=int,
+        validate_choice=validate_choice,
     )
 
 
