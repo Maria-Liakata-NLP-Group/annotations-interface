@@ -1,0 +1,20 @@
+{
+  "Alliance/reciprocity": {
+    "Level": [
+      "1. Low alliance",
+      "2. Mild alliance",
+      "3. Moderate alliance",
+      "4. Good alliance",
+      "5. High alliance"
+    ]
+  },
+  "Tension/rupture": {
+    "Level": [
+      "1. No tension",
+      "2. Low tension",
+      "3. Moderate tension",
+      "4. High tension",
+      "5. Extreme tension"
+    ]
+  }
+}
