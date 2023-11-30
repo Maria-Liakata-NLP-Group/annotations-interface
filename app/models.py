@@ -977,6 +977,11 @@ class DyadAnnotationSchema(db.Model, AnnotationSchemaMixin):
         backref="label",
         lazy="dynamic",
     )  # one-to-many relationship with DyadAnnotationSchemaScale class
+    comments = db.relationship(
+        "DyadAnnotationComment",
+        backref="label",
+        lazy="dynamic",
+    )  # one-to-many relationship with DyadAnnotationComment class
     # create unique constraint on label within a parent
     __table_args__ = (db.UniqueConstraint("label", "parent_id"),)
 
