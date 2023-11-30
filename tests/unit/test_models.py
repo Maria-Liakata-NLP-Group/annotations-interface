@@ -584,6 +584,7 @@ def test_new_ps_annotation_dyad(
     db_session,
     new_ps_dialog_turn,
     new_ps_annotation_dyad,
+    new_ps_annotation_schema_dyad,
 ):
     """
     GIVEN a PSAnnotationDyad model
@@ -596,15 +597,15 @@ def test_new_ps_annotation_dyad(
     annotation = PSAnnotationDyad.query.all()[0]
     annotator1 = User.query.filter_by(username="annotator1").first()
     dataset = Dataset.query.filter_by(name="Psychotherapy Dataset Test").first()
-    assert annotation.label_a == SubLabelsADyad.bond
-    assert annotation.label_b == SubLabelsBDyad.other
-    assert annotation.strength_a == LabelStrengthADyad.medium
-    assert annotation.comment_a == "test comment a"
-    assert annotation.comment_b == "test comment b"
     assert annotation.comment_summary == "test comment summary"
-    assert annotation.dialog_turns.first() == new_ps_dialog_turn
+    assert annotation.dialog_turns.first().id == new_ps_dialog_turn.id
     assert annotation.author == annotator1
     assert annotation.dataset == dataset
+    label, scale = new_ps_annotation_schema_dyad
+    new_ps_annotation_dyad.annotation_labels.append(label)
+    new_ps_annotation_dyad.annotation_scales.append(scale)
+    assert label.annotations.first() == new_ps_annotation_dyad
+    assert scale.annotations.first() == new_ps_annotation_dyad
 
 
 @pytest.mark.order(after="test_new_ps_annotation_dyad")
