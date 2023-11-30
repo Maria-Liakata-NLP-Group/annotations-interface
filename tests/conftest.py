@@ -26,6 +26,7 @@ from app.models import (
     ClientAnnotationSchemaScale,
     TherapistAnnotationSchemaScale,
     ClientAnnotationComment,
+    TherapistAnnotationComment,
 )
 from app.utils import (
     SubLabelsATherapist,
@@ -328,5 +329,18 @@ def new_ps_annotation_comment_client(
         comment="test comment",
         annotation=new_ps_annotation_client,
         label=new_ps_annotation_schema_client[0],
+    )
+    return comment
+
+
+@pytest.fixture(scope="module")
+def new_ps_annotation_comment_therapist(
+    new_ps_annotation_therapist, new_ps_annotation_schema_therapist
+):
+    """Fixture to create a new psychotherapy annotation comment for the therapist"""
+    comment = TherapistAnnotationComment(
+        comment="test comment",
+        annotation=new_ps_annotation_therapist,
+        label=new_ps_annotation_schema_therapist[0],
     )
     return comment
