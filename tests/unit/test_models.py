@@ -25,9 +25,6 @@ from app.models import (
     DyadAnnotationComment,
 )
 from app.utils import (
-    SubLabelsADyad,
-    SubLabelsBDyad,
-    LabelStrengthADyad,
     LabelNamesClient,
     LabelNamesTherapist,
     LabelNamesDyad,
