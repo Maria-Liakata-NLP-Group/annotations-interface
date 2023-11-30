@@ -22,6 +22,7 @@ from app.models import (
     AnnotationSchemaScaleManager,
     ClientAnnotationComment,
     TherapistAnnotationComment,
+    DyadAnnotationComment,
 )
 from app.utils import (
     SubLabelsADyad,
@@ -716,3 +717,26 @@ def test_new_ps_annotation_comment_therapist(
     assert annotation_comment.comment == "test comment"
     assert annotation_comment.annotation == new_ps_annotation_therapist
     assert annotation_comment.label == new_ps_annotation_schema_therapist[0]
+
+
+@pytest.mark.order(after="test_new_ps_annotation_comment_therapist")
+def test_new_ps_annotation_comment_dyad(
+    db_session,
+    new_ps_annotation_comment_dyad,
+    new_ps_annotation_dyad,
+    new_ps_annotation_schema_dyad,
+):
+    """
+    GIVEN a DyadAnnotationComment model
+    WHEN a new DyadAnnotationComment is created and added to the database
+    THEN check its fields are defined correctly
+    """
+    annotation_comment = new_ps_annotation_comment_dyad
+    db_session.add(annotation_comment)
+    db_session.commit()
+
+    annotation_comment = DyadAnnotationComment.query.first()
+    assert annotation_comment is not None
+    assert annotation_comment.comment == "test comment"
+    assert annotation_comment.annotation == new_ps_annotation_dyad
+    assert annotation_comment.label == new_ps_annotation_schema_dyad[0]
