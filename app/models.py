@@ -160,6 +160,22 @@ annotationtherapist_annotationschemascale = db.Table(
 )
 
 
+# association table for many-to-many relationship between PSAnnotationDyad and DyadAnnotationSchemaScale
+annotationdyad_annotationschemascale = db.Table(
+    "annotationdyad_annotationschemascale",
+    db.Column(
+        "id_ps_annotation_dyad",
+        db.Integer,
+        db.ForeignKey("ps_annotation_dyad.id"),
+    ),
+    db.Column(
+        "id_dyad_annotation_schema_scale",
+        db.Integer,
+        db.ForeignKey("dyad_annotation_schema_scale.id"),
+    ),
+)
+
+
 class User(UserMixin, db.Model):
     """User class for database"""
 
@@ -572,25 +588,19 @@ class PSAnnotationDyad(db.Model):
     timestamp = db.Column(
         db.DateTime, index=True, default=datetime.utcnow
     )  # when annotation was created
-    label_a = db.Column(db.Enum(SubLabelsADyad), nullable=True, default=None)
-    label_b = db.Column(db.Enum(SubLabelsBDyad), nullable=True, default=None)
-    strength_a = db.Column(db.Enum(LabelStrengthADyad), nullable=True, default=None)
-    strength_b = db.Column(db.Enum(LabelStrengthBDyad), nullable=True, default=None)
-    comment_a = db.Column(db.Text, nullable=True)
-    comment_b = db.Column(db.Text, nullable=True)
     comment_summary = db.Column(db.Text, nullable=True)
-    dialog_turns = db.relationship(
-        "PSDialogTurn",
-        secondary=annotationsdyad_dialogturn,
-        backref=db.backref("annotations_dyad", lazy="dynamic"),
-        lazy="dynamic",
-    )  # many-to-many relationship with PSDialogTurn class
     id_user = db.Column(
         db.Integer, db.ForeignKey("user.id")
     )  # id of user (annotator) who created this annotation
     id_dataset = db.Column(
         db.Integer, db.ForeignKey("dataset.id")
     )  # id of dataset associated with this annotation
+    dialog_turns = db.relationship(
+        "PSDialogTurn",
+        secondary=annotationsdyad_dialogturn,
+        backref=db.backref("annotations_dyad", lazy="dynamic"),
+        lazy="dynamic",
+    )  # many-to-many relationship with PSDialogTurn class
     evidence = db.relationship(
         "EvidenceDyad", backref="annotation", lazy="dynamic"
     )  # one-to-many relationship with EvidenceDyad class
@@ -601,6 +611,17 @@ class PSAnnotationDyad(db.Model):
         backref=db.backref("annotations", lazy="dynamic"),
         lazy="dynamic",
     )
+    annotation_scales = db.relationship(
+        "DyadAnnotationSchemaScale",
+        secondary=annotationdyad_annotationschemascale,
+        backref=db.backref("annotations", lazy="dynamic"),
+        lazy="dynamic",
+    )  # many-to-many relationship with DyadAnnotationSchemaScale class
+    annotation_comments = db.relationship(
+        "DyadAnnotationComment",
+        backref="annotation",
+        lazy="dynamic",
+    )  # one-to-many relationship with DyadAnnotationComment class
 
 
 class EvidenceClient(db.Model):
