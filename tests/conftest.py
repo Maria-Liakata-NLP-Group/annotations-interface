@@ -231,11 +231,6 @@ def new_ps_annotation_therapist(new_ps_dataset, new_ps_dialog_turn, user_annotat
 def new_ps_annotation_dyad(new_ps_dataset, new_ps_dialog_turn, user_annotator1):
     """Fixture to create a new psychotherapy dialog turn annotation for the dyad"""
     dialog_turn_annotation = PSAnnotationDyad(
-        label_a=SubLabelsADyad.bond,
-        label_b=SubLabelsBDyad.other,
-        strength_a=LabelStrengthADyad.medium,
-        comment_a="test comment a",
-        comment_b="test comment b",
         comment_summary="test comment summary",
         author=user_annotator1,
         dataset=new_ps_dataset,
