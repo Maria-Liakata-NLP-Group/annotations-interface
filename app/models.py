@@ -7,6 +7,7 @@ from flask_login import UserMixin, AnonymousUserMixin
 from flask import current_app, abort
 import warnings
 import os
+from sqlalchemy.ext.associationproxy import association_proxy
 from app.utils import (
     SMAnnotationType,
     DatasetType,
@@ -93,15 +94,20 @@ class ClientAnnotationSchemaAssociation(db.Model):
         db.Integer,
         db.ForeignKey("client_annotation_schema.id"),
     )
-    is_additional = db.Column(db.Boolean, default=False)
+    is_additional = db.Column(db.Boolean, default=False)  # is this an additional label?
     label = db.relationship(
         "ClientAnnotationSchema",
         back_populates="annotations",
     )
     annotation = db.relationship(
         "PSAnnotationClient",
-        back_populates="labels",
+        back_populates="annotation_label_associations",
     )
+
+    def __init__(self, label=None, annotation=None, is_additional=False):
+        self.label = label
+        self.annotation = annotation
+        self.is_additional = is_additional
 
 
 # association table for many-to-many relationship between TherapistAnnotationSchema and PSAnnotationTherapist
@@ -519,11 +525,14 @@ class PSAnnotationClient(db.Model):
     evidence = db.relationship(
         "EvidenceClient", backref="annotation", lazy="dynamic"
     )  # one-to-many relationship with EvidenceClient class
-    labels = db.relationship(
+    annotation_label_associations = db.relationship(
         "ClientAnnotationSchemaAssociation",
         back_populates="annotation",
         lazy="dynamic",
     )  # many-to-many relationship with ClientAnnotationSchema class
+    annotation_labels = association_proxy(
+        "annotation_label_associations", "label"
+    )  # association proxy of "annotation_label_associations" to "label" attribute of ClientAnnotationSchemaAssociation class
     annotation_scales = db.relationship(
         "ClientAnnotationSchemaScale",
         secondary=annotationclient_annotationschemascale,
