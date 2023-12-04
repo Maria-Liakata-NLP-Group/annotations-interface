@@ -234,75 +234,40 @@ def new_dialog_turn_annotation_to_db(
     dialog_turns : list of PSDialogTurn objects
         The dialog turns the annotation is for
     """
+
+    # create the annotation object for the client, therapist or dyad
     if speaker == Speaker.client:
-        annotation = PSAnnotationClient(
-            label_a=form.label_a.data,
-            label_b=form.label_b.data,
-            label_c=form.label_c.data,
-            label_d=form.label_d.data,
-            label_e=form.label_e.data,
-            label_f=form.label_f.data,
-            strength_a=form.strength_a.data,
-            strength_b=form.strength_b.data,
-            strength_c=form.strength_c.data,
-            strength_d=form.strength_d.data,
-            strength_e=form.strength_e.data,
-            strength_f=form.strength_f.data,
-            comment_a=form.comment_a.data,
-            comment_b=form.comment_b.data,
-            comment_c=form.comment_c.data,
-            comment_d=form.comment_d.data,
-            comment_e=form.comment_e.data,
-            comment_f=form.comment_f.data,
-            comment_summary=form.comment_summary.data,
-            author=current_user,
-            dataset=dataset,
-        )
-        for dialog_turn in dialog_turns:
-            annotation.dialog_turns.append(dialog_turn)
-        db.session.add(annotation)
-        new_client_evidence_events_to_db(form, annotation)
+        annotation_model = PSAnnotationClient
+        annotation_schema = ClientAnnotationSchema()
     elif speaker == Speaker.therapist:
-        annotation = PSAnnotationTherapist(
-            label_a=form.label_a.data,
-            label_b=form.label_b.data,
-            label_c=form.label_c.data,
-            label_d=form.label_d.data,
-            label_e=form.label_e.data,
-            strength_a=form.strength_a.data,
-            strength_b=form.strength_b.data,
-            strength_c=form.strength_c.data,
-            strength_d=form.strength_d.data,
-            strength_e=form.strength_e.data,
-            comment_a=form.comment_a.data,
-            comment_b=form.comment_b.data,
-            comment_c=form.comment_c.data,
-            comment_d=form.comment_d.data,
-            comment_e=form.comment_e.data,
-            comment_summary=form.comment_summary.data,
-            author=current_user,
-            dataset=dataset,
-        )
-        for dialog_turn in dialog_turns:
-            annotation.dialog_turns.append(dialog_turn)
-        db.session.add(annotation)
-        new_therapist_evidence_events_to_db(form, annotation)
+        annotation_model = PSAnnotationTherapist
+        annotation_schema = TherapistAnnotationSchema()
     elif speaker == Speaker.dyad:
-        annotation = PSAnnotationDyad(
-            label_a=form.label_a.data,
-            label_b=form.label_b.data,
-            strength_a=form.strength_a.data,
-            strength_b=form.strength_b.data,
-            comment_a=form.comment_a.data,
-            comment_b=form.comment_b.data,
-            comment_summary=form.comment_summary.data,
-            author=current_user,
-            dataset=dataset,
-        )
-        for dialog_turn in dialog_turns:
-            annotation.dialog_turns.append(dialog_turn)
-        db.session.add(annotation)
-        new_dyad_evidence_events_to_db(form, annotation)
+        annotation_model = PSAnnotationDyad
+        annotation_schema = DyadAnnotationSchema()
+
+    annotation = annotation_model(
+        comment_summary=form.comment_summary.data,
+        author=current_user,
+        dataset=dataset,
+    )
+    # add the dialog turns to the annotation
+    for dialog_turn in dialog_turns:
+        annotation.dialog_turns.append(dialog_turn)
+
+    # find the label and sub label attributes in the form and add them to the annotation
+    for attr in form.__dict__.keys():
+        if attr.startswith("label_") and getattr(form, attr).data != 0:
+            label = annotation_schema.query.get_or_404(getattr(form, attr).data)
+            annotation.annotation_labels.append(label)
+        elif attr.startswith("sub_label_") and getattr(form, attr).data != 0:
+            sub_label = annotation_schema.query.get_or_404(getattr(form, attr).data)
+            annotation.annotation_labels.append(sub_label)
+
+    db.session.add(annotation)
+    # new_client_evidence_events_to_db(form, annotation)
+    # new_therapist_evidence_events_to_db(form, annotation)
+    # new_dyad_evidence_events_to_db(form, annotation)
 
 
 def new_client_evidence_events_to_db(
