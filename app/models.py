@@ -80,20 +80,25 @@ annotationsdyad_dialogturn = db.Table(
 )
 
 
-# association table for many-to-many relationship between ClientAnnotationSchema and PSAnnotationClient
-annotationclient_annotationschema = db.Table(
-    "annotationclient_annotationschema",
-    db.Column(
-        "id_ps_annotation_client",
-        db.Integer,
-        db.ForeignKey("ps_annotation_client.id"),
-    ),
-    db.Column(
-        "id_client_annotation_schema",
-        db.Integer,
-        db.ForeignKey("client_annotation_schema.id"),
-    ),
-)
+class ClientAnnotationSchemaAssociation(db.Model):
+    """Associtation object for many-to-many relationship between PSAnnotationClient and ClientAnnotationSchema"""
+
+    __tablename__ = ("annotationclient_annotationschema",)
+    id_ps_annotation_client = db.Column(
+        db.Integer, db.ForeignKey("ps_annotation_client.id"), primary_key=True
+    )
+    id_client_annotation_schema = db.Column(
+        db.Integer, db.ForeignKey("client_annotation_schema.id"), primary_key=True
+    )
+    is_additional = db.Column(db.Boolean, default=False)
+    label = db.relationship(
+        "ClientAnnotationSchema",
+        back_populates="annotations",
+    )
+    annotation = db.relationship(
+        "PSAnnotationClient",
+        back_populates="labels",
+    )
 
 
 # association table for many-to-many relationship between TherapistAnnotationSchema and PSAnnotationTherapist
@@ -511,10 +516,9 @@ class PSAnnotationClient(db.Model):
     evidence = db.relationship(
         "EvidenceClient", backref="annotation", lazy="dynamic"
     )  # one-to-many relationship with EvidenceClient class
-    annotation_labels = db.relationship(
-        "ClientAnnotationSchema",
-        secondary=annotationclient_annotationschema,
-        backref=db.backref("annotations", lazy="dynamic"),
+    labels = db.relationship(
+        "ClientAnnotationSchemaAssociation",
+        back_populates="annotation",
         lazy="dynamic",
     )  # many-to-many relationship with ClientAnnotationSchema class
     annotation_scales = db.relationship(
@@ -907,6 +911,11 @@ class ClientAnnotationSchema(db.Model, AnnotationSchemaMixin):
         backref=db.backref("parent", remote_side=[id]),
         lazy="dynamic",
     )
+    annotations = db.relationship(
+        "ClientAnnotationSchemaAssociation",
+        back_populates="label",
+        lazy="dynamic",
+    )  # many-to-many relationship with PSAnnotationClient class
     scales = db.relationship(
         "ClientAnnotationSchemaScale",
         backref="label",
