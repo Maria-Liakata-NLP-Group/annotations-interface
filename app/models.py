@@ -83,12 +83,15 @@ annotationsdyad_dialogturn = db.Table(
 class ClientAnnotationSchemaAssociation(db.Model):
     """Associtation object for many-to-many relationship between PSAnnotationClient and ClientAnnotationSchema"""
 
-    __tablename__ = ("annotationclient_annotationschema",)
+    __tablename__ = "annotationclient_annotationschema"
+    id = db.Column(db.Integer, primary_key=True)
     id_ps_annotation_client = db.Column(
-        db.Integer, db.ForeignKey("ps_annotation_client.id"), primary_key=True
+        db.Integer,
+        db.ForeignKey("ps_annotation_client.id"),
     )
     id_client_annotation_schema = db.Column(
-        db.Integer, db.ForeignKey("client_annotation_schema.id"), primary_key=True
+        db.Integer,
+        db.ForeignKey("client_annotation_schema.id"),
     )
     is_additional = db.Column(db.Boolean, default=False)
     label = db.relationship(
