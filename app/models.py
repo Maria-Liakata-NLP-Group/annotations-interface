@@ -89,6 +89,11 @@ class ClientAnnotationSchemaAssociation(db.Model):
         "PSAnnotationClient",
         back_populates="annotation_label_associations",
     )
+    comment = db.relationship(
+        "ClientAnnotationComment",
+        backref="association",
+        lazy="dynamic",
+    )  # one-to-many relationship with ClientAnnotationComment class
 
     def __init__(self, label=None, annotation=None, is_additional=False):
         self.label = label
@@ -525,11 +530,6 @@ class PSAnnotationClient(db.Model):
         backref=db.backref("annotations", lazy="dynamic"),
         lazy="dynamic",
     )  # many-to-many relationship with ClientAnnotationSchemaScale class
-    annotation_comments = db.relationship(
-        "ClientAnnotationComment",
-        backref="annotation",
-        lazy="dynamic",
-    )  # one-to-many relationship with ClientAnnotationComment class
 
 
 class PSAnnotationTherapist(db.Model):
@@ -919,11 +919,6 @@ class ClientAnnotationSchema(db.Model, AnnotationSchemaMixin):
         backref="label",
         lazy="dynamic",
     )  # one-to-many relationship with ClientAnnotationSchemaScale class
-    comments = db.relationship(
-        "ClientAnnotationComment",
-        backref="label",
-        lazy="dynamic",
-    )  # one-to-many relationship with ClientAnnotationComment class
     # create unique constraint on label within a parent
     __table_args__ = (db.UniqueConstraint("label", "parent_id"),)
 
@@ -1065,17 +1060,14 @@ class DyadAnnotationSchemaScale(db.Model):
 
 
 class ClientAnnotationComment(db.Model):
-    """Table to store the comments for the client annotation schema"""
+    """Table to store the comments for the client annotations"""
 
     __tablename__ = "client_annotation_comment"
 
     id = db.Column(db.Integer, primary_key=True)
     comment = db.Column(db.Text, nullable=True)
-    id_client_annotation_schema = db.Column(
-        db.Integer, db.ForeignKey("client_annotation_schema.id")
-    )
-    id_ps_annotation_client = db.Column(
-        db.Integer, db.ForeignKey("ps_annotation_client.id")
+    id_annotationclient_annotationschema = db.Column(
+        db.Integer, db.ForeignKey("annotationclient_annotationschema.id")
     )
 
     def __repr__(self):
