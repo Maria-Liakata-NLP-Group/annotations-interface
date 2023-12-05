@@ -19,6 +19,7 @@ from app.models import (
     ClientAnnotationSchema,
     TherapistAnnotationSchema,
     DyadAnnotationSchema,
+    ClientAnnotationSchemaAssociation,
 )
 from app import db
 from app.annotate.forms import (
@@ -251,20 +252,46 @@ def new_dialog_turn_annotation_to_db(
         author=current_user,
         dataset=dataset,
     )
+    db.session.add(annotation)
+
     # add the dialog turns to the annotation
     for dialog_turn in dialog_turns:
         annotation.dialog_turns.append(dialog_turn)
 
     # find the label and sub label attributes in the form and add them to the annotation
     for attr in form.__dict__.keys():
-        if attr.startswith("label_") and getattr(form, attr).data != 0:
+        # if the attribute starts with "label_" or "sub_label_" and does not end with "_add" and the value is not 0
+        # can be either a non-additional label or a sub-label
+        # use the association proxy to add the label to the annotation
+        if (
+            all(
+                [
+                    attr.startswith("label_") or attr.startswith("sub_label_"),
+                    not attr.endswith("_add"),
+                ]
+            )
+            and getattr(form, attr).data != 0
+        ):
             label = annotation_schema.query.get_or_404(getattr(form, attr).data)
             annotation.annotation_labels.append(label)
-        elif attr.startswith("sub_label_") and getattr(form, attr).data != 0:
-            sub_label = annotation_schema.query.get_or_404(getattr(form, attr).data)
-            annotation.annotation_labels.append(sub_label)
+        # if the attribute starts with "label_" or "sub_label_" and ends with "_add" and the value is not 0
+        # can be either an additional label or a sub-label
+        # use the association object explicitly to add the label to the annotation, specifying the is_additional flag
+        elif (
+            all(
+                [
+                    attr.startswith("label_") or attr.startswith("sub_label_"),
+                    attr.endswith("_add"),
+                ]
+            )
+            and getattr(form, attr).data != 0
+        ):
+            label = annotation_schema.query.get_or_404(getattr(form, attr).data)
+            association = ClientAnnotationSchemaAssociation(
+                label=label, annotation=annotation, is_additional=True
+            )
+            db.session.add(association)
 
-    db.session.add(annotation)
     # new_client_evidence_events_to_db(form, annotation)
     # new_therapist_evidence_events_to_db(form, annotation)
     # new_dyad_evidence_events_to_db(form, annotation)
