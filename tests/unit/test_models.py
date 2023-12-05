@@ -24,6 +24,7 @@ from app.models import (
     ClientAnnotationComment,
     TherapistAnnotationComment,
     DyadAnnotationComment,
+    ClientAnnotationSchemaAssociation,
 )
 from app.utils import (
     LabelNamesClient,
@@ -225,7 +226,7 @@ def test_new_ps_dialog_event(db_session, new_ps_dialog_event):
 
 
 @pytest.mark.order(after="test_new_ps_dialog_event")
-def test_new_client_annotation_schema(db_session, new_ps_annotation_client):
+def test_new_client_annotation_schema(db_session):
     """
     GIVEN a ClientAnnotationSchema model
     WHEN a new ClientAnnotationSchema is created and added to the database
@@ -233,12 +234,11 @@ def test_new_client_annotation_schema(db_session, new_ps_annotation_client):
     """
 
     label_a = ClientAnnotationSchema(
-        label="parent label", annotations=[new_ps_annotation_client]
+        label="parent label",
     )
     label_b = ClientAnnotationSchema(
         label="child label",
         parent=label_a,
-        annotations=[new_ps_annotation_client],
     )
     db_session.add_all([label_a, label_b])
     db_session.commit()
@@ -249,10 +249,6 @@ def test_new_client_annotation_schema(db_session, new_ps_annotation_client):
     assert label_a.children[0] is label_b
     assert label_b.parent is label_a
     assert label_b.children.all() == []
-
-    # verify that the annotations are correctly linked to the labels
-    labels = new_ps_annotation_client.annotation_labels.all()
-    assert len(labels) == 2
 
     with pytest.raises(IntegrityError, match="UNIQUE constraint failed"):
         """Test that a label with the same name and parent cannot be added twice"""
@@ -590,10 +586,25 @@ def test_new_ps_annotation_client(
     assert annotation.author == annotator1
     assert annotation.dataset == dataset
     label, scale = new_ps_annotation_schema_client
-    new_ps_annotation_client.annotation_labels.append(label)
+    # add the label and scale to the annotation
+    # also test the ClientAnnotationSchemaAssociation model (association object + association proxy)
+    new_ps_annotation_client.annotation_labels.append(label)  # association proxy
     new_ps_annotation_client.annotation_scales.append(scale)
-    assert label.annotations.first() == new_ps_annotation_client
+    association = ClientAnnotationSchemaAssociation(
+        label, new_ps_annotation_client, is_additional=True
+    )  # association object explicitly
+    db_session.add(association)
+    associations = label.annotations.all()
+    for association in associations:
+        assert association.annotation == new_ps_annotation_client
+        assert association.label == label
+    assert not associations[
+        0
+    ].is_additional  # default through association proxy is False
+    assert associations[1].is_additional
+    assert association.annotation == new_ps_annotation_client
     assert scale.annotations.first() == new_ps_annotation_client
+    db_session.rollback()
 
 
 @pytest.mark.order(after="test_new_ps_annotation_client")
