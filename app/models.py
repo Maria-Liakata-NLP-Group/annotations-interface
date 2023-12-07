@@ -75,10 +75,12 @@ class ClientAnnotationSchemaAssociation(db.Model):
     id_ps_annotation_client = db.Column(
         db.Integer,
         db.ForeignKey("ps_annotation_client.id"),
+        nullable=False,
     )
     id_client_annotation_schema = db.Column(
         db.Integer,
         db.ForeignKey("client_annotation_schema.id"),
+        nullable=False,
     )
     is_additional = db.Column(db.Boolean, default=False)  # is this an additional label?
     label = db.relationship(
@@ -1077,6 +1079,7 @@ class ClientAnnotationComment(db.Model):
     id_ps_annotation_client = db.Column(
         db.Integer, db.ForeignKey("ps_annotation_client.id")
     )
+    is_additional = db.Column(db.Boolean, default=False)
 
     def __repr__(self):
         """How to print objects of this class"""
