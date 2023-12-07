@@ -333,10 +333,14 @@ def new_ps_annotation_schema_dyad():
 
 
 @pytest.fixture(scope="module")
-def new_ps_annotation_comment_client():
+def new_ps_annotation_comment_client(
+    new_ps_annotation_client, new_ps_annotation_schema_client
+):
     """Fixture to create a new psychotherapy annotation comment for the client"""
     comment = ClientAnnotationComment(
         comment="test comment",
+        annotation=new_ps_annotation_client,
+        label=new_ps_annotation_schema_client[0],
     )
     return comment
 

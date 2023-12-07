@@ -751,15 +751,8 @@ def test_new_ps_annotation_comment_client(
     annotation_comment = ClientAnnotationComment.query.first()
     assert annotation_comment is not None
     assert annotation_comment.comment == "test comment"
-    # check that the relationship between the comment and the annotation is correctly defined
-    association = ClientAnnotationSchemaAssociation(
-        label=new_ps_annotation_schema_client[0],
-        annotation=new_ps_annotation_client,
-    )
-    association.comments.append(annotation_comment)
-    db_session.add(association)
-    assert annotation_comment.annotation_label_association == association
-    db_session.rollback()
+    assert annotation_comment.annotation == new_ps_annotation_client
+    assert annotation_comment.label == new_ps_annotation_schema_client[0]
 
 
 @pytest.mark.order(after="test_new_ps_annotation_comment_client")
