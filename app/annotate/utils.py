@@ -591,25 +591,25 @@ def assign_dynamic_choices(
     -------
     form : PSAnnotationFormClient or PSAnnotationFormTherapist or PSAnnotationFormDyad
         The annotation form with the dynamic choices assigned to the select fields or select
-        multiple fields that start with "label_", "scale_", "start_event_", "end_event_" or
+        multiple fields that start with "label_", "scale_", "startevent_", "endevent_" or
         "evidence_". For the sub labels, assign a placeholder of value 0 with no label. An
         AJAX call is made to the server later to get the actual choices dynamically.
     """
 
     # assign the dynamic choices to the select fields or select multiple fields
-    # that start with "start_event_", "end_event_" or "evidence_"
+    # that start with "startevent_", "endevent_" or "evidence_"
     choices = get_evidence_dynamic_choices(page_items, speaker)
     for field_name in form.__dict__.keys():
         if (
             field_name.startswith("evidence_")
-            or field_name.startswith("start_event_")
-            or field_name.startswith("end_event_")
+            or field_name.startswith("startevent_")
+            or field_name.startswith("endevent_")
         ):
             form[field_name].choices = choices
 
     # find all the form group names in the form (i.e. name_a, name_b, name_c, etc.)
     # assign the corresponding choices to their respective labels (i.e. label_a, label_b, label_c, etc.)
-    # and scales (i.e. scale_a, scale_b, scale_c, etc.)
+    # and scales (i.e. scale_(i)_a, scale_(i)_b, scale_(i)_c, etc.)
     if speaker == Speaker.client:
         annotation_schema = ClientAnnotationSchema()
     elif speaker == Speaker.therapist:
@@ -625,21 +625,21 @@ def assign_dynamic_choices(
         letter = name.split("_")[1]  # i.e. a, b, c, etc.
         label_attr = "label_" + letter  # i.e. label_a, label_b, label_c, etc.
         label_attr_add = (
-            "label_" + letter + "_add"
-        )  # i.e. label_a_add, label_b_add, label_c_add, etc.
+            "label" + "_add_" + letter
+        )  # i.e. label_add_a, label_add_b, label_add_c, etc.
         if label_attr in form.__dict__.keys():
             form[label_attr].choices = choices
         if label_attr_add in form.__dict__.keys():
             form[label_attr_add].choices = choices
         for scale in scales:
-            if "scale_" + letter in scale:  # i.e. scale_a, scale_b, scale_c, etc.
+            if scale.endswith("_" + letter):
                 scale_title = getattr(form, scale).label.text
                 choices = annotation_schema.get_label_scales(parent_label, scale_title)
                 form[scale].choices = choices
 
     # find all the sub label names in the form and assign a placeholder of value 0 with no label
     # an AJAX call is made to the server later to get the actual choices dynamically
-    sub_labels = [attr for attr in dir(form) if attr.startswith("sub_label_")]
+    sub_labels = [attr for attr in dir(form) if attr.startswith("sublabel_")]
     for sub_label in sub_labels:
         form[sub_label].choices = [(0, "")]
 
