@@ -84,14 +84,14 @@ class ClientAnnotationSchemaAssociation(db.Model):
     label = db.relationship(
         "ClientAnnotationSchema",
         back_populates="annotations",
-    )  # many-to-one relationship with ClientAnnotationSchema class
+    )
     annotation = db.relationship(
         "PSAnnotationClient",
         back_populates="annotation_label_associations",
-    )  # many-to-one relationship with PSAnnotationClient class
-    comments = db.relationship(
+    )
+    comment = db.relationship(
         "ClientAnnotationComment",
-        backref="annotation_label_association",
+        backref="association",
         lazy="dynamic",
     )  # one-to-many relationship with ClientAnnotationComment class
 
