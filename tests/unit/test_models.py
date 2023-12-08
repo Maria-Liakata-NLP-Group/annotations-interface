@@ -16,7 +16,7 @@ from app.models import (
     ClientAnnotationSchema,
     TherapistAnnotationSchema,
     DyadAnnotationSchema,
-    ClientAnnotationSchemaScale,
+    ClientAnnotationScale,
     TherapistAnnotationSchemaScale,
     DyadAnnotationSchemaScale,
     AnnotationSchemaManager,
@@ -346,10 +346,10 @@ def test_new_dyad_annotation_schema(db_session, new_ps_annotation_dyad):
 
 
 @pytest.mark.order(after="test_new_dyad_annotation_schema")
-def test_new_client_annotation_schema_scale(db_session):
+def test_new_client_annotation_scale(db_session):
     """
-    GIVEN a ClientAnnotationSchemaScale model
-    WHEN a new ClientAnnotationSchemaScale is created and added to the database
+    GIVEN a ClientAnnotationScale model
+    WHEN a new ClientAnnotationScale is created and added to the database
     THEN check its fields are defined correctly
     """
 
@@ -361,7 +361,7 @@ def test_new_client_annotation_schema_scale(db_session):
     label = [label for label in labels if label.parent is None][0]
 
     # create a scale for the label
-    scale = ClientAnnotationSchemaScale(
+    scale = ClientAnnotationScale(
         scale_title="scale title",
         scale_level="scale level",
         label=label,
@@ -370,14 +370,14 @@ def test_new_client_annotation_schema_scale(db_session):
     db_session.commit()
 
     # verify that the scale is correctly added to the database
-    scale = ClientAnnotationSchemaScale.query.first()
+    scale = ClientAnnotationScale.query.first()
     assert scale.scale_title == "scale title"
     assert scale.scale_level == "scale level"
     assert scale.label == label
 
     # verify that adding a new scale with the same title, level and label raises an exception
     with pytest.raises(IntegrityError, match="UNIQUE constraint failed"):
-        scale = ClientAnnotationSchemaScale(
+        scale = ClientAnnotationScale(
             scale_title="scale title",
             scale_level="scale level",
             label=label,
@@ -387,14 +387,14 @@ def test_new_client_annotation_schema_scale(db_session):
     db_session.rollback()
 
     # remove the annotation labels and scales from the database
-    ClientAnnotationSchemaScale.query.delete()
+    ClientAnnotationScale.query.delete()
     db_session.commit()
     manager.remove_labels_client()
     labels = ClientAnnotationSchema.query.all()
     assert len(labels) == 0
 
 
-@pytest.mark.order(after="test_new_client_annotation_schema_scale")
+@pytest.mark.order(after="test_new_client_annotation_scale")
 def test_new_therapist_annotation_schema_scale(db_session):
     """
     GIVEN a TherapistAnnotationSchemaScale model
@@ -537,7 +537,7 @@ def test_annotation_schema_scale_manager(db_session):
         scales_manager.add_scales_client()
 
     # verify that the scales are correctly added to the database
-    scales = ClientAnnotationSchemaScale.query.all()
+    scales = ClientAnnotationScale.query.all()
     assert len(scales) > 20 and len(scales) < 100
 
     # verify that the scales are correctly linked to the labels
@@ -549,7 +549,7 @@ def test_annotation_schema_scale_manager(db_session):
     assert scale_titles == ["Adaptivity", "Level"]
 
     # verify that scale title "Level" of "Wish" has 5 scale levels
-    scales = ClientAnnotationSchemaScale.query.filter_by(
+    scales = ClientAnnotationScale.query.filter_by(
         scale_title="Level", label=wish
     ).all()
     assert len(scales) == 5
@@ -557,7 +557,7 @@ def test_annotation_schema_scale_manager(db_session):
     # remove scales and labels from the database
     scales_manager.remove_scales_client()
     schema_manager.remove_labels_client()
-    scales = ClientAnnotationSchemaScale.query.all()
+    scales = ClientAnnotationScale.query.all()
     assert len(scales) == 0
     labels = ClientAnnotationSchema.query.all()
     assert len(labels) == 0
