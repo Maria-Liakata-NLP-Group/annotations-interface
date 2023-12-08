@@ -290,16 +290,28 @@ def new_dialog_turn_annotation_to_db(
                 ]
             )
         ]
-        label_ids = [getattr(form, attr).data for attr in attrs]
-        new_labels_to_db(label_ids, annotation, annotation_schema, association_model)
-        # add the main comments to the annotation
+        if attrs:
+            label_ids = [getattr(form, attr).data for attr in attrs]
+            new_labels_to_db(
+                label_ids, annotation, annotation_schema, association_model
+            )
+        # comments
         attrs = [
             attr
             for attr in main_attrs
             if attr.startswith("comment_") and getattr(form, attr).data
         ]
-        comments = [getattr(form, attr).data for attr in attrs]
-        new_comments_to_db(comments, annotation, parent_label)
+        if attrs:
+            comment = [getattr(form, attr).data for attr in attrs][0]
+            new_comment_to_db(comment, annotation, parent_label)
+        # evidence events
+        attrs = [
+            attr
+            for attr in main_attrs
+            if attr.startswith("evidence_") and getattr(form, attr).data
+        ]
+        if attrs:
+            events = [getattr(form, attr).data for attr in attrs][0]
 
         # now deal with the additional attributes
         # labels and sub labels
@@ -313,18 +325,24 @@ def new_dialog_turn_annotation_to_db(
                 ]
             )
         ]
-        label_ids = [getattr(form, attr).data for attr in attrs]
-        new_labels_to_db(
-            label_ids, annotation, annotation_schema, association_model, additional=True
-        )
+        if attrs:
+            label_ids = [getattr(form, attr).data for attr in attrs]
+            new_labels_to_db(
+                label_ids,
+                annotation,
+                annotation_schema,
+                association_model,
+                additional=True,
+            )
         # comments
         attrs = [
             attr
             for attr in add_attrs
             if attr.startswith("comment_") and getattr(form, attr).data
         ]
-        comments = [getattr(form, attr).data for attr in attrs]
-        new_comments_to_db(comments, annotation, parent_label, additional=True)
+        if attrs:
+            comment = [getattr(form, attr).data for attr in attrs][0]
+            new_comment_to_db(comment, annotation, parent_label, additional=True)
 
     # new_client_evidence_events_to_db(form, annotation)
     # new_therapist_evidence_events_to_db(form, annotation)
@@ -353,20 +371,19 @@ def new_labels_to_db(
             annotation.annotation_labels.append(label)
 
 
-def new_comments_to_db(
-    comments: list,
+def new_comment_to_db(
+    comment: str,
     annotation: Union[PSAnnotationClient, PSAnnotationTherapist, PSAnnotationDyad],
     parent_label: ClientAnnotationSchema,
     additional: bool = False,
 ):
-    for comment in comments:
-        comment_obj = ClientAnnotationComment(
-            comment=comment,
-            is_additional=additional,
-        )
-        db.session.add(comment_obj)
-        annotation.annotation_comments.append(comment_obj)
-        parent_label.comments.append(comment_obj)
+    comment = ClientAnnotationComment(
+        comment=comment,
+        is_additional=additional,
+    )
+    db.session.add(comment)
+    annotation.annotation_comments.append(comment)
+    parent_label.comments.append(comment)
 
 
 def new_client_evidence_events_to_db(
