@@ -312,6 +312,9 @@ def new_dialog_turn_annotation_to_db(
         ]
         if attrs:
             events = [getattr(form, attr).data for attr in attrs][0]
+            new_evidence_events_to_db(
+                events, evidence_model, annotation, parent_label, is_moc=False
+            )
 
         # now deal with the additional attributes
         # labels and sub labels
@@ -343,6 +346,22 @@ def new_dialog_turn_annotation_to_db(
         if attrs:
             comment = [getattr(form, attr).data for attr in attrs][0]
             new_comment_to_db(comment, annotation, parent_label, additional=True)
+        # evidence events
+        attrs = [
+            attr
+            for attr in add_attrs
+            if attr.startswith("evidence_") and getattr(form, attr).data
+        ]
+        if attrs:
+            events = [getattr(form, attr).data for attr in attrs][0]
+            new_evidence_events_to_db(
+                events,
+                evidence_model,
+                annotation,
+                parent_label,
+                is_moc=False,
+                additional=True,
+            )
 
     # new_client_evidence_events_to_db(form, annotation)
     # new_therapist_evidence_events_to_db(form, annotation)
@@ -386,67 +405,25 @@ def new_comment_to_db(
     parent_label.comments.append(comment)
 
 
-def new_client_evidence_events_to_db(
-    form: PSAnnotationFormClient, annotation: PSAnnotationClient
+def new_evidence_events_to_db(
+    events: list,
+    evidence_model: Union[EvidenceClient, EvidenceTherapist, EvidenceDyad],
+    annotation: Union[PSAnnotationClient, PSAnnotationTherapist, PSAnnotationDyad],
+    parent_label: ClientAnnotationSchema,
+    is_moc: bool = False,
+    additional: bool = False,
 ):
-    """
-    Given a new annotation for the client, add the evidence
-    events of the form to the database session.
-    """
-
-    events_a = form.relevant_events_a.data  # these are events IDs
-    events_b = form.relevant_events_b.data
-    events_c = form.relevant_events_c.data
-    events_d = form.relevant_events_d.data
-    events_e = form.relevant_events_e.data
-    start_event_f = form.startevent_f.data
-    end_event_f = form.endevent_f.data
-
-    evidences = []
-    for event in events_a:
-        evidence = EvidenceClient(
-            annotation=annotation,
-            id_ps_dialog_event=event,
-            label=LabelNamesClient.label_a,
-        )
-        evidences.append(evidence)
-    for event in events_b:
-        evidence = EvidenceClient(
-            annotation=annotation,
-            id_ps_dialog_event=event,
-            label=LabelNamesClient.label_b,
-        )
-        evidences.append(evidence)
-    for event in events_c:
-        evidence = EvidenceClient(
-            annotation=annotation,
-            id_ps_dialog_event=event,
-            label=LabelNamesClient.label_c,
-        )
-        evidences.append(evidence)
-    for event in events_d:
-        evidence = EvidenceClient(
-            annotation=annotation,
-            id_ps_dialog_event=event,
-            label=LabelNamesClient.label_d,
-        )
-        evidences.append(evidence)
-    for event in events_e:
-        evidence = EvidenceClient(
-            annotation=annotation,
-            id_ps_dialog_event=event,
-            label=LabelNamesClient.label_e,
-        )
-        evidences.append(evidence)
-    if start_event_f and end_event_f:
-        for event in range(start_event_f, end_event_f + 1):
-            evidence = EvidenceClient(
+    if is_moc:
+        pass
+    else:
+        for event in events:
+            evidence = evidence_model(
                 annotation=annotation,
+                label=parent_label,
                 id_ps_dialog_event=event,
-                label=LabelNamesClient.label_f,
+                is_additional=additional,
             )
-            evidences.append(evidence)
-    db.session.add_all(evidences)
+            db.session.add(evidence)
 
 
 def new_therapist_evidence_events_to_db(
