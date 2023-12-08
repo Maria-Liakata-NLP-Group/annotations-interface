@@ -639,6 +639,9 @@ class EvidenceClient(db.Model):
     id_client_annotation_schema = db.Column(
         db.Integer, db.ForeignKey("client_annotation_schema.id")
     )
+    is_additional = db.Column(
+        db.Boolean, default=False
+    )  # is this evidence for an additional label?
 
 
 class EvidenceTherapist(db.Model):
