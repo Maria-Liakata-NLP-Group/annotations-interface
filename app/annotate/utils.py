@@ -242,6 +242,7 @@ def new_dialog_turn_annotation_to_db(
         annotation_model = PSAnnotationClient
         association_model = ClientAnnotationSchemaAssociation
         annotation_schema = ClientAnnotationSchema()
+        evidence_model = EvidenceClient
     elif speaker == Speaker.therapist:
         annotation_model = PSAnnotationTherapist
         annotation_schema = TherapistAnnotationSchema()
@@ -274,56 +275,98 @@ def new_dialog_turn_annotation_to_db(
         # find all the attributes in the form that end with "_letter"
         attrs = [attr for attr in form.__dict__.keys() if attr.endswith("_" + letter)]
         # split these into main and additional (contain "_add_") attributes
-        main_attrs = [attr for attr in attrs if not "_add_" in attr]
+        main_attrs = [attr for attr in attrs if "_add_" not in attr]
         add_attrs = [attr for attr in attrs if "_add_" in attr]
-        # deal with the main attributes first
-        for attr in main_attrs:
-            # deal with labels and sublabels
+
+        # deal with main attributes first
+        # labels and sub labels
+        attrs = [
+            attr
+            for attr in main_attrs
             if all(
                 [
                     attr.startswith("label_") or attr.startswith("sublabel_"),
                     getattr(form, attr).data != 0,
                 ]
-            ):
-                label = annotation_schema.query.get_or_404(getattr(form, attr).data)
-                annotation.annotation_labels.append(label)  # using association proxy
-            # deal with comments
-            elif attr.startswith("comment_") and getattr(form, attr).data:
-                comment = ClientAnnotationComment(
-                    comment=getattr(form, attr).data,
-                )
-                db.session.add(comment)
-                annotation.annotation_comments.append(comment)
-                parent_label.comments.append(comment)
-        # deal with the additional attributes
-        for attr in add_attrs:
-            # deal with labels and sublabels
+            )
+        ]
+        label_ids = [getattr(form, attr).data for attr in attrs]
+        new_labels_to_db(label_ids, annotation, annotation_schema, association_model)
+        # add the main comments to the annotation
+        attrs = [
+            attr
+            for attr in main_attrs
+            if attr.startswith("comment_") and getattr(form, attr).data
+        ]
+        comments = [getattr(form, attr).data for attr in attrs]
+        new_comments_to_db(comments, annotation, parent_label)
+
+        # now deal with the additional attributes
+        # labels and sub labels
+        attrs = [
+            attr
+            for attr in add_attrs
             if all(
                 [
                     attr.startswith("label_") or attr.startswith("sublabel_"),
                     getattr(form, attr).data != 0,
                 ]
-            ):
-                label = annotation_schema.query.get_or_404(getattr(form, attr).data)
-                association = association_model(
-                    label=label,
-                    annotation=annotation,
-                    is_additional=True,
-                )  # using association object explicitly
-                db.session.add(association)
-            # deal with comments
-            elif attr.startswith("comment_") and getattr(form, attr).data:
-                comment = ClientAnnotationComment(
-                    comment=getattr(form, attr).data,
-                    is_additional=True,
-                )
-                db.session.add(comment)
-                annotation.annotation_comments.append(comment)
-                parent_label.comments.append(comment)
+            )
+        ]
+        label_ids = [getattr(form, attr).data for attr in attrs]
+        new_labels_to_db(
+            label_ids, annotation, annotation_schema, association_model, additional=True
+        )
+        # comments
+        attrs = [
+            attr
+            for attr in add_attrs
+            if attr.startswith("comment_") and getattr(form, attr).data
+        ]
+        comments = [getattr(form, attr).data for attr in attrs]
+        new_comments_to_db(comments, annotation, parent_label, additional=True)
 
     # new_client_evidence_events_to_db(form, annotation)
     # new_therapist_evidence_events_to_db(form, annotation)
     # new_dyad_evidence_events_to_db(form, annotation)
+
+
+def new_labels_to_db(
+    label_ids: list,
+    annotation: Union[PSAnnotationClient, PSAnnotationTherapist, PSAnnotationDyad],
+    annotation_schema: Union[
+        ClientAnnotationSchema, TherapistAnnotationSchema, DyadAnnotationSchema
+    ],
+    association_model: ClientAnnotationSchemaAssociation,
+    additional: bool = False,
+):
+    for id in label_ids:
+        label = annotation_schema.query.get_or_404(id)
+        if additional:
+            association = association_model(
+                label=label,
+                annotation=annotation,
+                is_additional=True,
+            )
+            db.session.add(association)
+        else:
+            annotation.annotation_labels.append(label)
+
+
+def new_comments_to_db(
+    comments: list,
+    annotation: Union[PSAnnotationClient, PSAnnotationTherapist, PSAnnotationDyad],
+    parent_label: ClientAnnotationSchema,
+    additional: bool = False,
+):
+    for comment in comments:
+        comment_obj = ClientAnnotationComment(
+            comment=comment,
+            is_additional=additional,
+        )
+        db.session.add(comment_obj)
+        annotation.annotation_comments.append(comment_obj)
+        parent_label.comments.append(comment_obj)
 
 
 def new_client_evidence_events_to_db(
