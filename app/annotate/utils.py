@@ -496,6 +496,10 @@ def create_psy_annotation_form(
 
     if speaker == Speaker.client:
         if annotations:
+            # for the time being skip the block below
+            # TODO: need to fix the function fetch_evidence_client() first
+            form = PSAnnotationFormClient()
+            return form
             # if there are annotations, fill the form with the values
             (
                 id_events_a,
@@ -521,6 +525,10 @@ def create_psy_annotation_form(
             form = PSAnnotationFormClient()
     elif speaker == Speaker.therapist:
         if annotations:
+            # for the time being skip the block below
+            # TODO: need to fix the function fetch_evidence_therapist() first
+            form = PSAnnotationFormTherapist()
+            return form
             # if there are annotations, fill the form with the values
             (
                 id_events_a,
@@ -542,6 +550,10 @@ def create_psy_annotation_form(
             form = PSAnnotationFormTherapist()
     elif speaker == Speaker.dyad:
         if annotations:
+            # for the time being skip the block below
+            # TODO: need to fix the function fetch_evidence_dyad() first
+            form = PSAnnotationFormDyad()
+            return form
             # if there are annotations, fill the form with the values
             (id_events_a, id_events_b) = fetch_evidence_dyad(annotations)
             form = PSAnnotationFormDyad(
