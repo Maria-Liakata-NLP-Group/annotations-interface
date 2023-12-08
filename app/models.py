@@ -637,7 +637,9 @@ class EvidenceClient(db.Model):
     id_ps_annotation_client = db.Column(
         db.Integer, db.ForeignKey("ps_annotation_client.id")
     )
-    label = db.Column(db.Enum(LabelNamesClient), nullable=True, default=None)
+    id_client_annotation_schema = db.Column(
+        db.Integer, db.ForeignKey("client_annotation_schema.id")
+    )
 
 
 class EvidenceTherapist(db.Model):
@@ -927,6 +929,11 @@ class ClientAnnotationSchema(db.Model, AnnotationSchemaMixin):
         lazy="dynamic",
     )  # one-to-many relationship with ClientAnnotationComment class
     # create unique constraint on label within a parent
+    evidence_events = db.relationship(
+        "EvidenceClient",
+        backref="label",
+        lazy="dynamic",
+    )  # one-to-many relationship with EvidenceClient class
     __table_args__ = (db.UniqueConstraint("label", "parent_id"),)
 
     def __repr__(self):

@@ -672,6 +672,7 @@ def test_new_evidence_client(
     new_evidence_client,
     new_ps_dialog_event,
     new_ps_annotation_client,
+    new_ps_annotation_schema_client,
 ):
     """
     GIVEN a EvidenceClient model
@@ -685,7 +686,7 @@ def test_new_evidence_client(
     assert evidence is not None
     assert evidence.dialog_event == new_ps_dialog_event
     assert evidence.annotation == new_ps_annotation_client
-    assert evidence.label == LabelNamesClient.label_a
+    assert evidence.label == new_ps_annotation_schema_client[0]
 
 
 @pytest.mark.order(after="test_new_evidence_client")

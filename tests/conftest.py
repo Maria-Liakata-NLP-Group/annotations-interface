@@ -234,13 +234,17 @@ def new_ps_annotation_dyad(new_ps_dataset, new_ps_dialog_turn, user_annotator1):
 
 
 @pytest.fixture(scope="module")
-def new_evidence_client(new_ps_annotation_client, new_ps_dialog_event):
+def new_evidence_client(
+    new_ps_annotation_client,
+    new_ps_dialog_event,
+    new_ps_annotation_schema_client,
+):
     """Fixture to create a new psychotherapy evidence for the client annotation"""
 
     evidence = EvidenceClient(
         dialog_event=new_ps_dialog_event,
         annotation=new_ps_annotation_client,
-        label=LabelNamesClient.label_a,
+        label=new_ps_annotation_schema_client[0],
     )
     return evidence
 
