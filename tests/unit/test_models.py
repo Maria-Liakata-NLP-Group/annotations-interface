@@ -25,6 +25,7 @@ from app.models import (
     TherapistAnnotationComment,
     DyadAnnotationComment,
     ClientAnnotationSchemaAssociation,
+    ClientAnnotationScaleAssociation,
 )
 from app.utils import (
     LabelNamesClient,
@@ -603,7 +604,20 @@ def test_new_ps_annotation_client(
     ].is_additional  # default through association proxy is False
     assert associations[1].is_additional
     assert association.annotation == new_ps_annotation_client
-    assert scale.annotations.first() == new_ps_annotation_client
+    # test the ClientAnnotationScaleAssociation model (association object + association proxy)
+    association = ClientAnnotationScaleAssociation(
+        scale, new_ps_annotation_client, is_additional=True
+    )  # association object explicitly
+    db_session.add(association)
+    associations = scale.annotations.all()
+    for association in associations:
+        assert association.annotation == new_ps_annotation_client
+        assert association.scale == scale
+    assert not associations[
+        0
+    ].is_additional  # default through association proxy is False
+    assert associations[1].is_additional
+    assert association.annotation == new_ps_annotation_client
     db_session.rollback()
 
 
