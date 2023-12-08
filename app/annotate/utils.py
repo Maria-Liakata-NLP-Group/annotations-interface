@@ -286,11 +286,36 @@ def new_dialog_turn_annotation_to_db(
                 ]
             ):
                 label = annotation_schema.query.get_or_404(getattr(form, attr).data)
-                annotation.annotation_labels.append(label)
+                annotation.annotation_labels.append(label)  # using association proxy
             # deal with comments
             elif attr.startswith("comment_") and getattr(form, attr).data:
                 comment = ClientAnnotationComment(
                     comment=getattr(form, attr).data,
+                )
+                db.session.add(comment)
+                annotation.annotation_comments.append(comment)
+                parent_label.comments.append(comment)
+        # deal with the additional attributes
+        for attr in add_attrs:
+            # deal with labels and sublabels
+            if all(
+                [
+                    attr.startswith("label_") or attr.startswith("sublabel_"),
+                    getattr(form, attr).data != 0,
+                ]
+            ):
+                label = annotation_schema.query.get_or_404(getattr(form, attr).data)
+                association = association_model(
+                    label=label,
+                    annotation=annotation,
+                    is_additional=True,
+                )  # using association object explicitly
+                db.session.add(association)
+            # deal with comments
+            elif attr.startswith("comment_") and getattr(form, attr).data:
+                comment = ClientAnnotationComment(
+                    comment=getattr(form, attr).data,
+                    is_additional=True,
                 )
                 db.session.add(comment)
                 annotation.annotation_comments.append(comment)
