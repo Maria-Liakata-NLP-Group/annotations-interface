@@ -12,7 +12,6 @@ from app.utils import (
     SMAnnotationType,
     DatasetType,
     Permission,
-    LabelNamesClient,
     LabelNamesTherapist,
     LabelNamesDyad,
 )
