@@ -313,8 +313,32 @@ def new_dialog_turn_annotation_to_db(
         if attrs:
             events = [getattr(form, attr).data for attr in attrs][0]
             new_evidence_events_to_db(
-                events, evidence_model, annotation, parent_label, is_moc=False
+                events,
+                evidence_model,
+                annotation,
+                parent_label,
             )
+        # special treatment for moments of change
+        attrs = [
+            attr
+            for attr in main_attrs
+            if all(
+                [
+                    attr.startswith("startevent_") or attr.startswith("endevent_"),
+                    getattr(form, attr).data,
+                ]
+            )
+        ]
+        if attrs:
+            attr_vals = sorted([getattr(form, attr).data for attr in attrs])
+            start_event = attr_vals[0]
+            end_event = attr_vals[1]
+            events = getattr(form, attrs[0]).choices  # list of tuples
+            events = [
+                event[0] for event in events
+            ]  # get the values from the list of tuples
+            events = [event for event in events if start_event <= event <= end_event]
+            new_evidence_events_to_db(events, evidence_model, annotation, parent_label)
 
         # now deal with the additional attributes
         # labels and sub labels
@@ -359,7 +383,6 @@ def new_dialog_turn_annotation_to_db(
                 evidence_model,
                 annotation,
                 parent_label,
-                is_moc=False,
                 additional=True,
             )
 
@@ -410,20 +433,16 @@ def new_evidence_events_to_db(
     evidence_model: Union[EvidenceClient, EvidenceTherapist, EvidenceDyad],
     annotation: Union[PSAnnotationClient, PSAnnotationTherapist, PSAnnotationDyad],
     parent_label: ClientAnnotationSchema,
-    is_moc: bool = False,
     additional: bool = False,
 ):
-    if is_moc:
-        pass
-    else:
-        for event in events:
-            evidence = evidence_model(
-                annotation=annotation,
-                label=parent_label,
-                id_ps_dialog_event=event,
-                is_additional=additional,
-            )
-            db.session.add(evidence)
+    for event in events:
+        evidence = evidence_model(
+            annotation=annotation,
+            label=parent_label,
+            id_ps_dialog_event=event,
+            is_additional=additional,
+        )
+        db.session.add(evidence)
 
 
 def new_therapist_evidence_events_to_db(
