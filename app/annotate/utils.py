@@ -20,6 +20,8 @@ from app.models import (
     TherapistAnnotationSchema,
     DyadAnnotationSchema,
     ClientAnnotationSchemaAssociation,
+    ClientAnnotationScaleAssociation,
+    ClientAnnotationScale,
     ClientAnnotationComment,
 )
 from app import db
@@ -241,7 +243,9 @@ def new_dialog_turn_annotation_to_db(
     if speaker == Speaker.client:
         annotation_model = PSAnnotationClient
         schema_association_model = ClientAnnotationSchemaAssociation
+        scale_association_model = ClientAnnotationScaleAssociation
         annotation_schema = ClientAnnotationSchema()
+        annotation_scale = ClientAnnotationScale()
         evidence_model = EvidenceClient
     elif speaker == Speaker.therapist:
         annotation_model = PSAnnotationTherapist
@@ -294,6 +298,20 @@ def new_dialog_turn_annotation_to_db(
             label_ids = [getattr(form, attr).data for attr in attrs]
             new_labels_to_db(
                 label_ids, annotation, annotation_schema, schema_association_model
+            )
+        # scales
+        attrs = [
+            attr
+            for attr in main_attrs
+            if attr.startswith("scale_") and getattr(form, attr).data != 0
+        ]
+        if attrs:
+            scale_ids = [getattr(form, attr).data for attr in attrs]
+            new_scales_to_db(
+                scale_ids,
+                annotation,
+                annotation_scale,
+                scale_association_model,
             )
         # comments
         attrs = [
@@ -361,6 +379,21 @@ def new_dialog_turn_annotation_to_db(
                 schema_association_model,
                 additional=True,
             )
+        # scales
+        attrs = [
+            attr
+            for attr in add_attrs
+            if attr.startswith("scale_") and getattr(form, attr).data != 0
+        ]
+        if attrs:
+            scale_ids = [getattr(form, attr).data for attr in attrs]
+            new_scales_to_db(
+                scale_ids,
+                annotation,
+                annotation_scale,
+                scale_association_model,
+                additional=True,
+            )
         # comments
         attrs = [
             attr
@@ -411,6 +444,26 @@ def new_labels_to_db(
             db.session.add(association)
         else:
             annotation.annotation_labels.append(label)
+
+
+def new_scales_to_db(
+    scale_ids: list,
+    annotation: Union[PSAnnotationClient, PSAnnotationTherapist, PSAnnotationDyad],
+    annotation_scale: ClientAnnotationScale,
+    association_model: ClientAnnotationScaleAssociation,
+    additional: bool = False,
+):
+    for id in scale_ids:
+        scale = annotation_scale.query.get_or_404(id)
+        if additional:
+            association = association_model(
+                scale=scale,
+                annotation=annotation,
+                is_additional=True,
+            )
+            db.session.add(association)
+        else:
+            annotation.annotation_scales.append(scale)
 
 
 def new_comment_to_db(
