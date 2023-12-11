@@ -13,7 +13,7 @@ from app.models import (
     EvidenceClient,
     EvidenceTherapist,
     EvidenceDyad,
-    ClientAnnotationSchema,
+    ClientAnnotationLabel,
     TherapistAnnotationSchema,
     DyadAnnotationSchema,
     ClientAnnotationScale,
@@ -227,25 +227,25 @@ def test_new_ps_dialog_event(db_session, new_ps_dialog_event):
 
 
 @pytest.mark.order(after="test_new_ps_dialog_event")
-def test_new_client_annotation_schema(db_session):
+def test_new_client_annotation_label(db_session):
     """
-    GIVEN a ClientAnnotationSchema model
-    WHEN a new ClientAnnotationSchema is created and added to the database
+    GIVEN a ClientAnnotationLabel model
+    WHEN a new ClientAnnotationLabel is created and added to the database
     THEN check its fields are defined correctly
     """
 
-    label_a = ClientAnnotationSchema(
+    label_a = ClientAnnotationLabel(
         label="parent label",
     )
-    label_b = ClientAnnotationSchema(
+    label_b = ClientAnnotationLabel(
         label="child label",
         parent=label_a,
     )
     db_session.add_all([label_a, label_b])
     db_session.commit()
 
-    label_a = ClientAnnotationSchema.query.filter_by(label="parent label").first()
-    label_b = ClientAnnotationSchema.query.filter_by(label="child label").first()
+    label_a = ClientAnnotationLabel.query.filter_by(label="parent label").first()
+    label_b = ClientAnnotationLabel.query.filter_by(label="child label").first()
     assert label_a.parent is None
     assert label_a.children[0] is label_b
     assert label_b.parent is label_a
@@ -253,7 +253,7 @@ def test_new_client_annotation_schema(db_session):
 
     with pytest.raises(IntegrityError, match="UNIQUE constraint failed"):
         """Test that a label with the same name and parent cannot be added twice"""
-        label_c = ClientAnnotationSchema(label="child label", parent=label_a)
+        label_c = ClientAnnotationLabel(label="child label", parent=label_a)
         db_session.add(label_c)
         db_session.commit()
     db_session.rollback()
@@ -264,7 +264,7 @@ def test_new_client_annotation_schema(db_session):
     db_session.commit()
 
 
-@pytest.mark.order(after="test_new_client_annotation_schema")
+@pytest.mark.order(after="test_new_client_annotation_label")
 def test_new_therapist_annotation_schema(db_session, new_ps_annotation_therapist):
     """
     GIVEN a TherapistAnnotationSchema model
@@ -356,7 +356,7 @@ def test_new_client_annotation_scale(db_session):
 
     manager = AnnotationSchemaManager()
     manager.add_labels_client()
-    labels = ClientAnnotationSchema.query.all()
+    labels = ClientAnnotationLabel.query.all()
 
     # find an annotation label with no parent
     label = [label for label in labels if label.parent is None][0]
@@ -391,7 +391,7 @@ def test_new_client_annotation_scale(db_session):
     ClientAnnotationScale.query.delete()
     db_session.commit()
     manager.remove_labels_client()
-    labels = ClientAnnotationSchema.query.all()
+    labels = ClientAnnotationLabel.query.all()
     assert len(labels) == 0
 
 
@@ -501,27 +501,27 @@ def test_annotation_schema_manager(db_session):
     manager.add_labels_client()
 
     # verify that the labels are correctly added to the database
-    labels = ClientAnnotationSchema.query.all()
+    labels = ClientAnnotationLabel.query.all()
     assert len(labels) > 100 and len(labels) < 200
 
     # verify that there are only 6 labels with no parent
     assert len([label for label in labels if label.parent is None]) == 6
 
     # verify that "Wish" has 10 child labels
-    label = ClientAnnotationSchema.query.filter_by(label="Wish").first()
+    label = ClientAnnotationLabel.query.filter_by(label="Wish").first()
     assert len(label.children.all()) == 10
 
     # verify that "Insight" has no child labels
-    label = ClientAnnotationSchema.query.filter_by(label="Insight").first()
+    label = ClientAnnotationLabel.query.filter_by(label="Insight").first()
     assert len(label.children.all()) == 0
 
     # verify that the parent of "To compromise" is "To avoid conflict"
-    label = ClientAnnotationSchema.query.filter_by(label="To compromise").first()
+    label = ClientAnnotationLabel.query.filter_by(label="To compromise").first()
     assert label.parent.label == "To avoid conflict"
 
     # remove the labels from the database
     manager.remove_labels_client()
-    labels = ClientAnnotationSchema.query.all()
+    labels = ClientAnnotationLabel.query.all()
     assert len(labels) == 0
 
 
@@ -543,7 +543,7 @@ def test_annotation_schema_scale_manager(db_session):
 
     # verify that the scales are correctly linked to the labels
     # "Wish" has two scale titles: "Level" and "Adaptivity"
-    wish = ClientAnnotationSchema.query.filter_by(label="Wish").first()
+    wish = ClientAnnotationLabel.query.filter_by(label="Wish").first()
     scale_titles = [scale.scale_title for scale in wish.scales.all()]
     scale_titles = list(set(scale_titles))
     scale_titles.sort()
@@ -560,7 +560,7 @@ def test_annotation_schema_scale_manager(db_session):
     schema_manager.remove_labels_client()
     scales = ClientAnnotationScale.query.all()
     assert len(scales) == 0
-    labels = ClientAnnotationSchema.query.all()
+    labels = ClientAnnotationLabel.query.all()
     assert len(labels) == 0
 
 

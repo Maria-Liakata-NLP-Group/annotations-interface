@@ -16,7 +16,7 @@ from app.models import (
     EvidenceTherapist,
     EvidenceDyad,
     Dataset,
-    ClientAnnotationSchema,
+    ClientAnnotationLabel,
     TherapistAnnotationSchema,
     DyadAnnotationSchema,
     ClientAnnotationSchemaAssociation,
@@ -244,7 +244,7 @@ def new_dialog_turn_annotation_to_db(
         annotation_model = PSAnnotationClient
         schema_association_model = ClientAnnotationSchemaAssociation
         scale_association_model = ClientAnnotationScaleAssociation
-        annotation_schema = ClientAnnotationSchema()
+        annotation_schema = ClientAnnotationLabel()
         annotation_scale = ClientAnnotationScale()
         evidence_model = EvidenceClient
     elif speaker == Speaker.therapist:
@@ -428,7 +428,7 @@ def new_labels_to_db(
     label_ids: list,
     annotation: Union[PSAnnotationClient, PSAnnotationTherapist, PSAnnotationDyad],
     annotation_schema: Union[
-        ClientAnnotationSchema, TherapistAnnotationSchema, DyadAnnotationSchema
+        ClientAnnotationLabel, TherapistAnnotationSchema, DyadAnnotationSchema
     ],
     association_model: ClientAnnotationSchemaAssociation,
     additional: bool = False,
@@ -469,7 +469,7 @@ def new_scales_to_db(
 def new_comment_to_db(
     comment: str,
     annotation: Union[PSAnnotationClient, PSAnnotationTherapist, PSAnnotationDyad],
-    parent_label: ClientAnnotationSchema,
+    parent_label: ClientAnnotationLabel,
     additional: bool = False,
 ):
     comment = ClientAnnotationComment(
@@ -485,7 +485,7 @@ def new_evidence_events_to_db(
     events: list,
     evidence_model: Union[EvidenceClient, EvidenceTherapist, EvidenceDyad],
     annotation: Union[PSAnnotationClient, PSAnnotationTherapist, PSAnnotationDyad],
-    parent_label: ClientAnnotationSchema,
+    parent_label: ClientAnnotationLabel,
     additional: bool = False,
 ):
     for event in events:
@@ -761,7 +761,7 @@ def assign_dynamic_choices(
     # assign the corresponding choices to their respective labels (i.e. label_a, label_b, label_c, etc.)
     # and scales (i.e. scale_(i)_a, scale_(i)_b, scale_(i)_c, etc.)
     if speaker == Speaker.client:
-        annotation_schema = ClientAnnotationSchema()
+        annotation_schema = ClientAnnotationLabel()
     elif speaker == Speaker.therapist:
         annotation_schema = TherapistAnnotationSchema()
     elif speaker == Speaker.dyad:

@@ -2,7 +2,7 @@
 Unit tests for the utilities module in the annotate blueprint.
 """
 from datetime import time
-from app.models import PSDialogTurn, PSDialogEvent, ClientAnnotationSchema
+from app.models import PSDialogTurn, PSDialogEvent, ClientAnnotationLabel
 from app.annotate.utils import (
     split_dialog_turns,
     get_events_from_segments,
@@ -101,8 +101,8 @@ def test_get_annotation_label_children(new_ps_annotation_schema_client):
     label = "To avoid conflict"
     parent_label = "Wish"
     child_label_names = ["To avoid conflict", "To compromise", "To be flexible"]
-    client_annotation_schema = ClientAnnotationSchema()
-    child_labels = client_annotation_schema.get_label_children(
+    client_annotation_label = ClientAnnotationLabel()
+    child_labels = client_annotation_label.get_label_children(
         label, parent_label, append_placeholder=False
     )
     # extract the names of the child labels (list of tuples where name is second element)
@@ -126,19 +126,19 @@ def test_get_annotation_label_children(new_ps_annotation_schema_client):
 def test_find_annotation_parent_label_depth():
     """Test the find_parent_label_depth() method of the AnnotationSchemaMixin class."""
 
-    client_annotation_schema = ClientAnnotationSchema()
+    client_annotation_label = ClientAnnotationLabel()
     # check "tests/data/annotation_schema/client.json"
-    assert client_annotation_schema.find_parent_label_depth("Wish") == 2
-    assert client_annotation_schema.find_parent_label_depth("Insight") == 0
-    assert client_annotation_schema.find_parent_label_depth("Moment of change") == 1
+    assert client_annotation_label.find_parent_label_depth("Wish") == 2
+    assert client_annotation_label.find_parent_label_depth("Insight") == 0
+    assert client_annotation_label.find_parent_label_depth("Moment of change") == 1
 
 
 def test_get_annotation_label_scales():
     """Test the get_label_scales() method of the AnnotationSchemaMixin class."""
 
-    client_annotation_schema = ClientAnnotationSchema()
+    client_annotation_label = ClientAnnotationLabel()
     # check "tests/data/annotation_schema/scales/client.json"
-    scales = client_annotation_schema.get_label_scales(
+    scales = client_annotation_label.get_label_scales(
         "Wish", "Level", append_placeholder=False
     )
     expected_scales = [

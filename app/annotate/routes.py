@@ -13,7 +13,7 @@ from flask import (
 from flask_login import login_required
 from app.models import (
     Dataset,
-    ClientAnnotationSchema,
+    ClientAnnotationLabel,
     TherapistAnnotationSchema,
     DyadAnnotationSchema,
 )
@@ -203,7 +203,7 @@ def update_select_choices():
     selected_value = int(request.form.get("selected_value"))
 
     if "client" in select_field_name:
-        annotation_schema = ClientAnnotationSchema()
+        annotation_schema = ClientAnnotationLabel()
     elif "therapist" in select_field_name:
         annotation_schema = TherapistAnnotationSchema()
     elif "dyad" in select_field_name:

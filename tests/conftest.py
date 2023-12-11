@@ -21,7 +21,7 @@ from app.models import (
     EvidenceDyad,
     AnnotationSchemaManager,
     AnnotationSchemaScaleManager,
-    ClientAnnotationSchema,
+    ClientAnnotationLabel,
     TherapistAnnotationSchema,
     ClientAnnotationScale,
     TherapistAnnotationSchemaScale,
@@ -283,14 +283,14 @@ def new_ps_annotation_schema_client():
         warnings.filterwarnings("ignore", category=UserWarning)
         scales_manager.add_scales_client()  # ignore UserWarning about non-existent label (this is deliberate)
     # find a label with no child labels
-    label = ClientAnnotationSchema.query.filter_by(children=None).first()
+    label = ClientAnnotationLabel.query.filter_by(children=None).first()
     # find the uppermost parent of the label
     parent = label
     while parent.parent is not None:
         parent = parent.parent
     # find a scale associated with the parent label
     scale = ClientAnnotationScale.query.filter_by(
-        id_client_annotation_schema=parent.id
+        id_client_annotation_label=parent.id
     ).first()
     return label, scale
 
