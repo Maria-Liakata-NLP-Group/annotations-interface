@@ -240,7 +240,7 @@ def new_dialog_turn_annotation_to_db(
     # create the annotation object for the client, therapist or dyad
     if speaker == Speaker.client:
         annotation_model = PSAnnotationClient
-        association_model = ClientAnnotationSchemaAssociation
+        schema_association_model = ClientAnnotationSchemaAssociation
         annotation_schema = ClientAnnotationSchema()
         evidence_model = EvidenceClient
     elif speaker == Speaker.therapist:
@@ -293,7 +293,7 @@ def new_dialog_turn_annotation_to_db(
         if attrs:
             label_ids = [getattr(form, attr).data for attr in attrs]
             new_labels_to_db(
-                label_ids, annotation, annotation_schema, association_model
+                label_ids, annotation, annotation_schema, schema_association_model
             )
         # comments
         attrs = [
@@ -358,7 +358,7 @@ def new_dialog_turn_annotation_to_db(
                 label_ids,
                 annotation,
                 annotation_schema,
-                association_model,
+                schema_association_model,
                 additional=True,
             )
         # comments
