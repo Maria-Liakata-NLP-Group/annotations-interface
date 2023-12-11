@@ -20,7 +20,7 @@ from app.models import (
     TherapistAnnotationScale,
     DyadAnnotationScale,
     AnnotationLabelManager,
-    AnnotationSchemaScaleManager,
+    AnnotationScaleManager,
     ClientAnnotationComment,
     TherapistAnnotationComment,
     DyadAnnotationComment,
@@ -526,12 +526,12 @@ def test_annotation_label_manager(db_session):
 
 
 @pytest.mark.order(after="test_annotation_label_manager")
-def test_annotation_schema_scale_manager(db_session):
-    """Test the AnnotationSchemaScaleManager class"""
+def test_annotation_scale_manager(db_session):
+    """Test the AnnotationScaleManager class"""
 
     schema_manager = AnnotationLabelManager()
     schema_manager.add_labels_client()
-    scales_manager = AnnotationSchemaScaleManager()
+    scales_manager = AnnotationScaleManager()
     # verify that a warning is raised if scales are added to a non-existent label
     # ("non-existent-label" in the JSON file)
     with pytest.warns(UserWarning, match="non-existent-label".strip().capitalize()):
@@ -564,7 +564,7 @@ def test_annotation_schema_scale_manager(db_session):
     assert len(labels) == 0
 
 
-@pytest.mark.order(after="test_annotation_schema_scale_manager")
+@pytest.mark.order(after="test_annotation_scale_manager")
 def test_new_ps_annotation_client(
     db_session,
     new_ps_dialog_turn,

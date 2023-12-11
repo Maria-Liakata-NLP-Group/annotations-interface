@@ -1272,7 +1272,7 @@ class AnnotationLabelManager:
         return self._remove_labels(DyadAnnotationLabel)
 
 
-class AnnotationSchemaScaleManager:
+class AnnotationScaleManager:
     def __init__(self) -> None:
         """Initialize the manager specifying the JSON files containing the annotation schema scales"""
         self.filename_client = os.path.join(

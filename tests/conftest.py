@@ -20,7 +20,7 @@ from app.models import (
     EvidenceTherapist,
     EvidenceDyad,
     AnnotationLabelManager,
-    AnnotationSchemaScaleManager,
+    AnnotationScaleManager,
     ClientAnnotationLabel,
     TherapistAnnotationLabel,
     ClientAnnotationScale,
@@ -278,7 +278,7 @@ def new_ps_annotation_schema_client():
     """Fixture to create a new psychotherapy annotation schema + scales for the client"""
     schema_manager = AnnotationLabelManager()
     schema_manager.add_labels_client()
-    scales_manager = AnnotationSchemaScaleManager()
+    scales_manager = AnnotationScaleManager()
     with warnings.catch_warnings():
         warnings.filterwarnings("ignore", category=UserWarning)
         scales_manager.add_scales_client()  # ignore UserWarning about non-existent label (this is deliberate)
@@ -301,7 +301,7 @@ def new_ps_annotation_schema_therapist():
     """Fixture to create a new psychotherapy annotation schema + scales for the therapist"""
     schema_manager = AnnotationLabelManager()
     schema_manager.add_labels_therapist()
-    scales_manager = AnnotationSchemaScaleManager()
+    scales_manager = AnnotationScaleManager()
     scales_manager.add_scales_therapist()
     # find a label with no child labels
     label = TherapistAnnotationLabel.query.filter_by(children=None).first()
@@ -321,7 +321,7 @@ def new_ps_annotation_schema_dyad():
     """Fixture to create a new psychotherapy annotation schema + scales for the dyad"""
     schema_manager = AnnotationLabelManager()
     schema_manager.add_labels_dyad()
-    scales_manager = AnnotationSchemaScaleManager()
+    scales_manager = AnnotationScaleManager()
     scales_manager.add_scales_dyad()
     # find a label with no child labels
     label = DyadAnnotationLabel.query.filter_by(children=None).first()
