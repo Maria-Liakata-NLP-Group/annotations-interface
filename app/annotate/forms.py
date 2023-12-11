@@ -555,7 +555,7 @@ class PSAnnotationFormDyad(FlaskForm):
     # -------
     name_a = "Alliance/reciprocity".strip().capitalize()
     title_a = "(A) " + name_a
-    scale_a_1 = create_select_field_without_choices(
+    scale_1_a = create_select_field_without_choices(
         label="Level".strip().capitalize(),
         name="scale_a_1_dyad",
         data_required=True,
@@ -572,15 +572,15 @@ class PSAnnotationFormDyad(FlaskForm):
 
     # Label A - additional
     # --------------------
-    scale_a_1_add = create_select_field_without_choices(
+    scale_1_add_a = create_select_field_without_choices(
         label="Level".strip().capitalize(),
         name="scale_a_1_dyad_add",
     )
-    evidence_a_add = create_select_multiple_field_without_choices(
+    evidence_add_a = create_select_multiple_field_without_choices(
         label="Evidence",
         name="evidence_a_dyad_add",
     )
-    comment_a_add = create_text_area_field(
+    comment_add_a = create_text_area_field(
         label="Comment",
         name="comment_a_dyad_add",
     )
@@ -594,7 +594,7 @@ class PSAnnotationFormDyad(FlaskForm):
         name="label_b_dyad",
         data_required=True,
     )
-    scale_b_1 = create_select_field_without_choices(
+    scale_1_b = create_select_field_without_choices(
         label="Level".strip().capitalize(),
         name="scale_b_1_dyad",
         data_required=True,
@@ -611,19 +611,19 @@ class PSAnnotationFormDyad(FlaskForm):
 
     # Label B - additional
     # --------------------
-    label_b_add = create_select_field_without_choices(
+    label_add_b = create_select_field_without_choices(
         label="Choose one",
         name="label_b_dyad_add",
     )
-    scale_b_1_add = create_select_field_without_choices(
+    scale_1_add_b = create_select_field_without_choices(
         label="Level".strip().capitalize(),
         name="scale_b_1_dyad_add",
     )
-    evidence_b_add = create_select_multiple_field_without_choices(
+    evidence_add_b = create_select_multiple_field_without_choices(
         label="Evidence",
         name="evidence_b_dyad_add",
     )
-    comment_b_add = create_text_area_field(
+    comment_add_b = create_text_area_field(
         label="Comment",
         name="comment_b_dyad_add",
     )

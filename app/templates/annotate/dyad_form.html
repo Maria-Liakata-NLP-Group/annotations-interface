@@ -23,7 +23,7 @@
   <!-- Label A -->
   <div class="form-group">
     <h4 class="underline-text">{{ form_dyad.title_a }}</h4>
-    {{ wtf.form_field(form_dyad.scale_a_1) }} {{
+    {{ wtf.form_field(form_dyad.scale_1_a) }} {{
     wtf.form_field(form_dyad.evidence_a) }} {{
     wtf.form_field(form_dyad.comment_a) }}
   </div>
@@ -38,9 +38,9 @@
     Add another
   </button>
   <div class="form-group collapse" id="dyad_label_a_add">
-    {{ wtf.form_field(form_dyad.scale_a_1_add) }} {{
-    wtf.form_field(form_dyad.evidence_a_add) }} {{
-    wtf.form_field(form_dyad.comment_a_add) }}
+    {{ wtf.form_field(form_dyad.scale_1_add_a) }} {{
+    wtf.form_field(form_dyad.evidence_add_a) }} {{
+    wtf.form_field(form_dyad.comment_add_a) }}
   </div>
   <p></p>
 
@@ -48,7 +48,7 @@
   <div class="form-group">
     <h4 class="underline-text">{{ form_dyad.title_b }}</h4>
     {{ wtf.form_field(form_dyad.label_b, class_="form-control dynamic_select" )
-    }} {{ wtf.form_field(form_dyad.scale_b_1) }} {{
+    }} {{ wtf.form_field(form_dyad.scale_1_b) }} {{
     wtf.form_field(form_dyad.evidence_b) }} {{
     wtf.form_field(form_dyad.comment_b, class_="form-control comment_field",
     data_target="label_b_dyad") }}
@@ -64,10 +64,10 @@
     Add another
   </button>
   <div class="form-group collapse" id="dyad_label_b_add">
-    {{ wtf.form_field(form_dyad.label_b_add, class_="form-control
-    dynamic_select" ) }} {{ wtf.form_field(form_dyad.scale_b_1_add) }} {{
-    wtf.form_field(form_dyad.evidence_b_add) }} {{
-    wtf.form_field(form_dyad.comment_b_add, class="form-control comment_field",
+    {{ wtf.form_field(form_dyad.label_add_b, class_="form-control
+    dynamic_select" ) }} {{ wtf.form_field(form_dyad.scale_1_add_b) }} {{
+    wtf.form_field(form_dyad.evidence_add_b) }} {{
+    wtf.form_field(form_dyad.comment_add_b, class="form-control comment_field",
     data_target="label_b_dyad_add") }}
   </div>
   <p></p>
