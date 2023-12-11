@@ -14,7 +14,7 @@ from app.models import (
     EvidenceTherapist,
     EvidenceDyad,
     ClientAnnotationLabel,
-    TherapistAnnotationSchema,
+    TherapistAnnotationLabel,
     DyadAnnotationSchema,
     ClientAnnotationScale,
     TherapistAnnotationSchemaScale,
@@ -265,24 +265,24 @@ def test_new_client_annotation_label(db_session):
 
 
 @pytest.mark.order(after="test_new_client_annotation_label")
-def test_new_therapist_annotation_schema(db_session, new_ps_annotation_therapist):
+def test_new_therapist_annotation_label(db_session, new_ps_annotation_therapist):
     """
-    GIVEN a TherapistAnnotationSchema model
-    WHEN a new TherapistAnnotationSchema is created and added to the database
+    GIVEN a TherapistAnnotationLabel model
+    WHEN a new TherapistAnnotationLabel is created and added to the database
     THEN check its fields are defined correctly
     """
 
-    label_a = TherapistAnnotationSchema(
+    label_a = TherapistAnnotationLabel(
         label="parent label", annotations=[new_ps_annotation_therapist]
     )
-    label_b = TherapistAnnotationSchema(
+    label_b = TherapistAnnotationLabel(
         label="child label", parent=label_a, annotations=[new_ps_annotation_therapist]
     )
     db_session.add_all([label_a, label_b])
     db_session.commit()
 
-    label_a = TherapistAnnotationSchema.query.filter_by(label="parent label").first()
-    label_b = TherapistAnnotationSchema.query.filter_by(label="child label").first()
+    label_a = TherapistAnnotationLabel.query.filter_by(label="parent label").first()
+    label_b = TherapistAnnotationLabel.query.filter_by(label="child label").first()
     assert label_a.parent is None
     assert label_a.children[0] is label_b
     assert label_b.parent is label_a
@@ -294,7 +294,7 @@ def test_new_therapist_annotation_schema(db_session, new_ps_annotation_therapist
 
     with pytest.raises(IntegrityError, match="UNIQUE constraint failed"):
         """Test that a label with the same name and parent cannot be added twice"""
-        label_c = TherapistAnnotationSchema(label="child label", parent=label_a)
+        label_c = TherapistAnnotationLabel(label="child label", parent=label_a)
         db_session.add(label_c)
         db_session.commit()
     db_session.rollback()
@@ -305,7 +305,7 @@ def test_new_therapist_annotation_schema(db_session, new_ps_annotation_therapist
     db_session.commit()
 
 
-@pytest.mark.order(after="test_new_therapist_annotation_schema")
+@pytest.mark.order(after="test_new_therapist_annotation_label")
 def test_new_dyad_annotation_schema(db_session, new_ps_annotation_dyad):
     """
     GIVEN a DyadAnnotationSchema model
@@ -405,7 +405,7 @@ def test_new_therapist_annotation_schema_scale(db_session):
 
     manager = AnnotationLabelManager()
     manager.add_labels_therapist()
-    labels = TherapistAnnotationSchema.query.all()
+    labels = TherapistAnnotationLabel.query.all()
 
     # find an annotation label with no parent
     label = [label for label in labels if label.parent is None][0]
@@ -440,7 +440,7 @@ def test_new_therapist_annotation_schema_scale(db_session):
     TherapistAnnotationSchemaScale.query.delete()
     db_session.commit()
     manager.remove_labels_therapist()
-    labels = TherapistAnnotationSchema.query.all()
+    labels = TherapistAnnotationLabel.query.all()
     assert len(labels) == 0
 
 

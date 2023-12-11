@@ -14,7 +14,7 @@ from flask_login import login_required
 from app.models import (
     Dataset,
     ClientAnnotationLabel,
-    TherapistAnnotationSchema,
+    TherapistAnnotationLabel,
     DyadAnnotationSchema,
 )
 from app.utils import Speaker
@@ -205,7 +205,7 @@ def update_select_choices():
     if "client" in select_field_name:
         annotation_schema = ClientAnnotationLabel()
     elif "therapist" in select_field_name:
-        annotation_schema = TherapistAnnotationSchema()
+        annotation_schema = TherapistAnnotationLabel()
     elif "dyad" in select_field_name:
         annotation_schema = DyadAnnotationSchema()
     else:

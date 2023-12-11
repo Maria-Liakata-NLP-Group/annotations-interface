@@ -22,7 +22,7 @@ from app.models import (
     AnnotationLabelManager,
     AnnotationSchemaScaleManager,
     ClientAnnotationLabel,
-    TherapistAnnotationSchema,
+    TherapistAnnotationLabel,
     ClientAnnotationScale,
     TherapistAnnotationSchemaScale,
     DyadAnnotationSchema,
@@ -304,14 +304,14 @@ def new_ps_annotation_schema_therapist():
     scales_manager = AnnotationSchemaScaleManager()
     scales_manager.add_scales_therapist()
     # find a label with no child labels
-    label = TherapistAnnotationSchema.query.filter_by(children=None).first()
+    label = TherapistAnnotationLabel.query.filter_by(children=None).first()
     # find the uppermost parent of the label
     parent = label
     while parent.parent is not None:
         parent = parent.parent
     # find a scale associated with the parent label
     scale = TherapistAnnotationSchemaScale.query.filter_by(
-        id_therapist_annotation_schema=parent.id
+        id_therapist_annotation_label=parent.id
     ).first()
     return label, scale
 

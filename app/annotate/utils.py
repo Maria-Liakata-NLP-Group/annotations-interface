@@ -17,7 +17,7 @@ from app.models import (
     EvidenceDyad,
     Dataset,
     ClientAnnotationLabel,
-    TherapistAnnotationSchema,
+    TherapistAnnotationLabel,
     DyadAnnotationSchema,
     ClientAnnotationSchemaAssociation,
     ClientAnnotationScaleAssociation,
@@ -249,7 +249,7 @@ def new_dialog_turn_annotation_to_db(
         evidence_model = EvidenceClient
     elif speaker == Speaker.therapist:
         annotation_model = PSAnnotationTherapist
-        annotation_schema = TherapistAnnotationSchema()
+        annotation_schema = TherapistAnnotationLabel()
     elif speaker == Speaker.dyad:
         annotation_model = PSAnnotationDyad
         annotation_schema = DyadAnnotationSchema()
@@ -428,7 +428,7 @@ def new_labels_to_db(
     label_ids: list,
     annotation: Union[PSAnnotationClient, PSAnnotationTherapist, PSAnnotationDyad],
     annotation_schema: Union[
-        ClientAnnotationLabel, TherapistAnnotationSchema, DyadAnnotationSchema
+        ClientAnnotationLabel, TherapistAnnotationLabel, DyadAnnotationSchema
     ],
     association_model: ClientAnnotationSchemaAssociation,
     additional: bool = False,
@@ -763,7 +763,7 @@ def assign_dynamic_choices(
     if speaker == Speaker.client:
         annotation_schema = ClientAnnotationLabel()
     elif speaker == Speaker.therapist:
-        annotation_schema = TherapistAnnotationSchema()
+        annotation_schema = TherapistAnnotationLabel()
     elif speaker == Speaker.dyad:
         annotation_schema = DyadAnnotationSchema()
     names = [attr for attr in dir(form) if attr.startswith("name_")]
