@@ -15,7 +15,7 @@ from app.models import (
     Dataset,
     ClientAnnotationLabel,
     TherapistAnnotationLabel,
-    DyadAnnotationSchema,
+    DyadAnnotationLabel,
 )
 from app.utils import Speaker
 from app.annotate.utils import (
@@ -207,7 +207,7 @@ def update_select_choices():
     elif "therapist" in select_field_name:
         annotation_schema = TherapistAnnotationLabel()
     elif "dyad" in select_field_name:
-        annotation_schema = DyadAnnotationSchema()
+        annotation_schema = DyadAnnotationLabel()
     else:
         warnings.warn(
             "The select field name does not match any of the expected values."

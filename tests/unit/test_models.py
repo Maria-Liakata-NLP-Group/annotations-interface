@@ -15,7 +15,7 @@ from app.models import (
     EvidenceDyad,
     ClientAnnotationLabel,
     TherapistAnnotationLabel,
-    DyadAnnotationSchema,
+    DyadAnnotationLabel,
     ClientAnnotationScale,
     TherapistAnnotationSchemaScale,
     DyadAnnotationSchemaScale,
@@ -308,22 +308,22 @@ def test_new_therapist_annotation_label(db_session, new_ps_annotation_therapist)
 @pytest.mark.order(after="test_new_therapist_annotation_label")
 def test_new_dyad_annotation_schema(db_session, new_ps_annotation_dyad):
     """
-    GIVEN a DyadAnnotationSchema model
-    WHEN a new DyadAnnotationSchema is created and added to the database
+    GIVEN a DyadAnnotationLabel model
+    WHEN a new DyadAnnotationLabel is created and added to the database
     THEN check its fields are defined correctly
     """
 
-    label_a = DyadAnnotationSchema(
+    label_a = DyadAnnotationLabel(
         label="parent label", annotations=[new_ps_annotation_dyad]
     )
-    label_b = DyadAnnotationSchema(
+    label_b = DyadAnnotationLabel(
         label="child label", parent=label_a, annotations=[new_ps_annotation_dyad]
     )
     db_session.add_all([label_a, label_b])
     db_session.commit()
 
-    label_a = DyadAnnotationSchema.query.filter_by(label="parent label").first()
-    label_b = DyadAnnotationSchema.query.filter_by(label="child label").first()
+    label_a = DyadAnnotationLabel.query.filter_by(label="parent label").first()
+    label_b = DyadAnnotationLabel.query.filter_by(label="child label").first()
     assert label_a.parent is None
     assert label_a.children[0] is label_b
     assert label_b.parent is label_a
@@ -335,7 +335,7 @@ def test_new_dyad_annotation_schema(db_session, new_ps_annotation_dyad):
 
     with pytest.raises(IntegrityError, match="UNIQUE constraint failed"):
         """Test that a label with the same name and parent cannot be added twice"""
-        label_c = DyadAnnotationSchema(label="child label", parent=label_a)
+        label_c = DyadAnnotationLabel(label="child label", parent=label_a)
         db_session.add(label_c)
         db_session.commit()
     db_session.rollback()
@@ -454,7 +454,7 @@ def test_new_dyad_annotation_schema_scale(db_session):
 
     manager = AnnotationLabelManager()
     manager.add_labels_dyad()
-    labels = DyadAnnotationSchema.query.all()
+    labels = DyadAnnotationLabel.query.all()
 
     # find an annotation label with no parent
     label = [label for label in labels if label.parent is None][0]
@@ -489,7 +489,7 @@ def test_new_dyad_annotation_schema_scale(db_session):
     DyadAnnotationSchemaScale.query.delete()
     db_session.commit()
     manager.remove_labels_dyad()
-    labels = DyadAnnotationSchema.query.all()
+    labels = DyadAnnotationLabel.query.all()
     assert len(labels) == 0
 
 

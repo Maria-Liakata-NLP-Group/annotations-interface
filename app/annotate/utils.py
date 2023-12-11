@@ -18,7 +18,7 @@ from app.models import (
     Dataset,
     ClientAnnotationLabel,
     TherapistAnnotationLabel,
-    DyadAnnotationSchema,
+    DyadAnnotationLabel,
     ClientAnnotationSchemaAssociation,
     ClientAnnotationScaleAssociation,
     ClientAnnotationScale,
@@ -252,7 +252,7 @@ def new_dialog_turn_annotation_to_db(
         annotation_schema = TherapistAnnotationLabel()
     elif speaker == Speaker.dyad:
         annotation_model = PSAnnotationDyad
-        annotation_schema = DyadAnnotationSchema()
+        annotation_schema = DyadAnnotationLabel()
 
     annotation = annotation_model(
         comment_summary=form.comment_summary.data,
@@ -428,7 +428,7 @@ def new_labels_to_db(
     label_ids: list,
     annotation: Union[PSAnnotationClient, PSAnnotationTherapist, PSAnnotationDyad],
     annotation_schema: Union[
-        ClientAnnotationLabel, TherapistAnnotationLabel, DyadAnnotationSchema
+        ClientAnnotationLabel, TherapistAnnotationLabel, DyadAnnotationLabel
     ],
     association_model: ClientAnnotationSchemaAssociation,
     additional: bool = False,
@@ -765,7 +765,7 @@ def assign_dynamic_choices(
     elif speaker == Speaker.therapist:
         annotation_schema = TherapistAnnotationLabel()
     elif speaker == Speaker.dyad:
-        annotation_schema = DyadAnnotationSchema()
+        annotation_schema = DyadAnnotationLabel()
     names = [attr for attr in dir(form) if attr.startswith("name_")]
     scales = [attr for attr in dir(form) if attr.startswith("scale_")]
 

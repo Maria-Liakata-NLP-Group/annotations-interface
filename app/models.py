@@ -144,7 +144,7 @@ annotationtherapist_annotationschema = db.Table(
 )
 
 
-# association table for many-to-many relationship between DyadAnnotationSchema and PSAnnotationDyad
+# association table for many-to-many relationship between DyadAnnotationLabel and PSAnnotationDyad
 annotationdyad_annotationschema = db.Table(
     "annotationdyad_annotationschema",
     db.Column(
@@ -153,9 +153,9 @@ annotationdyad_annotationschema = db.Table(
         db.ForeignKey("ps_annotation_dyad.id"),
     ),
     db.Column(
-        "id_dyad_annotation_schema",
+        "id_dyad_annotation_label",
         db.Integer,
-        db.ForeignKey("dyad_annotation_schema.id"),
+        db.ForeignKey("dyad_annotation_label.id"),
     ),
 )
 
@@ -624,9 +624,9 @@ class PSAnnotationDyad(db.Model):
     evidence = db.relationship(
         "EvidenceDyad", backref="annotation", lazy="dynamic"
     )  # one-to-many relationship with EvidenceDyad class
-    # many-to-many relationship with DyadAnnotationSchema class
+    # many-to-many relationship with DyadAnnotationLabel class
     annotation_labels = db.relationship(
-        "DyadAnnotationSchema",
+        "DyadAnnotationLabel",
         secondary=annotationdyad_annotationschema,
         backref=db.backref("annotations", lazy="dynamic"),
         lazy="dynamic",
@@ -993,17 +993,17 @@ class TherapistAnnotationLabel(db.Model, AnnotationLabelMixin):
         return "<TherapistAnnotationLabel {}>".format(self.label[:10])
 
 
-class DyadAnnotationSchema(db.Model, AnnotationLabelMixin):
+class DyadAnnotationLabel(db.Model, AnnotationLabelMixin):
     """Self-referencing table to store the dyad annotation schema"""
 
-    __tablename__ = "dyad_annotation_schema"
+    __tablename__ = "dyad_annotation_label"
     id = db.Column(db.Integer, primary_key=True)
     label = db.Column(db.String(64), index=True, nullable=False)
     parent_id = db.Column(
-        db.Integer, db.ForeignKey("dyad_annotation_schema.id"), default=None
+        db.Integer, db.ForeignKey("dyad_annotation_label.id"), default=None
     )
     children = db.relationship(
-        "DyadAnnotationSchema",
+        "DyadAnnotationLabel",
         backref=db.backref("parent", remote_side=[id]),
         lazy="dynamic",
     )
@@ -1022,7 +1022,7 @@ class DyadAnnotationSchema(db.Model, AnnotationLabelMixin):
 
     def __repr__(self):
         """How to print objects of this class"""
-        return "<DyadAnnotationSchema {}>".format(self.label[:10])
+        return "<DyadAnnotationLabel {}>".format(self.label[:10])
 
 
 class ClientAnnotationScale(db.Model):
@@ -1082,12 +1082,12 @@ class DyadAnnotationSchemaScale(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     scale_title = db.Column(db.String(64), index=True, nullable=False)
     scale_level = db.Column(db.String(64), index=True, nullable=False)
-    id_dyad_annotation_schema = db.Column(
-        db.Integer, db.ForeignKey("dyad_annotation_schema.id")
+    id_dyad_annotation_label = db.Column(
+        db.Integer, db.ForeignKey("dyad_annotation_label.id")
     )
-    # create unique constraint on scale_title, scale_level and id_dyad_annotation_schema
+    # create unique constraint on scale_title, scale_level and id_dyad_annotation_label
     __table_args__ = (
-        db.UniqueConstraint("scale_title", "scale_level", "id_dyad_annotation_schema"),
+        db.UniqueConstraint("scale_title", "scale_level", "id_dyad_annotation_label"),
     )
 
     def __repr__(self):
@@ -1141,8 +1141,8 @@ class DyadAnnotationComment(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     comment = db.Column(db.Text, nullable=True)
-    id_dyad_annotation_schema = db.Column(
-        db.Integer, db.ForeignKey("dyad_annotation_schema.id")
+    id_dyad_annotation_label = db.Column(
+        db.Integer, db.ForeignKey("dyad_annotation_label.id")
     )
     id_ps_annotation_dyad = db.Column(
         db.Integer, db.ForeignKey("ps_annotation_dyad.id")
@@ -1175,7 +1175,7 @@ class AnnotationLabelManager:
     def _add_labels(
         self,
         annotation_schema_model: Union[
-            ClientAnnotationLabel, TherapistAnnotationLabel, DyadAnnotationSchema
+            ClientAnnotationLabel, TherapistAnnotationLabel, DyadAnnotationLabel
         ],
         filename: str,
     ):
@@ -1184,7 +1184,7 @@ class AnnotationLabelManager:
 
         Parameters
         ----------
-        annotation_schema_model : ClientAnnotationLabel or TherapistAnnotationLabel or DyadAnnotationSchema
+        annotation_schema_model : ClientAnnotationLabel or TherapistAnnotationLabel or DyadAnnotationLabel
             The annotation schema model class for the client, therapist or dyad
         filename : str
             The path to the JSON file containing the annotation schema
@@ -1224,7 +1224,7 @@ class AnnotationLabelManager:
     def _remove_labels(
         self,
         annotation_schema_model: Union[
-            ClientAnnotationLabel, TherapistAnnotationLabel, DyadAnnotationSchema
+            ClientAnnotationLabel, TherapistAnnotationLabel, DyadAnnotationLabel
         ],
     ):
         """
@@ -1232,7 +1232,7 @@ class AnnotationLabelManager:
 
         Parameters
         ----------
-        annotation_schema_model : ClientAnnotationLabel or TherapistAnnotationLabel or DyadAnnotationSchema
+        annotation_schema_model : ClientAnnotationLabel or TherapistAnnotationLabel or DyadAnnotationLabel
             The annotation schema model class for the client, therapist or dyad
         """
         try:
@@ -1257,7 +1257,7 @@ class AnnotationLabelManager:
 
     def add_labels_dyad(self):
         """Add annotation labels for the dyad to the database"""
-        return self._add_labels(DyadAnnotationSchema, self.filename_dyad)
+        return self._add_labels(DyadAnnotationLabel, self.filename_dyad)
 
     def remove_labels_client(self):
         """Remove all annotation labels for the client from the database"""
@@ -1269,7 +1269,7 @@ class AnnotationLabelManager:
 
     def remove_labels_dyad(self):
         """Remove all annotation labels for the dyad from the database"""
-        return self._remove_labels(DyadAnnotationSchema)
+        return self._remove_labels(DyadAnnotationLabel)
 
 
 class AnnotationSchemaScaleManager:
@@ -1301,7 +1301,7 @@ class AnnotationSchemaScaleManager:
         annotation_schema_model: Union[
             ClientAnnotationLabel,
             TherapistAnnotationLabel,
-            DyadAnnotationSchema,
+            DyadAnnotationLabel,
         ],
         filename: str,
     ):
@@ -1312,7 +1312,7 @@ class AnnotationSchemaScaleManager:
         ----------
         annotation_schema_scale_model : ClientAnnotationScale or TherapistAnnotationSchemaScale or DyadAnnotationSchemaScale
             The annotation schema scale model class for the client, therapist or dyad
-        annotation_schema_model : ClientAnnotationLabel or TherapistAnnotationLabel or DyadAnnotationSchema
+        annotation_schema_model : ClientAnnotationLabel or TherapistAnnotationLabel or DyadAnnotationLabel
             The annotation schema model class for the client, therapist or dyad
         filename : str
             The path to the JSON file containing the annotation schema scales
@@ -1391,7 +1391,7 @@ class AnnotationSchemaScaleManager:
     def add_scales_dyad(self):
         """Add annotation schema scales for the dyad to the database"""
         return self._add_scales(
-            DyadAnnotationSchemaScale, DyadAnnotationSchema, self.filename_dyad
+            DyadAnnotationSchemaScale, DyadAnnotationLabel, self.filename_dyad
         )
 
     def remove_scales_client(self):
