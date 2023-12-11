@@ -95,7 +95,7 @@ def test_get_events_from_segments(insert_ps_dialog_turns):
 
 
 def test_get_annotation_label_children(new_ps_annotation_schema_client):
-    """Test the get_label_children() method of the AnnotationSchemaMixin class."""
+    """Test the get_label_children() method of the AnnotationLabelMixin class."""
 
     # check "tests/data/annotation_schema/client.json"
     label = "To avoid conflict"
@@ -124,7 +124,7 @@ def test_get_annotation_label_children(new_ps_annotation_schema_client):
 
 
 def test_find_annotation_parent_label_depth():
-    """Test the find_parent_label_depth() method of the AnnotationSchemaMixin class."""
+    """Test the find_parent_label_depth() method of the AnnotationLabelMixin class."""
 
     client_annotation_label = ClientAnnotationLabel()
     # check "tests/data/annotation_schema/client.json"
@@ -134,7 +134,7 @@ def test_find_annotation_parent_label_depth():
 
 
 def test_get_annotation_label_scales():
-    """Test the get_label_scales() method of the AnnotationSchemaMixin class."""
+    """Test the get_label_scales() method of the AnnotationLabelMixin class."""
 
     client_annotation_label = ClientAnnotationLabel()
     # check "tests/data/annotation_schema/scales/client.json"

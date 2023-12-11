@@ -685,8 +685,8 @@ class EvidenceDyad(db.Model):
     label = db.Column(db.Enum(LabelNamesDyad), nullable=True, default=None)
 
 
-class AnnotationSchemaMixin:
-    """Mixin class for annotation schema classes"""
+class AnnotationLabelMixin:
+    """Mixin class for annotation label classes"""
 
     def _find_label(self, label: Union[int, str], parent: str = None) -> object:
         """
@@ -917,7 +917,7 @@ class AnnotationSchemaMixin:
         return labels
 
 
-class ClientAnnotationLabel(db.Model, AnnotationSchemaMixin):
+class ClientAnnotationLabel(db.Model, AnnotationLabelMixin):
     """Self-referencing table to store the client annotation labels"""
 
     __tablename__ = "client_annotation_label"
@@ -960,7 +960,7 @@ class ClientAnnotationLabel(db.Model, AnnotationSchemaMixin):
         return "<ClientAnnotationLabel {}>".format(self.label[:10])
 
 
-class TherapistAnnotationSchema(db.Model, AnnotationSchemaMixin):
+class TherapistAnnotationSchema(db.Model, AnnotationLabelMixin):
     """Self-referencing table to store the therapist annotation schema"""
 
     __tablename__ = "therapist_annotation_schema"
@@ -993,7 +993,7 @@ class TherapistAnnotationSchema(db.Model, AnnotationSchemaMixin):
         return "<TherapistAnnotationSchema {}>".format(self.label[:10])
 
 
-class DyadAnnotationSchema(db.Model, AnnotationSchemaMixin):
+class DyadAnnotationSchema(db.Model, AnnotationLabelMixin):
     """Self-referencing table to store the dyad annotation schema"""
 
     __tablename__ = "dyad_annotation_schema"
