@@ -66,10 +66,10 @@ annotationsdyad_dialogturn = db.Table(
 )
 
 
-class ClientAnnotationSchemaAssociation(db.Model):
+class ClientAnnotationLabelAssociation(db.Model):
     """Associtation object for many-to-many relationship between PSAnnotationClient and ClientAnnotationLabel"""
 
-    __tablename__ = "annotationclient_annotationschema"
+    __tablename__ = "annotationclient_annotationlabel"
     id = db.Column(db.Integer, primary_key=True)
     id_ps_annotation_client = db.Column(
         db.Integer,
@@ -528,7 +528,7 @@ class PSAnnotationClient(db.Model):
         "EvidenceClient", backref="annotation", lazy="dynamic"
     )  # one-to-many relationship with EvidenceClient class
     annotation_label_associations = db.relationship(
-        "ClientAnnotationSchemaAssociation",
+        "ClientAnnotationLabelAssociation",
         back_populates="annotation",
         lazy="dynamic",
     )  # many-to-many relationship with ClientAnnotationLabel class
@@ -539,7 +539,7 @@ class PSAnnotationClient(db.Model):
     )  # many-to-many relationship with ClientAnnotationScale class
     annotation_labels = association_proxy(
         "annotation_label_associations", "label"
-    )  # association proxy of "annotation_label_associations" to "label" attribute of ClientAnnotationSchemaAssociation class
+    )  # association proxy of "annotation_label_associations" to "label" attribute of ClientAnnotationLabelAssociation class
     annotation_scales = association_proxy(
         "annotation_scale_associations", "scale"
     )  # association proxy of "annotation_scale_associations" to "scale" attribute of ClientAnnotationScaleAssociation class
@@ -933,7 +933,7 @@ class ClientAnnotationLabel(db.Model, AnnotationLabelMixin):
         lazy="dynamic",
     )
     annotations = db.relationship(
-        "ClientAnnotationSchemaAssociation",
+        "ClientAnnotationLabelAssociation",
         back_populates="label",
         lazy="dynamic",
     )  # many-to-many relationship with PSAnnotationClient class

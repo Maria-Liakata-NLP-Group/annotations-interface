@@ -24,7 +24,7 @@ from app.models import (
     ClientAnnotationComment,
     TherapistAnnotationComment,
     DyadAnnotationComment,
-    ClientAnnotationSchemaAssociation,
+    ClientAnnotationLabelAssociation,
     ClientAnnotationScaleAssociation,
 )
 from app.utils import (
@@ -588,10 +588,10 @@ def test_new_ps_annotation_client(
     assert annotation.dataset == dataset
     label, scale = new_ps_annotation_schema_client
     # add the label and scale to the annotation
-    # also test the ClientAnnotationSchemaAssociation model (association object + association proxy)
+    # also test the ClientAnnotationLabelAssociation model (association object + association proxy)
     new_ps_annotation_client.annotation_labels.append(label)  # association proxy
     new_ps_annotation_client.annotation_scales.append(scale)
-    association = ClientAnnotationSchemaAssociation(
+    association = ClientAnnotationLabelAssociation(
         label, new_ps_annotation_client, is_additional=True
     )  # association object explicitly
     db_session.add(association)

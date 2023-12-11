@@ -19,7 +19,7 @@ from app.models import (
     ClientAnnotationLabel,
     TherapistAnnotationLabel,
     DyadAnnotationLabel,
-    ClientAnnotationSchemaAssociation,
+    ClientAnnotationLabelAssociation,
     ClientAnnotationScaleAssociation,
     ClientAnnotationScale,
     ClientAnnotationComment,
@@ -242,7 +242,7 @@ def new_dialog_turn_annotation_to_db(
     # create the annotation object for the client, therapist or dyad
     if speaker == Speaker.client:
         annotation_model = PSAnnotationClient
-        schema_association_model = ClientAnnotationSchemaAssociation
+        schema_association_model = ClientAnnotationLabelAssociation
         scale_association_model = ClientAnnotationScaleAssociation
         annotation_schema = ClientAnnotationLabel()
         annotation_scale = ClientAnnotationScale()
@@ -430,7 +430,7 @@ def new_labels_to_db(
     annotation_schema: Union[
         ClientAnnotationLabel, TherapistAnnotationLabel, DyadAnnotationLabel
     ],
-    association_model: ClientAnnotationSchemaAssociation,
+    association_model: ClientAnnotationLabelAssociation,
     additional: bool = False,
 ):
     for id in label_ids:
