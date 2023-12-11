@@ -485,16 +485,16 @@ class PSAnnotationFormTherapist(FlaskForm):
         name="label_a_therapist",
         data_required=True,
     )
-    sub_label_a_1 = create_select_field_without_choices(
+    sublabel_1_a = create_select_field_without_choices(
         label="Choose one",
         name="sub_label_a_1_therapist",
     )
-    scale_a_1 = create_select_field_without_choices(
+    scale_1_a = create_select_field_without_choices(
         label="Typicality scale".strip().capitalize(),
         name="scale_a_1_therapist",
         data_required=True,
     )
-    scale_a_2 = create_select_field_without_choices(
+    scale_2_a = create_select_field_without_choices(
         label="Quality".strip().capitalize(),
         name="scale_a_2_therapist",
         data_required=True,
@@ -511,27 +511,27 @@ class PSAnnotationFormTherapist(FlaskForm):
 
     # Label A - additional
     # --------------------
-    label_a_add = create_select_field_without_choices(
+    label_add_a = create_select_field_without_choices(
         label="Choose one",
         name="label_a_therapist_add",
     )
-    sub_label_a_1_add = create_select_field_without_choices(
+    sublabel_1_add_a = create_select_field_without_choices(
         label="Choose one",
         name="sub_label_a_1_therapist_add",
     )
-    scale_a_1_add = create_select_field_without_choices(
+    scale_1_add_a = create_select_field_without_choices(
         label="Typicality scale".strip().capitalize(),
         name="scale_a_1_therapist_add",
     )
-    scale_a_2_add = create_select_field_without_choices(
+    scale_2_add_a = create_select_field_without_choices(
         label="Quality".strip().capitalize(),
         name="scale_a_2_therapist_add",
     )
-    evidence_a_add = create_select_multiple_field_without_choices(
+    evidence_add_a = create_select_multiple_field_without_choices(
         label="Evidence",
         name="evidence_a_therapist_add",
     )
-    comment_a_add = create_text_area_field(
+    comment_add_a = create_text_area_field(
         label="Comment",
         name="comment_a_therapist_add",
     )
