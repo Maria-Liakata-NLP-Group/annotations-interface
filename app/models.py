@@ -176,7 +176,7 @@ annotationtherapist_annotationschemascale = db.Table(
 )
 
 
-# association table for many-to-many relationship between PSAnnotationDyad and DyadAnnotationSchemaScale
+# association table for many-to-many relationship between PSAnnotationDyad and DyadAnnotationScale
 annotationdyad_annotationschemascale = db.Table(
     "annotationdyad_annotationschemascale",
     db.Column(
@@ -185,9 +185,9 @@ annotationdyad_annotationschemascale = db.Table(
         db.ForeignKey("ps_annotation_dyad.id"),
     ),
     db.Column(
-        "id_dyad_annotation_schema_scale",
+        "id_dyad_annotation_scale",
         db.Integer,
-        db.ForeignKey("dyad_annotation_schema_scale.id"),
+        db.ForeignKey("dyad_annotation_scale.id"),
     ),
 )
 
@@ -632,11 +632,11 @@ class PSAnnotationDyad(db.Model):
         lazy="dynamic",
     )
     annotation_scales = db.relationship(
-        "DyadAnnotationSchemaScale",
+        "DyadAnnotationScale",
         secondary=annotationdyad_annotationschemascale,
         backref=db.backref("annotations", lazy="dynamic"),
         lazy="dynamic",
-    )  # many-to-many relationship with DyadAnnotationSchemaScale class
+    )  # many-to-many relationship with DyadAnnotationScale class
     annotation_comments = db.relationship(
         "DyadAnnotationComment",
         backref="annotation",
@@ -1008,10 +1008,10 @@ class DyadAnnotationLabel(db.Model, AnnotationLabelMixin):
         lazy="dynamic",
     )
     scales = db.relationship(
-        "DyadAnnotationSchemaScale",
+        "DyadAnnotationScale",
         backref="label",
         lazy="dynamic",
-    )  # one-to-many relationship with DyadAnnotationSchemaScale class
+    )  # one-to-many relationship with DyadAnnotationScale class
     comments = db.relationship(
         "DyadAnnotationComment",
         backref="label",
@@ -1074,10 +1074,10 @@ class TherapistAnnotationScale(db.Model):
         return "<TherapistAnnotationScale {}>".format(self.scale_title[:10])
 
 
-class DyadAnnotationSchemaScale(db.Model):
+class DyadAnnotationScale(db.Model):
     """Table to store the scales for the dyad annotation schema"""
 
-    __tablename__ = "dyad_annotation_schema_scale"
+    __tablename__ = "dyad_annotation_scale"
 
     id = db.Column(db.Integer, primary_key=True)
     scale_title = db.Column(db.String(64), index=True, nullable=False)
@@ -1092,7 +1092,7 @@ class DyadAnnotationSchemaScale(db.Model):
 
     def __repr__(self):
         """How to print objects of this class"""
-        return "<DyadAnnotationSchemaScale {}>".format(self.scale_title[:10])
+        return "<DyadAnnotationScale {}>".format(self.scale_title[:10])
 
 
 class ClientAnnotationComment(db.Model):
@@ -1296,7 +1296,7 @@ class AnnotationSchemaScaleManager:
         annotation_schema_scale_model: Union[
             ClientAnnotationScale,
             TherapistAnnotationScale,
-            DyadAnnotationSchemaScale,
+            DyadAnnotationScale,
         ],
         annotation_schema_model: Union[
             ClientAnnotationLabel,
@@ -1310,7 +1310,7 @@ class AnnotationSchemaScaleManager:
 
         Parameters
         ----------
-        annotation_schema_scale_model : ClientAnnotationScale or TherapistAnnotationScale or DyadAnnotationSchemaScale
+        annotation_schema_scale_model : ClientAnnotationScale or TherapistAnnotationScale or DyadAnnotationScale
             The annotation schema scale model class for the client, therapist or dyad
         annotation_schema_model : ClientAnnotationLabel or TherapistAnnotationLabel or DyadAnnotationLabel
             The annotation schema model class for the client, therapist or dyad
@@ -1351,7 +1351,7 @@ class AnnotationSchemaScaleManager:
         annotation_schema_scale_model: Union[
             ClientAnnotationScale,
             TherapistAnnotationScale,
-            DyadAnnotationSchemaScale,
+            DyadAnnotationScale,
         ],
     ):
         """
@@ -1359,7 +1359,7 @@ class AnnotationSchemaScaleManager:
 
         Parameters
         ----------
-        annotation_schema_scale_model : ClientAnnotationScale or TherapistAnnotationScale or DyadAnnotationSchemaScale
+        annotation_schema_scale_model : ClientAnnotationScale or TherapistAnnotationScale or DyadAnnotationScale
             The annotation schema scale model class for the client, therapist or dyad
         """
         try:
@@ -1391,7 +1391,7 @@ class AnnotationSchemaScaleManager:
     def add_scales_dyad(self):
         """Add annotation schema scales for the dyad to the database"""
         return self._add_scales(
-            DyadAnnotationSchemaScale, DyadAnnotationLabel, self.filename_dyad
+            DyadAnnotationScale, DyadAnnotationLabel, self.filename_dyad
         )
 
     def remove_scales_client(self):
@@ -1404,4 +1404,4 @@ class AnnotationSchemaScaleManager:
 
     def remove_scales_dyad(self):
         """Remove all annotation schema scales for the dyad from the database"""
-        return self._remove_scales(DyadAnnotationSchemaScale)
+        return self._remove_scales(DyadAnnotationScale)

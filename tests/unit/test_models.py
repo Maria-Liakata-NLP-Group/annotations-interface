@@ -18,7 +18,7 @@ from app.models import (
     DyadAnnotationLabel,
     ClientAnnotationScale,
     TherapistAnnotationScale,
-    DyadAnnotationSchemaScale,
+    DyadAnnotationScale,
     AnnotationLabelManager,
     AnnotationSchemaScaleManager,
     ClientAnnotationComment,
@@ -445,10 +445,10 @@ def test_new_therapist_annotation_scale(db_session):
 
 
 @pytest.mark.order(after="test_new_therapist_annotation_scale")
-def test_new_dyad_annotation_schema_scale(db_session):
+def test_new_dyad_annotation_scale(db_session):
     """
-    GIVEN a DyadAnnotationSchemaScale model
-    WHEN a new DyadAnnotationSchemaScale is created and added to the database
+    GIVEN a DyadAnnotationScale model
+    WHEN a new DyadAnnotationScale is created and added to the database
     THEN check its fields are defined correctly
     """
 
@@ -460,7 +460,7 @@ def test_new_dyad_annotation_schema_scale(db_session):
     label = [label for label in labels if label.parent is None][0]
 
     # create a scale for the label
-    scale = DyadAnnotationSchemaScale(
+    scale = DyadAnnotationScale(
         scale_title="scale title",
         scale_level="scale level",
         label=label,
@@ -469,14 +469,14 @@ def test_new_dyad_annotation_schema_scale(db_session):
     db_session.commit()
 
     # verify that the scale is correctly added to the database
-    scale = DyadAnnotationSchemaScale.query.first()
+    scale = DyadAnnotationScale.query.first()
     assert scale.scale_title == "scale title"
     assert scale.scale_level == "scale level"
     assert scale.label == label
 
     # verify that adding a new scale with the same title, level and label raises an exception
     with pytest.raises(IntegrityError, match="UNIQUE constraint failed"):
-        scale = DyadAnnotationSchemaScale(
+        scale = DyadAnnotationScale(
             scale_title="scale title",
             scale_level="scale level",
             label=label,
@@ -486,14 +486,14 @@ def test_new_dyad_annotation_schema_scale(db_session):
     db_session.rollback()
 
     # remove the annotation labels and scales from the database
-    DyadAnnotationSchemaScale.query.delete()
+    DyadAnnotationScale.query.delete()
     db_session.commit()
     manager.remove_labels_dyad()
     labels = DyadAnnotationLabel.query.all()
     assert len(labels) == 0
 
 
-@pytest.mark.order(after="test_new_dyad_annotation_schema_scale")
+@pytest.mark.order(after="test_new_dyad_annotation_scale")
 def test_annotation_label_manager(db_session):
     """Test the AnnotationLabelManager class"""
 

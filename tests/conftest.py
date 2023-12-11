@@ -26,7 +26,7 @@ from app.models import (
     ClientAnnotationScale,
     TherapistAnnotationScale,
     DyadAnnotationLabel,
-    DyadAnnotationSchemaScale,
+    DyadAnnotationScale,
     ClientAnnotationComment,
     TherapistAnnotationComment,
     DyadAnnotationComment,
@@ -330,7 +330,7 @@ def new_ps_annotation_schema_dyad():
     while parent.parent is not None:
         parent = parent.parent
     # find a scale associated with the parent label
-    scale = DyadAnnotationSchemaScale.query.filter_by(
+    scale = DyadAnnotationScale.query.filter_by(
         id_dyad_annotation_label=parent.id
     ).first()
     return label, scale
