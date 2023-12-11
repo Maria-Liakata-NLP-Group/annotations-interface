@@ -19,7 +19,7 @@ from app.models import (
     ClientAnnotationScale,
     TherapistAnnotationSchemaScale,
     DyadAnnotationSchemaScale,
-    AnnotationSchemaManager,
+    AnnotationLabelManager,
     AnnotationSchemaScaleManager,
     ClientAnnotationComment,
     TherapistAnnotationComment,
@@ -354,7 +354,7 @@ def test_new_client_annotation_scale(db_session):
     THEN check its fields are defined correctly
     """
 
-    manager = AnnotationSchemaManager()
+    manager = AnnotationLabelManager()
     manager.add_labels_client()
     labels = ClientAnnotationLabel.query.all()
 
@@ -403,7 +403,7 @@ def test_new_therapist_annotation_schema_scale(db_session):
     THEN check its fields are defined correctly
     """
 
-    manager = AnnotationSchemaManager()
+    manager = AnnotationLabelManager()
     manager.add_labels_therapist()
     labels = TherapistAnnotationSchema.query.all()
 
@@ -452,7 +452,7 @@ def test_new_dyad_annotation_schema_scale(db_session):
     THEN check its fields are defined correctly
     """
 
-    manager = AnnotationSchemaManager()
+    manager = AnnotationLabelManager()
     manager.add_labels_dyad()
     labels = DyadAnnotationSchema.query.all()
 
@@ -494,10 +494,10 @@ def test_new_dyad_annotation_schema_scale(db_session):
 
 
 @pytest.mark.order(after="test_new_dyad_annotation_schema_scale")
-def test_annotation_schema_manager(db_session):
-    """Test the AnnotationSchemaManager class"""
+def test_annotation_label_manager(db_session):
+    """Test the AnnotationLabelManager class"""
 
-    manager = AnnotationSchemaManager()
+    manager = AnnotationLabelManager()
     manager.add_labels_client()
 
     # verify that the labels are correctly added to the database
@@ -525,11 +525,11 @@ def test_annotation_schema_manager(db_session):
     assert len(labels) == 0
 
 
-@pytest.mark.order(after="test_annotation_schema_manager")
+@pytest.mark.order(after="test_annotation_label_manager")
 def test_annotation_schema_scale_manager(db_session):
     """Test the AnnotationSchemaScaleManager class"""
 
-    schema_manager = AnnotationSchemaManager()
+    schema_manager = AnnotationLabelManager()
     schema_manager.add_labels_client()
     scales_manager = AnnotationSchemaScaleManager()
     # verify that a warning is raised if scales are added to a non-existent label

@@ -19,7 +19,7 @@ from app.models import (
     EvidenceClient,
     EvidenceTherapist,
     EvidenceDyad,
-    AnnotationSchemaManager,
+    AnnotationLabelManager,
     AnnotationSchemaScaleManager,
     ClientAnnotationLabel,
     TherapistAnnotationSchema,
@@ -276,7 +276,7 @@ def new_evidence_dyad(new_ps_annotation_dyad, new_ps_dialog_event):
 @pytest.fixture(scope="module")
 def new_ps_annotation_schema_client():
     """Fixture to create a new psychotherapy annotation schema + scales for the client"""
-    schema_manager = AnnotationSchemaManager()
+    schema_manager = AnnotationLabelManager()
     schema_manager.add_labels_client()
     scales_manager = AnnotationSchemaScaleManager()
     with warnings.catch_warnings():
@@ -299,7 +299,7 @@ def new_ps_annotation_schema_client():
 @pytest.fixture(scope="module")
 def new_ps_annotation_schema_therapist():
     """Fixture to create a new psychotherapy annotation schema + scales for the therapist"""
-    schema_manager = AnnotationSchemaManager()
+    schema_manager = AnnotationLabelManager()
     schema_manager.add_labels_therapist()
     scales_manager = AnnotationSchemaScaleManager()
     scales_manager.add_scales_therapist()
@@ -319,7 +319,7 @@ def new_ps_annotation_schema_therapist():
 @pytest.fixture(scope="module")
 def new_ps_annotation_schema_dyad():
     """Fixture to create a new psychotherapy annotation schema + scales for the dyad"""
-    schema_manager = AnnotationSchemaManager()
+    schema_manager = AnnotationLabelManager()
     schema_manager.add_labels_dyad()
     scales_manager = AnnotationSchemaScaleManager()
     scales_manager.add_scales_dyad()

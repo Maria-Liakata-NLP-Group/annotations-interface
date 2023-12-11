@@ -1153,7 +1153,7 @@ class DyadAnnotationComment(db.Model):
         return "<DyadAnnotationComment {}>".format(self.comment[:10])
 
 
-class AnnotationSchemaManager:
+class AnnotationLabelManager:
     def __init__(self):
         """Initialize the manager specifying the JSON files containing the annotation schema"""
         self.filename_client = os.path.join(

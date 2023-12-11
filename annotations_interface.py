@@ -10,7 +10,7 @@ from app.models import (
     PSDialogTurn,
     PSDialogEvent,
     PSAnnotationClient,
-    AnnotationSchemaManager,
+    AnnotationLabelManager,
     AnnotationSchemaScaleManager,
 )
 
@@ -46,7 +46,7 @@ def clear_db():
 @app.cli.command()
 def create_annotation_schema():
     """Create the annotation schema for the client, therapist and dyad"""
-    schema_manager = AnnotationSchemaManager()
+    schema_manager = AnnotationLabelManager()
     scale_manager = AnnotationSchemaScaleManager()
 
     # remove any existing schema first
