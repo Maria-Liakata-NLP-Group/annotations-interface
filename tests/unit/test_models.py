@@ -17,7 +17,7 @@ from app.models import (
     TherapistAnnotationLabel,
     DyadAnnotationLabel,
     ClientAnnotationScale,
-    TherapistAnnotationSchemaScale,
+    TherapistAnnotationScale,
     DyadAnnotationSchemaScale,
     AnnotationLabelManager,
     AnnotationSchemaScaleManager,
@@ -396,10 +396,10 @@ def test_new_client_annotation_scale(db_session):
 
 
 @pytest.mark.order(after="test_new_client_annotation_scale")
-def test_new_therapist_annotation_schema_scale(db_session):
+def test_new_therapist_annotation_scale(db_session):
     """
-    GIVEN a TherapistAnnotationSchemaScale model
-    WHEN a new TherapistAnnotationSchemaScale is created and added to the database
+    GIVEN a TherapistAnnotationScale model
+    WHEN a new TherapistAnnotationScale is created and added to the database
     THEN check its fields are defined correctly
     """
 
@@ -411,7 +411,7 @@ def test_new_therapist_annotation_schema_scale(db_session):
     label = [label for label in labels if label.parent is None][0]
 
     # create a scale for the label
-    scale = TherapistAnnotationSchemaScale(
+    scale = TherapistAnnotationScale(
         scale_title="scale title",
         scale_level="scale level",
         label=label,
@@ -420,14 +420,14 @@ def test_new_therapist_annotation_schema_scale(db_session):
     db_session.commit()
 
     # verify that the scale is correctly added to the database
-    scale = TherapistAnnotationSchemaScale.query.first()
+    scale = TherapistAnnotationScale.query.first()
     assert scale.scale_title == "scale title"
     assert scale.scale_level == "scale level"
     assert scale.label == label
 
     # verify that adding a new scale with the same title, level and label raises an exception
     with pytest.raises(IntegrityError, match="UNIQUE constraint failed"):
-        scale = TherapistAnnotationSchemaScale(
+        scale = TherapistAnnotationScale(
             scale_title="scale title",
             scale_level="scale level",
             label=label,
@@ -437,14 +437,14 @@ def test_new_therapist_annotation_schema_scale(db_session):
     db_session.rollback()
 
     # remove the annotation labels and scales from the database
-    TherapistAnnotationSchemaScale.query.delete()
+    TherapistAnnotationScale.query.delete()
     db_session.commit()
     manager.remove_labels_therapist()
     labels = TherapistAnnotationLabel.query.all()
     assert len(labels) == 0
 
 
-@pytest.mark.order(after="test_new_therapist_annotation_schema_scale")
+@pytest.mark.order(after="test_new_therapist_annotation_scale")
 def test_new_dyad_annotation_schema_scale(db_session):
     """
     GIVEN a DyadAnnotationSchemaScale model
