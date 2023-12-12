@@ -26,6 +26,7 @@ from app.models import (
     TherapistAnnotationLabelAssociation,
     TherapistAnnotationScale,
     TherapistAnnotationComment,
+    TherapistAnnotationScaleAssociation,
 )
 from app import db
 from app.annotate.forms import (
@@ -254,7 +255,7 @@ def new_dialog_turn_annotation_to_db(
     elif speaker == Speaker.therapist:
         annotation_model = PSAnnotationTherapist
         label_association_model = TherapistAnnotationLabelAssociation
-        scale_association_model = None
+        scale_association_model = TherapistAnnotationScaleAssociation
         annotation_label = TherapistAnnotationLabel()
         annotation_scale = TherapistAnnotationScale()
         evidence_model = EvidenceTherapist
@@ -438,14 +439,14 @@ def new_dialog_turn_annotation_to_db(
 def new_labels_to_db(
     label_ids: list,
     annotation: Union[PSAnnotationClient, PSAnnotationTherapist, PSAnnotationDyad],
-    annotation_schema: Union[
+    annotation_label: Union[
         ClientAnnotationLabel, TherapistAnnotationLabel, DyadAnnotationLabel
     ],
     association_model: ClientAnnotationLabelAssociation,
     additional: bool = False,
 ):
     for id in label_ids:
-        label = annotation_schema.query.get_or_404(id)
+        label = annotation_label.query.get_or_404(id)
         if additional:
             association = association_model(
                 label=label,
@@ -460,8 +461,10 @@ def new_labels_to_db(
 def new_scales_to_db(
     scale_ids: list,
     annotation: Union[PSAnnotationClient, PSAnnotationTherapist, PSAnnotationDyad],
-    annotation_scale: ClientAnnotationScale,
-    association_model: ClientAnnotationScaleAssociation,
+    annotation_scale: Union[ClientAnnotationScale, TherapistAnnotationScale],
+    association_model: Union[
+        ClientAnnotationScaleAssociation, TherapistAnnotationScaleAssociation
+    ],
     additional: bool = False,
 ):
     for id in scale_ids:
