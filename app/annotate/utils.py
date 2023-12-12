@@ -27,6 +27,10 @@ from app.models import (
     TherapistAnnotationScale,
     TherapistAnnotationComment,
     TherapistAnnotationScaleAssociation,
+    DyadAnnotationLabelAssociation,
+    DyadAnnotationScaleAssociation,
+    DyadAnnotationScale,
+    DyadAnnotationComment,
 )
 from app import db
 from app.annotate.forms import (
@@ -262,7 +266,12 @@ def new_dialog_turn_annotation_to_db(
         comment_model = TherapistAnnotationComment
     elif speaker == Speaker.dyad:
         annotation_model = PSAnnotationDyad
+        label_association_model = DyadAnnotationLabelAssociation
+        scale_association_model = DyadAnnotationScaleAssociation
         annotation_label = DyadAnnotationLabel()
+        annotation_scale = DyadAnnotationScale()
+        evidence_model = EvidenceDyad
+        comment_model = DyadAnnotationComment
 
     annotation = annotation_model(
         comment_summary=form.comment_summary.data,
@@ -442,7 +451,11 @@ def new_labels_to_db(
     annotation_label: Union[
         ClientAnnotationLabel, TherapistAnnotationLabel, DyadAnnotationLabel
     ],
-    association_model: ClientAnnotationLabelAssociation,
+    association_model: Union[
+        ClientAnnotationLabelAssociation,
+        TherapistAnnotationLabelAssociation,
+        DyadAnnotationLabelAssociation,
+    ],
     additional: bool = False,
 ):
     for id in label_ids:
@@ -461,9 +474,13 @@ def new_labels_to_db(
 def new_scales_to_db(
     scale_ids: list,
     annotation: Union[PSAnnotationClient, PSAnnotationTherapist, PSAnnotationDyad],
-    annotation_scale: Union[ClientAnnotationScale, TherapistAnnotationScale],
+    annotation_scale: Union[
+        ClientAnnotationScale, TherapistAnnotationScale, DyadAnnotationScale
+    ],
     association_model: Union[
-        ClientAnnotationScaleAssociation, TherapistAnnotationScaleAssociation
+        ClientAnnotationScaleAssociation,
+        TherapistAnnotationScaleAssociation,
+        DyadAnnotationScaleAssociation,
     ],
     additional: bool = False,
 ):
@@ -482,9 +499,13 @@ def new_scales_to_db(
 
 def new_comment_to_db(
     comment: str,
-    comment_model: Union[ClientAnnotationComment, TherapistAnnotationComment],
+    comment_model: Union[
+        ClientAnnotationComment, TherapistAnnotationComment, DyadAnnotationComment
+    ],
     annotation: Union[PSAnnotationClient, PSAnnotationTherapist, PSAnnotationDyad],
-    parent_label: Union[ClientAnnotationLabel, TherapistAnnotationLabel],
+    parent_label: Union[
+        ClientAnnotationLabel, TherapistAnnotationLabel, DyadAnnotationLabel
+    ],
     additional: bool = False,
 ):
     comment = comment_model(
@@ -500,7 +521,9 @@ def new_evidence_events_to_db(
     events: list,
     evidence_model: Union[EvidenceClient, EvidenceTherapist, EvidenceDyad],
     annotation: Union[PSAnnotationClient, PSAnnotationTherapist, PSAnnotationDyad],
-    parent_label: ClientAnnotationLabel,
+    parent_label: Union[
+        ClientAnnotationLabel, TherapistAnnotationLabel, DyadAnnotationLabel
+    ],
     additional: bool = False,
 ):
     for event in events:
