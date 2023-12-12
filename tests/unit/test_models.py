@@ -26,9 +26,9 @@ from app.models import (
     DyadAnnotationComment,
     ClientAnnotationLabelAssociation,
     ClientAnnotationScaleAssociation,
+    TherapistAnnotationLabelAssociation,
 )
 from app.utils import (
-    LabelNamesClient,
     LabelNamesTherapist,
     LabelNamesDyad,
 )
@@ -273,10 +273,11 @@ def test_new_therapist_annotation_label(db_session, new_ps_annotation_therapist)
     """
 
     label_a = TherapistAnnotationLabel(
-        label="parent label", annotations=[new_ps_annotation_therapist]
+        label="parent label",
     )
     label_b = TherapistAnnotationLabel(
-        label="child label", parent=label_a, annotations=[new_ps_annotation_therapist]
+        label="child label",
+        parent=label_a,
     )
     db_session.add_all([label_a, label_b])
     db_session.commit()
@@ -287,10 +288,6 @@ def test_new_therapist_annotation_label(db_session, new_ps_annotation_therapist)
     assert label_a.children[0] is label_b
     assert label_b.parent is label_a
     assert label_b.children.all() == []
-
-    # verify that the annotations are correctly linked to the labels
-    labels = new_ps_annotation_therapist.annotation_labels.all()
-    assert len(labels) == 2
 
     with pytest.raises(IntegrityError, match="UNIQUE constraint failed"):
         """Test that a label with the same name and parent cannot be added twice"""
@@ -645,9 +642,23 @@ def test_new_ps_annotation_therapist(
     assert annotation.author == annotator1
     assert annotation.dataset == dataset
     label, scale = new_ps_annotation_schema_therapist
-    new_ps_annotation_therapist.annotation_labels.append(label)
+    # add the label and scale to the annotation
+    # also test the TherapistAnnotationLabelAssociation model (association object + association proxy)
+    new_ps_annotation_therapist.annotation_labels.append(label)  # association proxy
     new_ps_annotation_therapist.annotation_scales.append(scale)
-    assert label.annotations.first() == new_ps_annotation_therapist
+    association = TherapistAnnotationLabelAssociation(
+        label, new_ps_annotation_therapist, is_additional=True
+    )  # association object explicitly
+    db_session.add(association)
+    associations = label.annotations.all()
+    assert len(associations) == 2
+    for association in associations:
+        assert association.annotation == new_ps_annotation_therapist
+        assert association.label == label
+    assert not associations[
+        0
+    ].is_additional  # default through association proxy is False
+    assert associations[1].is_additional
     assert scale.annotations.first() == new_ps_annotation_therapist
 
 
