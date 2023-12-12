@@ -756,6 +756,9 @@ class EvidenceDyad(db.Model):
     id_dyad_annotation_label = db.Column(
         db.Integer, db.ForeignKey("dyad_annotation_label.id")
     )
+    is_additional = db.Column(
+        db.Boolean, default=False
+    )  # is this evidence for an additional label?
 
 
 class AnnotationLabelMixin:
