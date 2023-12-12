@@ -23,6 +23,9 @@ from app.models import (
     ClientAnnotationScaleAssociation,
     ClientAnnotationScale,
     ClientAnnotationComment,
+    TherapistAnnotationLabelAssociation,
+    TherapistAnnotationScale,
+    TherapistAnnotationComment,
 )
 from app import db
 from app.annotate.forms import (
@@ -242,17 +245,23 @@ def new_dialog_turn_annotation_to_db(
     # create the annotation object for the client, therapist or dyad
     if speaker == Speaker.client:
         annotation_model = PSAnnotationClient
-        schema_association_model = ClientAnnotationLabelAssociation
+        label_association_model = ClientAnnotationLabelAssociation
         scale_association_model = ClientAnnotationScaleAssociation
-        annotation_schema = ClientAnnotationLabel()
+        annotation_label = ClientAnnotationLabel()
         annotation_scale = ClientAnnotationScale()
         evidence_model = EvidenceClient
+        comment_model = ClientAnnotationComment
     elif speaker == Speaker.therapist:
         annotation_model = PSAnnotationTherapist
-        annotation_schema = TherapistAnnotationLabel()
+        label_association_model = TherapistAnnotationLabelAssociation
+        scale_association_model = None
+        annotation_label = TherapistAnnotationLabel()
+        annotation_scale = TherapistAnnotationScale()
+        evidence_model = EvidenceTherapist
+        comment_model = TherapistAnnotationComment
     elif speaker == Speaker.dyad:
         annotation_model = PSAnnotationDyad
-        annotation_schema = DyadAnnotationLabel()
+        annotation_label = DyadAnnotationLabel()
 
     annotation = annotation_model(
         comment_summary=form.comment_summary.data,
@@ -269,7 +278,7 @@ def new_dialog_turn_annotation_to_db(
     # these are the parent labels in the annotation schema
     names = [attr for attr in dir(form) if attr.startswith("name_")]
     for name in names:
-        parent_label = annotation_schema.query.filter_by(
+        parent_label = annotation_label.query.filter_by(
             label=getattr(form, name)
         ).first()
         if parent_label is None:
@@ -297,7 +306,7 @@ def new_dialog_turn_annotation_to_db(
         if attrs:
             label_ids = [getattr(form, attr).data for attr in attrs]
             new_labels_to_db(
-                label_ids, annotation, annotation_schema, schema_association_model
+                label_ids, annotation, annotation_label, label_association_model
             )
         # scales
         attrs = [
@@ -321,7 +330,7 @@ def new_dialog_turn_annotation_to_db(
         ]
         if attrs:
             comment = [getattr(form, attr).data for attr in attrs][0]
-            new_comment_to_db(comment, annotation, parent_label)
+            new_comment_to_db(comment, comment_model, annotation, parent_label)
         # evidence events
         attrs = [
             attr
@@ -375,8 +384,8 @@ def new_dialog_turn_annotation_to_db(
             new_labels_to_db(
                 label_ids,
                 annotation,
-                annotation_schema,
-                schema_association_model,
+                annotation_label,
+                label_association_model,
                 additional=True,
             )
         # scales
@@ -402,7 +411,9 @@ def new_dialog_turn_annotation_to_db(
         ]
         if attrs:
             comment = [getattr(form, attr).data for attr in attrs][0]
-            new_comment_to_db(comment, annotation, parent_label, additional=True)
+            new_comment_to_db(
+                comment, comment_model, annotation, parent_label, additional=True
+            )
         # evidence events
         attrs = [
             attr
@@ -468,11 +479,12 @@ def new_scales_to_db(
 
 def new_comment_to_db(
     comment: str,
+    comment_model: Union[ClientAnnotationComment, TherapistAnnotationComment],
     annotation: Union[PSAnnotationClient, PSAnnotationTherapist, PSAnnotationDyad],
-    parent_label: ClientAnnotationLabel,
+    parent_label: Union[ClientAnnotationLabel, TherapistAnnotationLabel],
     additional: bool = False,
 ):
-    comment = ClientAnnotationComment(
+    comment = comment_model(
         comment=comment,
         is_additional=additional,
     )
