@@ -221,20 +221,35 @@ class TherapistAnnotationScaleAssociation(db.Model):
         self.is_additional = is_additional
 
 
-# association table for many-to-many relationship between PSAnnotationDyad and DyadAnnotationScale
-annotationdyad_annotationschemascale = db.Table(
-    "annotationdyad_annotationschemascale",
-    db.Column(
-        "id_ps_annotation_dyad",
+class DyadAnnotationScaleAssociation(db.Model):
+    """Association object for many-to-many relationship between PSAnnotationDyad and DyadAnnotationScale"""
+
+    __tablename__ = "annotationdyad_annotationscale"
+    id = db.Column(db.Integer, primary_key=True)
+    id_ps_annotation_dyad = db.Column(
         db.Integer,
         db.ForeignKey("ps_annotation_dyad.id"),
-    ),
-    db.Column(
-        "id_dyad_annotation_scale",
+        nullable=False,
+    )
+    id_dyad_annotation_scale = db.Column(
         db.Integer,
         db.ForeignKey("dyad_annotation_scale.id"),
-    ),
-)
+        nullable=False,
+    )
+    is_additional = db.Column(db.Boolean, default=False)  # is this an additional scale?
+    scale = db.relationship(
+        "DyadAnnotationScale",
+        back_populates="annotations",
+    )
+    annotation = db.relationship(
+        "PSAnnotationDyad",
+        back_populates="annotation_scale_associations",
+    )
+
+    def __init__(self, scale=None, annotation=None, is_additional=False):
+        self.scale = scale
+        self.annotation = annotation
+        self.is_additional = is_additional
 
 
 class User(UserMixin, db.Model):
@@ -677,15 +692,17 @@ class PSAnnotationDyad(db.Model):
         back_populates="annotation",
         lazy="dynamic",
     )  # many-to-many relationship with DyadAnnotationLabel class
-    annotation_scales = db.relationship(
-        "DyadAnnotationScale",
-        secondary=annotationdyad_annotationschemascale,
-        backref=db.backref("annotations", lazy="dynamic"),
+    annotation_scale_associations = db.relationship(
+        "DyadAnnotationScaleAssociation",
+        back_populates="annotation",
         lazy="dynamic",
     )  # many-to-many relationship with DyadAnnotationScale class
     annotation_labels = association_proxy(
         "annotation_label_associations", "label"
     )  # association proxy of "annotation_label_associations" to "label" attribute of DyadAnnotationLabelAssociation class
+    annotation_scales = association_proxy(
+        "annotation_scale_associations", "scale"
+    )  # association proxy of "annotation_scale_associations" to "scale" attribute of DyadAnnotationScaleAssociation class
     annotation_comments = db.relationship(
         "DyadAnnotationComment",
         backref="annotation",
@@ -1159,6 +1176,11 @@ class DyadAnnotationScale(db.Model):
     id_dyad_annotation_label = db.Column(
         db.Integer, db.ForeignKey("dyad_annotation_label.id")
     )
+    annotations = db.relationship(
+        "DyadAnnotationScaleAssociation",
+        back_populates="scale",
+        lazy="dynamic",
+    )  # many-to-many relationship with PSAnnotationDyad class
     # create unique constraint on scale_title, scale_level and id_dyad_annotation_label
     __table_args__ = (
         db.UniqueConstraint("scale_title", "scale_level", "id_dyad_annotation_label"),
