@@ -266,13 +266,15 @@ def new_evidence_therapist(
 
 
 @pytest.fixture(scope="module")
-def new_evidence_dyad(new_ps_annotation_dyad, new_ps_dialog_event):
+def new_evidence_dyad(
+    new_ps_annotation_dyad, new_ps_dialog_event, new_ps_annotation_schema_dyad
+):
     """Fixture to create a new psychotherapy evidence for the dyad annotation"""
 
     evidence = EvidenceDyad(
         dialog_event=new_ps_dialog_event,
         annotation=new_ps_annotation_dyad,
-        label=LabelNamesDyad.label_a,
+        label=new_ps_annotation_schema_dyad[0],
     )
     return evidence
 

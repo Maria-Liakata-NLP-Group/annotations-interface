@@ -779,6 +779,7 @@ def test_new_evidence_dyad(
     new_evidence_dyad,
     new_ps_dialog_event,
     new_ps_annotation_dyad,
+    new_ps_annotation_schema_dyad,
 ):
     """
     GIVEN a EvidenceDyad model
@@ -792,7 +793,7 @@ def test_new_evidence_dyad(
     assert evidence is not None
     assert evidence.dialog_event == new_ps_dialog_event
     assert evidence.annotation == new_ps_annotation_dyad
-    assert evidence.label == LabelNamesDyad.label_a
+    assert evidence.label == new_ps_annotation_schema_dyad[0]
 
 
 @pytest.mark.order(after="test_new_evidence_dyad")
