@@ -29,6 +29,7 @@ from app.models import (
     TherapistAnnotationLabelAssociation,
     TherapistAnnotationScaleAssociation,
     DyadAnnotationLabelAssociation,
+    DyadAnnotationScaleAssociation,
 )
 from app.utils import (
     LabelNamesTherapist,
@@ -305,7 +306,7 @@ def test_new_therapist_annotation_label(db_session, new_ps_annotation_therapist)
 
 
 @pytest.mark.order(after="test_new_therapist_annotation_label")
-def test_new_dyad_annotation_schema(db_session, new_ps_annotation_dyad):
+def test_new_dyad_annotation_label(db_session, new_ps_annotation_dyad):
     """
     GIVEN a DyadAnnotationLabel model
     WHEN a new DyadAnnotationLabel is created and added to the database
@@ -313,10 +314,11 @@ def test_new_dyad_annotation_schema(db_session, new_ps_annotation_dyad):
     """
 
     label_a = DyadAnnotationLabel(
-        label="parent label", annotations=[new_ps_annotation_dyad]
+        label="parent label",
     )
     label_b = DyadAnnotationLabel(
-        label="child label", parent=label_a, annotations=[new_ps_annotation_dyad]
+        label="child label",
+        parent=label_a,
     )
     db_session.add_all([label_a, label_b])
     db_session.commit()
@@ -327,10 +329,6 @@ def test_new_dyad_annotation_schema(db_session, new_ps_annotation_dyad):
     assert label_a.children[0] is label_b
     assert label_b.parent is label_a
     assert label_b.children.all() == []
-
-    # verify that the annotations are correctly linked to the labels
-    labels = new_ps_annotation_dyad.annotation_labels.all()
-    assert len(labels) == 2
 
     with pytest.raises(IntegrityError, match="UNIQUE constraint failed"):
         """Test that a label with the same name and parent cannot be added twice"""
@@ -345,7 +343,7 @@ def test_new_dyad_annotation_schema(db_session, new_ps_annotation_dyad):
     db_session.commit()
 
 
-@pytest.mark.order(after="test_new_dyad_annotation_schema")
+@pytest.mark.order(after="test_new_dyad_annotation_label")
 def test_new_client_annotation_scale(db_session):
     """
     GIVEN a ClientAnnotationScale model
@@ -701,7 +699,7 @@ def test_new_ps_annotation_dyad(
     label, scale = new_ps_annotation_schema_dyad
     # add the label and scale to the annotation
     new_ps_annotation_dyad.annotation_labels.append(label)  # association proxy
-    new_ps_annotation_dyad.annotation_scales.append(scale)
+    new_ps_annotation_dyad.annotation_scales.append(scale)  # association proxy
     # test the DyadAnnotationLabelAssociation model (association object + association proxy)
     association = DyadAnnotationLabelAssociation(
         label, new_ps_annotation_dyad, is_additional=True
@@ -714,7 +712,19 @@ def test_new_ps_annotation_dyad(
         assert association.label == label
     assert not associations[0].is_additional
     assert associations[1].is_additional
-    assert scale.annotations.first() == new_ps_annotation_dyad
+    # test the DyadAnnotationScaleAssociation model (association object + association proxy)
+    association = DyadAnnotationScaleAssociation(
+        scale, new_ps_annotation_dyad, is_additional=True
+    )  # association object explicitly
+    db_session.add(association)
+    associations = scale.annotations.all()
+    assert len(associations) == 2
+    for association in associations:
+        assert association.annotation == new_ps_annotation_dyad
+        assert association.scale == scale
+    assert not associations[0].is_additional
+    assert associations[1].is_additional
+    db_session.rollback()
 
 
 @pytest.mark.order(after="test_new_ps_annotation_dyad")
