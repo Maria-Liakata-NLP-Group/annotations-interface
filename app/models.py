@@ -1182,6 +1182,7 @@ class TherapistAnnotationComment(db.Model):
     id_ps_annotation_therapist = db.Column(
         db.Integer, db.ForeignKey("ps_annotation_therapist.id")
     )
+    is_additional = db.Column(db.Boolean, default=False)
 
     def __repr__(self):
         """How to print objects of this class"""
