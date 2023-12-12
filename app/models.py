@@ -753,7 +753,9 @@ class EvidenceDyad(db.Model):
     id_ps_annotation_dyad = db.Column(
         db.Integer, db.ForeignKey("ps_annotation_dyad.id")
     )
-    label = db.Column(db.Enum(LabelNamesDyad), nullable=True, default=None)
+    id_dyad_annotation_label = db.Column(
+        db.Integer, db.ForeignKey("dyad_annotation_label.id")
+    )
 
 
 class AnnotationLabelMixin:
@@ -1103,6 +1105,11 @@ class DyadAnnotationLabel(db.Model, AnnotationLabelMixin):
         backref="label",
         lazy="dynamic",
     )  # one-to-many relationship with DyadAnnotationComment class
+    evidence_events = db.relationship(
+        "EvidenceDyad",
+        backref="label",
+        lazy="dynamic",
+    )  # one-to-many relationship with EvidenceDyad class
     # create unique constraint on label within a parent
     __table_args__ = (db.UniqueConstraint("label", "parent_id"),)
 
