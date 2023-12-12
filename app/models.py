@@ -159,6 +159,37 @@ class ClientAnnotationScaleAssociation(db.Model):
         self.is_additional = is_additional
 
 
+class TherapistAnnotationScaleAssociation(db.Model):
+    """Association object for many-to-many relationship between PSAnnotationTherapist and TherapistAnnotationScale"""
+
+    __tablename__ = "annotationtherapist_annotationscale"
+    id = db.Column(db.Integer, primary_key=True)
+    id_ps_annotation_therapist = db.Column(
+        db.Integer,
+        db.ForeignKey("ps_annotation_therapist.id"),
+        nullable=False,
+    )
+    id_therapist_annotation_scale = db.Column(
+        db.Integer,
+        db.ForeignKey("therapist_annotation_scale.id"),
+        nullable=False,
+    )
+    is_additional = db.Column(db.Boolean, default=False)  # is this an additional scale?
+    scale = db.relationship(
+        "TherapistAnnotationScale",
+        back_populates="annotations",
+    )
+    annotation = db.relationship(
+        "PSAnnotationTherapist",
+        back_populates="annotation_scale_associations",
+    )
+
+    def __init__(self, scale=None, annotation=None, is_additional=False):
+        self.scale = scale
+        self.annotation = annotation
+        self.is_additional = is_additional
+
+
 # association table for many-to-many relationship between DyadAnnotationLabel and PSAnnotationDyad
 annotationdyad_annotationschema = db.Table(
     "annotationdyad_annotationschema",
@@ -171,22 +202,6 @@ annotationdyad_annotationschema = db.Table(
         "id_dyad_annotation_label",
         db.Integer,
         db.ForeignKey("dyad_annotation_label.id"),
-    ),
-)
-
-
-# association table for many-to-many relationship between PSAnnotationTherapist and TherapistAnnotationScale
-annotationtherapist_annotationschemascale = db.Table(
-    "annotationtherapist_annotationschemascale",
-    db.Column(
-        "id_ps_annotation_therapist",
-        db.Integer,
-        db.ForeignKey("ps_annotation_therapist.id"),
-    ),
-    db.Column(
-        "id_therapist_annotation_scale",
-        db.Integer,
-        db.ForeignKey("therapist_annotation_scale.id"),
     ),
 )
 
@@ -598,15 +613,17 @@ class PSAnnotationTherapist(db.Model):
         back_populates="annotation",
         lazy="dynamic",
     )  # many-to-many relationship with TherapistAnnotationLabel class
+    annotation_scale_associations = db.relationship(
+        "TherapistAnnotationScaleAssociation",
+        back_populates="annotation",
+        lazy="dynamic",
+    )  # many-to-many relationship with TherapistAnnotationScale class
     annotation_labels = association_proxy(
         "annotation_label_associations", "label"
     )  # association proxy of "annotation_label_associations" to "label" attribute of TherapistAnnotationLabelAssociation class
-    annotation_scales = db.relationship(
-        "TherapistAnnotationScale",
-        secondary=annotationtherapist_annotationschemascale,
-        backref=db.backref("annotations", lazy="dynamic"),
-        lazy="dynamic",
-    )  # many-to-many relationship with TherapistAnnotationScale class
+    annotation_scales = association_proxy(
+        "annotation_scale_associations", "scale"
+    )  # association proxy of "annotation_scale_associations" to "scale" attribute of TherapistAnnotationScaleAssociation class
     annotation_comments = db.relationship(
         "TherapistAnnotationComment",
         backref="annotation",
@@ -1084,6 +1101,11 @@ class TherapistAnnotationScale(db.Model):
     id_therapist_annotation_label = db.Column(
         db.Integer, db.ForeignKey("therapist_annotation_label.id")
     )
+    annotations = db.relationship(
+        "TherapistAnnotationScaleAssociation",
+        back_populates="scale",
+        lazy="dynamic",
+    )  # many-to-many relationship with PSAnnotationTherapist class
     # create unique constraint on scale_title, scale_level and id_therapist_annotation_label
     __table_args__ = (
         db.UniqueConstraint(

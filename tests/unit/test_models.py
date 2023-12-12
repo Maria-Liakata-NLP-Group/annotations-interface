@@ -27,6 +27,7 @@ from app.models import (
     ClientAnnotationLabelAssociation,
     ClientAnnotationScaleAssociation,
     TherapistAnnotationLabelAssociation,
+    TherapistAnnotationScaleAssociation,
 )
 from app.utils import (
     LabelNamesTherapist,
@@ -600,7 +601,6 @@ def test_new_ps_annotation_client(
         0
     ].is_additional  # default through association proxy is False
     assert associations[1].is_additional
-    assert association.annotation == new_ps_annotation_client
     # test the ClientAnnotationScaleAssociation model (association object + association proxy)
     association = ClientAnnotationScaleAssociation(
         scale, new_ps_annotation_client, is_additional=True
@@ -614,7 +614,6 @@ def test_new_ps_annotation_client(
         0
     ].is_additional  # default through association proxy is False
     assert associations[1].is_additional
-    assert association.annotation == new_ps_annotation_client
     db_session.rollback()
 
 
@@ -659,7 +658,21 @@ def test_new_ps_annotation_therapist(
         0
     ].is_additional  # default through association proxy is False
     assert associations[1].is_additional
-    assert scale.annotations.first() == new_ps_annotation_therapist
+    # test the TherapistAnnotationScaleAssociation model (association object + association proxy)
+    association = TherapistAnnotationScaleAssociation(
+        scale, new_ps_annotation_therapist, is_additional=True
+    )  # association object explicitly
+    db_session.add(association)
+    associations = scale.annotations.all()
+    assert len(associations) == 2
+    for association in associations:
+        assert association.annotation == new_ps_annotation_therapist
+        assert association.scale == scale
+    assert not associations[
+        0
+    ].is_additional  # default through association proxy is False
+    assert associations[1].is_additional
+    db_session.rollback()
 
 
 @pytest.mark.order(after="test_new_ps_annotation_therapist")
