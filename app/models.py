@@ -128,6 +128,37 @@ class TherapistAnnotationLabelAssociation(db.Model):
         self.is_additional = is_additional
 
 
+class DyadAnnotationLabelAssociation(db.Model):
+    """Associtation object for many-to-many relationship between PSAnnotationDyad and DyadAnnotationLabel"""
+
+    __tablename__ = "annotationdyad_annotationlabel"
+    id = db.Column(db.Integer, primary_key=True)
+    id_ps_annotation_dyad = db.Column(
+        db.Integer,
+        db.ForeignKey("ps_annotation_dyad.id"),
+        nullable=False,
+    )
+    id_dyad_annotation_label = db.Column(
+        db.Integer,
+        db.ForeignKey("dyad_annotation_label.id"),
+        nullable=False,
+    )
+    is_additional = db.Column(db.Boolean, default=False)  # is this an additional label?
+    label = db.relationship(
+        "DyadAnnotationLabel",
+        back_populates="annotations",
+    )
+    annotation = db.relationship(
+        "PSAnnotationDyad",
+        back_populates="annotation_label_associations",
+    )
+
+    def __init__(self, label=None, annotation=None, is_additional=False):
+        self.label = label
+        self.annotation = annotation
+        self.is_additional = is_additional
+
+
 class ClientAnnotationScaleAssociation(db.Model):
     """Association object for many-to-many relationship between PSAnnotationClient and ClientAnnotationScale"""
 
@@ -188,22 +219,6 @@ class TherapistAnnotationScaleAssociation(db.Model):
         self.scale = scale
         self.annotation = annotation
         self.is_additional = is_additional
-
-
-# association table for many-to-many relationship between DyadAnnotationLabel and PSAnnotationDyad
-annotationdyad_annotationschema = db.Table(
-    "annotationdyad_annotationschema",
-    db.Column(
-        "id_ps_annotation_dyad",
-        db.Integer,
-        db.ForeignKey("ps_annotation_dyad.id"),
-    ),
-    db.Column(
-        "id_dyad_annotation_label",
-        db.Integer,
-        db.ForeignKey("dyad_annotation_label.id"),
-    ),
-)
 
 
 # association table for many-to-many relationship between PSAnnotationDyad and DyadAnnotationScale
@@ -607,7 +622,6 @@ class PSAnnotationTherapist(db.Model):
     evidence = db.relationship(
         "EvidenceTherapist", backref="annotation", lazy="dynamic"
     )  # one-to-many relationship with EvidenceTherapist class
-    # many-to-many relationship with TherapistAnnotationLabel class
     annotation_label_associations = db.relationship(
         "TherapistAnnotationLabelAssociation",
         back_populates="annotation",
@@ -658,19 +672,20 @@ class PSAnnotationDyad(db.Model):
     evidence = db.relationship(
         "EvidenceDyad", backref="annotation", lazy="dynamic"
     )  # one-to-many relationship with EvidenceDyad class
-    # many-to-many relationship with DyadAnnotationLabel class
-    annotation_labels = db.relationship(
-        "DyadAnnotationLabel",
-        secondary=annotationdyad_annotationschema,
-        backref=db.backref("annotations", lazy="dynamic"),
+    annotation_label_associations = db.relationship(
+        "DyadAnnotationLabelAssociation",
+        back_populates="annotation",
         lazy="dynamic",
-    )
+    )  # many-to-many relationship with DyadAnnotationLabel class
     annotation_scales = db.relationship(
         "DyadAnnotationScale",
         secondary=annotationdyad_annotationschemascale,
         backref=db.backref("annotations", lazy="dynamic"),
         lazy="dynamic",
     )  # many-to-many relationship with DyadAnnotationScale class
+    annotation_labels = association_proxy(
+        "annotation_label_associations", "label"
+    )  # association proxy of "annotation_label_associations" to "label" attribute of DyadAnnotationLabelAssociation class
     annotation_comments = db.relationship(
         "DyadAnnotationComment",
         backref="annotation",
@@ -1056,6 +1071,11 @@ class DyadAnnotationLabel(db.Model, AnnotationLabelMixin):
         backref=db.backref("parent", remote_side=[id]),
         lazy="dynamic",
     )
+    annotations = db.relationship(
+        "DyadAnnotationLabelAssociation",
+        back_populates="label",
+        lazy="dynamic",
+    )  # many-to-many relationship with PSAnnotationDyad class
     scales = db.relationship(
         "DyadAnnotationScale",
         backref="label",

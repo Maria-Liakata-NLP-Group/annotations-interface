@@ -28,6 +28,7 @@ from app.models import (
     ClientAnnotationScaleAssociation,
     TherapistAnnotationLabelAssociation,
     TherapistAnnotationScaleAssociation,
+    DyadAnnotationLabelAssociation,
 )
 from app.utils import (
     LabelNamesTherapist,
@@ -698,9 +699,21 @@ def test_new_ps_annotation_dyad(
     assert annotation.author == annotator1
     assert annotation.dataset == dataset
     label, scale = new_ps_annotation_schema_dyad
-    new_ps_annotation_dyad.annotation_labels.append(label)
+    # add the label and scale to the annotation
+    new_ps_annotation_dyad.annotation_labels.append(label)  # association proxy
     new_ps_annotation_dyad.annotation_scales.append(scale)
-    assert label.annotations.first() == new_ps_annotation_dyad
+    # test the DyadAnnotationLabelAssociation model (association object + association proxy)
+    association = DyadAnnotationLabelAssociation(
+        label, new_ps_annotation_dyad, is_additional=True
+    )  # association object explicitly
+    db_session.add(association)
+    associations = label.annotations.all()
+    assert len(associations) == 2
+    for association in associations:
+        assert association.annotation == new_ps_annotation_dyad
+        assert association.label == label
+    assert not associations[0].is_additional
+    assert associations[1].is_additional
     assert scale.annotations.first() == new_ps_annotation_dyad
 
 
