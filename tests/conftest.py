@@ -250,13 +250,17 @@ def new_evidence_client(
 
 
 @pytest.fixture(scope="module")
-def new_evidence_therapist(new_ps_annotation_therapist, new_ps_dialog_event):
+def new_evidence_therapist(
+    new_ps_annotation_therapist,
+    new_ps_dialog_event,
+    new_ps_annotation_schema_therapist,
+):
     """Fixture to create a new psychotherapy evidence for the therapist annotation"""
 
     evidence = EvidenceTherapist(
         dialog_event=new_ps_dialog_event,
         annotation=new_ps_annotation_therapist,
-        label=LabelNamesTherapist.label_b,
+        label=new_ps_annotation_schema_therapist[0],
     )
     return evidence
 

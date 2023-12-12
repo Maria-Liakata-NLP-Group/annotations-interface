@@ -733,6 +733,7 @@ def test_new_evidence_therapist(
     new_evidence_therapist,
     new_ps_dialog_event,
     new_ps_annotation_therapist,
+    new_ps_annotation_schema_therapist,
 ):
     """
     GIVEN a EvidenceTherapist model
@@ -746,7 +747,7 @@ def test_new_evidence_therapist(
     assert evidence is not None
     assert evidence.dialog_event == new_ps_dialog_event
     assert evidence.annotation == new_ps_annotation_therapist
-    assert evidence.label == LabelNamesTherapist.label_b
+    assert evidence.label == new_ps_annotation_schema_therapist[0]
 
 
 @pytest.mark.order(after="test_new_evidence_therapist")

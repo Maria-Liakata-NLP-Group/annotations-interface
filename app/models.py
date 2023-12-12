@@ -704,7 +704,12 @@ class EvidenceTherapist(db.Model):
     id_ps_annotation_therapist = db.Column(
         db.Integer, db.ForeignKey("ps_annotation_therapist.id")
     )
-    label = db.Column(db.Enum(LabelNamesTherapist), nullable=True, default=None)
+    id_therapist_annotation_label = db.Column(
+        db.Integer, db.ForeignKey("therapist_annotation_label.id")
+    )
+    is_additional = db.Column(
+        db.Boolean, default=False
+    )  # is this evidence for an additional label?
 
 
 class EvidenceDyad(db.Model):
@@ -1024,6 +1029,11 @@ class TherapistAnnotationLabel(db.Model, AnnotationLabelMixin):
         back_populates="label",
         lazy="dynamic",
     )  # many-to-many relationship with PSAnnotationTherapist class
+    evidence_events = db.relationship(
+        "EvidenceTherapist",
+        backref="label",
+        lazy="dynamic",
+    )  # one-to-many relationship with EvidenceTherapist class
     # create unique constraint on label within a parent
     __table_args__ = (db.UniqueConstraint("label", "parent_id"),)
 
