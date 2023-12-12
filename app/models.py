@@ -1244,6 +1244,7 @@ class DyadAnnotationComment(db.Model):
     id_ps_annotation_dyad = db.Column(
         db.Integer, db.ForeignKey("ps_annotation_dyad.id")
     )
+    is_additional = db.Column(db.Boolean, default=False)
 
     def __repr__(self):
         """How to print objects of this class"""
