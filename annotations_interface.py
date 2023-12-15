@@ -13,6 +13,7 @@ from app.models import (
     AnnotationLabelManager,
     AnnotationScaleManager,
 )
+from flask_migrate import upgrade
 
 app = create_app()
 
@@ -46,23 +47,41 @@ def clear_db():
 @app.cli.command()
 def create_annotation_schema():
     """Create the annotation schema for the client, therapist and dyad"""
-    schema_manager = AnnotationLabelManager()
+    label_manager = AnnotationLabelManager()
     scale_manager = AnnotationScaleManager()
 
     # remove any existing schema first
-    schema_manager.remove_labels_client()
-    schema_manager.remove_labels_therapist()
-    schema_manager.remove_labels_dyad()
+    label_manager.remove_labels_client()
+    label_manager.remove_labels_therapist()
+    label_manager.remove_labels_dyad()
 
     scale_manager.remove_scales_client()
     scale_manager.remove_scales_therapist()
     scale_manager.remove_scales_dyad()
 
     # create the schema
-    schema_manager.add_labels_client()
-    schema_manager.add_labels_therapist()
-    schema_manager.add_labels_dyad()
+    label_manager.add_labels_client()
+    label_manager.add_labels_therapist()
+    label_manager.add_labels_dyad()
 
+    scale_manager.add_scales_client()
+    scale_manager.add_scales_therapist()
+    scale_manager.add_scales_dyad()
+
+
+@app.cli.command()
+def deploy():
+    """Run deployment tasks."""
+    # migrate database to latest revision
+    upgrade()
+    # create or update user roles
+    Role.insert_roles()
+    # create annotation schema
+    label_manager = AnnotationLabelManager()
+    scale_manager = AnnotationScaleManager()
+    label_manager.add_labels_client()
+    label_manager.add_labels_therapist()
+    label_manager.add_labels_dyad()
     scale_manager.add_scales_client()
     scale_manager.add_scales_therapist()
     scale_manager.add_scales_dyad()
