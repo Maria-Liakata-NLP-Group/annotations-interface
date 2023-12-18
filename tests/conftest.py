@@ -379,3 +379,20 @@ def new_ps_annotation_comment_dyad(
         label=new_ps_annotation_schema_dyad[0],
     )
     return comment
+
+
+@pytest.fixture(scope="session")
+def app():
+    app = create_app(TestConfig)
+    return app
+
+
+@pytest.fixture(scope="session")
+def driver():
+    from selenium import webdriver
+
+    options = webdriver.ChromeOptions()
+    options.add_argument("--headless")
+    driver = webdriver.Chrome(options=options)
+    yield driver
+    driver.quit()
