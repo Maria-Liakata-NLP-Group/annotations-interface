@@ -117,30 +117,30 @@ def new_ps_dataset(user_annotator1):
 
 
 @pytest.fixture(scope="module")
-def flask_app():
+def app():
     """Fixture to create a Flask app configured for testing"""
-    flask_app = create_app(TestConfig)
+    app = create_app(TestConfig)
     # Establish an application context before running the tests
-    with flask_app.app_context():
+    with app.app_context():
         db.create_all()
         Role.insert_roles()
-        yield flask_app  # this is where the testing happens!
+        yield app  # this is where the testing happens!
         db.drop_all()
 
 
 @pytest.fixture(scope="module")
-def db_session(flask_app):
+def db_session(app):
     """Fixture to create a database session for testing"""
     # Establish an application context before running the tests
-    with flask_app.app_context():
+    with app.app_context():
         yield db.session
 
 
 @pytest.fixture(scope="function")
-def test_client(flask_app):
+def test_client(app):
     """Fixture to create a test client for making HTTP requests"""
     # Create a test client using the Flask application configured for testing
-    with flask_app.test_client() as client:
+    with app.test_client() as client:
         yield client  # this is where the testing happens!
 
 
@@ -161,9 +161,9 @@ def insert_datasets(db_session, new_sm_dataset, new_ps_dataset):
 
 
 @pytest.fixture(scope="module")
-def insert_ps_dialog_turns(flask_app, db_session, insert_datasets):
+def insert_ps_dialog_turns(app, db_session, insert_datasets):
     """Fixture to insert psychotherapy dialog turns (and corresponding events) into the database"""
-    df = read_pickle(flask_app.config["PS_DATASET_PATH"])
+    df = read_pickle(app.config["PS_DATASET_PATH"])
     dataset = Dataset.query.filter_by(name="Psychotherapy Dataset Test").first()
     psychotherapy_df_to_sql(df, dataset)
     db_session.commit()
@@ -379,12 +379,6 @@ def new_ps_annotation_comment_dyad(
         label=new_ps_annotation_schema_dyad[0],
     )
     return comment
-
-
-@pytest.fixture(scope="session")
-def app():
-    app = create_app(TestConfig)
-    return app
 
 
 @pytest.fixture(scope="session")

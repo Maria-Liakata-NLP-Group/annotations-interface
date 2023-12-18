@@ -8,12 +8,12 @@ import pytest
 
 
 @pytest.mark.order(2)
-def test_sm_dict_to_sql(flask_app, db_session, insert_datasets):
+def test_sm_dict_to_sql(app, db_session, insert_datasets):
     """
     Test the sm_dict_to_sql function,
     which converts the social media dictionary to SQL and adds it to the database.
     """
-    sm_data = read_pickle(flask_app.config["SM_DATASET_PATH"])
+    sm_data = read_pickle(app.config["SM_DATASET_PATH"])
     dataset = Dataset.query.filter_by(name="Social Media Dataset Test").first()
     sm_dict_to_sql(sm_data, dataset)
     db_session.commit()
@@ -39,12 +39,12 @@ def test_sm_dict_to_sql(flask_app, db_session, insert_datasets):
 
 
 @pytest.mark.dependency()
-def test_psychotherapy_df_to_sql(flask_app, db_session):
+def test_psychotherapy_df_to_sql(app, db_session):
     """
     Test the psychotherapy_df_to_sql function,
     which converts the psychotherapy dataframe to SQL and adds it to the database.
     """
-    df = read_pickle(flask_app.config["PS_DATASET_PATH"])
+    df = read_pickle(app.config["PS_DATASET_PATH"])
     dataset = Dataset.query.filter_by(name="Psychotherapy Dataset Test").first()
     psychotherapy_df_to_sql(df, dataset)
     db_session.commit()
