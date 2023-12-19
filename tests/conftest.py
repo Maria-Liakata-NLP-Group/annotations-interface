@@ -381,7 +381,7 @@ def new_ps_annotation_comment_dyad(
     return comment
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="module")
 def driver():
     from selenium import webdriver
 
