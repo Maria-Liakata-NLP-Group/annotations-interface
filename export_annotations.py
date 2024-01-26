@@ -1,5 +1,7 @@
 import argparse
 import sys
+import os
+import pickle
 from app.models import (
     User,
     ClientAnnotationLabel,
@@ -16,13 +18,10 @@ def cli(args=None):
     if not args:
         args = sys.argv[1:]
     parser = argparse.ArgumentParser()
-    parser.add_argument("--user_name", type=str, help="User to export annotations for")
+    parser.add_argument("--user", type=str, help="User to export annotations for")
     parser.add_argument("--dataset", type=str, help="Dataset to export annotations for")
-    parser.add_argument(
-        "--output", type=str, default="annotations", help="Output file name"
-    )
     args = parser.parse_args(args)
-    export_annotations(args.user_name, args.dataset, args.output)
+    export_annotations(args.user, args.dataset)
 
 
 def organize_annotations(annotations_list, annotation_label_model):
@@ -141,10 +140,108 @@ def organize_annotations(annotations_list, annotation_label_model):
     return organized_annotations
 
 
-def export_annotations(user_name, dataset, output):
-    user = User.query.filter_by(username=user_name).first()
-    if not user:
-        raise ValueError("User not found")
+def save_annotations(
+    user,
+    dataset,
+    annotations_client,
+    annotations_therapist,
+    annotations_dyad,
+):
+    # check that a folder called "exported_annotations" exists
+    # if not, create one
+    if not os.path.exists("exported_annotations"):
+        os.makedirs("exported_annotations")
+    full_path = os.path.join("exported_annotations", user)
+    # check that a folder with the user's name exists
+    # if not, create one
+    if not os.path.exists(full_path):
+        os.makedirs(full_path)
+    full_path = os.path.join(full_path, dataset)
+    # check that a folder with the dataset's name exists
+    # if not, create one
+    if not os.path.exists(full_path):
+        os.makedirs(full_path)
+
+    # save client annotations as pickle
+    with open(os.path.join(full_path, "client_annotations.pkl"), "wb") as f:
+        pickle.dump(annotations_client, f)
+    # save therapist annotations as pickle
+    with open(os.path.join(full_path, "therapist_annotations.pkl"), "wb") as f:
+        pickle.dump(annotations_therapist, f)
+    # save dyad annotations as pickle
+    with open(os.path.join(full_path, "dyad_annotations.pkl"), "wb") as f:
+        pickle.dump(annotations_dyad, f)
+
+
+def export_annotations(user, dataset):
+    app = create_app()
+
+    with app.app_context():
+        user = User.query.filter_by(username=user).first()
+        if not user:
+            raise ValueError("User not found")
+        dataset = user.datasets.filter_by(name=dataset).first()
+        if not dataset:
+            raise ValueError("Dataset not found")
+
+        # find all dialog turns associated with the dataset
+        dialog_turns = dataset.dialog_turns.all()
+        # sort the dialog turns by dialog turn number
+        dialog_turns = sorted(dialog_turns, key=lambda x: x.dialog_turn_n)
+        annotations_client = []
+        annotations_therapist = []
+        annotations_dyad = []
+        # for each dialog turn get the annotation with the latest timestamp
+        for dialog_turn in dialog_turns:
+            annotations_client.append(
+                dialog_turn.annotations_client.filter_by(id_user=user.id)
+                .order_by(desc("timestamp"))
+                .first()
+            )
+            annotations_therapist.append(
+                dialog_turn.annotations_therapist.filter_by(id_user=user.id)
+                .order_by(desc("timestamp"))
+                .first()
+            )
+            annotations_dyad.append(
+                dialog_turn.annotations_dyad.filter_by(id_user=user.id)
+                .order_by(desc("timestamp"))
+                .first()
+            )
+
+        # keep the unique annotations, maintaining the order and removing the None values
+        # the annotations are ordered by dialog turn number
+        annotations_client = list(dict.fromkeys(annotations_client))
+        annotations_therapist = list(dict.fromkeys(annotations_therapist))
+        annotations_dyad = list(dict.fromkeys(annotations_dyad))
+        # drop the None values
+        annotations_client = [x for x in annotations_client if x is not None]
+        annotations_therapist = [x for x in annotations_therapist if x is not None]
+        annotations_dyad = [x for x in annotations_dyad if x is not None]
+
+        # client annotations
+        client_annotation_label = ClientAnnotationLabel()
+        annotations_client = organize_annotations(
+            annotations_client, client_annotation_label
+        )
+
+        # therapist annotations
+        therapist_annotation_label = TherapistAnnotationLabel()
+        annotations_therapist = organize_annotations(
+            annotations_therapist, therapist_annotation_label
+        )
+
+        # dyad annotations
+        dyad_annotation_label = DyadAnnotationLabel()
+        annotations_dyad = organize_annotations(annotations_dyad, dyad_annotation_label)
+
+    save_annotations(
+        user.username,
+        dataset.name,
+        annotations_client,
+        annotations_therapist,
+        annotations_dyad,
+    )
 
 
 if __name__ == "__main__":
