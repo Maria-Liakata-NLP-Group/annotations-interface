@@ -17,7 +17,13 @@ def cli(args=None):
 
     if not args:
         args = sys.argv[1:]
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(
+        description="Export annotations for the client, therapist and dyad as Python dictionaries.",
+        epilog=(
+            "The annotations are saved as pickle files in the folder 'exported_annotations'. "
+            "Each pickle file contains a list of dictionaries. Each dictionary contains the annotations for a set of dialog turns."
+        ),
+    )
     parser.add_argument("--user", type=str, help="User to export annotations for")
     parser.add_argument("--dataset", type=str, help="Dataset to export annotations for")
     args = parser.parse_args(args)
@@ -147,6 +153,8 @@ def save_annotations(
     annotations_therapist,
     annotations_dyad,
 ):
+    """Save annotations as pickle"""
+
     # check that a folder called "exported_annotations" exists
     # if not, create one
     if not os.path.exists("exported_annotations"):
@@ -174,6 +182,11 @@ def save_annotations(
 
 
 def export_annotations(user, dataset):
+    """
+    Export annotations for a given user and dataset as pickle files.
+    This is the main function of the module.
+    """
+
     app = create_app()
 
     with app.app_context():
@@ -219,19 +232,19 @@ def export_annotations(user, dataset):
         annotations_therapist = [x for x in annotations_therapist if x is not None]
         annotations_dyad = [x for x in annotations_dyad if x is not None]
 
-        # client annotations
+        # client annotations - organize annotations into a list of dictionaries
         client_annotation_label = ClientAnnotationLabel()
         annotations_client = organize_annotations(
             annotations_client, client_annotation_label
         )
 
-        # therapist annotations
+        # therapist annotations - organize annotations into a list of dictionaries
         therapist_annotation_label = TherapistAnnotationLabel()
         annotations_therapist = organize_annotations(
             annotations_therapist, therapist_annotation_label
         )
 
-        # dyad annotations
+        # dyad annotations - organize annotations into a list of dictionaries
         dyad_annotation_label = DyadAnnotationLabel()
         annotations_dyad = organize_annotations(annotations_dyad, dyad_annotation_label)
 
