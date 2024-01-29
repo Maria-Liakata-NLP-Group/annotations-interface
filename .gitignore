@@ -19,3 +19,6 @@ data/*
 # pyreverse
 *.png
 pylint.rc
+
+# exported annotations folder
+exported_annotations/
