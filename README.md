@@ -29,9 +29,18 @@ It generalises to different types of text datasets: clinical psychology sessions
 
 1. Clone the repo: `git clone git@github.com:Maria-Liakata-NLP-Group/annotations-interface.git`
 2. `cd annotations-interface`
-3. Create a Python virtual environment: `python -m venv .venv`, and activate it `source .venv/bin/activate`
+3. Create a Python virtual environment: `python -m venv .env`, and activate it `source .env/bin/activate`
 4. Install the requirements: `pip install -r requirements.txt`
-5. 
+5. Create a `.flaskenv` file in the repo root directory containing the following:
+  ```
+  FLASK_APP=annotations_interface.py
+  SECRET_KEY="you-will-never-guess"  # replace this with a randomized password
+  APP_ADMIN="['admin@example.com']"  # replace this with the admin's email address
+  ```
+6. Run `flask db upgrade` to create the database and apply all the migrations. This will generate a SQLite `app.db` file in the repo root directory.
+7. Run `flask clear-db`
+8. Run `flask create-annotation-schema`
+9. To run the Flask in a development server, run `flask run`. You should then be able to access the app on http://127.0.0.1:5000
 
 ## Relational database
 
