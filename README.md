@@ -43,6 +43,7 @@ The current working branch is the `develop` branch.
 7. Run `flask clear-db`
 8. Run `flask create-annotation-schema`
 9. To run the Flask in a development server, run `flask run`. You should then be able to access the app on http://127.0.0.1:5000
+10. To try LongiText on a toy example, try uploading `tests/data/psychotherapy_example_lorem.pickle` to the interface via the "Upload Psychotherapy Dataset" button
 
 ## Relational database
 
