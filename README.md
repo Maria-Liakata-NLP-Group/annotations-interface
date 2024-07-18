@@ -27,7 +27,9 @@ It generalises to different types of text datasets: clinical psychology sessions
 
 ## Getting started
 
-1. Clone the repo: `git clone git@github.com:Maria-Liakata-NLP-Group/annotations-interface.git`
+The current working branch is the `develop` branch.
+
+1. Clone the repo: `git clone --branch develop git@github.com:Maria-Liakata-NLP-Group/annotations-interface.git`
 2. `cd annotations-interface`
 3. Create a Python virtual environment: `python -m venv .env`, and activate it `source .env/bin/activate`
 4. Install the requirements: `pip install -r requirements.txt`
